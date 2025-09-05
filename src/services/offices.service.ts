@@ -90,7 +90,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
 }
 
    protected static updateOfficeBasicInfoService = async (basicInfo: OfficeType) => {
-      const {office_Id, office_arabic_name, office_english_name, longitude, latitude, Id} = basicInfo
+      const {office_Id, office_arabic_name, office_english_name, longitude, latitude, Id, location} = basicInfo
       const parkExist = await db.offices.findFirst({
                where: { Id: Id },
            });
@@ -103,7 +103,8 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
         office_arabic_name,
         office_english_name,
         latitude,
-        longitude
+        longitude,
+        location
       },
     });
     return result;
