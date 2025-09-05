@@ -1,4 +1,4 @@
-# Express.js, Typescript, MongoDB Starter Template
+# Gitex API's
 
 ## Description
 
@@ -9,7 +9,7 @@ This repository provides a starter template for building applications with Expre
 ### 1. Clone the repository:
 
 ```bash
-git clone https://github.com/shakilkhan12/express-typescript-starter.git
+git clone https://github.com/shakilkhan12/gitex_backend_apis
 ```
 
 ### 2. Navigate into the project directory:
@@ -26,22 +26,22 @@ npm install
 
 ## Usage
 
-### Running the Development Server
+### Run Prisma Migrations
+
+```bash
+npm run prisma-migrate
+```
+
+### Generate Prisma Client
+
+```bash
+npm run prisma-gen
+```
+
+### Starting the Development Server
 
 ```bash
 npm run dev
-```
-
-### Building the Project for production
-
-```bash
-npm run build
-```
-
-### Starting the Production Server
-
-```bash
-npm run start
 ```
 
 ## API Documentation
