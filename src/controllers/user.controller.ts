@@ -19,6 +19,42 @@ class UserController extends UserService {
          next(error);
       }
    }
+
+   public static getUsers = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const allUsers = await UserService.getAllUsersWithRoleNestedService();
+         return res.status(STATUS.SUCCESS).json(allUsers);
+      } catch (error) {
+         next(error);
+      }
+   }
+
+   
+   public static updateUserRole = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const userId = Number(req.params.userId);
+        const { roleId } = req.body;
+    
+        if (isNaN(userId)) {
+          return res.status(STATUS.BAD_REQUEST).json({
+            status: STATUS.BAD_REQUEST,
+            message: "Invalid user ID"
+          });
+        }
+    
+        if (!roleId || isNaN(Number(roleId))) {
+          return res.status(STATUS.BAD_REQUEST).json({
+            status: STATUS.BAD_REQUEST,
+            message: "Invalid role ID"
+          });
+        }
+    
+        const response = await UserService.updateUserRoleService(userId, Number(roleId));
+        return res.status(STATUS.SUCCESS).json(response);
+      } catch (error) {
+        next(error);
+      }
+    }
 }
 
 export default UserController;

@@ -68,6 +68,19 @@ class AccessSecretService {
       }
     });
   }
+
+  // ⭐ NEW: Test method to manually trigger the update
+  public static async testUpdateAccessSecret() {
+    try {
+      console.log("🧪 Testing Access Secret Update...");
+      const result = await this.updateAccessSecret();
+      console.log("✅ Test Successful - Access Secret Updated:", result);
+      return result;
+    } catch (error) {
+      console.error("❌ Test Failed:", error);
+      throw error;
+    }
+  }
 }
 
 export default AccessSecretService;

@@ -11,8 +11,8 @@ datasource db {
 }
 
 model access_secret {
-  Id    Int     @id @default(autoincrement())
-  value String? @db.VarChar(255)
+   Id               Int              @id @default(autoincrement())
+   value            String?   @db.VarChar(255)
 }
 
 model live_stream_favourites {
@@ -60,22 +60,21 @@ model offices {
   offices_cameras            offices_cameras[]
   offices_sentiment_analysis offices_sentiment_analysis[]
   offices_footfall_analysis  offices_footfall_analysis[]
-  location                   String?                      @db.VarChar(255)
 
   @@map("offices")
 }
 
 model offices_attendance {
-  Id        Int  @id @default(autoincrement())
-  office_Id Int?
-  person_Id Int? // now references users.Id
+  Id         Int       @id @default(autoincrement())
+  office_Id  Int?
+  person_Id  Int?      // now references users.Id
 
   entry_time DateTime? @db.Timestamp(0)
   exit_time  DateTime? @db.Timestamp(0)
 
-  createdAt DateTime? @db.Timestamp(0)
-  updatedAt DateTime  @default(now()) @db.Timestamp(0)
-
+  createdAt  DateTime? @db.Timestamp(0)
+  updatedAt  DateTime  @default(now()) @db.Timestamp(0)
+ 
   office offices? @relation("offices_attendance_to_office", fields: [office_Id], references: [Id], map: "offices_attendance_ibfk_1")
   user   users?   @relation("offices_attendance_to_user", fields: [person_Id], references: [Id], map: "offices_attendance_ibfk_2")
 
@@ -102,47 +101,40 @@ model offices_cameras {
   offices                                                                                offices?                     @relation(fields: [office_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "offices_cameras_ibfk_1")
   offices_sentiment_analysis_offices_sentiment_analysis_entry_camera_IdTooffices_cameras offices_sentiment_analysis[] @relation("offices_sentiment_analysis_entry_camera_IdTooffices_cameras")
   offices_sentiment_analysis_offices_sentiment_analysis_exit_camera_IdTooffices_cameras  offices_sentiment_analysis[] @relation("offices_sentiment_analysis_exit_camera_IdTooffices_cameras")
-  location                                                                               String?                      @db.VarChar(255)
-  // 🔹 New Boolean fields
-  attendance                                                                             Boolean                      @default(false)
-  footfall                                                                               Boolean                      @default(false)
-  sentiment                                                                              Boolean                      @default(false)
 
-  // ✅ composite unique constraint
-  @@unique([office_Id, camera_Id])
   @@index([office_Id], map: "office_Id")
   @@map("offices_cameras")
 }
 
 model offices_sentiment_analysis {
-  Id        Int     @id @default(autoincrement())
-  office_Id Int?
-  person_Id String? @db.VarChar(255)
+  Id                                                                          Int                                      @id @default(autoincrement())
+  office_Id                                                                   Int?
+  person_Id                                                                   String?                                  @db.VarChar(255)
 
-  detection_Id   String? @db.VarChar(100)
-  person_name    String? @db.VarChar(255)
-  person_image   String? @db.VarChar(255)
-  gender         String? @db.VarChar(50)
-  check_in_image String? @db.VarChar(255)
+  detection_Id                                                                String?                                  @db.VarChar(100)
+  person_name                                                                 String?                                  @db.VarChar(255)
+  person_image                                                                String?                                  @db.VarChar(255)
+  gender                                                                      String?                                  @db.VarChar(50)
+  check_in_image                                                              String?                                  @db.VarChar(255)
 
-  sentiment_of       offices_sentiment_analysis_sentiment_of?
-  check_in_date      DateTime?                                @db.Date
-  check_in_time      DateTime?                                @db.Time(0)
-  check_in_sentiment String?                                  @db.VarChar(50)
-  entry_camera_Id    Int?
-  check_out_date     DateTime?                                @db.Date
-  check_out_time     DateTime?                                @db.Time(0)
-  check_out_capture  String?                                  @db.VarChar(255)
+  sentiment_of                                                                offices_sentiment_analysis_sentiment_of?
+  check_in_date                                                               DateTime?                                @db.Date
+  check_in_time                                                               DateTime?                                @db.Time(0)
+  check_in_sentiment                                                          String?                                  @db.VarChar(50)
+  entry_camera_Id                                                             Int?
+  check_out_date                                                              DateTime?                                @db.Date
+  check_out_time                                                              DateTime?                                @db.Time(0)
+  check_out_capture                                                           String?                                  @db.VarChar(255)
 
-  check_out_sentiment String? @db.VarChar(50)
+  check_out_sentiment                                                         String?                                  @db.VarChar(50)
 
-  exit_camera_Id Int?
-  createdAt      DateTime? @db.Timestamp(0)
-  updatedAt      DateTime  @default(now()) @db.Timestamp(0)
+  exit_camera_Id                                                              Int?
+  createdAt                                                                   DateTime?                                @db.Timestamp(0)
+  updatedAt                                                                   DateTime                                 @default(now()) @db.Timestamp(0)
 
-  offices                                                                     offices?         @relation(fields: [office_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "offices_sentiment_analysis_ibfk_1")
-  offices_cameras_offices_sentiment_analysis_entry_camera_IdTooffices_cameras offices_cameras? @relation("offices_sentiment_analysis_entry_camera_IdTooffices_cameras", fields: [entry_camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "offices_sentiment_analysis_ibfk_2")
-  offices_cameras_offices_sentiment_analysis_exit_camera_IdTooffices_cameras  offices_cameras? @relation("offices_sentiment_analysis_exit_camera_IdTooffices_cameras", fields: [exit_camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "offices_sentiment_analysis_ibfk_3")
+  offices                                                                     offices?                                 @relation(fields: [office_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "offices_sentiment_analysis_ibfk_1")
+  offices_cameras_offices_sentiment_analysis_entry_camera_IdTooffices_cameras offices_cameras?                         @relation("offices_sentiment_analysis_entry_camera_IdTooffices_cameras", fields: [entry_camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "offices_sentiment_analysis_ibfk_2")
+  offices_cameras_offices_sentiment_analysis_exit_camera_IdTooffices_cameras  offices_cameras?                         @relation("offices_sentiment_analysis_exit_camera_IdTooffices_cameras", fields: [exit_camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "offices_sentiment_analysis_ibfk_3")
 
   @@index([entry_camera_Id], map: "entry_camera_Id")
   @@index([exit_camera_Id], map: "exit_camera_Id")
@@ -173,24 +165,7 @@ model park_cameras {
   parks_smoking_detection                                                         parks_smoking_detection[]
   parks_landscaping                                                               parks_landscaping[]         @relation("parks_landscaping_to_park_cameras")
   parks_litter_detection                                                          parks_litter_detection[]    @relation("parks_litter_detection_to_park_cameras")
-  location                                                                        String?                     @db.VarChar(255)
-  // ✅ Functionalities (all 9 as Boolean flags)
-  attendance                                                                      Boolean?                    @default(false)
-  footfall                                                                        Boolean?                    @default(false)
-  sentiment                                                                       Boolean?                    @default(false)
-  behaviour                                                                       Boolean?                    @default(false)
-  irrigation                                                                      Boolean?                    @default(false)
-  landscaping                                                                     Boolean?                    @default(false)
-  litter_detection                                                                Boolean?                    @default(false)
-  smoking_detection                                                               Boolean?                    @default(false)
-  intrusion                                                                       Boolean?                    @default(false)
-  // ✅ Streaming-related columns
-  stream_url                                                                      String?                     @db.VarChar(255)
-  stream_api_key                                                                  String?                     @db.VarChar(255)
-  stream_path                                                                     String?                     @db.VarChar(255)
-  password                                                                        String?                     @db.VarChar(255)
 
-  @@unique([park_Id, camera_Id])
   @@index([park_Id], map: "park_Id")
   @@map("park_cameras")
 }
@@ -210,22 +185,6 @@ model park_streams {
   @@map("park_streams")
 }
 
-model TermsPrivacy {
-  id            Int      @id @default(autoincrement())
-  terms         String?  @db.Text
-  privacyPolicy String?  @db.Text
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model FAQ {
-  id        Int      @id @default(autoincrement())
-  question  String   @db.Text
-  answer    String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model park_zones {
   Id                           Int                            @id @default(autoincrement())
   park_Id                      Int?
@@ -241,10 +200,7 @@ model park_zones {
   updatedAt                    DateTime                       @default(now()) @db.Timestamp(0)
   parks                        parks?                         @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "park_zones_ibfk_1")
   parks_irrigation_job_history parks_irrigation_job_history[]
-  location                     String?                        @db.VarChar(255)
 
-  // ✅ composite unique constraint
-  @@unique([park_Id, zone_Id])
   @@index([park_Id], map: "park_Id")
   @@map("park_zones")
 }
@@ -271,20 +227,19 @@ model parks {
   parks_sentiment_analysis     parks_sentiment_analysis[]
   parks_smoking_detection      parks_smoking_detection[]
   parks_footfall_analysis      parks_footfall_analysis[]
-  location                     String?                        @db.VarChar(255)
 
   @@map("parks")
 }
 
 model parks_attendance {
-  Id         Int       @id @default(autoincrement())
-  park_Id    Int?
-  person_Id  Int?
-  entry_time DateTime? @db.Timestamp(0)
-  exit_time  DateTime? @db.Timestamp(0)
+  Id          Int       @id @default(autoincrement())
+  park_Id     Int?
+  person_Id   Int?      
+  entry_time  DateTime? @db.Timestamp(0)
+  exit_time   DateTime? @db.Timestamp(0)
 
-  createdAt DateTime? @db.Timestamp(0)
-  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  createdAt   DateTime? @db.Timestamp(0)
+  updatedAt   DateTime  @default(now()) @db.Timestamp(0)
 
   park parks? @relation("parks_attendance_to_park", fields: [park_Id], references: [Id], map: "parks_attendance_ibfk_1")
   user users? @relation("parks_attendance_to_user", fields: [person_Id], references: [Id], map: "parks_attendance_ibfk_2")
@@ -301,8 +256,8 @@ model parks_behaviour_alerts {
   camera_Id          Int?
   detection_Id       String?       @db.VarChar(255)
   detection_code     String?       @db.VarChar(255)
-  detection_date     DateTime?     @default(now()) @db.Timestamp(0)
-  detection_time     DateTime?     @db.Time(0)
+  detection_date     DateTime?    @default(now()) @db.Timestamp(0)
+  detection_time     DateTime?    @db.Time(0)
   description        String?       @db.VarChar(255)
   detected_behaviour String?       @db.VarChar(255)
   is_employee        Boolean?      @default(false)
@@ -318,28 +273,28 @@ model parks_behaviour_alerts {
 }
 
 model parks_intrusion_detection {
-  Id                      Int       @id @default(autoincrement())
+  Id                      Int           @id @default(autoincrement())
   park_Id                 Int?
-  location                String?   @db.VarChar(255)
+  location                String?       @db.VarChar(255)
   camera_Id               Int?
-  occurrence_date         DateTime? @db.Date
-  occurrence_time         DateTime? @db.Time(0)
-  snap_shot               String?   @db.VarChar(255)
-  posted_to_intranet_date DateTime? @db.Date
-  posted_to_intranet_time DateTime? @db.Time(0)
+  occurrence_date         DateTime?     @db.Date
+  occurrence_time         DateTime?     @db.Time(0)
+  snap_shot               String?       @db.VarChar(255)
+  posted_to_intranet_date DateTime?     @db.Date
+  posted_to_intranet_time DateTime?     @db.Time(0)
 
-  detection_Id   String?   @db.VarChar(100)
-  detection_date DateTime? @db.Timestamp(0)
-  detection_time DateTime? @db.Time(0)
-  description    String?   @db.Text
-  is_employee    Boolean?  @default(false)
-  current_status String?   @db.VarChar(100)
+  detection_Id            String?       @db.VarChar(100)
+  detection_date          DateTime?     @db.Timestamp(0)
+  detection_time          DateTime?     @db.Time(0)
+  description             String?       @db.Text
+  is_employee             Boolean?      @default(false)
+  current_status          String?       @db.VarChar(100)
 
-  createdAt DateTime? @db.Timestamp(0)
-  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  createdAt               DateTime?     @db.Timestamp(0)
+  updatedAt               DateTime      @default(now()) @db.Timestamp(0)
 
-  parks        parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_intrusion_detection_ibfk_1")
-  park_cameras park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_intrusion_detection_ibfk_2")
+  parks                   parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_intrusion_detection_ibfk_1")
+  park_cameras            park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_intrusion_detection_ibfk_2")
 
   intranet_posting_history intranet_posting_history[]
 
@@ -367,13 +322,13 @@ model parks_irrigation_job_history {
 }
 
 model parks_landscaping {
-  Id        Int     @id @default(autoincrement())
-  park_Id   Int?
-  case_Id   String? @db.VarChar(255)
-  location  String? @db.VarChar(255)
-  snap_shot String? @db.VarChar(255)
-  type      String? @db.VarChar(100)
-  status    String? @db.VarChar(50)
+  Id          Int       @id @default(autoincrement())
+  park_Id     Int?
+  case_Id     String?   @db.VarChar(255)
+  location    String?   @db.VarChar(255)
+  snap_shot   String?   @db.VarChar(255)
+  type        String?   @db.VarChar(100)
+  status      String?   @db.VarChar(50)
 
   detection_Id   String?   @db.VarChar(100)
   detection_date DateTime? @db.Timestamp(0)
@@ -383,13 +338,13 @@ model parks_landscaping {
   camera_Id      Int?
   after_image    String?   @db.VarChar(255)
 
-  createdAt DateTime? @db.Timestamp(0)
-  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  createdAt   DateTime? @db.Timestamp(0)
+  updatedAt   DateTime  @default(now()) @db.Timestamp(0)
 
-  parks        parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_landscaping_ibfk_1")
+  parks       parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_landscaping_ibfk_1")
   park_cameras park_cameras? @relation("parks_landscaping_to_park_cameras", fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_landscaping_ibfk_2")
 
-  ticket_details ticket_details_table[]
+  ticket_details  ticket_details_table[]
 
   @@index([park_Id], map: "park_Id")
   @@index([camera_Id], map: "camera_Id")
@@ -406,21 +361,21 @@ model parks_litter_detection {
   snap_shot       String?   @db.VarChar(255)
   status          String?   @db.VarChar(50)
 
-  detection_Id   String?   @db.VarChar(100)
-  detection_date DateTime? @db.Timestamp(0)
-  detection_time DateTime? @db.Time(0)
-  description    String?   @db.Text
-  current_status String?   @db.VarChar(100)
-  camera_Id      Int?
-  after_image    String?   @db.VarChar(255)
+  detection_Id    String?   @db.VarChar(100)
+  detection_date  DateTime? @db.Timestamp(0)
+  detection_time  DateTime? @db.Time(0)
+  description     String?   @db.Text
+  current_status  String?   @db.VarChar(100)
+  camera_Id       Int?
+  after_image     String?   @db.VarChar(255)
 
-  createdAt DateTime? @db.Timestamp(0)
-  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  createdAt       DateTime? @db.Timestamp(0)
+  updatedAt       DateTime  @default(now()) @db.Timestamp(0)
 
-  parks        parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_litter_detection_ibfk_1")
-  park_cameras park_cameras? @relation("parks_litter_detection_to_park_cameras", fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_litter_detection_ibfk_2")
+  parks           parks?         @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_litter_detection_ibfk_1")
+  park_cameras    park_cameras?  @relation("parks_litter_detection_to_park_cameras", fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_litter_detection_ibfk_2")
 
-  ticket_details ticket_details_table[]
+  ticket_details  ticket_details_table[]
 
   @@index([park_Id], map: "park_Id")
   @@index([camera_Id], map: "camera_Id")
@@ -428,26 +383,26 @@ model parks_litter_detection {
 }
 
 model ticket_details_table {
-  id Int @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
 
-  status   String?   @db.VarChar(50) // initiated/assigned/completed/verified/failed_verification
-  date     DateTime? @db.Date
-  time     DateTime? @db.Time(0)
-  comments String?   @db.Text
-  image    String?   @db.VarChar(255)
-  abc1     String?   @db.VarChar(100)
-  abc2     String?   @db.VarChar(100)
-  abc3     String?   @db.VarChar(100)
-  abc4     String?   @db.VarChar(100)
+  status        String?   @db.VarChar(50)  // initiated/assigned/completed/verified/failed_verification
+  date          DateTime? @db.Date
+  time          DateTime? @db.Time(0)
+  comments      String?   @db.Text
+  image         String?   @db.VarChar(255)
+  abc1          String?   @db.VarChar(100)
+  abc2          String?   @db.VarChar(100)
+  abc3          String?   @db.VarChar(100)
+  abc4          String?   @db.VarChar(100)
 
-  litterDetectionId Int?
-  landscapingId     Int?
+  litterDetectionId     Int?
+  landscapingId         Int?
 
-  parks_litter_detection parks_litter_detection? @relation(fields: [litterDetectionId], references: [Id], onDelete: Cascade)
-  parks_landscaping      parks_landscaping?      @relation(fields: [landscapingId], references: [Id], onDelete: Cascade)
+  parks_litter_detection   parks_litter_detection?   @relation(fields: [litterDetectionId], references: [Id], onDelete: Cascade)
+  parks_landscaping        parks_landscaping?        @relation(fields: [landscapingId], references: [Id], onDelete: Cascade)
 
-  createdAt DateTime? @db.Timestamp(0)
-  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  createdAt     DateTime? @db.Timestamp(0)
+  updatedAt     DateTime  @default(now()) @db.Timestamp(0)
 
   @@index([litterDetectionId], map: "litterDetectionId_idx")
   @@index([landscapingId], map: "landscapingId_idx")
@@ -455,34 +410,34 @@ model ticket_details_table {
 }
 
 model parks_sentiment_analysis {
-  Id        Int     @id @default(autoincrement())
-  park_Id   Int?
-  person_Id String? @db.VarChar(255)
+  Id                                                                  Int                                    @id @default(autoincrement())
+  park_Id                                                             Int?
+  person_Id                                                           String?                                @db.VarChar(255)
 
-  detection_Id   String? @db.VarChar(100)
-  person_name    String? @db.VarChar(255)
-  person_image   String? @db.VarChar(255)
-  gender         String? @db.VarChar(50)
-  check_in_image String? @db.VarChar(255)
+  detection_Id                                                        String?                                @db.VarChar(100)
+  person_name                                                         String?                                @db.VarChar(255)
+  person_image                                                        String?                                @db.VarChar(255)
+  gender                                                              String?                                @db.VarChar(50)
+  check_in_image                                                      String?                                @db.VarChar(255)
 
-  sentiment_of       parks_sentiment_analysis_sentiment_of?
-  check_in_date      DateTime?                              @db.Date
-  check_in_time      DateTime?                              @db.Time(0)
-  check_in_sentiment String?                                @db.VarChar(50)
-  entry_camera_Id    Int?
-  check_out_date     DateTime?                              @db.Date
-  check_out_time     DateTime?                              @db.Time(0)
-  check_out_capture  String?                                @db.VarChar(255)
+  sentiment_of                                                        parks_sentiment_analysis_sentiment_of?
+  check_in_date                                                       DateTime?                              @db.Date
+  check_in_time                                                       DateTime?                              @db.Time(0)
+  check_in_sentiment                                                  String?                                @db.VarChar(50)
+  entry_camera_Id                                                     Int?
+  check_out_date                                                      DateTime?                              @db.Date
+  check_out_time                                                      DateTime?                              @db.Time(0)
+  check_out_capture                                                   String?                                @db.VarChar(255)
 
-  check_out_sentiment String? @db.VarChar(50)
+  check_out_sentiment                                                 String?                                @db.VarChar(50)
 
-  exit_camera_Id Int?
-  createdAt      DateTime? @db.Timestamp(0)
-  updatedAt      DateTime  @default(now()) @db.Timestamp(0)
+  exit_camera_Id                                                      Int?
+  createdAt                                                           DateTime?                              @db.Timestamp(0)
+  updatedAt                                                           DateTime                               @default(now()) @db.Timestamp(0)
 
-  parks                                                               parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_sentiment_analysis_ibfk_1")
-  park_cameras_parks_sentiment_analysis_entry_camera_IdTopark_cameras park_cameras? @relation("parks_sentiment_analysis_entry_camera_IdTopark_cameras", fields: [entry_camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_sentiment_analysis_ibfk_2")
-  park_cameras_parks_sentiment_analysis_exit_camera_IdTopark_cameras  park_cameras? @relation("parks_sentiment_analysis_exit_camera_IdTopark_cameras", fields: [exit_camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_sentiment_analysis_ibfk_3")
+  parks                                                               parks?                                 @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_sentiment_analysis_ibfk_1")
+  park_cameras_parks_sentiment_analysis_entry_camera_IdTopark_cameras park_cameras?                          @relation("parks_sentiment_analysis_entry_camera_IdTopark_cameras", fields: [entry_camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_sentiment_analysis_ibfk_2")
+  park_cameras_parks_sentiment_analysis_exit_camera_IdTopark_cameras  park_cameras?                          @relation("parks_sentiment_analysis_exit_camera_IdTopark_cameras", fields: [exit_camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_sentiment_analysis_ibfk_3")
 
   @@index([entry_camera_Id], map: "entry_camera_Id")
   @@index([exit_camera_Id], map: "exit_camera_Id")
@@ -491,28 +446,28 @@ model parks_sentiment_analysis {
 }
 
 model parks_smoking_detection {
-  Id                      Int       @id @default(autoincrement())
+  Id                      Int           @id @default(autoincrement())
   park_Id                 Int?
-  location                String?   @db.VarChar(255)
+  location                String?       @db.VarChar(255)
   camera_Id               Int?
-  occurrence_date         DateTime? @db.Date
-  occurrence_time         DateTime? @db.Time(0)
-  snap_shot               String?   @db.VarChar(255)
-  posted_to_intranet_date DateTime? @db.Date
-  posted_to_intranet_time DateTime? @db.Time(0)
+  occurrence_date         DateTime?     @db.Date
+  occurrence_time         DateTime?     @db.Time(0)
+  snap_shot               String?       @db.VarChar(255)
+  posted_to_intranet_date DateTime?     @db.Date
+  posted_to_intranet_time DateTime?     @db.Time(0)
 
-  detection_Id   String?   @db.VarChar(100)
-  detection_date DateTime? @db.Timestamp(0)
-  detection_time DateTime? @db.Time(0)
-  description    String?   @db.Text
-  is_employee    Boolean?  @default(false)
-  current_status String?   @db.VarChar(100)
+  detection_Id            String?       @db.VarChar(100)
+  detection_date          DateTime?     @db.Timestamp(0)
+  detection_time          DateTime?     @db.Time(0)
+  description             String?       @db.Text
+  is_employee             Boolean?      @default(false)
+  current_status          String?       @db.VarChar(100)
 
-  createdAt DateTime? @db.Timestamp(0)
-  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  createdAt               DateTime?     @db.Timestamp(0)
+  updatedAt               DateTime      @default(now()) @db.Timestamp(0)
 
-  parks        parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_smoking_detection_ibfk_1")
-  park_cameras park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_smoking_detection_ibfk_2")
+  parks                   parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_smoking_detection_ibfk_1")
+  park_cameras            park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_smoking_detection_ibfk_2")
 
   intranet_posting_history intranet_posting_history[]
 
@@ -522,21 +477,21 @@ model parks_smoking_detection {
 }
 
 model intranet_posting_history {
-  id                   Int  @id @default(autoincrement())
-  smokingDetectionId   Int?
-  intrusionDetectionId Int?
+  id                     Int       @id @default(autoincrement())
+  smokingDetectionId     Int?
+  intrusionDetectionId   Int?
 
-  title       String?   @db.VarChar(255)
-  intranet_id String?   @db.VarChar(100)
-  comments    String?   @db.Text
-  date        DateTime? @db.Date
-  time        DateTime? @db.Time(0)
-  abc1        String?   @db.VarChar(100)
-  abc2        String?   @db.VarChar(100)
-  abc3        String?   @db.VarChar(100)
+  title                  String?   @db.VarChar(255)
+  intranet_id            String?   @db.VarChar(100)
+  comments               String?   @db.Text
+  date                   DateTime? @db.Date
+  time                   DateTime? @db.Time(0)
+  abc1                   String?   @db.VarChar(100)
+  abc2                   String?   @db.VarChar(100)
+  abc3                   String?   @db.VarChar(100)
 
-  smokingDetection   parks_smoking_detection?   @relation(fields: [smokingDetectionId], references: [Id], onDelete: Cascade)
-  intrusionDetection parks_intrusion_detection? @relation(fields: [intrusionDetectionId], references: [Id], onDelete: Cascade)
+  smokingDetection       parks_smoking_detection?  @relation(fields: [smokingDetectionId], references: [Id], onDelete: Cascade)
+  intrusionDetection     parks_intrusion_detection? @relation(fields: [intrusionDetectionId], references: [Id], onDelete: Cascade)
 
   @@index([smokingDetectionId], map: "smokingDetectionId_idx")
   @@index([intrusionDetectionId], map: "intrusionDetectionId_idx")
@@ -544,33 +499,33 @@ model intranet_posting_history {
 }
 
 model users {
-  Id                        Int                         @id @default(autoincrement())
-  emp_Id                    String?                     @db.VarChar(255)
-  gender                    String?                     @db.VarChar(50)
-  emp__eng_name             String?                     @db.VarChar(255)
-  emp__arabic_name          String?                     @db.VarChar(255)
-  country_code              String?                     @db.VarChar(10)
-  phone                     String?                     @db.VarChar(20)
-  email                     String?                     @db.VarChar(255)
-  dep_eng_name              String?                     @db.VarChar(255)
-  dep_arabic_name           String?                     @db.VarChar(255)
-  desig_eng_name            String?                     @db.VarChar(255)
-  desig_arabic_name         String?                     @db.VarChar(255)
-  unit_eng_name             String?                     @db.VarChar(255)
-  unit_arabic_name          String?                     @db.VarChar(255)
-  committe_eng_name         String?                     @db.VarChar(255)
-  committe_arabic_name      String?                     @db.VarChar(255)
-  ai_engine_access          Boolean?                    @default(false)
-  last_login                DateTime?                   @db.Timestamp(0)
-  createdAt                 DateTime?                   @db.Timestamp(0)
-  updatedAt                 DateTime                    @default(now()) @db.Timestamp(0)
-  role_Id                   Int?
-  live_stream_favourites    live_stream_favourites[]
-  parks_attendance          parks_attendance[]          @relation("parks_attendance_to_user")
-  offices_attendance        offices_attendance[]        @relation("offices_attendance_to_user")
+  Id                     Int                      @id @default(autoincrement())
+  emp_Id                 String?                  @db.VarChar(255)
+  gender                 String?                  @db.VarChar(50)
+  emp__eng_name          String?                  @db.VarChar(255)
+  emp__arabic_name       String?                  @db.VarChar(255)
+  country_code           String?                  @db.VarChar(10)
+  phone                  String?                  @db.VarChar(20)
+  email                  String?                  @db.VarChar(255)
+  dep_eng_name           String?                  @db.VarChar(255)
+  dep_arabic_name        String?                  @db.VarChar(255)
+  desig_eng_name         String?                  @db.VarChar(255)
+  desig_arabic_name      String?                  @db.VarChar(255)
+  unit_eng_name          String?                  @db.VarChar(255)
+  unit_arabic_name       String?                  @db.VarChar(255)
+  committe_eng_name      String?                  @db.VarChar(255)
+  committe_arabic_name   String?                  @db.VarChar(255)
+  ai_engine_access       Boolean?                 @default(false)
+  last_login             DateTime?                @db.Timestamp(0)
+  createdAt              DateTime?                @db.Timestamp(0)
+  updatedAt              DateTime                 @default(now()) @db.Timestamp(0)
+  role_Id                Int?
+  live_stream_favourites live_stream_favourites[]
+  parks_attendance       parks_attendance[]       @relation("parks_attendance_to_user")
+  offices_attendance     offices_attendance[]     @relation("offices_attendance_to_user")
   offices_footfall_analysis offices_footfall_analysis[]
 
-  users_roles users_roles? @relation(fields: [role_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "users_ibfk_1")
+  users_roles            users_roles?             @relation(fields: [role_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "users_ibfk_1")
 
   @@index([role_Id], map: "role_Id")
   @@map("users")
@@ -651,27 +606,27 @@ model parks_footfall_analysis {
   detection_Id         String
   person_Id            Int
   gender               String?
-  is_child             Boolean  @default(false)
-  time                 DateTime @default(now())
+  is_child             Boolean   @default(false)
+  time                 DateTime  @default(now())
   detected_camera_Id   String
   detected_camera_name String?
   abc1                 String?
   abc2                 String?
   abc3                 String?
 
-  park parks @relation(fields: [park_Id], references: [Id])
+  park                 parks      @relation(fields: [park_Id], references: [Id])
 
   @@map("parks_footfall_analysis")
 }
 
 model offices_footfall_analysis {
-  id                   Int      @id @default(autoincrement())
+  id                   Int       @id @default(autoincrement())
   office_Id            Int
   detection_Id         String
   person_Id            Int
   gender               String?
-  is_child             Boolean  @default(false)
-  time                 DateTime @default(now())
+  is_child             Boolean   @default(false)
+  time                 DateTime  @default(now())
   detected_camera_Id   String
   detected_camera_name String?
   abc1                 String?
