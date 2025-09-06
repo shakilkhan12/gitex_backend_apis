@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "rimraf dist && node esbuild.config.js",
+    "build": "rimraf dist && node esbuild.config.js && npm run prisma-gen",
+    "heroku-postbuild": "npm run build",
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts",
     "prisma-migrate": "prisma migrate dev  --schema ./src/prisma/schema.prisma",
     "prisma-gen": "prisma generate --schema ./src/prisma/schema.prisma",

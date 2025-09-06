@@ -6555,6 +6555,8 @@ export namespace Prisma {
     longitude: Decimal | null
     createdAt: Date | null
     updatedAt: Date | null
+    location: string | null
+    status: string | null
   }
 
   export type OfficesMaxAggregateOutputType = {
@@ -6567,6 +6569,8 @@ export namespace Prisma {
     longitude: Decimal | null
     createdAt: Date | null
     updatedAt: Date | null
+    location: string | null
+    status: string | null
   }
 
   export type OfficesCountAggregateOutputType = {
@@ -6579,6 +6583,8 @@ export namespace Prisma {
     longitude: number
     createdAt: number
     updatedAt: number
+    location: number
+    status: number
     _all: number
   }
 
@@ -6605,6 +6611,8 @@ export namespace Prisma {
     longitude?: true
     createdAt?: true
     updatedAt?: true
+    location?: true
+    status?: true
   }
 
   export type OfficesMaxAggregateInputType = {
@@ -6617,6 +6625,8 @@ export namespace Prisma {
     longitude?: true
     createdAt?: true
     updatedAt?: true
+    location?: true
+    status?: true
   }
 
   export type OfficesCountAggregateInputType = {
@@ -6629,6 +6639,8 @@ export namespace Prisma {
     longitude?: true
     createdAt?: true
     updatedAt?: true
+    location?: true
+    status?: true
     _all?: true
   }
 
@@ -6728,6 +6740,8 @@ export namespace Prisma {
     longitude: Decimal | null
     createdAt: Date | null
     updatedAt: Date
+    location: string | null
+    status: string | null
     _count: OfficesCountAggregateOutputType | null
     _avg: OfficesAvgAggregateOutputType | null
     _sum: OfficesSumAggregateOutputType | null
@@ -6759,6 +6773,8 @@ export namespace Prisma {
     longitude?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    location?: boolean
+    status?: boolean
     office_streams?: boolean | offices$office_streamsArgs<ExtArgs>
     offices_attendance?: boolean | offices$offices_attendanceArgs<ExtArgs>
     offices_cameras?: boolean | offices$offices_camerasArgs<ExtArgs>
@@ -6779,9 +6795,11 @@ export namespace Prisma {
     longitude?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    location?: boolean
+    status?: boolean
   }
 
-  export type officesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "office_Id" | "office_english_name" | "office_arabic_name" | "image" | "latitude" | "longitude" | "createdAt" | "updatedAt", ExtArgs["result"]["offices"]>
+  export type officesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "office_Id" | "office_english_name" | "office_arabic_name" | "image" | "latitude" | "longitude" | "createdAt" | "updatedAt" | "location" | "status", ExtArgs["result"]["offices"]>
   export type officesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     office_streams?: boolean | offices$office_streamsArgs<ExtArgs>
     offices_attendance?: boolean | offices$offices_attendanceArgs<ExtArgs>
@@ -6810,6 +6828,8 @@ export namespace Prisma {
       longitude: Prisma.Decimal | null
       createdAt: Date | null
       updatedAt: Date
+      location: string | null
+      status: string | null
     }, ExtArgs["result"]["offices"]>
     composites: {}
   }
@@ -7193,6 +7213,8 @@ export namespace Prisma {
     readonly longitude: FieldRef<"offices", 'Decimal'>
     readonly createdAt: FieldRef<"offices", 'DateTime'>
     readonly updatedAt: FieldRef<"offices", 'DateTime'>
+    readonly location: FieldRef<"offices", 'String'>
+    readonly status: FieldRef<"offices", 'String'>
   }
     
 
@@ -14544,6 +14566,8 @@ export namespace Prisma {
     longitude: Decimal | null
     createdAt: Date | null
     updatedAt: Date | null
+    status: string | null
+    location: string | null
   }
 
   export type ParksMaxAggregateOutputType = {
@@ -14556,6 +14580,8 @@ export namespace Prisma {
     longitude: Decimal | null
     createdAt: Date | null
     updatedAt: Date | null
+    status: string | null
+    location: string | null
   }
 
   export type ParksCountAggregateOutputType = {
@@ -14568,6 +14594,8 @@ export namespace Prisma {
     longitude: number
     createdAt: number
     updatedAt: number
+    status: number
+    location: number
     _all: number
   }
 
@@ -14594,6 +14622,8 @@ export namespace Prisma {
     longitude?: true
     createdAt?: true
     updatedAt?: true
+    status?: true
+    location?: true
   }
 
   export type ParksMaxAggregateInputType = {
@@ -14606,6 +14636,8 @@ export namespace Prisma {
     longitude?: true
     createdAt?: true
     updatedAt?: true
+    status?: true
+    location?: true
   }
 
   export type ParksCountAggregateInputType = {
@@ -14618,6 +14650,8 @@ export namespace Prisma {
     longitude?: true
     createdAt?: true
     updatedAt?: true
+    status?: true
+    location?: true
     _all?: true
   }
 
@@ -14717,6 +14751,8 @@ export namespace Prisma {
     longitude: Decimal | null
     createdAt: Date | null
     updatedAt: Date
+    status: string | null
+    location: string | null
     _count: ParksCountAggregateOutputType | null
     _avg: ParksAvgAggregateOutputType | null
     _sum: ParksSumAggregateOutputType | null
@@ -14748,6 +14784,8 @@ export namespace Prisma {
     longitude?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    status?: boolean
+    location?: boolean
     park_cameras?: boolean | parks$park_camerasArgs<ExtArgs>
     park_streams?: boolean | parks$park_streamsArgs<ExtArgs>
     park_zones?: boolean | parks$park_zonesArgs<ExtArgs>
@@ -14775,9 +14813,11 @@ export namespace Prisma {
     longitude?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    status?: boolean
+    location?: boolean
   }
 
-  export type parksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "park_english_name" | "park_arabic_name" | "image" | "latitude" | "longitude" | "createdAt" | "updatedAt", ExtArgs["result"]["parks"]>
+  export type parksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "park_english_name" | "park_arabic_name" | "image" | "latitude" | "longitude" | "createdAt" | "updatedAt" | "status" | "location", ExtArgs["result"]["parks"]>
   export type parksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     park_cameras?: boolean | parks$park_camerasArgs<ExtArgs>
     park_streams?: boolean | parks$park_streamsArgs<ExtArgs>
@@ -14820,6 +14860,8 @@ export namespace Prisma {
       longitude: Prisma.Decimal | null
       createdAt: Date | null
       updatedAt: Date
+      status: string | null
+      location: string | null
     }, ExtArgs["result"]["parks"]>
     composites: {}
   }
@@ -15210,6 +15252,8 @@ export namespace Prisma {
     readonly longitude: FieldRef<"parks", 'Decimal'>
     readonly createdAt: FieldRef<"parks", 'DateTime'>
     readonly updatedAt: FieldRef<"parks", 'DateTime'>
+    readonly status: FieldRef<"parks", 'String'>
+    readonly location: FieldRef<"parks", 'String'>
   }
     
 
@@ -33079,7 +33123,9 @@ export namespace Prisma {
     latitude: 'latitude',
     longitude: 'longitude',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    location: 'location',
+    status: 'status'
   };
 
   export type OfficesScalarFieldEnum = (typeof OfficesScalarFieldEnum)[keyof typeof OfficesScalarFieldEnum]
@@ -33203,7 +33249,9 @@ export namespace Prisma {
     latitude: 'latitude',
     longitude: 'longitude',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    status: 'status',
+    location: 'location'
   };
 
   export type ParksScalarFieldEnum = (typeof ParksScalarFieldEnum)[keyof typeof ParksScalarFieldEnum]
@@ -33578,7 +33626,9 @@ export namespace Prisma {
     office_Id: 'office_Id',
     office_english_name: 'office_english_name',
     office_arabic_name: 'office_arabic_name',
-    image: 'image'
+    image: 'image',
+    location: 'location',
+    status: 'status'
   };
 
   export type officesOrderByRelevanceFieldEnum = (typeof officesOrderByRelevanceFieldEnum)[keyof typeof officesOrderByRelevanceFieldEnum]
@@ -33647,7 +33697,9 @@ export namespace Prisma {
     park_Id: 'park_Id',
     park_english_name: 'park_english_name',
     park_arabic_name: 'park_arabic_name',
-    image: 'image'
+    image: 'image',
+    status: 'status',
+    location: 'location'
   };
 
   export type parksOrderByRelevanceFieldEnum = (typeof parksOrderByRelevanceFieldEnum)[keyof typeof parksOrderByRelevanceFieldEnum]
@@ -34076,6 +34128,8 @@ export namespace Prisma {
     longitude?: DecimalNullableFilter<"offices"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeNullableFilter<"offices"> | Date | string | null
     updatedAt?: DateTimeFilter<"offices"> | Date | string
+    location?: StringNullableFilter<"offices"> | string | null
+    status?: StringNullableFilter<"offices"> | string | null
     office_streams?: Office_streamsListRelationFilter
     offices_attendance?: Offices_attendanceListRelationFilter
     offices_cameras?: Offices_camerasListRelationFilter
@@ -34093,6 +34147,8 @@ export namespace Prisma {
     longitude?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
+    location?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
     office_streams?: office_streamsOrderByRelationAggregateInput
     offices_attendance?: offices_attendanceOrderByRelationAggregateInput
     offices_cameras?: offices_camerasOrderByRelationAggregateInput
@@ -34114,6 +34170,8 @@ export namespace Prisma {
     longitude?: DecimalNullableFilter<"offices"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeNullableFilter<"offices"> | Date | string | null
     updatedAt?: DateTimeFilter<"offices"> | Date | string
+    location?: StringNullableFilter<"offices"> | string | null
+    status?: StringNullableFilter<"offices"> | string | null
     office_streams?: Office_streamsListRelationFilter
     offices_attendance?: Offices_attendanceListRelationFilter
     offices_cameras?: Offices_camerasListRelationFilter
@@ -34131,6 +34189,8 @@ export namespace Prisma {
     longitude?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
+    location?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
     _count?: officesCountOrderByAggregateInput
     _avg?: officesAvgOrderByAggregateInput
     _max?: officesMaxOrderByAggregateInput
@@ -34151,6 +34211,8 @@ export namespace Prisma {
     longitude?: DecimalNullableWithAggregatesFilter<"offices"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"offices"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"offices"> | Date | string
+    location?: StringNullableWithAggregatesFilter<"offices"> | string | null
+    status?: StringNullableWithAggregatesFilter<"offices"> | string | null
   }
 
   export type offices_attendanceWhereInput = {
@@ -34773,6 +34835,8 @@ export namespace Prisma {
     longitude?: DecimalNullableFilter<"parks"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeNullableFilter<"parks"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks"> | Date | string
+    status?: StringNullableFilter<"parks"> | string | null
+    location?: StringNullableFilter<"parks"> | string | null
     park_cameras?: Park_camerasListRelationFilter
     park_streams?: Park_streamsListRelationFilter
     park_zones?: Park_zonesListRelationFilter
@@ -34797,6 +34861,8 @@ export namespace Prisma {
     longitude?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
+    status?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
     park_cameras?: park_camerasOrderByRelationAggregateInput
     park_streams?: park_streamsOrderByRelationAggregateInput
     park_zones?: park_zonesOrderByRelationAggregateInput
@@ -34825,6 +34891,8 @@ export namespace Prisma {
     longitude?: DecimalNullableFilter<"parks"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeNullableFilter<"parks"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks"> | Date | string
+    status?: StringNullableFilter<"parks"> | string | null
+    location?: StringNullableFilter<"parks"> | string | null
     park_cameras?: Park_camerasListRelationFilter
     park_streams?: Park_streamsListRelationFilter
     park_zones?: Park_zonesListRelationFilter
@@ -34849,6 +34917,8 @@ export namespace Prisma {
     longitude?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
+    status?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
     _count?: parksCountOrderByAggregateInput
     _avg?: parksAvgOrderByAggregateInput
     _max?: parksMaxOrderByAggregateInput
@@ -34869,6 +34939,8 @@ export namespace Prisma {
     longitude?: DecimalNullableWithAggregatesFilter<"parks"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"parks"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"parks"> | Date | string
+    status?: StringNullableWithAggregatesFilter<"parks"> | string | null
+    location?: StringNullableWithAggregatesFilter<"parks"> | string | null
   }
 
   export type parks_attendanceWhereInput = {
@@ -36808,6 +36880,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
@@ -36825,6 +36899,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
@@ -36841,6 +36917,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
@@ -36858,6 +36936,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput
@@ -36875,6 +36955,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
   }
 
   export type officesUpdateManyMutationInput = {
@@ -36886,6 +36968,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type officesUncheckedUpdateManyInput = {
@@ -36898,6 +36982,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type offices_attendanceCreateInput = {
@@ -37567,6 +37653,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -37591,6 +37679,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -37614,6 +37704,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -37638,6 +37730,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -37662,6 +37756,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
   }
 
   export type parksUpdateManyMutationInput = {
@@ -37673,6 +37769,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type parksUncheckedUpdateManyInput = {
@@ -37685,6 +37783,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type parks_attendanceCreateInput = {
@@ -40023,6 +40123,8 @@ export namespace Prisma {
     longitude?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    location?: SortOrder
+    status?: SortOrder
   }
 
   export type officesAvgOrderByAggregateInput = {
@@ -40041,6 +40143,8 @@ export namespace Prisma {
     longitude?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    location?: SortOrder
+    status?: SortOrder
   }
 
   export type officesMinOrderByAggregateInput = {
@@ -40053,6 +40157,8 @@ export namespace Prisma {
     longitude?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    location?: SortOrder
+    status?: SortOrder
   }
 
   export type officesSumOrderByAggregateInput = {
@@ -40626,6 +40732,8 @@ export namespace Prisma {
     longitude?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    status?: SortOrder
+    location?: SortOrder
   }
 
   export type parksAvgOrderByAggregateInput = {
@@ -40644,6 +40752,8 @@ export namespace Prisma {
     longitude?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    status?: SortOrder
+    location?: SortOrder
   }
 
   export type parksMinOrderByAggregateInput = {
@@ -40656,6 +40766,8 @@ export namespace Prisma {
     longitude?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    status?: SortOrder
+    location?: SortOrder
   }
 
   export type parksSumOrderByAggregateInput = {
@@ -44852,6 +44964,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
     offices_sentiment_analysis?: offices_sentiment_analysisCreateNestedManyWithoutOfficesInput
@@ -44868,6 +44982,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedCreateNestedManyWithoutOfficesInput
@@ -44899,6 +45015,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUpdateManyWithoutOfficesNestedInput
@@ -44915,6 +45033,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedUpdateManyWithoutOfficesNestedInput
@@ -45291,6 +45411,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
     offices_sentiment_analysis?: offices_sentiment_analysisCreateNestedManyWithoutOfficesInput
@@ -45307,6 +45429,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedCreateNestedManyWithoutOfficesInput
@@ -45396,6 +45520,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUpdateManyWithoutOfficesNestedInput
@@ -45412,6 +45538,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedUpdateManyWithoutOfficesNestedInput
@@ -45516,6 +45644,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_sentiment_analysis?: offices_sentiment_analysisCreateNestedManyWithoutOfficesInput
@@ -45532,6 +45662,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedCreateNestedManyWithoutOfficesInput
@@ -45697,6 +45829,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUpdateManyWithoutOfficesNestedInput
@@ -45713,6 +45847,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedUpdateManyWithoutOfficesNestedInput
@@ -45760,6 +45896,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
@@ -45776,6 +45914,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
@@ -45887,6 +46027,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
@@ -45903,6 +46045,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput
@@ -46035,6 +46179,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
     parks_attendance?: parks_attendanceCreateNestedManyWithoutParkInput
@@ -46058,6 +46204,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
     parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutParkInput
@@ -46453,6 +46601,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
     parks_attendance?: parks_attendanceUpdateManyWithoutParkNestedInput
@@ -46476,6 +46626,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
     parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutParkNestedInput
@@ -46747,6 +46899,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
     parks_attendance?: parks_attendanceCreateNestedManyWithoutParkInput
@@ -46770,6 +46924,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
     parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutParkInput
@@ -46808,6 +46964,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
     parks_attendance?: parks_attendanceUpdateManyWithoutParkNestedInput
@@ -46831,6 +46989,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
     parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutParkNestedInput
@@ -46853,6 +47013,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     parks_attendance?: parks_attendanceCreateNestedManyWithoutParkInput
@@ -46876,6 +47038,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutParkInput
@@ -46945,6 +47109,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     parks_attendance?: parks_attendanceUpdateManyWithoutParkNestedInput
@@ -46968,6 +47134,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutParkNestedInput
@@ -47801,6 +47969,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -47824,6 +47994,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -47920,6 +48092,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -47943,6 +48117,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -48029,6 +48205,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -48052,6 +48230,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -48140,6 +48320,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -48163,6 +48345,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -48241,6 +48425,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -48264,6 +48450,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -48387,6 +48575,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -48410,6 +48600,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -48521,6 +48713,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -48544,6 +48738,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -48616,6 +48812,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -48639,6 +48837,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -48701,6 +48901,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -48724,6 +48926,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -48853,6 +49057,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -48876,6 +49082,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -48990,6 +49198,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -49013,6 +49223,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -49142,6 +49354,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -49165,6 +49379,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -49443,6 +49659,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -49466,6 +49684,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -49604,6 +49824,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -49627,6 +49849,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -49761,6 +49985,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -49784,6 +50010,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -49907,6 +50135,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -49930,6 +50160,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -50778,6 +51010,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasCreateNestedManyWithoutParksInput
     park_streams?: park_streamsCreateNestedManyWithoutParksInput
     park_zones?: park_zonesCreateNestedManyWithoutParksInput
@@ -50801,6 +51035,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    status?: string | null
+    location?: string | null
     park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
     park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
     park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
@@ -50839,6 +51075,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUpdateManyWithoutParksNestedInput
@@ -50862,6 +51100,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
     park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
     park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
@@ -50884,6 +51124,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
@@ -50900,6 +51142,8 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
@@ -50989,6 +51233,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
@@ -51005,6 +51251,8 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput

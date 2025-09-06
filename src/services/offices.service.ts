@@ -1,4 +1,5 @@
-import {  STATUS, OfficeType, OfficeCamera, OfficeSettingInputTypes } from "@/typescript";
+import {  OfficeType, OfficeCamera, OfficeSettingInputTypes } from "@/typescript/interfaces/all_types";
+import { STATUS } from "@/typescript"
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
@@ -90,7 +91,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
 }
 
    protected static updateOfficeBasicInfoService = async (basicInfo: OfficeType) => {
-      const {office_Id, office_arabic_name, office_english_name, longitude, latitude, Id, location} = basicInfo
+      const {office_Id, office_arabic_name, office_english_name, longitude, latitude, Id, location, status} = basicInfo
       const parkExist = await db.offices.findFirst({
                where: { Id: Id },
            });
@@ -104,7 +105,8 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
         office_english_name,
         latitude,
         longitude,
-        location
+        location,
+        status
       },
     });
     return result;

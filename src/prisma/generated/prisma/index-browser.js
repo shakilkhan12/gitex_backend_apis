@@ -154,7 +154,9 @@ exports.Prisma.OfficesScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  location: 'location',
+  status: 'status'
 };
 
 exports.Prisma.Offices_attendanceScalarFieldEnum = {
@@ -257,7 +259,9 @@ exports.Prisma.ParksScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  status: 'status',
+  location: 'location'
 };
 
 exports.Prisma.Parks_attendanceScalarFieldEnum = {
@@ -572,7 +576,9 @@ exports.Prisma.officesOrderByRelevanceFieldEnum = {
   office_Id: 'office_Id',
   office_english_name: 'office_english_name',
   office_arabic_name: 'office_arabic_name',
-  image: 'image'
+  image: 'image',
+  location: 'location',
+  status: 'status'
 };
 
 exports.Prisma.offices_camerasOrderByRelevanceFieldEnum = {
@@ -623,7 +629,9 @@ exports.Prisma.parksOrderByRelevanceFieldEnum = {
   park_Id: 'park_Id',
   park_english_name: 'park_english_name',
   park_arabic_name: 'park_arabic_name',
-  image: 'image'
+  image: 'image',
+  status: 'status',
+  location: 'location'
 };
 
 exports.Prisma.parks_behaviour_alertsOrderByRelevanceFieldEnum = {

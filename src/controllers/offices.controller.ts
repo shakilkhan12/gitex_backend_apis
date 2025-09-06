@@ -1,5 +1,6 @@
-import { OfficesService, ParkService } from "@/services";
-import { OfficeCamera, OfficeSettingInputTypes, OfficeType, ParkCamera, ParkType, ParkZone, SettingInputTypes, STATUS } from "@/typescript";
+import { OfficesService } from "@/services";
+import { OfficeCamera, OfficeSettingInputTypes, OfficeType, ParkCamera, ParkType, ParkZone, SettingInputTypes } from "@/typescript/interfaces/all_types";
+import { STATUS } from "@/typescript";
 import { HttpException } from "@/utils/HttpException.utils";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
