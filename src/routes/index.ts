@@ -11,6 +11,7 @@ import parkAttendanceRouter from "./park-attendance.routes";
 import userRouter from "./user.routes";
 import accessSecretRouter from "./access-secret.routes";
 import usersRoles from "./users_roles.route";
+import officesRouter from "./offices.routes";
 
 const mainRouter = Router();
 
@@ -26,5 +27,6 @@ mainRouter.use('/park-attendance', parkAttendanceRouter)
 mainRouter.use('/users', userRouter)
 mainRouter.use('/access-secret', accessSecretRouter)
 mainRouter.use('/users-roles', usersRoles)
+mainRouter.use('/offices', officesRouter)
 
 export default mainRouter;
