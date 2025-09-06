@@ -18,7 +18,16 @@ dotenv.config({ path: '.env.test' });
 const app = express();
 const PORT = 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://gitexai-1dd08c5fca2d.herokuapp.com',
+    'http://localhost:3000'             
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
