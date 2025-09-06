@@ -113,3 +113,56 @@ export const createOrUpdateTermsPrivacyValidator = [
     return true;
   })
 ];
+
+export const validateOfficeCamera = [
+  // 🔹 Required numeric fields
+  body('office_Id')
+    .optional({ nullable: true })
+    .isInt().withMessage('office_Id must be an integer').toInt(),
+
+  // 🔹 Camera ID (string, max 255)
+  body('camera_Id')
+    .notEmpty().withMessage('camera_Id is required')
+    .isString().withMessage('camera_Id must be a string')
+    .isLength({ max: 255 }).withMessage('camera_Id must not exceed 255 characters'),
+
+  // 🔹 English name
+  body('camera_english_name')
+    .notEmpty().withMessage('English name is required')
+    .isString().withMessage('English name must be a string')
+    .matches(/^[A-Za-z0-9\s\-]+$/).withMessage('Only English letters, numbers and dashes allowed'),
+
+  // 🔹 Arabic name
+  body('camera_arabic_name')
+    .notEmpty().withMessage('Arabic name is required')
+    .isString().withMessage('Arabic name must be a string')
+    .matches(/^[\u0600-\u06FF\s]+$/).withMessage('Only Arabic letters allowed'),
+
+  // 🔹 Latitude / Longitude (decimal)
+  body('latitude')
+    .optional({ nullable: true })
+    .isDecimal().withMessage('Latitude must be a decimal number'),
+
+  body('longitude')
+    .optional({ nullable: true })
+    .isDecimal().withMessage('Longitude must be a decimal number'),
+
+  // 🔹 IP Address
+  body('ip_address')
+    .notEmpty().withMessage('IP address is required')
+    .isIP().withMessage('Invalid IP address format'),
+
+  // 🔹 Status
+  body('status')
+    .optional({ nullable: true })
+    .isString().withMessage('Status must be a string')
+    .isIn(['active', 'inactive']).withMessage('Status must be active or inactive'),
+
+  // 🔹 Location
+  body('location')
+    .optional({ nullable: true })
+    .isString().withMessage('Location must be a string')
+    .isLength({ max: 255 }).withMessage('Location must not exceed 255 characters'),
+
+]
+

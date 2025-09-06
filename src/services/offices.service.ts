@@ -149,6 +149,25 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             throw new HttpException(STATUS.NOT_FOUND, `No functionalities found with the given ID`);
            }
    }
+      // update office image 
+   protected static updateOfficeImageService = async (data: {Id: number, image: string}) => {
+      const {Id, image} = data;
+      const result = await db.offices.update({
+         where: {Id},
+         data: {
+            image
+         }
+      })
+      return result;
+   }
+      // update office camera service 
+      protected static updateOfficeCameraService = async (cameraData: OfficeCamera, id: number) => {
+      const result = await db.offices_cameras.update({
+         where: {Id: Number(id)},
+         data: {...cameraData, latitude: Number(cameraData?.latitude), longitude: Number(cameraData?.longitude), updatedAt: new Date()}
+      })
+      return result;
+   }
    
 }
 export default OfficesService;

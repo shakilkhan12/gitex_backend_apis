@@ -152,6 +152,41 @@ class OfficesController extends OfficesService {
       next(error)
     }
   }
+    public static updateOfficeImage = async (req: Request <{}, {}, {Id: number, image: string}>, res: Response, next: NextFunction) => {
+    try {
+      const {Id, image} = req.body;
+     if (!Id || !image) {
+  return res
+    .status(STATUS.BAD_REQUEST)
+    .json({ message: 'id & image url are required' })
+}
+     const imageUpdated = await OfficesService.updateOfficeImageService({Id, image});
+     return res.status(STATUS.SUCCESS).json(imageUpdated)
+
+    } catch (error: any) {
+      next(error)
+    }
+  }
+    // update office camera
+  public static updateOfficeCamera = async (req: Request <{id: number}, {}, OfficeCamera>, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    try {
+      const id = req.params.id;
+      if(errors.isEmpty()) {
+        const parkCamera = await OfficesService.updateOfficeCameraService(req.body, id);
+        return res.status(STATUS.CREATED).json(parkCamera)
+      } else {
+        return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
+      }
+    } catch (error: any) {
+      console.log(error)
+      if(error.code === 'P2002') {
+          return res.status(STATUS.BAD_REQUEST).json({message: "This camera already exists in the selected office."})
+      } else {
+            next(error)
+      }
+    }
+  }
 
 }
 export default OfficesController;
