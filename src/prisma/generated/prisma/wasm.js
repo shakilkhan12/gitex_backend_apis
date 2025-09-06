@@ -154,8 +154,7 @@ exports.Prisma.OfficesScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  location: 'location'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.Offices_attendanceScalarFieldEnum = {
@@ -181,11 +180,7 @@ exports.Prisma.Offices_camerasScalarFieldEnum = {
   last_active_time: 'last_active_time',
   status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  location: 'location',
-  attendance: 'attendance',
-  footfall: 'footfall',
-  sentiment: 'sentiment'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.Offices_sentiment_analysisScalarFieldEnum = {
@@ -224,21 +219,7 @@ exports.Prisma.Park_camerasScalarFieldEnum = {
   last_active_time: 'last_active_time',
   status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  location: 'location',
-  attendance: 'attendance',
-  footfall: 'footfall',
-  sentiment: 'sentiment',
-  behaviour: 'behaviour',
-  irrigation: 'irrigation',
-  landscaping: 'landscaping',
-  litter_detection: 'litter_detection',
-  smoking_detection: 'smoking_detection',
-  intrusion: 'intrusion',
-  stream_url: 'stream_url',
-  stream_api_key: 'stream_api_key',
-  stream_path: 'stream_path',
-  password: 'password'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.Park_streamsScalarFieldEnum = {
@@ -248,22 +229,6 @@ exports.Prisma.Park_streamsScalarFieldEnum = {
   stream_api_key: 'stream_api_key',
   stream_path: 'stream_path',
   password: 'password',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.TermsPrivacyScalarFieldEnum = {
-  id: 'id',
-  terms: 'terms',
-  privacyPolicy: 'privacyPolicy',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.FAQScalarFieldEnum = {
-  id: 'id',
-  question: 'question',
-  answer: 'answer',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -280,8 +245,7 @@ exports.Prisma.Park_zonesScalarFieldEnum = {
   web_api: 'web_api',
   status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  location: 'location'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ParksScalarFieldEnum = {
@@ -293,8 +257,7 @@ exports.Prisma.ParksScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  location: 'location'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.Parks_attendanceScalarFieldEnum = {
@@ -609,8 +572,7 @@ exports.Prisma.officesOrderByRelevanceFieldEnum = {
   office_Id: 'office_Id',
   office_english_name: 'office_english_name',
   office_arabic_name: 'office_arabic_name',
-  image: 'image',
-  location: 'location'
+  image: 'image'
 };
 
 exports.Prisma.offices_camerasOrderByRelevanceFieldEnum = {
@@ -618,8 +580,7 @@ exports.Prisma.offices_camerasOrderByRelevanceFieldEnum = {
   camera_english_name: 'camera_english_name',
   camera_arabic_name: 'camera_arabic_name',
   ip_address: 'ip_address',
-  status: 'status',
-  location: 'location'
+  status: 'status'
 };
 
 exports.Prisma.offices_sentiment_analysisOrderByRelevanceFieldEnum = {
@@ -639,12 +600,7 @@ exports.Prisma.park_camerasOrderByRelevanceFieldEnum = {
   camera_english_name: 'camera_english_name',
   camera_arabic_name: 'camera_arabic_name',
   ip_address: 'ip_address',
-  status: 'status',
-  location: 'location',
-  stream_url: 'stream_url',
-  stream_api_key: 'stream_api_key',
-  stream_path: 'stream_path',
-  password: 'password'
+  status: 'status'
 };
 
 exports.Prisma.park_streamsOrderByRelevanceFieldEnum = {
@@ -654,32 +610,20 @@ exports.Prisma.park_streamsOrderByRelevanceFieldEnum = {
   password: 'password'
 };
 
-exports.Prisma.TermsPrivacyOrderByRelevanceFieldEnum = {
-  terms: 'terms',
-  privacyPolicy: 'privacyPolicy'
-};
-
-exports.Prisma.FAQOrderByRelevanceFieldEnum = {
-  question: 'question',
-  answer: 'answer'
-};
-
 exports.Prisma.park_zonesOrderByRelevanceFieldEnum = {
   zone_Id: 'zone_Id',
   zone_english_name: 'zone_english_name',
   zone_arabic_name: 'zone_arabic_name',
   device_ip: 'device_ip',
   web_api: 'web_api',
-  status: 'status',
-  location: 'location'
+  status: 'status'
 };
 
 exports.Prisma.parksOrderByRelevanceFieldEnum = {
   park_Id: 'park_Id',
   park_english_name: 'park_english_name',
   park_arabic_name: 'park_arabic_name',
-  image: 'image',
-  location: 'location'
+  image: 'image'
 };
 
 exports.Prisma.parks_behaviour_alertsOrderByRelevanceFieldEnum = {
@@ -827,8 +771,6 @@ exports.Prisma.ModelName = {
   offices_sentiment_analysis: 'offices_sentiment_analysis',
   park_cameras: 'park_cameras',
   park_streams: 'park_streams',
-  TermsPrivacy: 'TermsPrivacy',
-  FAQ: 'FAQ',
   park_zones: 'park_zones',
   parks: 'parks',
   parks_attendance: 'parks_attendance',

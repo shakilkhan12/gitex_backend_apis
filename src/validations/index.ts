@@ -1,5 +1,3 @@
-export * from "@/validations/validations";
-
 export { parkValidations } from "./park.validations";
 export { smokingDetectionValidations } from "./smoking-detection.validations";
 export { litterDetectionValidations } from "./litter-detection.validations";
