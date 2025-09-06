@@ -1,6 +1,6 @@
 const { PrismaClient } = require('../src/prisma/generated/prisma');
 const prisma = new PrismaClient();
-
+require('dotenv').config()
 async function main() {
   console.log('🌱 Starting database seeding...');
 
@@ -35,7 +35,7 @@ async function main() {
   console.log('📝 Seeding access_secret...');
   await prisma.access_secret.create({
     data: {
-      value: 'sk_live_51234567890abcdef'
+      value: 'TWpBeU5TOHdPUzh3Tmc9PQ'
     }
   });
 

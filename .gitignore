@@ -2,6 +2,9 @@
 /node_modules
 /info.txt
 dist
+/.env.test
+/.env
+.env
 .vercel
 *.local
 .DS_Store
