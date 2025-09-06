@@ -75,10 +75,26 @@ class ParkService {
       });
       return result;
    }
+      protected static updateParkZoneService = async (zoneData: ParkZone, id: number) => {
+      const result = await db.park_zones.update({
+         where: { Id: id },
+         data: {...zoneData,  latitude: Number(zoneData.latitude),
+         longitude: Number(zoneData.longitude) , updatedAt: new Date() }
+      });
+      return result;
+   }
    // add park camera service
    protected static addParCameraService = async (cameraData: ParkCamera) => {
       const result = await db.park_cameras.create({
          data: {...cameraData, createdAt: new Date()}
+      })
+      return result;
+   }
+   // update park camera service 
+      protected static updateParkCameraService = async (cameraData: ParkCamera, id: number) => {
+      const result = await db.park_cameras.update({
+         where: {Id: Number(id)},
+         data: {...cameraData, latitude: Number(cameraData?.latitude), longitude: Number(cameraData?.longitude), updatedAt: new Date()}
       })
       return result;
    }
@@ -175,6 +191,18 @@ class ParkService {
          throw new HttpException(STATUS.NOT_FOUND, `No Settings found with the given ID`);
       }
    }
+   // update park image 
+   protected static updateParkImageService = async (data: {Id: number, image: string}) => {
+      const {Id, image} = data;
+      const result = await db.parks.update({
+         where: {Id},
+         data: {
+            image
+         }
+      })
+      return result;
+   }
+
    
 }
 export default ParkService;

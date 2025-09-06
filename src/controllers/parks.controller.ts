@@ -75,12 +75,52 @@ class ParksController extends ParksService {
       } 
     }
   }
+  // update zone
+  public static updateParkZone = async (req: Request <{id: string}, {}, ParkZone>, res: Response, next: NextFunction) => {
+    const errors = validationResult(req)
+    const id = Number(req.params.id);
+    try {
+      if(errors.isEmpty()) {
+        const updatedZone = await ParksService.updateParkZoneService(req.body, id);
+        return res.status(STATUS.CREATED).json(updatedZone)
+      } else {
+        return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
+      }
+    } catch (error:any) {
+      if(error.code === 'P2002') {
+       return res.status(STATUS.BAD_REQUEST).json({message: "This zone already exists in the selected park."})
+      } else {
+       next(error) 
+      } 
+    }
+  }
+
   // add park camera
   public static addParkCamera = async (req: Request <{}, {}, ParkCamera>, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     try {
       if(errors.isEmpty()) {
         const parkCamera = await ParksService.addParCameraService(req.body);
+        return res.status(STATUS.CREATED).json(parkCamera)
+      } else {
+        return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
+      }
+    } catch (error: any) {
+      console.log(error)
+      if(error.code === 'P2002') {
+          return res.status(STATUS.BAD_REQUEST).json({message: "This camera already exists in the selected park."})
+      } else {
+            next(error)
+      }
+    }
+  }
+  // update park camera
+  public static updateParkCamera = async (req: Request <{id: number}, {}, ParkCamera>, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    try {
+      const id = req.params.id;
+      if(errors.isEmpty()) {
+        const parkCamera = await ParksService.updateParkCameraService(req.body, id);
         return res.status(STATUS.CREATED).json(parkCamera)
       } else {
         return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
@@ -186,5 +226,21 @@ const { camera_Id, ...fields } = req.body;
       next(error)
     }
   }
+  public static updateParkImage = async (req: Request <{}, {}, {Id: number, image: string}>, res: Response, next: NextFunction) => {
+    try {
+      const {Id, image} = req.body;
+     if (!Id || !image) {
+  return res
+    .status(STATUS.BAD_REQUEST)
+    .json({ message: 'id & image url are required' })
+}
+     const imageUpdated = await ParksService.updateParkImageService({Id, image});
+     return res.status(STATUS.SUCCESS).json(imageUpdated)
+
+    } catch (error: any) {
+      next(error)
+    }
+  }
+
 }
 export default ParksController;
