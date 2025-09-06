@@ -8,10 +8,14 @@ parkRouter.post('/add-park-camera', parkCameraValidations, ParksController.addPa
 parkRouter.put("/update-park-camera-function",ParksController.changeParkCameraFunctionality)
 parkRouter.put('/update-park-camera-settings', ParksController.updateSetting)
 parkRouter.put('/update-park-basic-info', parkBasicInfoValidations, ParksController.updateParkBasicInfo);
+parkRouter.put('/update-park-zone/:id', zoneValidations, ParksController.updateParkZone);
+parkRouter.put('/update-park-camera/:id', parkCameraValidations, ParksController.updateParkCamera);
+parkRouter.put('/update-park-image', ParksController.updateParkImage)
 parkRouter.get('/get', ParksController.getParks)
 parkRouter.get('/get/:parkId', ParksController.getPark)
 parkRouter.get('/get-park-zones/:parkId', ParksController.getParkZones)
 parkRouter.get('/get-park-cameras/:parkId', ParksController.getParkCameras)
 parkRouter.get('/get-park-setting/:parkId', ParksController.getParkSetting)
 parkRouter.get('/get-park-cameras-functionalities/:parkId', ParksController.getParkCamerasFunctionalities)
+
 export default parkRouter;
