@@ -174,5 +174,3 @@ export const updateZoneStatusValidation = [
     .isIn(["active", "inactive"])
     .withMessage("Status must be either 'active' or 'inactive'"),
 ];
-
-

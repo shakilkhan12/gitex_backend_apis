@@ -5,5 +5,3 @@ dotenv.config({ path: ".env" });
 export default defineConfig({
   schema: "src/prisma/schema.prisma",
 });
-
-

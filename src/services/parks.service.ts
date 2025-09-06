@@ -1,4 +1,5 @@
-import { ParkType, STATUS, ParkZone, ParkCamera, SettingInputTypes } from "@/typescript";
+import { ParkType, ParkZone, ParkCamera, SettingInputTypes } from "@/typescript/interfaces/all_types";
+import { STATUS, } from "@/typescript"
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 

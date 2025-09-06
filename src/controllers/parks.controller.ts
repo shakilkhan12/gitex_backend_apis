@@ -1,6 +1,7 @@
 import { Decimal } from "@/prisma/generated/prisma/runtime/library";
 import { ParksService } from "@/services";
-import { ParkCamera, ParkType, ParkZone, SettingInputTypes, STATUS } from "@/typescript";
+import { ParkCamera, ParkType, ParkZone, SettingInputTypes } from "@/typescript/interfaces/all_types";
+import { STATUS } from "@/typescript";
 import { HttpException } from "@/utils/HttpException.utils";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";

@@ -1,4 +1,5 @@
-import {  STATUS, OfficeType, OfficeCamera, OfficeSettingInputTypes } from "@/typescript";
+import {  OfficeType, OfficeCamera, OfficeSettingInputTypes } from "@/typescript/interfaces/all_types";
+import { STATUS } from "@/typescript"
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
