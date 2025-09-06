@@ -13,20 +13,33 @@ import { errorHandler } from "@/middlewares";
 import AccessSecretService from "@/services/access_secret.service";
 
 // Load environment variables
-dotenv.config({ path: '.env.test' });
+dotenv.config({ path: '.env' });
 
 const app = express();
 const PORT = 5000;
 
+
+const allowedOrigins = [
+  'https://gitexai-1dd08c5fca2d.herokuapp.com',
+  'http://localhost:3000'
+];
+
 app.use(cors({
-  origin: [
-    'https://gitexai-1dd08c5fca2d.herokuapp.com',
-    'http://localhost:3000'             
-  ],
-  methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 app.use(express.json());
 app.use(bodyParser.json());
