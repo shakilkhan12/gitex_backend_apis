@@ -241,6 +241,24 @@ const { camera_Id, ...fields } = req.body;
       next(error)
     }
   }
+  public static updateParkStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const errors = validationResult(req);
+      if(errors.isEmpty()) {
+       const { Id, status } = req.body;
+      const result = await ParksService.updateZoneStatusService(Number(Id), status);
+      res.status(STATUS.SUCCESS).json({
+        message: "Zone status updated successfully",
+        data: result,
+      });
+      } else {
+   return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
+      }
+
+    } catch (error) {
+      next(error)
+    }
+  }
 
 }
 export default ParksController;

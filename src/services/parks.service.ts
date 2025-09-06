@@ -202,6 +202,25 @@ class ParkService {
       })
       return result;
    }
+   // update park zone status 
+    protected static updateZoneStatusService = async (id: number, status: "active" | "inactive") => {
+    if (!id) {
+      throw new HttpException(STATUS.BAD_REQUEST, "Zone Id is required");
+    }
+
+    const existingZone = await db.park_zones.findUnique({ where: { Id: Number(id) } });
+
+    if (!existingZone) {
+      throw new HttpException(STATUS.NOT_FOUND, "Zone not found");
+    }
+
+    const result = await db.park_zones.update({
+      where: { Id: Number(id) },
+      data: { status },
+    });
+
+    return result;
+  };
 
    
 }

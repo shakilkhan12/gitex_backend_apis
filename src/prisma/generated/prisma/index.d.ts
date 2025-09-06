@@ -6722,6 +6722,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     location: string | null
+    status: string | null
   }
 
   export type OfficesMaxAggregateOutputType = {
@@ -6735,6 +6736,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     location: string | null
+    status: string | null
   }
 
   export type OfficesCountAggregateOutputType = {
@@ -6748,6 +6750,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     location: number
+    status: number
     _all: number
   }
 
@@ -6775,6 +6778,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     location?: true
+    status?: true
   }
 
   export type OfficesMaxAggregateInputType = {
@@ -6788,6 +6792,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     location?: true
+    status?: true
   }
 
   export type OfficesCountAggregateInputType = {
@@ -6801,6 +6806,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     location?: true
+    status?: true
     _all?: true
   }
 
@@ -6901,6 +6907,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date
     location: string | null
+    status: string | null
     _count: OfficesCountAggregateOutputType | null
     _avg: OfficesAvgAggregateOutputType | null
     _sum: OfficesSumAggregateOutputType | null
@@ -6933,6 +6940,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     location?: boolean
+    status?: boolean
     office_streams?: boolean | offices$office_streamsArgs<ExtArgs>
     offices_attendance?: boolean | offices$offices_attendanceArgs<ExtArgs>
     offices_cameras?: boolean | offices$offices_camerasArgs<ExtArgs>
@@ -6954,9 +6962,10 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     location?: boolean
+    status?: boolean
   }
 
-  export type officesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "office_Id" | "office_english_name" | "office_arabic_name" | "image" | "latitude" | "longitude" | "createdAt" | "updatedAt" | "location", ExtArgs["result"]["offices"]>
+  export type officesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "office_Id" | "office_english_name" | "office_arabic_name" | "image" | "latitude" | "longitude" | "createdAt" | "updatedAt" | "location" | "status", ExtArgs["result"]["offices"]>
   export type officesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     office_streams?: boolean | offices$office_streamsArgs<ExtArgs>
     offices_attendance?: boolean | offices$offices_attendanceArgs<ExtArgs>
@@ -6986,6 +6995,7 @@ export namespace Prisma {
       createdAt: Date | null
       updatedAt: Date
       location: string | null
+      status: string | null
     }, ExtArgs["result"]["offices"]>
     composites: {}
   }
@@ -7370,6 +7380,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"offices", 'DateTime'>
     readonly updatedAt: FieldRef<"offices", 'DateTime'>
     readonly location: FieldRef<"offices", 'String'>
+    readonly status: FieldRef<"offices", 'String'>
   }
     
 
@@ -35309,7 +35320,8 @@ export namespace Prisma {
     longitude: 'longitude',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    location: 'location'
+    location: 'location',
+    status: 'status'
   };
 
   export type OfficesScalarFieldEnum = (typeof OfficesScalarFieldEnum)[keyof typeof OfficesScalarFieldEnum]
@@ -35851,7 +35863,8 @@ export namespace Prisma {
     office_english_name: 'office_english_name',
     office_arabic_name: 'office_arabic_name',
     image: 'image',
-    location: 'location'
+    location: 'location',
+    status: 'status'
   };
 
   export type officesOrderByRelevanceFieldEnum = (typeof officesOrderByRelevanceFieldEnum)[keyof typeof officesOrderByRelevanceFieldEnum]
@@ -36374,6 +36387,7 @@ export namespace Prisma {
     createdAt?: DateTimeNullableFilter<"offices"> | Date | string | null
     updatedAt?: DateTimeFilter<"offices"> | Date | string
     location?: StringNullableFilter<"offices"> | string | null
+    status?: StringNullableFilter<"offices"> | string | null
     office_streams?: Office_streamsListRelationFilter
     offices_attendance?: Offices_attendanceListRelationFilter
     offices_cameras?: Offices_camerasListRelationFilter
@@ -36392,6 +36406,7 @@ export namespace Prisma {
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     location?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
     office_streams?: office_streamsOrderByRelationAggregateInput
     offices_attendance?: offices_attendanceOrderByRelationAggregateInput
     offices_cameras?: offices_camerasOrderByRelationAggregateInput
@@ -36414,6 +36429,7 @@ export namespace Prisma {
     createdAt?: DateTimeNullableFilter<"offices"> | Date | string | null
     updatedAt?: DateTimeFilter<"offices"> | Date | string
     location?: StringNullableFilter<"offices"> | string | null
+    status?: StringNullableFilter<"offices"> | string | null
     office_streams?: Office_streamsListRelationFilter
     offices_attendance?: Offices_attendanceListRelationFilter
     offices_cameras?: Offices_camerasListRelationFilter
@@ -36432,6 +36448,7 @@ export namespace Prisma {
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     location?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
     _count?: officesCountOrderByAggregateInput
     _avg?: officesAvgOrderByAggregateInput
     _max?: officesMaxOrderByAggregateInput
@@ -36453,6 +36470,7 @@ export namespace Prisma {
     createdAt?: DateTimeNullableWithAggregatesFilter<"offices"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"offices"> | Date | string
     location?: StringNullableWithAggregatesFilter<"offices"> | string | null
+    status?: StringNullableWithAggregatesFilter<"offices"> | string | null
   }
 
   export type offices_attendanceWhereInput = {
@@ -39324,6 +39342,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
@@ -39342,6 +39361,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
@@ -39359,6 +39379,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
@@ -39377,6 +39398,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput
@@ -39395,6 +39417,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
   }
 
   export type officesUpdateManyMutationInput = {
@@ -39407,6 +39430,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type officesUncheckedUpdateManyInput = {
@@ -39420,6 +39444,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type offices_attendanceCreateInput = {
@@ -42792,6 +42817,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     location?: SortOrder
+    status?: SortOrder
   }
 
   export type officesAvgOrderByAggregateInput = {
@@ -42811,6 +42837,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     location?: SortOrder
+    status?: SortOrder
   }
 
   export type officesMinOrderByAggregateInput = {
@@ -42824,6 +42851,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     location?: SortOrder
+    status?: SortOrder
   }
 
   export type officesSumOrderByAggregateInput = {
@@ -47847,6 +47875,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
     offices_sentiment_analysis?: offices_sentiment_analysisCreateNestedManyWithoutOfficesInput
@@ -47864,6 +47893,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedCreateNestedManyWithoutOfficesInput
@@ -47896,6 +47926,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUpdateManyWithoutOfficesNestedInput
@@ -47913,6 +47944,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedUpdateManyWithoutOfficesNestedInput
@@ -48302,6 +48334,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
     offices_sentiment_analysis?: offices_sentiment_analysisCreateNestedManyWithoutOfficesInput
@@ -48319,6 +48352,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedCreateNestedManyWithoutOfficesInput
@@ -48409,6 +48443,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUpdateManyWithoutOfficesNestedInput
@@ -48426,6 +48461,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedUpdateManyWithoutOfficesNestedInput
@@ -48531,6 +48567,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_sentiment_analysis?: offices_sentiment_analysisCreateNestedManyWithoutOfficesInput
@@ -48548,6 +48585,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedCreateNestedManyWithoutOfficesInput
@@ -48714,6 +48752,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUpdateManyWithoutOfficesNestedInput
@@ -48731,6 +48770,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_sentiment_analysis?: offices_sentiment_analysisUncheckedUpdateManyWithoutOfficesNestedInput
@@ -48779,6 +48819,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
@@ -48796,6 +48837,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
@@ -48924,6 +48966,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
@@ -48941,6 +48984,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput
@@ -54428,6 +54472,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasCreateNestedManyWithoutOfficesInput
@@ -54445,6 +54490,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     location?: string | null
+    status?: string | null
     office_streams?: office_streamsUncheckedCreateNestedManyWithoutOfficesInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutOfficeInput
     offices_cameras?: offices_camerasUncheckedCreateNestedManyWithoutOfficesInput
@@ -54535,6 +54581,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUpdateManyWithoutOfficesNestedInput
@@ -54552,6 +54599,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     office_streams?: office_streamsUncheckedUpdateManyWithoutOfficesNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutOfficeNestedInput
     offices_cameras?: offices_camerasUncheckedUpdateManyWithoutOfficesNestedInput

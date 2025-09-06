@@ -61,6 +61,7 @@ model offices {
   offices_sentiment_analysis offices_sentiment_analysis[]
   offices_footfall_analysis  offices_footfall_analysis[]
   location                   String?                      @db.VarChar(255)
+  status                     String?                      @db.VarChar(255)
 
   @@map("offices")
 }

@@ -1,5 +1,5 @@
 import { ParksController } from "@/controllers";
-import { parkBasicInfoValidations, parkCameraValidations, parkValidations, zoneValidations } from "@/validations";
+import { parkBasicInfoValidations, parkCameraValidations, parkValidations, updateZoneStatusValidation, zoneValidations } from "@/validations";
 import { Router } from "express";
 const parkRouter  = Router();
 parkRouter.post('/add', parkValidations, ParksController.addPark)
@@ -11,6 +11,7 @@ parkRouter.put('/update-park-basic-info', parkBasicInfoValidations, ParksControl
 parkRouter.put('/update-park-zone/:id', zoneValidations, ParksController.updateParkZone);
 parkRouter.put('/update-park-camera/:id', parkCameraValidations, ParksController.updateParkCamera);
 parkRouter.put('/update-park-image', ParksController.updateParkImage)
+parkRouter.put('/update-park-status', updateZoneStatusValidation, ParksController.updateParkStatus)
 parkRouter.get('/get', ParksController.getParks)
 parkRouter.get('/get/:parkId', ParksController.getPark)
 parkRouter.get('/get-park-zones/:parkId', ParksController.getParkZones)

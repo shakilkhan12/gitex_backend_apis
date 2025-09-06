@@ -155,7 +155,8 @@ exports.Prisma.OfficesScalarFieldEnum = {
   longitude: 'longitude',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  location: 'location'
+  location: 'location',
+  status: 'status'
 };
 
 exports.Prisma.Offices_attendanceScalarFieldEnum = {
@@ -610,7 +611,8 @@ exports.Prisma.officesOrderByRelevanceFieldEnum = {
   office_english_name: 'office_english_name',
   office_arabic_name: 'office_arabic_name',
   image: 'image',
-  location: 'location'
+  location: 'location',
+  status: 'status'
 };
 
 exports.Prisma.offices_camerasOrderByRelevanceFieldEnum = {
