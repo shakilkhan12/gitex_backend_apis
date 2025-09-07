@@ -9,5 +9,4 @@ dist
 *.local
 .DS_Store
 /generated/prisma
-.package-lock.json
-/.package-lock.json
+/package-lock.json

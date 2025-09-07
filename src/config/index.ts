@@ -1,5 +1,5 @@
 import dotenv from "dotenv"
-dotenv.config({ path: ".env.test" });
+dotenv.config({ path: ".env" });
 interface ConfigTypes {
     DB?: string,
     NODE_ENV?:string,

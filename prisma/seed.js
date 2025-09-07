@@ -35,7 +35,7 @@ async function main() {
   console.log('📝 Seeding access_secret...');
   await prisma.access_secret.create({
     data: {
-      value: 'TWpBeU5TOHdPUzh3Tmc9PQ'
+      value: 'TWpBeU5TOHdPUzh3Tnc9PQ'
     }
   });
 
