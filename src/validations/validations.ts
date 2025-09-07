@@ -141,11 +141,11 @@ export const validateOfficeCamera = [
   // 🔹 Latitude / Longitude (decimal)
   body('latitude')
     .optional({ nullable: true })
-    .isDecimal().withMessage('Latitude must be a decimal number'),
+    .isDecimal().withMessage('Latitude must be a decimal number').toFloat(),
 
   body('longitude')
     .optional({ nullable: true })
-    .isDecimal().withMessage('Longitude must be a decimal number'),
+    .isDecimal().withMessage('Longitude must be a decimal number').toFloat(),
 
   // 🔹 IP Address
   body('ip_address')

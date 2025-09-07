@@ -13,3 +13,4 @@ export { default as UsersRolesService } from "@/services/user_roles_service";
 
 export { default as ParksService } from "@/services/parks.service"
 export { default as OfficesService } from "@/services/offices.service"
+export { default as SettingsService } from "@/services/settings.service"

@@ -1,5 +1,6 @@
 import db from "@/prisma/client";
-import { STATUS, TermsPrivacyType } from "@/typescript";
+import { STATUS } from "@/typescript";
+import { TermsPrivacyType } from "@/typescript/interfaces/all_types"
 import { HttpException } from "@/utils/HttpException.utils";
 
 class TermsPrivacyService {

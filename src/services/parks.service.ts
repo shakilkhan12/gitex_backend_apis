@@ -146,7 +146,7 @@ class ParkService {
    }
    // update park basic info service
    protected static updateParkBasicInfoService = async (basicInfo: ParkType) => {
-      const {park_Id, park_arabic_name, park_english_name, latitude, longitude, location} = basicInfo
+      const {park_Id, park_arabic_name, park_english_name, latitude, longitude, location, status} = basicInfo
       const parkExist = await db.parks.findFirst({
                where: { Id: Number(park_Id) },
            });
@@ -160,7 +160,8 @@ class ParkService {
         park_english_name,
         latitude,
         longitude,
-        location
+        location,
+        status
       },
     });
     return result;

@@ -39,9 +39,9 @@ class OfficesService {
    }
    // add park camera service
    protected static addOfficeCameraService = async (cameraData: OfficeCamera) => {
+     console.log('Data -> ', cameraData)
       const result = await db.offices_cameras.create({
-         data: {...cameraData, office_Id: Number(cameraData.office_Id), createdAt: new Date()}
-      })
+         data: {...cameraData,  office_Id: Number(cameraData.office_Id), createdAt: new Date() }})
       return result;
    }
    protected static changeOfficeCameraFunctionalityService = async ({fieldName, fieldValue, camera_Id, }: {fieldName: string, fieldValue: any, camera_Id: string}) => {

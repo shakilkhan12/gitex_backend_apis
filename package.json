@@ -4,13 +4,14 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "build": "rimraf dist && node esbuild.config.js",
-    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts",
-    "prisma-migrate": "prisma migrate dev  --schema ./src/prisma/schema.prisma",
-    "prisma-gen": "prisma generate --schema ./src/prisma/schema.prisma",
-    "prisma-seed": "node -r dotenv/config prisma/seed.js dotenv_config_path=.env",
-    "heroku-postbuild": "npm run build"
+  "start": "npm run prisma-deploy && node dist/index.js",
+  "build": "rimraf dist && node esbuild.config.js && npm run prisma-gen",
+  "heroku-postbuild": "npm run build",
+  "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts",
+  "prisma-migrate": "prisma migrate dev --schema ./src/prisma/schema.prisma",
+  "prisma-gen": "prisma generate --schema ./src/prisma/schema.prisma",
+  "prisma-seed": "node -r dotenv/config prisma/seed.js dotenv_config_path=.env.test",
+  "prisma-deploy": "prisma migrate deploy --schema ./src/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
