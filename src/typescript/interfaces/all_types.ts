@@ -11,6 +11,7 @@ export interface ParkType extends ParkCombine {
   park_arabic_name: string;
   image?: string;
   location?: string;
+  status?: string;
 }
 export interface ParkZone extends ParkCombine {
   park_Id: number;
@@ -62,6 +63,7 @@ export interface OfficeType extends ParkCombine {
   image?:string;
   location?:string;
   status?:string;
+
 }
 export interface OfficeCamera extends ParkCombine {
   office_Id: number;

@@ -57,6 +57,7 @@ class OfficesController extends OfficesService {
         return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
       }
     } catch (error: any) {
+      console.log(error)
       if(error.code === 'P2002') {
           return res.status(STATUS.BAD_REQUEST).json({message: "This camera already exists in the selected office."});
       } else {

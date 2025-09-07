@@ -1,5 +1,6 @@
 import { Router } from "express";
 import parkRouter from "./park.routes";
+import parksRouter from "./parks.routes"
 import smokingDetectionRouter from "./smoking-detection.routes";
 import litterDetectionRouter from "./litter-detection.routes";
 import landscapingRouter from "./landscaping.routes";
@@ -12,6 +13,7 @@ import userRouter from "./user.routes";
 import accessSecretRouter from "./access-secret.routes";
 import usersRoles from "./users_roles.route";
 import officesRouter from "./offices.routes";
+import settingsRouter from "./settings.routes";
 
 const mainRouter = Router();
 
@@ -27,6 +29,9 @@ mainRouter.use('/park-attendance', parkAttendanceRouter)
 mainRouter.use('/users', userRouter)
 mainRouter.use('/access-secret', accessSecretRouter)
 mainRouter.use('/users-roles', usersRoles)
+
+mainRouter.use('/parkss', parksRouter)
 mainRouter.use('/offices', officesRouter)
+mainRouter.use('/settings', settingsRouter)
 
 export default mainRouter;
