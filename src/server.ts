@@ -13,16 +13,18 @@ import { errorHandler } from "@/middlewares";
 import AccessSecretService from "@/services/access_secret.service";
 
 // Load environment variables
-dotenv.config({ path: '.env' });
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: '.env' });
+}
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 
-const allowedOrigins = [
+const allowedOrigins = process.env.NODE_ENV === 'production'?[
   'https://gitexai-1dd08c5fca2d.herokuapp.com',
-  'http://localhost:3000'
-];
+  
+]:['http://localhost:3000']
 
 app.use(cors({
   origin: function(origin, callback){
