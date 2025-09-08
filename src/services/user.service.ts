@@ -17,13 +17,13 @@ class UserService {
             throw new HttpException(STATUS.BAD_REQUEST, "Secret key not configured");
          }
          const secretKey = secretRecord.value;
-         console.log("✅ [UserService] SecretKey retrieved successfully");
+         console.log("✅ [UserService] SecretKey retrieved successfully $secetkey "+secretKey);
    
          // 2️⃣ Prepare payload for third-party API
          const payload = {
             EmpCode,
             Password,
-            SecretKey: `${secretKey}==`,
+            SecretKey: `TWpBeU5TOHdPUzh3T0E9PQ==`,
             Lang: "en"
          };
    
@@ -37,6 +37,7 @@ class UserService {
          );
    
          console.log("📥 [UserService] Third-party API response:", response.data);
+         console.log("📥 [UserService] Third-party API response:", response.headers);
    
          // 4️⃣ Check if login was successful
          if (response.data.status !== 'SUCCESS' || response.data.code !== 200) {
