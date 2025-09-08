@@ -547,6 +547,22 @@ exports.Prisma.Offices_footfall_analysisScalarFieldEnum = {
   abc3: 'abc3'
 };
 
+exports.Prisma.TermsPrivacyScalarFieldEnum = {
+  id: 'id',
+  terms: 'terms',
+  privacyPolicy: 'privacyPolicy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FAQScalarFieldEnum = {
+  id: 'id',
+  question: 'question',
+  answer: 'answer',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -751,6 +767,16 @@ exports.Prisma.offices_footfall_analysisOrderByRelevanceFieldEnum = {
   abc2: 'abc2',
   abc3: 'abc3'
 };
+
+exports.Prisma.TermsPrivacyOrderByRelevanceFieldEnum = {
+  terms: 'terms',
+  privacyPolicy: 'privacyPolicy'
+};
+
+exports.Prisma.FAQOrderByRelevanceFieldEnum = {
+  question: 'question',
+  answer: 'answer'
+};
 exports.offices_sentiment_analysis_sentiment_of = exports.$Enums.offices_sentiment_analysis_sentiment_of = {
   employee: 'employee',
   visitor: 'visitor'
@@ -787,7 +813,9 @@ exports.Prisma.ModelName = {
   users_permissions: 'users_permissions',
   users_roles: 'users_roles',
   parks_footfall_analysis: 'parks_footfall_analysis',
-  offices_footfall_analysis: 'offices_footfall_analysis'
+  offices_footfall_analysis: 'offices_footfall_analysis',
+  TermsPrivacy: 'TermsPrivacy',
+  FAQ: 'FAQ'
 };
 
 /**

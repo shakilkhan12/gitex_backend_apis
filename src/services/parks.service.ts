@@ -1,4 +1,5 @@
-import { ParkType, STATUS, ParkZone, ParkCamera, SettingInputTypes } from "@/typescript";
+import { ParkType, ParkZone, ParkCamera, SettingInputTypes } from "@/typescript";
+import { STATUS, } from "@/typescript"
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
@@ -28,6 +29,7 @@ class ParkService {
    }
    // get park
    protected static getParkService = async (park_Id: number) => {
+      console.log('park_Id -> ', park_Id)
       if(!park_Id) {
          throw new HttpException(STATUS.BAD_REQUEST, `park id is required`)
       }
@@ -145,7 +147,7 @@ class ParkService {
    }
    // update park basic info service
    protected static updateParkBasicInfoService = async (basicInfo: ParkType) => {
-      const {park_Id, park_arabic_name, park_english_name, latitude, longitude, location} = basicInfo
+      const {park_Id, park_arabic_name, park_english_name, latitude, longitude} = basicInfo
       const parkExist = await db.parks.findFirst({
                where: { Id: Number(park_Id) },
            });
@@ -158,8 +160,7 @@ class ParkService {
         park_arabic_name,
         park_english_name,
         latitude,
-        longitude,
-        location
+        longitude
       },
     });
     return result;
@@ -202,6 +203,25 @@ class ParkService {
       })
       return result;
    }
+   // update park zone status 
+    protected static updateZoneStatusService = async (id: number, status: "active" | "inactive") => {
+    if (!id) {
+      throw new HttpException(STATUS.BAD_REQUEST, "Zone Id is required");
+    }
+
+    const existingZone = await db.park_zones.findUnique({ where: { Id: Number(id) } });
+
+    if (!existingZone) {
+      throw new HttpException(STATUS.NOT_FOUND, "Zone not found");
+    }
+
+    const result = await db.park_zones.update({
+      where: { Id: Number(id) },
+      data: { status },
+    });
+
+    return result;
+  };
 
    
 }

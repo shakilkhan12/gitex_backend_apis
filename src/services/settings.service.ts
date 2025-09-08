@@ -1,5 +1,6 @@
 import db from "@/prisma/client";
-import { STATUS, TermsPrivacyType } from "@/typescript";
+import { STATUS } from "@/typescript";
+import { TermsPrivacyType } from "@/typescript"
 import { HttpException } from "@/utils/HttpException.utils";
 
 class TermsPrivacyService {
@@ -108,4 +109,4 @@ static async updateFAQs(
   }
 }
 
-export default TermsPrivacyService 
+export default TermsPrivacyService

@@ -10,3 +10,8 @@ export { default as ParkAttendanceController } from "@/controllers/park-attendan
 export { default as UserController } from "@/controllers/user.controller";
 export { default as AccessSecretController } from "@/controllers/access-secret.controller";
 export { default as UsersRolesController } from "@/controllers/users_roles.controller";
+
+
+export { default as ParksController } from "@/controllers/parks.controller";
+export { default as OfficesController } from "@/controllers/offices.controller"
+export { default as Settings } from "@/controllers/settings.controller"

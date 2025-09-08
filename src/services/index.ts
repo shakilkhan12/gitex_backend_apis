@@ -10,3 +10,7 @@ export { default as ParkAttendanceService } from "@/services/park-attendance.ser
 export { default as UserService } from "@/services/user.service";
 export { default as AccessSecretService } from "@/services/access_secret.service";
 export { default as UsersRolesService } from "@/services/user_roles_service";
+
+export { default as ParksService } from "@/services/parks.service"
+export { default as OfficesService } from "@/services/offices.service"
+export { default as SettingsService } from "@/services/settings.service"

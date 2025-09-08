@@ -1,5 +1,6 @@
-import { OfficesService, ParkService } from "@/services";
-import { OfficeCamera, OfficeSettingInputTypes, OfficeType, ParkCamera, ParkType, ParkZone, SettingInputTypes, STATUS } from "@/typescript";
+import { OfficesService } from "@/services";
+import { OfficeCamera, OfficeSettingInputTypes, OfficeType, ParkCamera, ParkType, ParkZone, SettingInputTypes } from "@/typescript";
+import { STATUS } from "@/typescript";
 import { HttpException } from "@/utils/HttpException.utils";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
@@ -56,6 +57,7 @@ class OfficesController extends OfficesService {
         return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
       }
     } catch (error: any) {
+      console.log(error)
       if(error.code === 'P2002') {
           return res.status(STATUS.BAD_REQUEST).json({message: "This camera already exists in the selected office."});
       } else {

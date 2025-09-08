@@ -99,15 +99,105 @@ export interface ParkSentimentAnalysisType {
 
 export interface OfficeAttendanceType {
   office_Id: number;
-  person_Id: number; // Changed from string to number to match users.Id
+  person_Id: number;
   entry_time?: Date;
   exit_time?: Date;
 }
 
 export interface ParkAttendanceType {
   park_Id: number;
-  person_Id: number; // Changed from string to number to match users.Id
+  person_Id: number;
   entry_time?: Date;
   exit_time?: Date;
 }
 
+
+
+
+export interface SettingTypes {
+  stream_url?: string;
+  stream_api_key?: string;
+  stream_path?: string;
+  password?:string;
+}
+
+interface ParkCombine {
+  Id: number;
+  latitude: string;
+  longitude: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SettingTypes {
+  stream_url?: string;
+  stream_api_key?: string;
+  stream_path?: string;
+  password?:string;
+}
+
+export interface OfficeType extends ParkCombine {
+  office_Id: string;
+  office_english_name?:string;
+  office_arabic_name?:string;
+  image?:string;
+  location?:string;
+  status?:string;
+}
+export interface OfficeCamera extends ParkCombine {
+  office_Id: number;
+  camera_Id: string;
+  camera_english_name?: string;
+  camera_arabic_name?: string;
+  ip_address?: string;
+  last_active_date?: Date,
+  last_active_time?: string;
+  status?:string;
+}
+
+export interface ParkZone extends ParkCombine {
+  park_Id: number;
+  zone_english_name: string;
+  zone_arabic_name: string;
+  zone_Id: string;
+  device_ip: string;
+  web_api: string;
+  status: string;
+  latitude: string;
+  longitude: string;
+}
+
+export interface ParkCamera extends ParkCombine, SettingTypes{
+  park_Id: number;
+  camera_Id: string;
+  camera_english_name: string;
+  camera_arabic_name: string;
+  ip_address: string;
+  last_active_date: Date,
+  last_active_time: string;
+  status: string;
+  attendance?: boolean|undefined;
+  footfall?: boolean | undefined;
+  behaviour?:boolean | undefined;
+  behaviour_alerts?: boolean | undefined;
+  irrigation?:boolean | undefined;
+  landscapping?:boolean | undefined;
+  litter_detection?:boolean | undefined;
+  intrusion?:boolean | undefined;
+  smooking_detection?:boolean | undefined;
+}
+
+export interface SettingInputTypes extends SettingTypes {
+  park_Id: number;
+}
+export interface OfficeSettingInputTypes extends SettingTypes {
+  office_Id: number;
+}
+
+export interface TermsPrivacyType {
+  id?: number; // optional because not required on create
+  terms: string;
+  privacyPolicy: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}

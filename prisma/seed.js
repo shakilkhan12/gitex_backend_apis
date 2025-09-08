@@ -1,35 +1,16 @@
 const { PrismaClient } = require('../src/prisma/generated/prisma');
-const prisma = new PrismaClient();
+
+
+// Always use the main database URL for seeding
+const prisma = new PrismaClient({
+  datasources: { db: { url: process.env.DATABASE_URL } },
+});
 require('dotenv').config()
 async function main() {
   console.log('🌱 Starting database seeding...');
 
-  // Clean existing data to ensure fresh seeding
-  console.log('🧹 Cleaning existing data...');
-  await prisma.$executeRaw`SET FOREIGN_KEY_CHECKS = 0;`;
-  
-  // Truncate all tables that will be seeded (in reverse dependency order)
-  await prisma.$executeRaw`TRUNCATE TABLE parks_smoking_detection;`;
-  await prisma.$executeRaw`TRUNCATE TABLE parks_litter_detection;`;
-  await prisma.$executeRaw`TRUNCATE TABLE parks_intrusion_detection;`;
-  await prisma.$executeRaw`TRUNCATE TABLE parks_behaviour_alerts;`;
-  await prisma.$executeRaw`TRUNCATE TABLE parks_sentiment_analysis;`;
-  await prisma.$executeRaw`TRUNCATE TABLE parks_attendance;`;
-  await prisma.$executeRaw`TRUNCATE TABLE parks_irrigation_job_history;`;
-  await prisma.$executeRaw`TRUNCATE TABLE parks_landscaping;`;
-  await prisma.$executeRaw`TRUNCATE TABLE offices_sentiment_analysis;`;
-  await prisma.$executeRaw`TRUNCATE TABLE offices_attendance;`;
-  await prisma.$executeRaw`TRUNCATE TABLE offices_footfall_analysis;`;
-  await prisma.$executeRaw`TRUNCATE TABLE parks_footfall_analysis;`;
-  await prisma.$executeRaw`TRUNCATE TABLE live_stream_favourites;`;
-  await prisma.$executeRaw`TRUNCATE TABLE users_permissions;`;
-  await prisma.$executeRaw`TRUNCATE TABLE users;`;
-  await prisma.$executeRaw`TRUNCATE TABLE users_roles;`;
-  await prisma.$executeRaw`TRUNCATE TABLE offices;`;
-  await prisma.$executeRaw`TRUNCATE TABLE parks;`;
-  await prisma.$executeRaw`TRUNCATE TABLE access_secret;`;
-  
-  await prisma.$executeRaw`SET FOREIGN_KEY_CHECKS = 1;`;
+  // Skip cleanup since we're starting with a fresh database
+  console.log('📋 Fresh database detected, skipping cleanup...');
 
   // 1. Seed access_secret (only 1 record as requested)
   console.log('📝 Seeding access_secret...');

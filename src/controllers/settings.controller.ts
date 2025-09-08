@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
-import { STATUS, TermsPrivacyType } from "@/typescript";
+import { STATUS } from "@/typescript";
+import { TermsPrivacyType } from "@/typescript"
 import { SettingsService } from "@/services";
 
 class Settings extends SettingsService {

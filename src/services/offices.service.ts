@@ -1,4 +1,5 @@
-import {  STATUS, OfficeType, OfficeCamera, OfficeSettingInputTypes } from "@/typescript";
+import {  OfficeType, OfficeCamera, OfficeSettingInputTypes } from "@/typescript";
+import { STATUS } from "@/typescript"
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
@@ -38,9 +39,9 @@ class OfficesService {
    }
    // add park camera service
    protected static addOfficeCameraService = async (cameraData: OfficeCamera) => {
+     console.log('Data -> ', cameraData)
       const result = await db.offices_cameras.create({
-         data: {...cameraData, office_Id: Number(cameraData.office_Id), createdAt: new Date()}
-      })
+         data: {...cameraData,  office_Id: Number(cameraData.office_Id), createdAt: new Date() }})
       return result;
    }
    protected static changeOfficeCameraFunctionalityService = async ({fieldName, fieldValue, camera_Id, }: {fieldName: string, fieldValue: any, camera_Id: string}) => {
@@ -90,7 +91,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
 }
 
    protected static updateOfficeBasicInfoService = async (basicInfo: OfficeType) => {
-      const {office_Id, office_arabic_name, office_english_name, longitude, latitude, Id, location} = basicInfo
+      const {office_Id, office_arabic_name, office_english_name, longitude, latitude, Id, location, status} = basicInfo
       const parkExist = await db.offices.findFirst({
                where: { Id: Id },
            });
@@ -104,7 +105,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
         office_english_name,
         latitude,
         longitude,
-        location
       },
     });
     return result;

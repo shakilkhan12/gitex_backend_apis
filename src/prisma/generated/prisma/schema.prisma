@@ -6,8 +6,9 @@ generator client {
 /// @seed="node prisma/seed.js"
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("DATABASE_URL_SHADOW")
 }
 
 model access_secret {
@@ -637,6 +638,22 @@ model offices_footfall_analysis {
   person users   @relation(fields: [person_Id], references: [Id])
 
   @@map("offices_footfall_analysis")
+}
+
+model TermsPrivacy {
+  id            Int      @id @default(autoincrement())
+  terms         String?  @db.Text
+  privacyPolicy String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model FAQ {
+  id        Int      @id @default(autoincrement())
+  question  String   @db.Text
+  answer    String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum offices_attendance_attendance_of {
