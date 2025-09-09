@@ -1,13 +1,14 @@
 const { PrismaClient } = require('../src/prisma/generated/prisma');
 
-
-// Always use the main database URL for seeding
+// Use shadow database URL if available, otherwise use main database URL
+const databaseUrl = process.env.DATABASE_URL_SHADOW || process.env.DATABASE_URL;
 const prisma = new PrismaClient({
-  datasources: { db: { url: process.env.DATABASE_URL } },
+  datasources: { db: { url: databaseUrl } },
 });
 require('dotenv').config()
 async function main() {
   console.log('🌱 Starting database seeding...');
+  console.log(`📊 Using database: ${databaseUrl.includes('localhost') ? 'Shadow Database (Local)' : 'Live Database (AWS)'}`);
 
   // Skip cleanup since we're starting with a fresh database
   console.log('📋 Fresh database detected, skipping cleanup...');
@@ -323,7 +324,9 @@ async function main() {
         office_arabic_name: 'مكتب بلدية دبي الرئيسي',
         image: 'https://images.freepik.com/free-photo/modern-office-building-with-glass-facade_181624-31547.jpg',
         latitude: 25.2697,
-        longitude: 55.3095
+        longitude: 55.3095,
+        location: 'Downtown Dubai, Sheikh Zayed Road, Near Dubai Mall',
+        status: 'Active'
       },
       {
         office_Id: 'OFF002',
@@ -331,7 +334,9 @@ async function main() {
         office_arabic_name: 'مكتب فرع ديرة',
         image: 'https://images.freepik.com/free-photo/corporate-building-exterior_181624-42851.jpg',
         latitude: 25.2709,
-        longitude: 55.3095
+        longitude: 55.3095,
+        location: 'Deira, Al Rigga Street, Near Deira City Centre',
+        status: 'Active'
       },
       {
         office_Id: 'OFF003',
@@ -339,7 +344,9 @@ async function main() {
         office_arabic_name: 'مكتب بر دبي',
         image: 'https://images.freepik.com/free-photo/modern-business-building_181624-29841.jpg',
         latitude: 25.2582,
-        longitude: 55.2962
+        longitude: 55.2962,
+        location: 'Bur Dubai, Al Fahidi Historical District',
+        status: 'Active'
       },
       {
         office_Id: 'OFF004',
@@ -347,7 +354,9 @@ async function main() {
         office_arabic_name: 'مكتب الجميرا',
         image: 'https://images.freepik.com/free-photo/office-building-with-modern-architecture_181624-35742.jpg',
         latitude: 25.2285,
-        longitude: 55.2394
+        longitude: 55.2394,
+        location: 'Jumeirah, Beach Road, Near Jumeirah Beach',
+        status: 'Active'
       },
       {
         office_Id: 'OFF005',
@@ -355,7 +364,9 @@ async function main() {
         office_arabic_name: 'مركز خدمات الكرامة',
         image: 'https://images.freepik.com/free-photo/government-building-facade_181624-28541.jpg',
         latitude: 25.2369,
-        longitude: 55.3011
+        longitude: 55.3011,
+        location: 'Al Karama, Al Karama Street, Near Karama Centre',
+        status: 'Active'
       },
       {
         office_Id: 'OFF006',
@@ -363,7 +374,9 @@ async function main() {
         office_arabic_name: 'مكتب الغرهود',
         image: 'https://images.freepik.com/free-photo/contemporary-office-building_181624-39574.jpg',
         latitude: 25.2522,
-        longitude: 55.3448
+        longitude: 55.3448,
+        location: 'Al Garhoud, Airport Road, Near Dubai International Airport',
+        status: 'Active'
       }
     ]
   });
@@ -531,6 +544,7 @@ async function main() {
         entry_camera_Id: parkCameras[i % parkCameras.length].Id,
         check_out_date: Math.random() > 0.5 ? new Date() : null,
         check_out_time: Math.random() > 0.5 ? new Date() : null,
+        check_out_capture: Math.random() > 0.5 ? `https://images.freepik.com/free-photo/person-exiting-park_181624-${35000 + i}.jpg` : null,
         check_out_sentiment: Math.random() > 0.5 ? sentiments[(i + 1) % sentiments.length] : null,
         exit_camera_Id: Math.random() > 0.5 ? parkCameras[i % parkCameras.length].Id : null
       }
@@ -556,6 +570,7 @@ async function main() {
         entry_camera_Id: officeCameras[i % officeCameras.length].Id,
         check_out_date: Math.random() > 0.5 ? new Date() : null,
         check_out_time: Math.random() > 0.5 ? new Date() : null,
+        check_out_capture: Math.random() > 0.5 ? `https://images.freepik.com/free-photo/person-exiting-office_181624-${55000 + i}.jpg` : null,
         check_out_sentiment: Math.random() > 0.5 ? sentiments[(i + 1) % sentiments.length] : null,
         exit_camera_Id: Math.random() > 0.5 ? officeCameras[i % officeCameras.length].Id : null
       }
@@ -817,6 +832,120 @@ async function main() {
     });
   }
 
+  // 27. Seed TermsPrivacy
+  console.log('📋 Seeding TermsPrivacy...');
+  await prisma.TermsPrivacy.create({
+    data: {
+      terms: `TERMS OF SERVICE
+
+1. ACCEPTANCE OF TERMS
+By accessing and using this Dubai Municipality Parks and Offices Management System, you accept and agree to be bound by the terms and provision of this agreement.
+
+2. USE LICENSE
+Permission is granted to temporarily use this system for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.
+
+3. USER ACCOUNT
+When you create an account with us, you must provide information that is accurate, complete, and current at all times.
+
+4. PRIVACY POLICY
+Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect your information.
+
+5. PROHIBITED USES
+You may not use our system for any unlawful purpose or to solicit others to perform unlawful acts.
+
+6. CONTENT
+Our system allows you to post, link, store, share and otherwise make available certain information, text, graphics, videos, or other material.
+
+7. TERMINATION
+We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever.
+
+8. CHANGES
+We reserve the right, at our sole discretion, to modify or replace these Terms at any time.
+
+9. CONTACT INFORMATION
+If you have any questions about these Terms, please contact us at support@dubaimunicipality.ae`,
+      privacyPolicy: `PRIVACY POLICY
+
+1. INFORMATION WE COLLECT
+We collect information you provide directly to us, such as when you create an account, use our services, or contact us for support.
+
+2. HOW WE USE YOUR INFORMATION
+We use the information we collect to provide, maintain, and improve our services, process transactions, and communicate with you.
+
+3. INFORMATION SHARING
+We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.
+
+4. DATA SECURITY
+We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.
+
+5. COOKIES
+We use cookies and similar tracking technologies to track activity on our system and hold certain information.
+
+6. THIRD-PARTY SERVICES
+Our system may contain links to third-party websites or services that are not owned or controlled by Dubai Municipality.
+
+7. CHILDREN'S PRIVACY
+Our services are not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
+
+8. CHANGES TO THIS POLICY
+We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
+
+9. CONTACT US
+If you have any questions about this Privacy Policy, please contact us at privacy@dubaimunicipality.ae`
+    }
+  });
+
+  // 28. Seed FAQ
+  console.log('❓ Seeding FAQ...');
+  const faqs = [
+    {
+      question: "How do I access the parks and offices management system?",
+      answer: "You can access the system through the web portal using your employee credentials. Contact your system administrator if you need access."
+    },
+    {
+      question: "What should I do if I notice suspicious activity in a park?",
+      answer: "Report any suspicious activity immediately through the behavior alerts system or contact security personnel directly."
+    },
+    {
+      question: "How can I view live camera feeds from parks and offices?",
+      answer: "Navigate to the 'Live Streams' section in the dashboard to view real-time camera feeds from various locations."
+    },
+    {
+      question: "What is the purpose of sentiment analysis in the system?",
+      answer: "Sentiment analysis helps us understand visitor and employee satisfaction levels to improve our services and facilities."
+    },
+    {
+      question: "How do I update office or park information?",
+      answer: "Use the respective management sections in the dashboard to update office or park details. Ensure you have the necessary permissions."
+    },
+    {
+      question: "What should I do if a camera is not working?",
+      answer: "Report camera issues through the system's maintenance section or contact the technical support team immediately."
+    },
+    {
+      question: "How can I track attendance at offices and parks?",
+      answer: "The system automatically tracks attendance through camera detection. You can view attendance reports in the respective sections."
+    },
+    {
+      question: "What is the irrigation job history used for?",
+      answer: "Irrigation job history tracks automated watering schedules and maintenance activities for park zones to ensure proper plant care."
+    },
+    {
+      question: "How do I manage user roles and permissions?",
+      answer: "User roles and permissions can be managed by system administrators through the 'User Management' section."
+    },
+    {
+      question: "What should I do if I detect litter in a park?",
+      answer: "Use the litter detection system to report the issue. The system will automatically create a maintenance ticket for cleanup."
+    }
+  ];
+
+  for (const faq of faqs) {
+    await prisma.FAQ.create({
+      data: faq
+    });
+  }
+
   console.log('✅ Database seeding completed successfully!');
   console.log('📊 Summary of seeded data:');
   console.log('- Access Secret: 1 record');
@@ -845,6 +974,8 @@ async function main() {
   console.log('- Offices Footfall Analysis: 6 records');
   console.log('- Ticket Details: 6 records');
   console.log('- Intranet Posting History: 6 records');
+  console.log('- Terms & Privacy: 1 record');
+  console.log('- FAQ: 10 records');
 }
 
 main()

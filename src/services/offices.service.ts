@@ -105,6 +105,8 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
         office_english_name,
         latitude,
         longitude,
+        location,
+        status,
       },
     });
     return result;

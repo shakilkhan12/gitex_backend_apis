@@ -52,6 +52,8 @@ model offices {
   image                      String?                      @db.VarChar(255)
   latitude                   Decimal?                     @db.Decimal(10, 8)
   longitude                  Decimal?                     @db.Decimal(11, 8)
+  location                   String?                      @db.VarChar(255)
+  status                     String?                      @db.VarChar(50)
   createdAt                  DateTime?                    @db.Timestamp(0)
   updatedAt                  DateTime                     @default(now()) @db.Timestamp(0)
   office_streams             office_streams[]
