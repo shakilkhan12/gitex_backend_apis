@@ -464,13 +464,22 @@ model intranet_posting_history {
 
 model users {
   Id                        Int                         @id @default(autoincrement())
+  user_Id                   String?                     @unique @db.VarChar(255)
   emp_Id                    String?                     @db.VarChar(255)
+  emp_code                  String?                     @db.VarChar(255)
+  image                     String?                     @db.VarChar(500)
   gender                    String?                     @db.VarChar(50)
   emp__eng_name             String?                     @db.VarChar(255)
   emp__arabic_name          String?                     @db.VarChar(255)
+  location                  String?                     @db.VarChar(255)
   country_code              String?                     @db.VarChar(10)
   phone                     String?                     @db.VarChar(20)
+  telephone                 String?                     @db.VarChar(20)
   email                     String?                     @db.VarChar(255)
+  office_extension          String?                     @db.VarChar(10)
+  nationality               String?                     @db.VarChar(100)
+  joining_date              DateTime?                   @db.Date
+  date_of_birth             DateTime?                   @db.Date
   dep_eng_name              String?                     @db.VarChar(255)
   dep_arabic_name           String?                     @db.VarChar(255)
   desig_eng_name            String?                     @db.VarChar(255)
@@ -479,6 +488,8 @@ model users {
   unit_arabic_name          String?                     @db.VarChar(255)
   committe_eng_name         String?                     @db.VarChar(255)
   committe_arabic_name      String?                     @db.VarChar(255)
+  is_attendance_user        Boolean?                    @default(false)
+  is_ai_login_user          Boolean?                    @default(false)
   ai_engine_access          Boolean?                    @default(false)
   last_login                DateTime?                   @db.Timestamp(0)
   createdAt                 DateTime?                   @db.Timestamp(0)

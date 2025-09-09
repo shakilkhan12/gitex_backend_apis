@@ -27336,13 +27336,22 @@ export namespace Prisma {
 
   export type UsersMinAggregateOutputType = {
     Id: number | null
+    user_Id: string | null
     emp_Id: string | null
+    emp_code: string | null
+    image: string | null
     gender: string | null
     emp__eng_name: string | null
     emp__arabic_name: string | null
+    location: string | null
     country_code: string | null
     phone: string | null
+    telephone: string | null
     email: string | null
+    office_extension: string | null
+    nationality: string | null
+    joining_date: Date | null
+    date_of_birth: Date | null
     dep_eng_name: string | null
     dep_arabic_name: string | null
     desig_eng_name: string | null
@@ -27351,6 +27360,8 @@ export namespace Prisma {
     unit_arabic_name: string | null
     committe_eng_name: string | null
     committe_arabic_name: string | null
+    is_attendance_user: boolean | null
+    is_ai_login_user: boolean | null
     ai_engine_access: boolean | null
     last_login: Date | null
     createdAt: Date | null
@@ -27360,13 +27371,22 @@ export namespace Prisma {
 
   export type UsersMaxAggregateOutputType = {
     Id: number | null
+    user_Id: string | null
     emp_Id: string | null
+    emp_code: string | null
+    image: string | null
     gender: string | null
     emp__eng_name: string | null
     emp__arabic_name: string | null
+    location: string | null
     country_code: string | null
     phone: string | null
+    telephone: string | null
     email: string | null
+    office_extension: string | null
+    nationality: string | null
+    joining_date: Date | null
+    date_of_birth: Date | null
     dep_eng_name: string | null
     dep_arabic_name: string | null
     desig_eng_name: string | null
@@ -27375,6 +27395,8 @@ export namespace Prisma {
     unit_arabic_name: string | null
     committe_eng_name: string | null
     committe_arabic_name: string | null
+    is_attendance_user: boolean | null
+    is_ai_login_user: boolean | null
     ai_engine_access: boolean | null
     last_login: Date | null
     createdAt: Date | null
@@ -27384,13 +27406,22 @@ export namespace Prisma {
 
   export type UsersCountAggregateOutputType = {
     Id: number
+    user_Id: number
     emp_Id: number
+    emp_code: number
+    image: number
     gender: number
     emp__eng_name: number
     emp__arabic_name: number
+    location: number
     country_code: number
     phone: number
+    telephone: number
     email: number
+    office_extension: number
+    nationality: number
+    joining_date: number
+    date_of_birth: number
     dep_eng_name: number
     dep_arabic_name: number
     desig_eng_name: number
@@ -27399,6 +27430,8 @@ export namespace Prisma {
     unit_arabic_name: number
     committe_eng_name: number
     committe_arabic_name: number
+    is_attendance_user: number
+    is_ai_login_user: number
     ai_engine_access: number
     last_login: number
     createdAt: number
@@ -27420,13 +27453,22 @@ export namespace Prisma {
 
   export type UsersMinAggregateInputType = {
     Id?: true
+    user_Id?: true
     emp_Id?: true
+    emp_code?: true
+    image?: true
     gender?: true
     emp__eng_name?: true
     emp__arabic_name?: true
+    location?: true
     country_code?: true
     phone?: true
+    telephone?: true
     email?: true
+    office_extension?: true
+    nationality?: true
+    joining_date?: true
+    date_of_birth?: true
     dep_eng_name?: true
     dep_arabic_name?: true
     desig_eng_name?: true
@@ -27435,6 +27477,8 @@ export namespace Prisma {
     unit_arabic_name?: true
     committe_eng_name?: true
     committe_arabic_name?: true
+    is_attendance_user?: true
+    is_ai_login_user?: true
     ai_engine_access?: true
     last_login?: true
     createdAt?: true
@@ -27444,13 +27488,22 @@ export namespace Prisma {
 
   export type UsersMaxAggregateInputType = {
     Id?: true
+    user_Id?: true
     emp_Id?: true
+    emp_code?: true
+    image?: true
     gender?: true
     emp__eng_name?: true
     emp__arabic_name?: true
+    location?: true
     country_code?: true
     phone?: true
+    telephone?: true
     email?: true
+    office_extension?: true
+    nationality?: true
+    joining_date?: true
+    date_of_birth?: true
     dep_eng_name?: true
     dep_arabic_name?: true
     desig_eng_name?: true
@@ -27459,6 +27512,8 @@ export namespace Prisma {
     unit_arabic_name?: true
     committe_eng_name?: true
     committe_arabic_name?: true
+    is_attendance_user?: true
+    is_ai_login_user?: true
     ai_engine_access?: true
     last_login?: true
     createdAt?: true
@@ -27468,13 +27523,22 @@ export namespace Prisma {
 
   export type UsersCountAggregateInputType = {
     Id?: true
+    user_Id?: true
     emp_Id?: true
+    emp_code?: true
+    image?: true
     gender?: true
     emp__eng_name?: true
     emp__arabic_name?: true
+    location?: true
     country_code?: true
     phone?: true
+    telephone?: true
     email?: true
+    office_extension?: true
+    nationality?: true
+    joining_date?: true
+    date_of_birth?: true
     dep_eng_name?: true
     dep_arabic_name?: true
     desig_eng_name?: true
@@ -27483,6 +27547,8 @@ export namespace Prisma {
     unit_arabic_name?: true
     committe_eng_name?: true
     committe_arabic_name?: true
+    is_attendance_user?: true
+    is_ai_login_user?: true
     ai_engine_access?: true
     last_login?: true
     createdAt?: true
@@ -27579,13 +27645,22 @@ export namespace Prisma {
 
   export type UsersGroupByOutputType = {
     Id: number
+    user_Id: string | null
     emp_Id: string | null
+    emp_code: string | null
+    image: string | null
     gender: string | null
     emp__eng_name: string | null
     emp__arabic_name: string | null
+    location: string | null
     country_code: string | null
     phone: string | null
+    telephone: string | null
     email: string | null
+    office_extension: string | null
+    nationality: string | null
+    joining_date: Date | null
+    date_of_birth: Date | null
     dep_eng_name: string | null
     dep_arabic_name: string | null
     desig_eng_name: string | null
@@ -27594,6 +27669,8 @@ export namespace Prisma {
     unit_arabic_name: string | null
     committe_eng_name: string | null
     committe_arabic_name: string | null
+    is_attendance_user: boolean | null
+    is_ai_login_user: boolean | null
     ai_engine_access: boolean | null
     last_login: Date | null
     createdAt: Date | null
@@ -27622,13 +27699,22 @@ export namespace Prisma {
 
   export type usersSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     Id?: boolean
+    user_Id?: boolean
     emp_Id?: boolean
+    emp_code?: boolean
+    image?: boolean
     gender?: boolean
     emp__eng_name?: boolean
     emp__arabic_name?: boolean
+    location?: boolean
     country_code?: boolean
     phone?: boolean
+    telephone?: boolean
     email?: boolean
+    office_extension?: boolean
+    nationality?: boolean
+    joining_date?: boolean
+    date_of_birth?: boolean
     dep_eng_name?: boolean
     dep_arabic_name?: boolean
     desig_eng_name?: boolean
@@ -27637,6 +27723,8 @@ export namespace Prisma {
     unit_arabic_name?: boolean
     committe_eng_name?: boolean
     committe_arabic_name?: boolean
+    is_attendance_user?: boolean
+    is_ai_login_user?: boolean
     ai_engine_access?: boolean
     last_login?: boolean
     createdAt?: boolean
@@ -27654,13 +27742,22 @@ export namespace Prisma {
 
   export type usersSelectScalar = {
     Id?: boolean
+    user_Id?: boolean
     emp_Id?: boolean
+    emp_code?: boolean
+    image?: boolean
     gender?: boolean
     emp__eng_name?: boolean
     emp__arabic_name?: boolean
+    location?: boolean
     country_code?: boolean
     phone?: boolean
+    telephone?: boolean
     email?: boolean
+    office_extension?: boolean
+    nationality?: boolean
+    joining_date?: boolean
+    date_of_birth?: boolean
     dep_eng_name?: boolean
     dep_arabic_name?: boolean
     desig_eng_name?: boolean
@@ -27669,6 +27766,8 @@ export namespace Prisma {
     unit_arabic_name?: boolean
     committe_eng_name?: boolean
     committe_arabic_name?: boolean
+    is_attendance_user?: boolean
+    is_ai_login_user?: boolean
     ai_engine_access?: boolean
     last_login?: boolean
     createdAt?: boolean
@@ -27676,7 +27775,7 @@ export namespace Prisma {
     role_Id?: boolean
   }
 
-  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "emp_Id" | "gender" | "emp__eng_name" | "emp__arabic_name" | "country_code" | "phone" | "email" | "dep_eng_name" | "dep_arabic_name" | "desig_eng_name" | "desig_arabic_name" | "unit_eng_name" | "unit_arabic_name" | "committe_eng_name" | "committe_arabic_name" | "ai_engine_access" | "last_login" | "createdAt" | "updatedAt" | "role_Id", ExtArgs["result"]["users"]>
+  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "user_Id" | "emp_Id" | "emp_code" | "image" | "gender" | "emp__eng_name" | "emp__arabic_name" | "location" | "country_code" | "phone" | "telephone" | "email" | "office_extension" | "nationality" | "joining_date" | "date_of_birth" | "dep_eng_name" | "dep_arabic_name" | "desig_eng_name" | "desig_arabic_name" | "unit_eng_name" | "unit_arabic_name" | "committe_eng_name" | "committe_arabic_name" | "is_attendance_user" | "is_ai_login_user" | "ai_engine_access" | "last_login" | "createdAt" | "updatedAt" | "role_Id", ExtArgs["result"]["users"]>
   export type usersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     live_stream_favourites?: boolean | users$live_stream_favouritesArgs<ExtArgs>
     offices_attendance?: boolean | users$offices_attendanceArgs<ExtArgs>
@@ -27697,13 +27796,22 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       Id: number
+      user_Id: string | null
       emp_Id: string | null
+      emp_code: string | null
+      image: string | null
       gender: string | null
       emp__eng_name: string | null
       emp__arabic_name: string | null
+      location: string | null
       country_code: string | null
       phone: string | null
+      telephone: string | null
       email: string | null
+      office_extension: string | null
+      nationality: string | null
+      joining_date: Date | null
+      date_of_birth: Date | null
       dep_eng_name: string | null
       dep_arabic_name: string | null
       desig_eng_name: string | null
@@ -27712,6 +27820,8 @@ export namespace Prisma {
       unit_arabic_name: string | null
       committe_eng_name: string | null
       committe_arabic_name: string | null
+      is_attendance_user: boolean | null
+      is_ai_login_user: boolean | null
       ai_engine_access: boolean | null
       last_login: Date | null
       createdAt: Date | null
@@ -28092,13 +28202,22 @@ export namespace Prisma {
    */
   interface usersFieldRefs {
     readonly Id: FieldRef<"users", 'Int'>
+    readonly user_Id: FieldRef<"users", 'String'>
     readonly emp_Id: FieldRef<"users", 'String'>
+    readonly emp_code: FieldRef<"users", 'String'>
+    readonly image: FieldRef<"users", 'String'>
     readonly gender: FieldRef<"users", 'String'>
     readonly emp__eng_name: FieldRef<"users", 'String'>
     readonly emp__arabic_name: FieldRef<"users", 'String'>
+    readonly location: FieldRef<"users", 'String'>
     readonly country_code: FieldRef<"users", 'String'>
     readonly phone: FieldRef<"users", 'String'>
+    readonly telephone: FieldRef<"users", 'String'>
     readonly email: FieldRef<"users", 'String'>
+    readonly office_extension: FieldRef<"users", 'String'>
+    readonly nationality: FieldRef<"users", 'String'>
+    readonly joining_date: FieldRef<"users", 'DateTime'>
+    readonly date_of_birth: FieldRef<"users", 'DateTime'>
     readonly dep_eng_name: FieldRef<"users", 'String'>
     readonly dep_arabic_name: FieldRef<"users", 'String'>
     readonly desig_eng_name: FieldRef<"users", 'String'>
@@ -28107,6 +28226,8 @@ export namespace Prisma {
     readonly unit_arabic_name: FieldRef<"users", 'String'>
     readonly committe_eng_name: FieldRef<"users", 'String'>
     readonly committe_arabic_name: FieldRef<"users", 'String'>
+    readonly is_attendance_user: FieldRef<"users", 'Boolean'>
+    readonly is_ai_login_user: FieldRef<"users", 'Boolean'>
     readonly ai_engine_access: FieldRef<"users", 'Boolean'>
     readonly last_login: FieldRef<"users", 'DateTime'>
     readonly createdAt: FieldRef<"users", 'DateTime'>
@@ -35411,13 +35532,22 @@ export namespace Prisma {
 
   export const UsersScalarFieldEnum: {
     Id: 'Id',
+    user_Id: 'user_Id',
     emp_Id: 'emp_Id',
+    emp_code: 'emp_code',
+    image: 'image',
     gender: 'gender',
     emp__eng_name: 'emp__eng_name',
     emp__arabic_name: 'emp__arabic_name',
+    location: 'location',
     country_code: 'country_code',
     phone: 'phone',
+    telephone: 'telephone',
     email: 'email',
+    office_extension: 'office_extension',
+    nationality: 'nationality',
+    joining_date: 'joining_date',
+    date_of_birth: 'date_of_birth',
     dep_eng_name: 'dep_eng_name',
     dep_arabic_name: 'dep_arabic_name',
     desig_eng_name: 'desig_eng_name',
@@ -35426,6 +35556,8 @@ export namespace Prisma {
     unit_arabic_name: 'unit_arabic_name',
     committe_eng_name: 'committe_eng_name',
     committe_arabic_name: 'committe_arabic_name',
+    is_attendance_user: 'is_attendance_user',
+    is_ai_login_user: 'is_ai_login_user',
     ai_engine_access: 'ai_engine_access',
     last_login: 'last_login',
     createdAt: 'createdAt',
@@ -35787,13 +35919,20 @@ export namespace Prisma {
 
 
   export const usersOrderByRelevanceFieldEnum: {
+    user_Id: 'user_Id',
     emp_Id: 'emp_Id',
+    emp_code: 'emp_code',
+    image: 'image',
     gender: 'gender',
     emp__eng_name: 'emp__eng_name',
     emp__arabic_name: 'emp__arabic_name',
+    location: 'location',
     country_code: 'country_code',
     phone: 'phone',
+    telephone: 'telephone',
     email: 'email',
+    office_extension: 'office_extension',
+    nationality: 'nationality',
     dep_eng_name: 'dep_eng_name',
     dep_arabic_name: 'dep_arabic_name',
     desig_eng_name: 'desig_eng_name',
@@ -38008,13 +38147,22 @@ export namespace Prisma {
     OR?: usersWhereInput[]
     NOT?: usersWhereInput | usersWhereInput[]
     Id?: IntFilter<"users"> | number
+    user_Id?: StringNullableFilter<"users"> | string | null
     emp_Id?: StringNullableFilter<"users"> | string | null
+    emp_code?: StringNullableFilter<"users"> | string | null
+    image?: StringNullableFilter<"users"> | string | null
     gender?: StringNullableFilter<"users"> | string | null
     emp__eng_name?: StringNullableFilter<"users"> | string | null
     emp__arabic_name?: StringNullableFilter<"users"> | string | null
+    location?: StringNullableFilter<"users"> | string | null
     country_code?: StringNullableFilter<"users"> | string | null
     phone?: StringNullableFilter<"users"> | string | null
+    telephone?: StringNullableFilter<"users"> | string | null
     email?: StringNullableFilter<"users"> | string | null
+    office_extension?: StringNullableFilter<"users"> | string | null
+    nationality?: StringNullableFilter<"users"> | string | null
+    joining_date?: DateTimeNullableFilter<"users"> | Date | string | null
+    date_of_birth?: DateTimeNullableFilter<"users"> | Date | string | null
     dep_eng_name?: StringNullableFilter<"users"> | string | null
     dep_arabic_name?: StringNullableFilter<"users"> | string | null
     desig_eng_name?: StringNullableFilter<"users"> | string | null
@@ -38023,6 +38171,8 @@ export namespace Prisma {
     unit_arabic_name?: StringNullableFilter<"users"> | string | null
     committe_eng_name?: StringNullableFilter<"users"> | string | null
     committe_arabic_name?: StringNullableFilter<"users"> | string | null
+    is_attendance_user?: BoolNullableFilter<"users"> | boolean | null
+    is_ai_login_user?: BoolNullableFilter<"users"> | boolean | null
     ai_engine_access?: BoolNullableFilter<"users"> | boolean | null
     last_login?: DateTimeNullableFilter<"users"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"users"> | Date | string | null
@@ -38037,13 +38187,22 @@ export namespace Prisma {
 
   export type usersOrderByWithRelationInput = {
     Id?: SortOrder
+    user_Id?: SortOrderInput | SortOrder
     emp_Id?: SortOrderInput | SortOrder
+    emp_code?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     emp__eng_name?: SortOrderInput | SortOrder
     emp__arabic_name?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
     country_code?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    telephone?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
+    office_extension?: SortOrderInput | SortOrder
+    nationality?: SortOrderInput | SortOrder
+    joining_date?: SortOrderInput | SortOrder
+    date_of_birth?: SortOrderInput | SortOrder
     dep_eng_name?: SortOrderInput | SortOrder
     dep_arabic_name?: SortOrderInput | SortOrder
     desig_eng_name?: SortOrderInput | SortOrder
@@ -38052,6 +38211,8 @@ export namespace Prisma {
     unit_arabic_name?: SortOrderInput | SortOrder
     committe_eng_name?: SortOrderInput | SortOrder
     committe_arabic_name?: SortOrderInput | SortOrder
+    is_attendance_user?: SortOrderInput | SortOrder
+    is_ai_login_user?: SortOrderInput | SortOrder
     ai_engine_access?: SortOrderInput | SortOrder
     last_login?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
@@ -38067,16 +38228,25 @@ export namespace Prisma {
 
   export type usersWhereUniqueInput = Prisma.AtLeast<{
     Id?: number
+    user_Id?: string
     AND?: usersWhereInput | usersWhereInput[]
     OR?: usersWhereInput[]
     NOT?: usersWhereInput | usersWhereInput[]
     emp_Id?: StringNullableFilter<"users"> | string | null
+    emp_code?: StringNullableFilter<"users"> | string | null
+    image?: StringNullableFilter<"users"> | string | null
     gender?: StringNullableFilter<"users"> | string | null
     emp__eng_name?: StringNullableFilter<"users"> | string | null
     emp__arabic_name?: StringNullableFilter<"users"> | string | null
+    location?: StringNullableFilter<"users"> | string | null
     country_code?: StringNullableFilter<"users"> | string | null
     phone?: StringNullableFilter<"users"> | string | null
+    telephone?: StringNullableFilter<"users"> | string | null
     email?: StringNullableFilter<"users"> | string | null
+    office_extension?: StringNullableFilter<"users"> | string | null
+    nationality?: StringNullableFilter<"users"> | string | null
+    joining_date?: DateTimeNullableFilter<"users"> | Date | string | null
+    date_of_birth?: DateTimeNullableFilter<"users"> | Date | string | null
     dep_eng_name?: StringNullableFilter<"users"> | string | null
     dep_arabic_name?: StringNullableFilter<"users"> | string | null
     desig_eng_name?: StringNullableFilter<"users"> | string | null
@@ -38085,6 +38255,8 @@ export namespace Prisma {
     unit_arabic_name?: StringNullableFilter<"users"> | string | null
     committe_eng_name?: StringNullableFilter<"users"> | string | null
     committe_arabic_name?: StringNullableFilter<"users"> | string | null
+    is_attendance_user?: BoolNullableFilter<"users"> | boolean | null
+    is_ai_login_user?: BoolNullableFilter<"users"> | boolean | null
     ai_engine_access?: BoolNullableFilter<"users"> | boolean | null
     last_login?: DateTimeNullableFilter<"users"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"users"> | Date | string | null
@@ -38095,17 +38267,26 @@ export namespace Prisma {
     offices_footfall_analysis?: Offices_footfall_analysisListRelationFilter
     parks_attendance?: Parks_attendanceListRelationFilter
     users_roles?: XOR<Users_rolesNullableScalarRelationFilter, users_rolesWhereInput> | null
-  }, "Id">
+  }, "Id" | "user_Id">
 
   export type usersOrderByWithAggregationInput = {
     Id?: SortOrder
+    user_Id?: SortOrderInput | SortOrder
     emp_Id?: SortOrderInput | SortOrder
+    emp_code?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     emp__eng_name?: SortOrderInput | SortOrder
     emp__arabic_name?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
     country_code?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    telephone?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
+    office_extension?: SortOrderInput | SortOrder
+    nationality?: SortOrderInput | SortOrder
+    joining_date?: SortOrderInput | SortOrder
+    date_of_birth?: SortOrderInput | SortOrder
     dep_eng_name?: SortOrderInput | SortOrder
     dep_arabic_name?: SortOrderInput | SortOrder
     desig_eng_name?: SortOrderInput | SortOrder
@@ -38114,6 +38295,8 @@ export namespace Prisma {
     unit_arabic_name?: SortOrderInput | SortOrder
     committe_eng_name?: SortOrderInput | SortOrder
     committe_arabic_name?: SortOrderInput | SortOrder
+    is_attendance_user?: SortOrderInput | SortOrder
+    is_ai_login_user?: SortOrderInput | SortOrder
     ai_engine_access?: SortOrderInput | SortOrder
     last_login?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
@@ -38131,13 +38314,22 @@ export namespace Prisma {
     OR?: usersScalarWhereWithAggregatesInput[]
     NOT?: usersScalarWhereWithAggregatesInput | usersScalarWhereWithAggregatesInput[]
     Id?: IntWithAggregatesFilter<"users"> | number
+    user_Id?: StringNullableWithAggregatesFilter<"users"> | string | null
     emp_Id?: StringNullableWithAggregatesFilter<"users"> | string | null
+    emp_code?: StringNullableWithAggregatesFilter<"users"> | string | null
+    image?: StringNullableWithAggregatesFilter<"users"> | string | null
     gender?: StringNullableWithAggregatesFilter<"users"> | string | null
     emp__eng_name?: StringNullableWithAggregatesFilter<"users"> | string | null
     emp__arabic_name?: StringNullableWithAggregatesFilter<"users"> | string | null
+    location?: StringNullableWithAggregatesFilter<"users"> | string | null
     country_code?: StringNullableWithAggregatesFilter<"users"> | string | null
     phone?: StringNullableWithAggregatesFilter<"users"> | string | null
+    telephone?: StringNullableWithAggregatesFilter<"users"> | string | null
     email?: StringNullableWithAggregatesFilter<"users"> | string | null
+    office_extension?: StringNullableWithAggregatesFilter<"users"> | string | null
+    nationality?: StringNullableWithAggregatesFilter<"users"> | string | null
+    joining_date?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
+    date_of_birth?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
     dep_eng_name?: StringNullableWithAggregatesFilter<"users"> | string | null
     dep_arabic_name?: StringNullableWithAggregatesFilter<"users"> | string | null
     desig_eng_name?: StringNullableWithAggregatesFilter<"users"> | string | null
@@ -38146,6 +38338,8 @@ export namespace Prisma {
     unit_arabic_name?: StringNullableWithAggregatesFilter<"users"> | string | null
     committe_eng_name?: StringNullableWithAggregatesFilter<"users"> | string | null
     committe_arabic_name?: StringNullableWithAggregatesFilter<"users"> | string | null
+    is_attendance_user?: BoolNullableWithAggregatesFilter<"users"> | boolean | null
+    is_ai_login_user?: BoolNullableWithAggregatesFilter<"users"> | boolean | null
     ai_engine_access?: BoolNullableWithAggregatesFilter<"users"> | boolean | null
     last_login?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
@@ -41029,13 +41223,22 @@ export namespace Prisma {
   }
 
   export type usersCreateInput = {
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -41044,6 +41247,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -41057,13 +41262,22 @@ export namespace Prisma {
 
   export type usersUncheckedCreateInput = {
     Id?: number
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -41072,6 +41286,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -41084,13 +41300,22 @@ export namespace Prisma {
   }
 
   export type usersUpdateInput = {
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41099,6 +41324,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -41112,13 +41339,22 @@ export namespace Prisma {
 
   export type usersUncheckedUpdateInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41127,6 +41363,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -41140,13 +41378,22 @@ export namespace Prisma {
 
   export type usersCreateManyInput = {
     Id?: number
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -41155,6 +41402,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -41163,13 +41412,22 @@ export namespace Prisma {
   }
 
   export type usersUpdateManyMutationInput = {
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41178,6 +41436,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -41186,13 +41446,22 @@ export namespace Prisma {
 
   export type usersUncheckedUpdateManyInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41201,6 +41470,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -43728,13 +43999,22 @@ export namespace Prisma {
 
   export type usersCountOrderByAggregateInput = {
     Id?: SortOrder
+    user_Id?: SortOrder
     emp_Id?: SortOrder
+    emp_code?: SortOrder
+    image?: SortOrder
     gender?: SortOrder
     emp__eng_name?: SortOrder
     emp__arabic_name?: SortOrder
+    location?: SortOrder
     country_code?: SortOrder
     phone?: SortOrder
+    telephone?: SortOrder
     email?: SortOrder
+    office_extension?: SortOrder
+    nationality?: SortOrder
+    joining_date?: SortOrder
+    date_of_birth?: SortOrder
     dep_eng_name?: SortOrder
     dep_arabic_name?: SortOrder
     desig_eng_name?: SortOrder
@@ -43743,6 +44023,8 @@ export namespace Prisma {
     unit_arabic_name?: SortOrder
     committe_eng_name?: SortOrder
     committe_arabic_name?: SortOrder
+    is_attendance_user?: SortOrder
+    is_ai_login_user?: SortOrder
     ai_engine_access?: SortOrder
     last_login?: SortOrder
     createdAt?: SortOrder
@@ -43757,13 +44039,22 @@ export namespace Prisma {
 
   export type usersMaxOrderByAggregateInput = {
     Id?: SortOrder
+    user_Id?: SortOrder
     emp_Id?: SortOrder
+    emp_code?: SortOrder
+    image?: SortOrder
     gender?: SortOrder
     emp__eng_name?: SortOrder
     emp__arabic_name?: SortOrder
+    location?: SortOrder
     country_code?: SortOrder
     phone?: SortOrder
+    telephone?: SortOrder
     email?: SortOrder
+    office_extension?: SortOrder
+    nationality?: SortOrder
+    joining_date?: SortOrder
+    date_of_birth?: SortOrder
     dep_eng_name?: SortOrder
     dep_arabic_name?: SortOrder
     desig_eng_name?: SortOrder
@@ -43772,6 +44063,8 @@ export namespace Prisma {
     unit_arabic_name?: SortOrder
     committe_eng_name?: SortOrder
     committe_arabic_name?: SortOrder
+    is_attendance_user?: SortOrder
+    is_ai_login_user?: SortOrder
     ai_engine_access?: SortOrder
     last_login?: SortOrder
     createdAt?: SortOrder
@@ -43781,13 +44074,22 @@ export namespace Prisma {
 
   export type usersMinOrderByAggregateInput = {
     Id?: SortOrder
+    user_Id?: SortOrder
     emp_Id?: SortOrder
+    emp_code?: SortOrder
+    image?: SortOrder
     gender?: SortOrder
     emp__eng_name?: SortOrder
     emp__arabic_name?: SortOrder
+    location?: SortOrder
     country_code?: SortOrder
     phone?: SortOrder
+    telephone?: SortOrder
     email?: SortOrder
+    office_extension?: SortOrder
+    nationality?: SortOrder
+    joining_date?: SortOrder
+    date_of_birth?: SortOrder
     dep_eng_name?: SortOrder
     dep_arabic_name?: SortOrder
     desig_eng_name?: SortOrder
@@ -43796,6 +44098,8 @@ export namespace Prisma {
     unit_arabic_name?: SortOrder
     committe_eng_name?: SortOrder
     committe_arabic_name?: SortOrder
+    is_attendance_user?: SortOrder
+    is_ai_login_user?: SortOrder
     ai_engine_access?: SortOrder
     last_login?: SortOrder
     createdAt?: SortOrder
@@ -46890,13 +47194,22 @@ export namespace Prisma {
   }
 
   export type usersCreateWithoutLive_stream_favouritesInput = {
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -46905,6 +47218,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -46917,13 +47232,22 @@ export namespace Prisma {
 
   export type usersUncheckedCreateWithoutLive_stream_favouritesInput = {
     Id?: number
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -46932,6 +47256,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -47049,13 +47375,22 @@ export namespace Prisma {
   }
 
   export type usersUpdateWithoutLive_stream_favouritesInput = {
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47064,6 +47399,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47076,13 +47413,22 @@ export namespace Prisma {
 
   export type usersUncheckedUpdateWithoutLive_stream_favouritesInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47091,6 +47437,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47691,13 +48039,22 @@ export namespace Prisma {
   }
 
   export type usersCreateWithoutOffices_attendanceInput = {
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -47706,6 +48063,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -47718,13 +48077,22 @@ export namespace Prisma {
 
   export type usersUncheckedCreateWithoutOffices_attendanceInput = {
     Id?: number
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -47733,6 +48101,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -47806,13 +48176,22 @@ export namespace Prisma {
   }
 
   export type usersUpdateWithoutOffices_attendanceInput = {
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47821,6 +48200,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47833,13 +48214,22 @@ export namespace Prisma {
 
   export type usersUncheckedUpdateWithoutOffices_attendanceInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47848,6 +48238,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50235,13 +50627,22 @@ export namespace Prisma {
   }
 
   export type usersCreateWithoutParks_attendanceInput = {
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -50250,6 +50651,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -50262,13 +50665,22 @@ export namespace Prisma {
 
   export type usersUncheckedCreateWithoutParks_attendanceInput = {
     Id?: number
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -50277,6 +50689,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -50360,13 +50774,22 @@ export namespace Prisma {
   }
 
   export type usersUpdateWithoutParks_attendanceInput = {
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50375,6 +50798,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50387,13 +50812,22 @@ export namespace Prisma {
 
   export type usersUncheckedUpdateWithoutParks_attendanceInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50402,6 +50836,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -52868,13 +53304,22 @@ export namespace Prisma {
   }
 
   export type usersCreateWithoutUsers_rolesInput = {
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -52883,6 +53328,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -52895,13 +53342,22 @@ export namespace Prisma {
 
   export type usersUncheckedCreateWithoutUsers_rolesInput = {
     Id?: number
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -52910,6 +53366,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -53066,13 +53524,22 @@ export namespace Prisma {
     OR?: usersScalarWhereInput[]
     NOT?: usersScalarWhereInput | usersScalarWhereInput[]
     Id?: IntFilter<"users"> | number
+    user_Id?: StringNullableFilter<"users"> | string | null
     emp_Id?: StringNullableFilter<"users"> | string | null
+    emp_code?: StringNullableFilter<"users"> | string | null
+    image?: StringNullableFilter<"users"> | string | null
     gender?: StringNullableFilter<"users"> | string | null
     emp__eng_name?: StringNullableFilter<"users"> | string | null
     emp__arabic_name?: StringNullableFilter<"users"> | string | null
+    location?: StringNullableFilter<"users"> | string | null
     country_code?: StringNullableFilter<"users"> | string | null
     phone?: StringNullableFilter<"users"> | string | null
+    telephone?: StringNullableFilter<"users"> | string | null
     email?: StringNullableFilter<"users"> | string | null
+    office_extension?: StringNullableFilter<"users"> | string | null
+    nationality?: StringNullableFilter<"users"> | string | null
+    joining_date?: DateTimeNullableFilter<"users"> | Date | string | null
+    date_of_birth?: DateTimeNullableFilter<"users"> | Date | string | null
     dep_eng_name?: StringNullableFilter<"users"> | string | null
     dep_arabic_name?: StringNullableFilter<"users"> | string | null
     desig_eng_name?: StringNullableFilter<"users"> | string | null
@@ -53081,6 +53548,8 @@ export namespace Prisma {
     unit_arabic_name?: StringNullableFilter<"users"> | string | null
     committe_eng_name?: StringNullableFilter<"users"> | string | null
     committe_arabic_name?: StringNullableFilter<"users"> | string | null
+    is_attendance_user?: BoolNullableFilter<"users"> | boolean | null
+    is_ai_login_user?: BoolNullableFilter<"users"> | boolean | null
     ai_engine_access?: BoolNullableFilter<"users"> | boolean | null
     last_login?: DateTimeNullableFilter<"users"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"users"> | Date | string | null
@@ -53308,13 +53777,22 @@ export namespace Prisma {
   }
 
   export type usersCreateWithoutOffices_footfall_analysisInput = {
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -53323,6 +53801,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -53335,13 +53815,22 @@ export namespace Prisma {
 
   export type usersUncheckedCreateWithoutOffices_footfall_analysisInput = {
     Id?: number
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -53350,6 +53839,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -53423,13 +53914,22 @@ export namespace Prisma {
   }
 
   export type usersUpdateWithoutOffices_footfall_analysisInput = {
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53438,6 +53938,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -53450,13 +53952,22 @@ export namespace Prisma {
 
   export type usersUncheckedUpdateWithoutOffices_footfall_analysisInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53465,6 +53976,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -55720,13 +56233,22 @@ export namespace Prisma {
 
   export type usersCreateManyUsers_rolesInput = {
     Id?: number
+    user_Id?: string | null
     emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
     gender?: string | null
     emp__eng_name?: string | null
     emp__arabic_name?: string | null
+    location?: string | null
     country_code?: string | null
     phone?: string | null
+    telephone?: string | null
     email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
     dep_eng_name?: string | null
     dep_arabic_name?: string | null
     desig_eng_name?: string | null
@@ -55735,6 +56257,8 @@ export namespace Prisma {
     unit_arabic_name?: string | null
     committe_eng_name?: string | null
     committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
     ai_engine_access?: boolean | null
     last_login?: Date | string | null
     createdAt?: Date | string | null
@@ -55795,13 +56319,22 @@ export namespace Prisma {
   }
 
   export type usersUpdateWithoutUsers_rolesInput = {
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55810,6 +56343,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -55822,13 +56357,22 @@ export namespace Prisma {
 
   export type usersUncheckedUpdateWithoutUsers_rolesInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55837,6 +56381,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -55849,13 +56395,22 @@ export namespace Prisma {
 
   export type usersUncheckedUpdateManyWithoutUsers_rolesInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     country_code?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55864,6 +56419,8 @@ export namespace Prisma {
     unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
     committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

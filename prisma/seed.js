@@ -1,14 +1,12 @@
 const { PrismaClient } = require('../src/prisma/generated/prisma');
 
-// Use shadow database URL if available, otherwise use main database URL
-const databaseUrl = process.env.DATABASE_URL_SHADOW || process.env.DATABASE_URL;
-const prisma = new PrismaClient({
-  datasources: { db: { url: databaseUrl } },
-});
+// Always use live database
+const prisma = new PrismaClient();
 require('dotenv').config()
+
 async function main() {
   console.log('🌱 Starting database seeding...');
-  console.log(`📊 Using database: ${databaseUrl.includes('localhost') ? 'Shadow Database (Local)' : 'Live Database (AWS)'}`);
+  console.log('📊 Using Live Database (AWS)');
 
   // Skip cleanup since we're starting with a fresh database
   console.log('📋 Fresh database detected, skipping cleanup...');
@@ -17,7 +15,7 @@ async function main() {
   console.log('📝 Seeding access_secret...');
   await prisma.access_secret.create({
     data: {
-      value: 'TWpBeU5TOHdPUzh3Tnc9PQ'
+      value: 'TWpBeU5TOHdPUzh3T1E9PQ=='
     }
   });
 

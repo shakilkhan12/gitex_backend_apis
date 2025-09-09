@@ -8,10 +8,9 @@
     "build": "rimraf dist && node esbuild.config.js",
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts",
     "prisma-migrate": "prisma migrate dev  --schema ./src/prisma/schema.prisma",
-    "prisma-migrate-shadow": "powershell -Command \"$env:DATABASE_URL='mysql://root:@localhost:3306/gitex_db'; npx prisma migrate dev --schema ./src/prisma/schema.prisma --skip-seed --skip-generate\"",
     "prisma-gen": "prisma generate --schema ./src/prisma/schema.prisma",
-    "prisma-seed": "node -r dotenv/config prisma/seed.js dotenv_config_path=.env",
-    "prisma-seed-shadow": "powershell -Command \"$env:DATABASE_URL_SHADOW='mysql://root:Code1234@localhost:3306/gitex_db'; node -r dotenv/config prisma/seed.js\"",
+    "prisma-seed": "node -r dotenv/config prisma/seed.js",
+    "prisma-db-push": "npx prisma db push --schema ./src/prisma/schema.prisma",
     "heroku-postbuild": "npm run build"
   },
   "keywords": [],

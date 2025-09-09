@@ -72,6 +72,7 @@ class ParkAttendanceService {
                      dep_eng_name: true,
                      dep_arabic_name: true,
                      gender: true,
+                     image:true
                   },
                },
             },
@@ -216,7 +217,7 @@ class ParkAttendanceService {
                id: personId,
                name: displayName,
                status: status,
-               avatarUrl: user?.avatarUrl || `https://randomuser.me/api/portraits/men/${Math.floor(Math.random() * 50)}.jpg`,
+               avatarUrl: user?.image,
                department: user?.dep_eng_name || user?.dep_arabic_name || (isEmployee ? "Unknown Department" : "Visitor"),
                date: formattedDate,
                firstEntry: firstEntry,

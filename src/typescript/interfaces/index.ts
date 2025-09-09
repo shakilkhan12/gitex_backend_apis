@@ -194,6 +194,76 @@ export interface OfficeSettingInputTypes extends SettingTypes {
   office_Id: number;
 }
 
+export interface UserType {
+  Id?: number;
+  user_Id?: string;
+  emp_Id?: string;
+  emp_code?: string;
+  image?: string;
+  gender?: string;
+  emp__eng_name?: string;
+  emp__arabic_name?: string;
+  location?: string;
+  country_code?: string;
+  phone?: string;
+  telephone?: string;
+  email?: string;
+  office_extension?: string;
+  nationality?: string;
+  joining_date?: Date;
+  date_of_birth?: Date;
+  dep_eng_name?: string;
+  dep_arabic_name?: string;
+  desig_eng_name?: string;
+  desig_arabic_name?: string;
+  unit_eng_name?: string;
+  unit_arabic_name?: string;
+  committe_eng_name?: string;
+  committe_arabic_name?: string;
+  is_attendance_user?: boolean;
+  is_ai_login_user?: boolean;
+  ai_engine_access?: boolean;
+  last_login?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  role_Id?: number;
+}
+
+export interface UserType {
+  Id?: number;
+  user_Id?: string;
+  emp_Id?: string;
+  emp_code?: string;
+  image?: string;
+  gender?: string;
+  emp__eng_name?: string;
+  emp__arabic_name?: string;
+  location?: string;
+  country_code?: string;
+  phone?: string;
+  telephone?: string;
+  email?: string;
+  office_extension?: string;
+  nationality?: string;
+  joining_date?: Date;
+  date_of_birth?: Date;
+  dep_eng_name?: string;
+  dep_arabic_name?: string;
+  desig_eng_name?: string;
+  desig_arabic_name?: string;
+  unit_eng_name?: string;
+  unit_arabic_name?: string;
+  committe_eng_name?: string;
+  committe_arabic_name?: string;
+  is_attendance_user?: boolean;
+  is_ai_login_user?: boolean;
+  ai_engine_access?: boolean;
+  last_login?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  role_Id?: number;
+}
+
 export interface TermsPrivacyType {
   id?: number; // optional because not required on create
   terms: string;
