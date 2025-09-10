@@ -1,5 +1,6 @@
 export { default as ParkService } from "@/services/park.service";
 export { default as SmokingDetectionService } from "@/services/smoking-detection.service";
+export { default as IntrusionDetectionService } from "@/services/intrusion-detection.service";
 export { default as LitterDetectionService } from "@/services/litter-detection.service";
 export { default as LandscapingService } from "@/services/landscaping.service";
 export { default as BehaviorAlertsService } from "@/services/behavior-alerts.service";

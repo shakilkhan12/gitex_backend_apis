@@ -24,6 +24,23 @@ export interface SmokingDetectionType {
   current_status?: string;
 }
 
+export interface IntrusionDetectionType {
+  park_Id: number;
+  location: string;
+  camera_Id: number;
+  occurrence_date: Date;
+  occurrence_time: Date;
+  snap_shot: string;
+  posted_to_intranet_date?: Date;
+  posted_to_intranet_time?: Date;
+  detection_Id?: string;
+  detection_date?: Date;
+  detection_time?: Date;
+  description?: string;
+  is_employee?: boolean;
+  current_status?: string;
+}
+
 export interface LitterDetectionType {
   park_Id: number;
   case_Id: string;

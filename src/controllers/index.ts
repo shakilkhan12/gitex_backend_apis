@@ -1,5 +1,6 @@
 export { default as ParkController } from "@/controllers/park.controller";
 export { default as SmokingDetectionController } from "@/controllers/smoking-detection.controller";
+export { default as IntrusionDetectionController } from "@/controllers/intrusion-detection.controller";
 export { default as LitterDetectionController } from "@/controllers/litter-detection.controller";
 export { default as LandscapingController } from "@/controllers/landscaping.controller";
 export { default as BehaviorAlertsController } from "@/controllers/behavior-alerts.controller";

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import smokingDetectionRouter from "./smoking-detection.routes";
+import intrusionDetectionRouter from "./intrusion-detection.routes";
 import litterDetectionRouter from "./litter-detection.routes";
 import landscapingRouter from "./landscaping.routes";
 import behaviorAlertsRouter from "./behavior-alerts.routes";
@@ -17,6 +18,7 @@ import settingsRouter from "./settings.routes";
 const mainRouter = Router();
 
 mainRouter.use('/smoking-detection', smokingDetectionRouter)
+mainRouter.use('/intrusion-detection', intrusionDetectionRouter)
 mainRouter.use('/litter-detection', litterDetectionRouter)
 mainRouter.use('/landscaping', landscapingRouter)
 mainRouter.use('/behavior-alerts', behaviorAlertsRouter)
