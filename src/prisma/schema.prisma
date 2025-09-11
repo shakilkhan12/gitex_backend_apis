@@ -337,7 +337,7 @@ model parks_irrigation_job_history {
   Id               Int         @id @default(autoincrement())
   park_Id          Int?
   zone_Id          Int?
-  job_Id           String?     @db.VarChar(255)
+  job_Id           String?     @unique @db.VarChar(255)
   job_started_at   DateTime    @default(now()) @db.Timestamp(0)
   job_completed_at DateTime?   @db.DateTime(0)
   job_status       String?     @db.VarChar(50)

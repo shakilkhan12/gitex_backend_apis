@@ -1,17 +1,17 @@
 import { body, param  } from "express-validator";
 export const parkValidations = [
     body('park_Id').trim().notEmpty().withMessage('park id is required'),
-    // body('park_english_name').trim().notEmpty().withMessage('english name is required'),
-    // body('park_arabic_name').trim().notEmpty().withMessage('arabic name is required'),
-    // body('image').trim().notEmpty().withMessage('image is required'),
-    // body('latitude').trim().isFloat().withMessage('latitude is required'),
-    // body('longitude').trim().isFloat().withMessage('longitude is required'),
+    body('park_english_name').trim().notEmpty().withMessage('english name is required'),
+    body('park_arabic_name').trim().notEmpty().withMessage('arabic name is required'),
+    body('image').trim().notEmpty().withMessage('image is required'),
+    body('latitude').trim().isFloat().withMessage('latitude is required'),
+    body('longitude').trim().isFloat().withMessage('longitude is required'),
 ]
 export const parkBasicInfoValidations = [
     body('park_Id').trim().notEmpty().withMessage('park id is required'),
-    // body('park_english_name').trim().notEmpty().withMessage('english name is required'),
-    // body('park_arabic_name').trim().notEmpty().withMessage('arabic name is required'),
-    // body('location').trim().notEmpty().withMessage('location is required'),
+    body('park_english_name').trim().notEmpty().withMessage('english name is required'),
+    body('park_arabic_name').trim().notEmpty().withMessage('arabic name is required'),
+    body('location').trim().notEmpty().withMessage('location is required'),
 ]
 export const officeBasicInfoValidations = [
     body('office_Id').trim().notEmpty().withMessage('office id is required')
@@ -19,35 +19,34 @@ export const officeBasicInfoValidations = [
 export const parkCameraValidations = [
     body('park_Id').notEmpty().withMessage("park_Id is required").isInt({min: 1}).withMessage('park id must be valid integer'),
     body('camera_Id').trim().notEmpty().withMessage('camera id is required'),
-    // body('camera_english_name').trim().notEmpty().withMessage('camera english name is required'),
-    // body('camera_arabic_name').trim().notEmpty().withMessage('camera arabic name is required'),
-    // body('latitude').trim().isFloat().withMessage('latitude is required'),
-    // body('longitude').trim().isFloat().withMessage('longitude is required'),
-    // body('ip_address').trim().notEmpty().withMessage('ip address is required'),
-    // body('last_active_date').notEmpty().withMessage("last active date is required")
-    // .isISO8601().withMessage("Invalid date format (use YYYY-MM-DD)").toDate(),
-    // body('last_active_time').notEmpty().withMessage("last active time is required")
-    // .matches(/^([0-1]\d|2[0-3]):([0-5]\d):([0-5]\d)$/)
-    // .withMessage("Invalid time format, must be HH:mm:ss"),
-    // body('status').trim().notEmpty().withMessage('status is required')
+    body('camera_english_name').trim().notEmpty().withMessage('camera english name is required'),
+    body('camera_arabic_name').trim().notEmpty().withMessage('camera arabic name is required'),
+    body('latitude').trim().isFloat().withMessage('latitude is required'),
+    body('longitude').trim().isFloat().withMessage('longitude is required'),
+    body('ip_address').trim().notEmpty().withMessage('ip address is required'),
+    body('status').trim().notEmpty().withMessage('status is required')
 ]
 export const officeValidations = [
     body('office_Id').trim().notEmpty().withMessage('office id is required'),
+    body('office_english_name').trim().notEmpty().withMessage('office english name is required'),
+    body('office_arabic_name').trim().notEmpty().withMessage('office arabic name is required'),
+    body('image').trim().notEmpty().withMessage('image is required'),
+    body('location').trim().notEmpty().withMessage('location is required'),
 ]
 export const officeCameraValidations = [
     body('office_Id').notEmpty().withMessage("office Id is required").isInt({min: 1}).withMessage('office id must be valid integer'),
     body('camera_Id').trim().notEmpty().withMessage('camera id is required'),
-    // body('camera_english_name').trim().notEmpty().withMessage('camera english name is required'),
-    // body('camera_arabic_name').trim().notEmpty().withMessage('camera arabic name is required'),
-    // body('latitude').trim().isFloat().withMessage('latitude is required'),
-    // body('longitude').trim().isFloat().withMessage('longitude is required'),
-    // body('ip_address').trim().notEmpty().withMessage('ip address is required'),
-    // body('last_active_date').notEmpty().withMessage("last active date is required")
-    // .isISO8601().withMessage("Invalid date format (use YYYY-MM-DD)").toDate(),
-    // body('last_active_time').notEmpty().withMessage("last active time is required")
-    // .matches(/^([0-1]\d|2[0-3]):([0-5]\d):([0-5]\d)$/)
-    // .withMessage("Invalid time format, must be HH:mm:ss"),
-    // body('status').trim().notEmpty().withMessage('status is required')
+    body('camera_english_name').trim().notEmpty().withMessage('camera english name is required'),
+    body('camera_arabic_name').trim().notEmpty().withMessage('camera arabic name is required'),
+    body('latitude').trim().isFloat().withMessage('latitude is required'),
+    body('longitude').trim().isFloat().withMessage('longitude is required'),
+    body('ip_address').trim().notEmpty().withMessage('ip address is required'),
+    body('last_active_date').notEmpty().withMessage("last active date is required")
+    .isISO8601().withMessage("Invalid date format (use YYYY-MM-DD)").toDate(),
+    body('last_active_time').notEmpty().withMessage("last active time is required")
+    .matches(/^([0-1]\d|2[0-3]):([0-5]\d):([0-5]\d)$/)
+    .withMessage("Invalid time format, must be HH:mm:ss"),
+    body('status').trim().notEmpty().withMessage('status is required')
 ]
 
 export const zoneValidations = [
@@ -174,3 +173,11 @@ export const updateZoneStatusValidation = [
     .isIn(["active", "inactive"])
     .withMessage("Status must be either 'active' or 'inactive'"),
 ];
+export const parkZoneIrrigationStatusValidations =  [
+    body("parkId").isInt({ gt: 0 }).withMessage("parkId must be a positive integer"),
+    body("zoneId").isInt({ gt: 0 }).withMessage("zoneId must be a positive integer"),
+    body("duration")
+      .isInt({ min: 1, max: 60 })
+      .withMessage("duration must be between 1 and 60 minutes"),
+    body('status').notEmpty().withMessage('status is required')
+  ]

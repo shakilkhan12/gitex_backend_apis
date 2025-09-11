@@ -1,5 +1,6 @@
-import { ParkType, ParkZone, ParkCamera, SettingInputTypes } from "@/typescript/interfaces/all_types";
+import { ParkType, ParkZone, ParkCamera, SettingInputTypes, ParkZoneIrrigationTypes } from "@/typescript/interfaces/all_types";
 import { STATUS, } from "@/typescript"
+import { v4 as uuidv4 } from 'uuid';
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
@@ -72,7 +73,7 @@ class ParkService {
    // add park zone service
    protected static addParkZoneService = async (zoneData: ParkZone) => {
       const result = await db.park_zones.create({
-         data: {...zoneData, createdAt: new Date() }
+         data: {...zoneData, createdAt: new Date(), status: 'stopped' }
       });
       return result;
    }
@@ -80,7 +81,7 @@ class ParkService {
       const result = await db.park_zones.update({
          where: { Id: id },
          data: {...zoneData,  latitude: Number(zoneData.latitude),
-         longitude: Number(zoneData.longitude) , updatedAt: new Date() }
+         longitude: Number(zoneData.longitude) , updatedAt: new Date(), }
       });
       return result;
    }
@@ -223,6 +224,44 @@ class ParkService {
 
     return result;
   };
+  protected static updateParkZoneIrrigationStatusService = async (data: ParkZoneIrrigationTypes) => {
+     const jobId = uuidv4();
+     const startedAt = new Date();
+     const completedAt = new Date(startedAt.getTime() + data?.duration * 60 * 1000);
+     const lastJob = await db.parks_irrigation_job_history.findFirst({
+     orderBy: { Id: "desc" }  // 👈 order by primary key in descending order
+});
+       // 1. Create job history record
+  const job = await db.parks_irrigation_job_history.create({
+    data: {
+      park_Id: data.parkId,
+      zone_Id: data.zoneId,
+      job_Id: lastJob ? 'J'+lastJob.Id : '1',
+      job_status: "running",
+      job_started_at: startedAt,
+      job_completed_at: completedAt,
+      createdAt: new Date()
+    }
+  });
+    // 2. Update zone status
+  await db.park_zones.update({
+    where: { Id: data.zoneId },
+    data: { status: "running" }
+  });
+    // 3. Schedule auto-stop after duration
+  setTimeout(async () => {
+    await db.parks_irrigation_job_history.update({
+      where: { Id: job.Id },
+      data: { job_status: "stopped" }
+    });
+
+    await db.park_zones.update({
+      where: { Id: data.zoneId },
+      data: { status: "stopped" }
+    });
+  }, data.duration * 60 * 1000);
+   return `Zone ${data.zoneId} started for ${data.duration} minute(s)`
+  }
 
    
 }

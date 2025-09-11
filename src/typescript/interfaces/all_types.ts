@@ -187,3 +187,6 @@ export interface TermsPrivacyType {
   createdAt?: Date;
   updatedAt?: Date;
 }
+export interface ParkZoneIrrigationTypes {
+  parkId: number, zoneId: number, duration: number, status: string
+}
