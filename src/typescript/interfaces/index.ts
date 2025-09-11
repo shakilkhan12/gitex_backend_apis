@@ -94,6 +94,31 @@ export interface OfficeSentimentAnalysisType {
   check_out_sentiment?: string;
 }
 
+export interface OfficeFootfallAnalysisType {
+  office_Id: number;
+  detection_Id: string;
+  person_Id: number;
+  gender?: string;
+  is_child?: boolean;
+  detected_camera_Id: string;
+  detected_camera_name?: string;
+  time?: Date;
+}
+
+export interface ParkFootfallAnalysisType {
+  park_Id: number;
+  detection_Id: string;
+  person_Id: number;
+  gender?: string;
+  is_child?: boolean;
+  detected_camera_Id: string;
+  detected_camera_name?: string;
+  time?: Date;
+  abc1?: string;
+  abc2?: string;
+  abc3?: string;
+}
+
 export interface ParkSentimentAnalysisType {
   park_Id: number;
   person_Id: string;

@@ -1,4 +1,4 @@
-import {  OfficeType, OfficeCamera, OfficeSettingInputTypes } from "@/typescript";
+import {  OfficeType, OfficeCamera, OfficeSettingInputTypes, OfficeFootfallAnalysisType } from "@/typescript";
 import { STATUS } from "@/typescript"
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
@@ -169,6 +169,143 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          data: {...cameraData, latitude: Number(cameraData?.latitude), longitude: Number(cameraData?.longitude), updatedAt: new Date()}
       })
       return result;
+   }
+
+   // Get office footfall analysis data
+   protected static getOfficeFootfallAnalysisService = async (officeIds: number | number[], fromDate?: string, toDate?: string) => {
+      if (!officeIds) {
+         throw new HttpException(STATUS.BAD_REQUEST, 'office_Id is required');
+      }
+
+      try {
+         // Build where clause for date filtering
+         const whereClause: any = {
+            office_Id: Array.isArray(officeIds) ? { in: officeIds } : Number(officeIds)
+         };
+
+         if (fromDate && toDate) {
+            whereClause.time = {
+               gte: new Date(fromDate),
+               lte: new Date(toDate)
+            };
+         }
+
+         // Get footfall analysis data
+         const footfallData = await db.offices_footfall_analysis.findMany({
+            where: whereClause,
+            include: {
+               person: {
+                  select: {
+                     Id: true,
+                     emp_Id: true,
+                     emp__eng_name: true,
+                     emp__arabic_name: true,
+                     gender: true,
+                     image: true
+                  }
+               },
+               office: {
+                  select: {
+                     Id: true,
+                     office_english_name: true,
+                     office_arabic_name: true
+                  }
+               }
+            },
+            orderBy: {
+               time: 'desc'
+            }
+         });
+
+         // Calculate statistics
+         const totalFootfall = footfallData.length;
+         
+         // Use person.gender if available, otherwise fall back to item.gender
+         const maleCount = footfallData.filter(item => {
+            const gender = item.person?.gender || item.gender;
+            return gender === 'M' || gender === 'Male';
+         }).length;
+         
+         const femaleCount = footfallData.filter(item => {
+            const gender = item.person?.gender || item.gender;
+            return gender === 'F' || gender === 'Female';
+         }).length;
+         
+         const childrenCount = footfallData.filter(item => item.is_child === true).length;
+         const employeeCount = footfallData.filter(item => item.person_Id !== null).length;
+         const guestCount = totalFootfall - employeeCount;
+
+         // Get unique employees
+         const uniqueEmployees = footfallData
+            .filter(item => item.person_Id !== null)
+            .reduce((acc: any[], item) => {
+               if (!acc.find(emp => emp.Id === item.person.Id)) {
+                  acc.push(item.person);
+               }
+               return acc;
+            }, []);
+
+         // Get hourly distribution
+         const hourlyDistribution = footfallData.reduce((acc, item) => {
+            const hour = new Date(item.time).getHours();
+            acc[hour] = (acc[hour] || 0) + 1;
+            return acc;
+         }, {} as Record<number, number>);
+
+         // Get daily distribution
+         const dailyDistribution = footfallData.reduce((acc, item) => {
+            const date = new Date(item.time).toISOString().split('T')[0];
+            acc[date] = (acc[date] || 0) + 1;
+            return acc;
+         }, {} as Record<string, number>);
+
+         return {
+            summary: {
+               totalFootfall,
+               maleCount,
+               femaleCount,
+               childrenCount,
+               employeeCount,
+               guestCount
+            },
+            employees: uniqueEmployees,
+            hourlyDistribution,
+            dailyDistribution,
+            rawData: footfallData
+         };
+      } catch (error: any) {
+         throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch footfall analysis data');
+      }
+   }
+
+   // Add footfall analysis entry
+   protected static addOfficeFootfallAnalysisService = async (footfallData: OfficeFootfallAnalysisType) => {
+      try {
+         // For guests/visitors, we need to create a temporary user record or use a default guest user
+         // For now, we'll require person_Id to be provided
+         if (!footfallData.person_Id) {
+            throw new HttpException(STATUS.BAD_REQUEST, 'person_Id is required for footfall analysis');
+         }
+
+         const result = await db.offices_footfall_analysis.create({
+            data: {
+               office_Id: Number(footfallData.office_Id),
+               detection_Id: footfallData.detection_Id,
+               person_Id: footfallData.person_Id,
+               gender: footfallData.gender || undefined,
+               is_child: footfallData.is_child || false,
+               detected_camera_Id: footfallData.detected_camera_Id,
+               detected_camera_name: footfallData.detected_camera_name || undefined,
+               time: new Date()
+            }
+         });
+         return result;
+      } catch (error: any) {
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to add footfall analysis entry');
+      }
    }
    
 }

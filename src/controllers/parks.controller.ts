@@ -1,6 +1,6 @@
 import { Decimal } from "@/prisma/generated/prisma/runtime/library";
 import { ParksService } from "@/services";
-import { ParkCamera, ParkType, ParkZone, SettingInputTypes } from "@/typescript";
+import { ParkCamera, ParkType, ParkZone, SettingInputTypes, ParkFootfallAnalysisType } from "@/typescript";
 import { STATUS } from "@/typescript";
 import { HttpException } from "@/utils/HttpException.utils";
 import { NextFunction, Request, Response } from "express";
@@ -260,6 +260,67 @@ const { camera_Id, ...fields } = req.body;
       next(error)
     }
   }
+
+  // Get park footfall analysis
+  public static getParkFootfallAnalysis = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { park_Id } = req.params;
+      const { parkIds, fromDate, toDate } = req.query;
+
+      // Determine which park IDs to use
+      let parkIdsToUse: number | number[];
+      
+      if (parkIds) {
+        // Handle comma-separated string or array
+        if (typeof parkIds === 'string') {
+          parkIdsToUse = parkIds.split(',').map(id => parseInt(id.trim()));
+        } else if (Array.isArray(parkIds)) {
+          parkIdsToUse = parkIds.map(id => parseInt(id.toString()));
+        } else {
+          parkIdsToUse = [parseInt(parkIds.toString())];
+        }
+      } else if (park_Id) {
+        parkIdsToUse = parseInt(park_Id);
+      } else {
+        throw new HttpException(STATUS.BAD_REQUEST, 'Park ID is required');
+      }
+
+      const result = await ParksService.getParkFootfallAnalysisService(
+        parkIdsToUse,
+        fromDate as string,
+        toDate as string
+      );
+
+      res.status(STATUS.SUCCESS).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  // Add park footfall analysis
+  public static addParkFootfallAnalysis = async (req: Request<{}, {}, ParkFootfallAnalysisType>, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    try {
+      if (errors.isEmpty()) {
+        // Validate required fields
+        const requiredFields = ['park_Id', 'detection_Id', 'person_Id', 'detected_camera_Id'];
+        const missingFields = requiredFields.filter(field => !req.body[field as keyof ParkFootfallAnalysisType]);
+        
+        if (missingFields.length > 0) {
+          return res.status(STATUS.BAD_REQUEST).json({
+            message: `Missing required fields: ${missingFields.join(', ')}`
+          });
+        }
+
+        const result = await ParksService.addParkFootfallAnalysisService(req.body);
+        res.status(STATUS.CREATED).json(result);
+      } else {
+        return res.status(STATUS.BAD_REQUEST).json({ errors: errors.array() });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
 
 }
 export default ParksController;

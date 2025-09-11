@@ -1,5 +1,5 @@
 import { OfficesService } from "@/services";
-import { OfficeCamera, OfficeSettingInputTypes, OfficeType, ParkCamera, ParkType, ParkZone, SettingInputTypes } from "@/typescript";
+import { OfficeCamera, OfficeSettingInputTypes, OfficeType, OfficeFootfallAnalysisType, ParkCamera, ParkType, ParkZone, SettingInputTypes } from "@/typescript";
 import { STATUS } from "@/typescript";
 import { HttpException } from "@/utils/HttpException.utils";
 import { NextFunction, Request, Response } from "express";
@@ -187,6 +187,61 @@ class OfficesController extends OfficesService {
       } else {
             next(error)
       }
+    }
+  }
+
+  // Get office footfall analysis
+  public static getOfficeFootfallAnalysis = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { office_Id } = req.params;
+      const { fromDate, toDate, officeIds } = req.query;
+
+      let officeIdsToUse;
+      
+      if (officeIds) {
+        // Handle multiple office IDs from query parameter
+        if (typeof officeIds === 'string' && officeIds.includes(',')) {
+          // Handle comma-separated string
+          officeIdsToUse = officeIds.split(',').map(id => Number(id.trim()));
+        } else if (Array.isArray(officeIds)) {
+          officeIdsToUse = officeIds.map(id => Number(id));
+        } else {
+          officeIdsToUse = [Number(officeIds)];
+        }
+      } else if (office_Id) {
+        // Handle single office ID from URL parameter
+        officeIdsToUse = Number(office_Id);
+      } else {
+        return res.status(STATUS.BAD_REQUEST).json({ message: 'office_Id or officeIds is required' });
+      }
+
+      const footfallData = await OfficesService.getOfficeFootfallAnalysisService(
+        officeIdsToUse,
+        fromDate as string,
+        toDate as string
+      );
+
+      return res.status(STATUS.SUCCESS).json(footfallData);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Add office footfall analysis entry
+  public static addOfficeFootfallAnalysis = async (req: Request<{}, {}, OfficeFootfallAnalysisType>, res: Response, next: NextFunction) => {
+    try {
+      const footfallData = req.body;
+
+      if (!footfallData.office_Id || !footfallData.detection_Id || !footfallData.detected_camera_Id || !footfallData.person_Id) {
+        return res.status(STATUS.BAD_REQUEST).json({ 
+          message: 'office_Id, detection_Id, detected_camera_Id, and person_Id are required' 
+        });
+      }
+
+      const result = await OfficesService.addOfficeFootfallAnalysisService(footfallData);
+      return res.status(STATUS.CREATED).json(result);
+    } catch (error) {
+      next(error);
     }
   }
 

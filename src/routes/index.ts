@@ -30,7 +30,7 @@ mainRouter.use('/users', userRouter)
 mainRouter.use('/access-secret', accessSecretRouter)
 mainRouter.use('/users-roles', usersRoles)
 
-mainRouter.use('/parkss', parksRouter)
+mainRouter.use('/parks', parksRouter)
 mainRouter.use('/offices', officesRouter)
 mainRouter.use('/settings', settingsRouter)
 
