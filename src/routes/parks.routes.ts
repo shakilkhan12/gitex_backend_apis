@@ -1,10 +1,11 @@
 import { ParksController } from "@/controllers";
-import { parkBasicInfoValidations, parkCameraValidations, parkValidations, updateZoneStatusValidation, zoneValidations } from "@/validations";
+import { parkBasicInfoValidations, parkCameraValidations, parkValidations, parkZoneIrrigationStatusValidations, updateZoneStatusValidation, zoneValidations } from "@/validations";
 import { Router } from "express";
 const parkRouter  = Router();
 parkRouter.post('/add', parkValidations, ParksController.addPark)
 parkRouter.post('/add-park-zone', zoneValidations, ParksController.addParkZone)
 parkRouter.post('/add-park-camera', parkCameraValidations, ParksController.addParkCamera)
+parkRouter.post('/update-park-zone-irrigation-status', parkZoneIrrigationStatusValidations, ParksController.updateParkZoneIrrigationStatus)
 parkRouter.put("/update-park-camera-function",ParksController.changeParkCameraFunctionality)
 parkRouter.put('/update-park-camera-settings', ParksController.updateSetting)
 parkRouter.put('/update-park-basic-info', parkBasicInfoValidations, ParksController.updateParkBasicInfo);

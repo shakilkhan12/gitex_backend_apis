@@ -1,8 +1,6 @@
-import { Decimal } from "@/prisma/generated/prisma/runtime/library";
 import { ParksService } from "@/services";
-import { ParkCamera, ParkType, ParkZone, SettingInputTypes } from "@/typescript/interfaces/all_types";
+import { ParkCamera, ParkType, ParkZone, ParkZoneIrrigationTypes, SettingInputTypes } from "@/typescript/interfaces/all_types";
 import { STATUS } from "@/typescript";
-import { HttpException } from "@/utils/HttpException.utils";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 
@@ -256,6 +254,14 @@ const { camera_Id, ...fields } = req.body;
    return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
       }
 
+    } catch (error) {
+      next(error)
+    }
+  }
+  public static updateParkZoneIrrigationStatus = async (req: Request <{}, {}, ParkZoneIrrigationTypes>, res: Response, next: NextFunction) => {
+    try {
+      const response = await ParksService.updateParkZoneIrrigationStatusService(req.body)
+      return res.status(STATUS.SUCCESS).json(response)
     } catch (error) {
       next(error)
     }

@@ -37646,12 +37646,12 @@ export namespace Prisma {
 
   export type parks_irrigation_job_historyWhereUniqueInput = Prisma.AtLeast<{
     Id?: number
+    job_Id?: string
     AND?: parks_irrigation_job_historyWhereInput | parks_irrigation_job_historyWhereInput[]
     OR?: parks_irrigation_job_historyWhereInput[]
     NOT?: parks_irrigation_job_historyWhereInput | parks_irrigation_job_historyWhereInput[]
     park_Id?: IntNullableFilter<"parks_irrigation_job_history"> | number | null
     zone_Id?: IntNullableFilter<"parks_irrigation_job_history"> | number | null
-    job_Id?: StringNullableFilter<"parks_irrigation_job_history"> | string | null
     job_started_at?: DateTimeFilter<"parks_irrigation_job_history"> | Date | string
     job_completed_at?: DateTimeNullableFilter<"parks_irrigation_job_history"> | Date | string | null
     job_status?: StringNullableFilter<"parks_irrigation_job_history"> | string | null
@@ -37659,7 +37659,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"parks_irrigation_job_history"> | Date | string
     parks?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
     park_zones?: XOR<Park_zonesNullableScalarRelationFilter, park_zonesWhereInput> | null
-  }, "Id">
+  }, "Id" | "job_Id">
 
   export type parks_irrigation_job_historyOrderByWithAggregationInput = {
     Id?: SortOrder
