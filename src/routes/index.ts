@@ -15,6 +15,7 @@ import usersRoles from "./users_roles.route";
 import parksRouter from "./parks.routes"
 import officesRouter from "./offices.routes";
 import settingsRouter from "./settings.routes";
+import eventHandlerRouter from "./event-handler.routes";
 const mainRouter = Router();
 
 mainRouter.use('/smoking-detection', smokingDetectionRouter)
@@ -33,5 +34,6 @@ mainRouter.use('/users-roles', usersRoles)
 mainRouter.use('/parks', parksRouter)
 mainRouter.use('/offices', officesRouter)
 mainRouter.use('/settings', settingsRouter)
+mainRouter.use('/event-handler', eventHandlerRouter)
 
 export default mainRouter;

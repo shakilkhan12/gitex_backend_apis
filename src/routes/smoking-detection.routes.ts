@@ -61,6 +61,32 @@ const smokingDetectionRouter = Router();
  *                 format: time
  *                 description: Time when detection was posted to intranet
  *                 example: "14:35:00"
+ *               detection_Id:
+ *                 type: string
+ *                 description: Unique detection identifier
+ *                 example: "SMOKE_20240115_001"
+ *               detection_date:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Date and time when detection was processed
+ *                 example: "2024-01-15T14:30:00Z"
+ *               detection_time:
+ *                 type: string
+ *                 format: time
+ *                 description: Time when detection was processed
+ *                 example: "14:30:00"
+ *               description:
+ *                 type: string
+ *                 description: Detailed description of the smoking detection
+ *                 example: "Smoking detected near main entrance"
+ *               is_employee:
+ *                 type: boolean
+ *                 description: Whether the person detected is an employee
+ *                 example: false
+ *               current_status:
+ *                 type: string
+ *                 description: Current status of the detection
+ *                 example: "active"
  *     responses:
  *       201:
  *         description: Smoking detection record created successfully
@@ -100,6 +126,26 @@ const smokingDetectionRouter = Router();
  *                   type: string
  *                   format: time
  *                   example: "14:35:00"
+ *                 detection_Id:
+ *                   type: string
+ *                   example: "SMOKE_20240115_001"
+ *                 detection_date:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2024-01-15T14:30:00Z"
+ *                 detection_time:
+ *                   type: string
+ *                   format: time
+ *                   example: "14:30:00"
+ *                 description:
+ *                   type: string
+ *                   example: "Smoking detected near main entrance"
+ *                 is_employee:
+ *                   type: boolean
+ *                   example: false
+ *                 current_status:
+ *                   type: string
+ *                   example: "active"
  *                 createdAt:
  *                   type: string
  *                   format: date-time
@@ -188,6 +234,26 @@ smokingDetectionRouter.post('/add', smokingDetectionValidations, SmokingDetectio
  *                     type: string
  *                     format: time
  *                     example: "14:35:00"
+ *                   detection_Id:
+ *                     type: string
+ *                     example: "SMOKE_20240115_001"
+ *                   detection_date:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2024-01-15T14:30:00Z"
+ *                   detection_time:
+ *                     type: string
+ *                     format: time
+ *                     example: "14:30:00"
+ *                   description:
+ *                     type: string
+ *                     example: "Smoking detected near main entrance"
+ *                   is_employee:
+ *                     type: boolean
+ *                     example: false
+ *                   current_status:
+ *                     type: string
+ *                     example: "active"
  *                   createdAt:
  *                     type: string
  *                     format: date-time
@@ -291,15 +357,33 @@ smokingDetectionRouter.get('/get/:id', SmokingDetectionController.getSmokingDete
  *               location:
  *                 type: string
  *                 description: Updated location
+ *                 example: "Updated Main Entrance Area"
  *               snap_shot:
  *                 type: string
  *                 description: Updated snapshot
+ *                 example: "updated_smoking_detection_20240115_143000.jpg"
  *               description:
  *                 type: string
  *                 description: Updated description
+ *                 example: "Updated smoking detection description"
  *               current_status:
  *                 type: string
  *                 description: Updated status
+ *                 example: "resolved"
+ *               is_employee:
+ *                 type: boolean
+ *                 description: Whether the person detected is an employee
+ *                 example: true
+ *               posted_to_intranet_date:
+ *                 type: string
+ *                 format: date
+ *                 description: Updated intranet posting date
+ *                 example: "2024-01-16"
+ *               posted_to_intranet_time:
+ *                 type: string
+ *                 format: time
+ *                 description: Updated intranet posting time
+ *                 example: "15:00:00"
  *     responses:
  *       200:
  *         description: Smoking detection updated successfully

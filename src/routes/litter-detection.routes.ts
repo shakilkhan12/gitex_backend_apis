@@ -57,6 +57,36 @@ const litterDetectionRouter = Router();
  *                 enum: [pending, in_progress, resolved, closed]
  *                 description: Current status of the litter case
  *                 example: "pending"
+ *               detection_Id:
+ *                 type: string
+ *                 description: Unique detection identifier
+ *                 example: "LITTER_DETECT_20240115_001"
+ *               detection_date:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Date and time when detection was processed
+ *                 example: "2024-01-15T10:30:00Z"
+ *               detection_time:
+ *                 type: string
+ *                 format: time
+ *                 description: Time when detection was processed
+ *                 example: "10:30:00"
+ *               description:
+ *                 type: string
+ *                 description: Detailed description of the litter detection
+ *                 example: "Litter detected in playground area"
+ *               current_status:
+ *                 type: string
+ *                 description: Current status of the detection
+ *                 example: "active"
+ *               camera_Id:
+ *                 type: integer
+ *                 description: ID of the camera that detected the litter
+ *                 example: 3
+ *               after_image:
+ *                 type: string
+ *                 description: Image taken after cleanup (if available)
+ *                 example: "litter_after_cleanup_20240115_103000.jpg"
  *     responses:
  *       201:
  *         description: Litter detection record created successfully
@@ -92,6 +122,29 @@ const litterDetectionRouter = Router();
  *                   type: string
  *                   enum: [pending, in_progress, resolved, closed]
  *                   example: "pending"
+ *                 detection_Id:
+ *                   type: string
+ *                   example: "LITTER_DETECT_20240115_001"
+ *                 detection_date:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2024-01-15T10:30:00Z"
+ *                 detection_time:
+ *                   type: string
+ *                   format: time
+ *                   example: "10:30:00"
+ *                 description:
+ *                   type: string
+ *                   example: "Litter detected in playground area"
+ *                 current_status:
+ *                   type: string
+ *                   example: "active"
+ *                 camera_Id:
+ *                   type: integer
+ *                   example: 3
+ *                 after_image:
+ *                   type: string
+ *                   example: "litter_after_cleanup_20240115_103000.jpg"
  *                 createdAt:
  *                   type: string
  *                   format: date-time
@@ -176,6 +229,29 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  *                     type: string
  *                     enum: [pending, in_progress, resolved, closed]
  *                     example: "pending"
+ *                   detection_Id:
+ *                     type: string
+ *                     example: "LITTER_DETECT_20240115_001"
+ *                   detection_date:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2024-01-15T10:30:00Z"
+ *                   detection_time:
+ *                     type: string
+ *                     format: time
+ *                     example: "10:30:00"
+ *                   description:
+ *                     type: string
+ *                     example: "Litter detected in playground area"
+ *                   current_status:
+ *                     type: string
+ *                     example: "active"
+ *                   camera_Id:
+ *                     type: integer
+ *                     example: 3
+ *                   after_image:
+ *                     type: string
+ *                     example: "litter_after_cleanup_20240115_103000.jpg"
  *                   createdAt:
  *                     type: string
  *                     format: date-time
@@ -197,6 +273,18 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  *                       longitude:
  *                         type: number
  *                         example: 56.3419
+ *                   park_cameras:
+ *                     type: object
+ *                     properties:
+ *                       camera_english_name:
+ *                         type: string
+ *                         example: "Playground Camera"
+ *                       camera_arabic_name:
+ *                         type: string
+ *                         example: "كاميرا الملعب"
+ *                       ip_address:
+ *                         type: string
+ *                         example: "192.168.1.103"
  *       500:
  *         description: Internal server error
  *         content:

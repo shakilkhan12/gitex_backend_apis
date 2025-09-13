@@ -11,14 +11,10 @@ class UserService {
    protected static loginService = async (EmpCode: string, Password: string) => {
    
       try {
-         // 1️⃣ Get SecretKey from Prisma
-         const secretRecord = await db.access_secret.findFirst();
-         if (!secretRecord?.value) {
-            throw new HttpException(STATUS.BAD_REQUEST, "Secret key not configured");
-         }
-         const secretKey = secretRecord.value;
+         // 1️⃣ Fetch SecretKey from third-party API
+         const secretKey = await this.fetchSecretFromAPI();
        
-         // 2️⃣ Prepare payload for third-party API
+         // 2️⃣ Prepare payload for login API
          const payload = {
             EmpCode,
             Password,
@@ -26,12 +22,13 @@ class UserService {
             Lang: "en"
          };
    
-         // 3️⃣ Call third-party API
+         // 3️⃣ Call login API
          const response = await axios.post(
-            "http://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeLoginService",
+            "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeLoginService",
             payload,
             {
                headers: { "Content-Type": "application/json" },
+               httpsAgent: new https.Agent({ rejectUnauthorized: false }),
             }
          );
    
@@ -294,25 +291,51 @@ class UserService {
       }
    }
 
+   // Fetch secret key from third-party API (similar to access_secret service)
+   private static async fetchSecretFromAPI(): Promise<string> {
+      try {
+         const response = await axios.post(
+            "https://192.168.164.7/website_demo/middleware/?action=Secretkey&class=general",
+            {
+               Username: "WebServiceUser",
+               Pwd: "A01834h123ds2",
+            },
+            {
+               headers: { "Content-Type": "application/json" },
+               httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+            }
+         );
+
+         // Adjust based on actual API response shape
+         if (response.data?.secret) return response.data.secret;
+         if (response.data?.key) return response.data.key;
+
+         throw new HttpException(
+            STATUS.BAD_REQUEST,
+            "Secret key not found in API response"
+         );
+      } catch (error: any) {
+         throw new HttpException(
+            STATUS.BAD_REQUEST,
+            `Failed to fetch secret from API: ${error.message}`
+         );
+      }
+   }
+
    // Fetch employee listing from third-party API and store in database
    public static fetchAndStoreEmployeeListingService = async () => {
       
       try {
-         // 1️⃣ Get SecretKey from access_secret table
-         const secretRecord = await db.access_secret.findFirst();
-         if (!secretRecord?.value) {
-            console.error("❌ [UserService] SecretKey not found in DB");
-            throw new HttpException(STATUS.BAD_REQUEST, "Secret key not configured");
-         }
-         const secretKey = secretRecord.value;
+         // 1️⃣ Fetch SecretKey from third-party API
+         const secretKey = await this.fetchSecretFromAPI();
 
-         // 2️⃣ Prepare payload for third-party API
+         // 2️⃣ Prepare payload for employee listing API
          const payload = {
             SecretKey: `${secretKey}==`,
             Lang: "en"
          };
 
-         // 3️⃣ Call third-party API
+         // 3️⃣ Call employee listing API
          const response = await axios.post(
             "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeListingGet",
             payload,

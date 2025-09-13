@@ -16,3 +16,4 @@ export { default as UsersRolesController } from "@/controllers/users_roles.contr
 export { default as ParksController } from "@/controllers/parks.controller";
 export { default as OfficesController } from "@/controllers/offices.controller"
 export { default as Settings } from "@/controllers/settings.controller"
+export { default as EventHandlerController } from "@/controllers/event-handler.controller"
