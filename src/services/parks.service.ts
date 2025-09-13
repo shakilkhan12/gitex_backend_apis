@@ -3,6 +3,7 @@ import { STATUS, } from "@/typescript"
 import { v4 as uuidv4 } from 'uuid';
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
+import { getSocketInstance } from "./socket.service";
 
 class ParkService {
    // add park service
@@ -259,6 +260,15 @@ class ParkService {
       where: { Id: data.zoneId },
       data: { status: "stopped" }
     });
+    const io = getSocketInstance()
+    if (io) {
+    io.emit("zoneStatusUpdated", {
+      zoneId: data.zoneId,
+      status: "stopped",
+      jobId: job.job_Id
+    });
+  }
+   
   }, data.duration * 60 * 1000);
    return `Zone ${data.zoneId} started for ${data.duration} minute(s)`
   }
