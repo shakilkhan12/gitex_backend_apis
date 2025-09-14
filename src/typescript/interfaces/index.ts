@@ -5,6 +5,7 @@ export interface ParkType {
   image: string;
   latitude: number;
   longitude: number;
+  location?: string;
 }
 
 export interface SmokingDetectionType {
@@ -194,7 +195,7 @@ export interface OfficeCamera extends ParkCombine {
   ip_address?: string;
   last_active_date?: Date,
   last_active_time?: string;
-  status?:string;
+  status?: boolean | string;
 }
 
 export interface ParkZone extends ParkCombine {
@@ -217,7 +218,7 @@ export interface ParkCamera extends ParkCombine, SettingTypes{
   ip_address: string;
   last_active_date: Date,
   last_active_time: string;
-  status: string;
+  status: boolean | string;
   attendance?: boolean|undefined;
   footfall?: boolean | undefined;
   behaviour?:boolean | undefined;

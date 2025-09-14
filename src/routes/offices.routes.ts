@@ -10,7 +10,7 @@ officesRouter.put('/update-office-basic-info', officeBasicInfoValidations, Offic
 officesRouter.put('/update-office-image', OfficesController.updateOfficeImage)
 officesRouter.put('/update-office-camera/:id', validateOfficeCamera, OfficesController.updateOfficeCamera)
 officesRouter.get('/get', OfficesController.getOffices)
-officesRouter.get('/get-office/:office_Id', OfficesController.getOffice)
+officesRouter.get('/get-office/:id', OfficesController.getOffice)
 officesRouter.get('/get-office-cameras/:officeId', OfficesController.getOfficeCameras)
 officesRouter.get('/get-office-setting/:officeId', OfficesController.getOfficeSetting)
 officesRouter.get('/get-office-cameras-functionalities/:officeId', OfficesController.getOfficeCamerasFunctionalities)

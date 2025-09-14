@@ -29,7 +29,6 @@ class ParkService {
    }
    // get park
    protected static getParkService = async (park_Id: number) => {
-      console.log('park_Id -> ', park_Id)
       if(!park_Id) {
          throw new HttpException(STATUS.BAD_REQUEST, `park id is required`)
       }
@@ -88,7 +87,19 @@ class ParkService {
    // add park camera service
    protected static addParCameraService = async (cameraData: ParkCamera) => {
       const result = await db.park_cameras.create({
-         data: {...cameraData, createdAt: new Date()}
+         data: {
+            park_Id: Number(cameraData.park_Id),
+            camera_Id: cameraData.camera_Id,
+            camera_english_name: cameraData.camera_english_name,
+            camera_arabic_name: cameraData.camera_arabic_name,
+            latitude: Number(cameraData.latitude),
+            longitude: Number(cameraData.longitude),
+            ip_address: cameraData.ip_address,
+            last_active_date: cameraData.last_active_date,
+            last_active_time: cameraData.last_active_time,
+            status: cameraData.status === 'active' || cameraData.status === true,
+            createdAt: new Date()
+         }
       })
       return result;
    }
@@ -96,7 +107,19 @@ class ParkService {
       protected static updateParkCameraService = async (cameraData: ParkCamera, id: number) => {
       const result = await db.park_cameras.update({
          where: {Id: Number(id)},
-         data: {...cameraData, latitude: Number(cameraData?.latitude), longitude: Number(cameraData?.longitude), updatedAt: new Date()}
+         data: {
+            park_Id: cameraData.park_Id ? Number(cameraData.park_Id) : undefined,
+            camera_Id: cameraData.camera_Id,
+            camera_english_name: cameraData.camera_english_name,
+            camera_arabic_name: cameraData.camera_arabic_name,
+            latitude: Number(cameraData?.latitude),
+            longitude: Number(cameraData?.longitude),
+            ip_address: cameraData.ip_address,
+            last_active_date: cameraData.last_active_date,
+            last_active_time: cameraData.last_active_time,
+            status: cameraData.status === 'active' || cameraData.status === true,
+            updatedAt: new Date()
+         }
       })
       return result;
    }

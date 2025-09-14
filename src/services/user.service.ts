@@ -13,12 +13,12 @@ class UserService {
       try {
          // 1️⃣ Fetch SecretKey from third-party API
          const secretKey = await this.fetchSecretFromAPI();
-       
+       console.log('secretKey',secretKey)
          // 2️⃣ Prepare payload for login API
          const payload = {
             EmpCode,
             Password,
-            SecretKey: `${secretKey}==`,
+            SecretKey: `${secretKey}`,
             Lang: "en"
          };
    
@@ -307,8 +307,8 @@ class UserService {
          );
 
          // Adjust based on actual API response shape
-         if (response.data?.secret) return response.data.secret;
-         if (response.data?.key) return response.data.key;
+         if (response.data?.SecretKey) return response.data.SecretKey;
+         if (response.data?.SecretKey) return response.data.SecretKey;
 
          throw new HttpException(
             STATUS.BAD_REQUEST,

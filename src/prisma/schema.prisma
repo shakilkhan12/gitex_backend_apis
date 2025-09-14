@@ -4,9 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider          = "mysql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("DATABASE_URL_SHADOW")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model access_secret {
@@ -92,7 +91,7 @@ model offices_cameras {
   ip_address                                                                             String?                      @db.VarChar(45)
   last_active_date                                                                       DateTime?                    @db.Date
   last_active_time                                                                       DateTime?                    @db.Time(0)
-  status                                                                                 String?                      @db.VarChar(50)
+  status                                                                                 Boolean?                     @default(false)
   createdAt                                                                              DateTime?                    @db.Timestamp(0)
   updatedAt                                                                              DateTime                     @default(now()) @db.Timestamp(0)
   live_stream_favourites                                                                 live_stream_favourites[]
@@ -146,7 +145,7 @@ model park_cameras {
   ip_address                                                                      String?                     @db.VarChar(45)
   last_active_date                                                                DateTime?                   @db.Date
   last_active_time                                                                DateTime?                   @db.Time(0)
-  status                                                                          String?                     @db.VarChar(50)
+  status                                                                          Boolean?                    @default(false)
   createdAt                                                                       DateTime?                   @db.Timestamp(0)
   updatedAt                                                                       DateTime                    @default(now()) @db.Timestamp(0)
   live_stream_favourites                                                          live_stream_favourites[]
@@ -206,6 +205,7 @@ model parks {
   image                        String?                        @db.VarChar(255)
   latitude                     Decimal?                       @db.Decimal(10, 8)
   longitude                    Decimal?                       @db.Decimal(11, 8)
+  location                     String?                        @db.VarChar(255)
   createdAt                    DateTime?                      @db.Timestamp(0)
   updatedAt                    DateTime                       @default(now()) @db.Timestamp(0)
   park_cameras                 park_cameras[]

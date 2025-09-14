@@ -128,7 +128,7 @@ class OfficesController extends OfficesService {
   }
   // get office details
   public static getOffice = async (req: Request, res: Response, next: NextFunction) => {
-    const officeId: number = Number(req.params.office_Id);
+    const officeId: number = Number(req.params.id);
     try {
       const office = await OfficesService.getOfficeService(officeId);
       return res.status(STATUS.SUCCESS).json(office)

@@ -37,11 +37,24 @@ class OfficesService {
   },
    });
    }
-   // add park camera service
+   // add office camera service
    protected static addOfficeCameraService = async (cameraData: OfficeCamera) => {
      console.log('Data -> ', cameraData)
       const result = await db.offices_cameras.create({
-         data: {...cameraData,  office_Id: Number(cameraData.office_Id), createdAt: new Date() }})
+         data: {
+            office_Id: Number(cameraData.office_Id),
+            camera_Id: cameraData.camera_Id,
+            camera_english_name: cameraData.camera_english_name,
+            camera_arabic_name: cameraData.camera_arabic_name,
+            latitude: Number(cameraData.latitude),
+            longitude: Number(cameraData.longitude),
+            ip_address: cameraData.ip_address,
+            last_active_date: cameraData.last_active_date,
+            last_active_time: cameraData.last_active_time,
+            status: cameraData.status === 'active' || cameraData.status === true,
+            createdAt: new Date()
+         }
+      })
       return result;
    }
    protected static changeOfficeCameraFunctionalityService = async ({fieldName, fieldValue, camera_Id, }: {fieldName: string, fieldValue: any, camera_Id: string}) => {
@@ -166,7 +179,19 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       protected static updateOfficeCameraService = async (cameraData: OfficeCamera, id: number) => {
       const result = await db.offices_cameras.update({
          where: {Id: Number(id)},
-         data: {...cameraData, latitude: Number(cameraData?.latitude), longitude: Number(cameraData?.longitude), updatedAt: new Date()}
+         data: {
+            office_Id: cameraData.office_Id,
+            camera_Id: cameraData.camera_Id,
+            camera_english_name: cameraData.camera_english_name,
+            camera_arabic_name: cameraData.camera_arabic_name,
+            ip_address: cameraData.ip_address,
+            latitude: Number(cameraData?.latitude), 
+            longitude: Number(cameraData?.longitude), 
+            last_active_date: cameraData.last_active_date,
+            last_active_time: cameraData.last_active_time,
+            status: cameraData.status === 'active' || cameraData.status === true,
+            updatedAt: new Date()
+         }
       })
       return result;
    }
