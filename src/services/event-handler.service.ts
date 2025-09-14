@@ -47,7 +47,7 @@ class EventHandlerService {
 
                 let parkcamera=await db.park_cameras.findFirst({
                    where:{
-                      camera_Id:eventData.event.params.events[0].srcIndex
+                      camera_Id: eventData.event.params.events[0].srcIndex
                    }
                 })
                 if(parkcamera){
@@ -107,10 +107,10 @@ class EventHandlerService {
                       const humanId = eventData.event.params.events[0].data.alarmResult.faces.identify.candidate.human_id
                       
                       // Look up person_Id in users database
-                      let person_Id = 1; // Default fallback
-                      if (similarity !== 0 && humanId) {
+                      let person_Id = null; // Default fallback - use null for unknown persons
+                      if (similarity !== 0 && humanId && humanId !== "-1") {
                          const user = await db.users.findFirst({
-                            where: { Id: humanId.toString() }
+                            where: { emp_Id: humanId.toString() }
                          });
                          if (user) {
                             person_Id = user.Id;
@@ -132,11 +132,14 @@ class EventHandlerService {
                       }
                       
                       console.log("🏢 [OFFICE FOOTFALL] Creating footfall record:", JSON.stringify(officeFootfallData, null, 2));
-                      const officeFootfallRecord = await db.offices_footfall_analysis.create({
-                         data: officeFootfallData
-                      })
-                      console.log("✅ [OFFICE FOOTFALL] Record created with ID:", officeFootfallRecord.id);
+                     
+                        const officeFootfallRecord = await db.offices_footfall_analysis.create({
+                           data: officeFootfallData
+                        })
+                        console.log("✅ [OFFICE FOOTFALL] Record created with ID:", officeFootfallRecord.id);
+                        
                       
+                    
                       // Handle attendance (entry/exit)
                       if(isEntry){
                          // Create new attendance record for entry
@@ -203,10 +206,10 @@ class EventHandlerService {
                       const humanId = eventData.event.params.events[0].data.alarmResult.faces.identify.candidate.human_id
                       
                       // Look up person_Id in users database
-                      let person_Id = 1; // Default fallback
-                      if (similarity !== 0 && humanId) {
+                      let person_Id = null; // Default fallback - use null for unknown persons
+                      if (similarity !== 0 && humanId && humanId !== "-1") {
                          const user = await db.users.findFirst({
-                            where: { Id: humanId.toString() }
+                            where: { emp_Id: humanId.toString() }
                          });
                          if (user) {
                             person_Id = user.Id;
@@ -226,13 +229,16 @@ class EventHandlerService {
                          detected_camera_Id: eventData.event.params.events[0].srcIndex,
                          detected_camera_name: eventData.event.params.events[0].srcName
                       }
+                     
+                        console.log("🌳 [PARK FOOTFALL] Creating footfall record:", JSON.stringify(parkFootfallData, null, 2));
+                        const parkFootfallRecord = await db.parks_footfall_analysis.create({
+                           data: parkFootfallData
+                        })
+                        console.log("✅ [PARK FOOTFALL] Record created with ID:", parkFootfallRecord.id);
+                        
                       
-                      console.log("🌳 [PARK FOOTFALL] Creating footfall record:", JSON.stringify(parkFootfallData, null, 2));
-                      const parkFootfallRecord = await db.parks_footfall_analysis.create({
-                         data: parkFootfallData
-                      })
-                      console.log("✅ [PARK FOOTFALL] Record created with ID:", parkFootfallRecord.id);
                       
+                   
                       // Handle attendance (entry/exit)
                       if(isEntry){
                          // Create new attendance record for entry

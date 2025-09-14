@@ -498,6 +498,7 @@ model users {
   live_stream_favourites    live_stream_favourites[]
   offices_attendance        offices_attendance[]        @relation("offices_attendance_to_user")
   offices_footfall_analysis offices_footfall_analysis[]
+  parks_footfall_analysis   parks_footfall_analysis[]
   parks_attendance          parks_attendance[]          @relation("parks_attendance_to_user")
   users_roles               users_roles?                @relation(fields: [role_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "users_ibfk_1")
 
@@ -576,9 +577,9 @@ model users_roles {
 
 model parks_footfall_analysis {
   id                   Int      @id @default(autoincrement())
-  park_Id              Int
+  park_Id              Int?
   detection_Id         String
-  person_Id            Int
+  person_Id            Int?
   gender               String?
   is_child             Boolean  @default(false)
   time                 DateTime @default(now())
@@ -587,7 +588,8 @@ model parks_footfall_analysis {
   abc1                 String?
   abc2                 String?
   abc3                 String?
-  park                 parks    @relation(fields: [park_Id], references: [Id])
+  park                 parks?   @relation(fields: [park_Id], references: [Id])
+  person               users?   @relation(fields: [person_Id], references: [Id])
 
   @@index([park_Id], map: "parks_footfall_analysis_park_Id_fkey")
   @@map("parks_footfall_analysis")
@@ -595,9 +597,9 @@ model parks_footfall_analysis {
 
 model offices_footfall_analysis {
   id                   Int      @id @default(autoincrement())
-  office_Id            Int
+  office_Id            Int?
   detection_Id         String
-  person_Id            Int
+  person_Id            Int?
   gender               String?
   is_child             Boolean  @default(false)
   time                 DateTime @default(now())
@@ -606,8 +608,8 @@ model offices_footfall_analysis {
   abc1                 String?
   abc2                 String?
   abc3                 String?
-  office               offices  @relation(fields: [office_Id], references: [Id])
-  person               users    @relation(fields: [person_Id], references: [Id])
+  office               offices? @relation(fields: [office_Id], references: [Id])
+  person               users?   @relation(fields: [person_Id], references: [Id])
 
   @@index([office_Id], map: "offices_footfall_analysis_office_Id_fkey")
   @@index([person_Id], map: "offices_footfall_analysis_person_Id_fkey")

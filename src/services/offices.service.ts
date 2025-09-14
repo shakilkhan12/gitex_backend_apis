@@ -262,9 +262,9 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
 
          // Get unique employees
          const uniqueEmployees = footfallData
-            .filter(item => item.person_Id !== null)
+            .filter(item => item.person_Id !== null && item.person !== null)
             .reduce((acc: any[], item) => {
-               if (!acc.find(emp => emp.Id === item.person.Id)) {
+               if (item.person && !acc.find(emp => emp.Id === item.person?.Id)) {
                   acc.push(item.person);
                }
                return acc;

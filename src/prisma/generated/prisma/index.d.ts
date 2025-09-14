@@ -3616,6 +3616,7 @@ export namespace Prisma {
     live_stream_favourites: number
     offices_attendance: number
     offices_footfall_analysis: number
+    parks_footfall_analysis: number
     parks_attendance: number
   }
 
@@ -3623,6 +3624,7 @@ export namespace Prisma {
     live_stream_favourites?: boolean | UsersCountOutputTypeCountLive_stream_favouritesArgs
     offices_attendance?: boolean | UsersCountOutputTypeCountOffices_attendanceArgs
     offices_footfall_analysis?: boolean | UsersCountOutputTypeCountOffices_footfall_analysisArgs
+    parks_footfall_analysis?: boolean | UsersCountOutputTypeCountParks_footfall_analysisArgs
     parks_attendance?: boolean | UsersCountOutputTypeCountParks_attendanceArgs
   }
 
@@ -3656,6 +3658,13 @@ export namespace Prisma {
    */
   export type UsersCountOutputTypeCountOffices_footfall_analysisArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: offices_footfall_analysisWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountParks_footfall_analysisArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: parks_footfall_analysisWhereInput
   }
 
   /**
@@ -27744,6 +27753,7 @@ export namespace Prisma {
     live_stream_favourites?: boolean | users$live_stream_favouritesArgs<ExtArgs>
     offices_attendance?: boolean | users$offices_attendanceArgs<ExtArgs>
     offices_footfall_analysis?: boolean | users$offices_footfall_analysisArgs<ExtArgs>
+    parks_footfall_analysis?: boolean | users$parks_footfall_analysisArgs<ExtArgs>
     parks_attendance?: boolean | users$parks_attendanceArgs<ExtArgs>
     users_roles?: boolean | users$users_rolesArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
@@ -27791,6 +27801,7 @@ export namespace Prisma {
     live_stream_favourites?: boolean | users$live_stream_favouritesArgs<ExtArgs>
     offices_attendance?: boolean | users$offices_attendanceArgs<ExtArgs>
     offices_footfall_analysis?: boolean | users$offices_footfall_analysisArgs<ExtArgs>
+    parks_footfall_analysis?: boolean | users$parks_footfall_analysisArgs<ExtArgs>
     parks_attendance?: boolean | users$parks_attendanceArgs<ExtArgs>
     users_roles?: boolean | users$users_rolesArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
@@ -27802,6 +27813,7 @@ export namespace Prisma {
       live_stream_favourites: Prisma.$live_stream_favouritesPayload<ExtArgs>[]
       offices_attendance: Prisma.$offices_attendancePayload<ExtArgs>[]
       offices_footfall_analysis: Prisma.$offices_footfall_analysisPayload<ExtArgs>[]
+      parks_footfall_analysis: Prisma.$parks_footfall_analysisPayload<ExtArgs>[]
       parks_attendance: Prisma.$parks_attendancePayload<ExtArgs>[]
       users_roles: Prisma.$users_rolesPayload<ExtArgs> | null
     }
@@ -28181,6 +28193,7 @@ export namespace Prisma {
     live_stream_favourites<T extends users$live_stream_favouritesArgs<ExtArgs> = {}>(args?: Subset<T, users$live_stream_favouritesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$live_stream_favouritesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     offices_attendance<T extends users$offices_attendanceArgs<ExtArgs> = {}>(args?: Subset<T, users$offices_attendanceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$offices_attendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     offices_footfall_analysis<T extends users$offices_footfall_analysisArgs<ExtArgs> = {}>(args?: Subset<T, users$offices_footfall_analysisArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$offices_footfall_analysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    parks_footfall_analysis<T extends users$parks_footfall_analysisArgs<ExtArgs> = {}>(args?: Subset<T, users$parks_footfall_analysisArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_footfall_analysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     parks_attendance<T extends users$parks_attendanceArgs<ExtArgs> = {}>(args?: Subset<T, users$parks_attendanceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_attendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users_roles<T extends users$users_rolesArgs<ExtArgs> = {}>(args?: Subset<T, users$users_rolesArgs<ExtArgs>>): Prisma__users_rolesClient<$Result.GetResult<Prisma.$users_rolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -28656,6 +28669,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Offices_footfall_analysisScalarFieldEnum | Offices_footfall_analysisScalarFieldEnum[]
+  }
+
+  /**
+   * users.parks_footfall_analysis
+   */
+  export type users$parks_footfall_analysisArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the parks_footfall_analysis
+     */
+    select?: parks_footfall_analysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the parks_footfall_analysis
+     */
+    omit?: parks_footfall_analysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: parks_footfall_analysisInclude<ExtArgs> | null
+    where?: parks_footfall_analysisWhereInput
+    orderBy?: parks_footfall_analysisOrderByWithRelationInput | parks_footfall_analysisOrderByWithRelationInput[]
+    cursor?: parks_footfall_analysisWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Parks_footfall_analysisScalarFieldEnum | Parks_footfall_analysisScalarFieldEnum[]
   }
 
   /**
@@ -31435,9 +31472,9 @@ export namespace Prisma {
 
   export type Parks_footfall_analysisGroupByOutputType = {
     id: number
-    park_Id: number
+    park_Id: number | null
     detection_Id: string
-    person_Id: number
+    person_Id: number | null
     gender: string | null
     is_child: boolean
     time: Date
@@ -31480,7 +31517,8 @@ export namespace Prisma {
     abc1?: boolean
     abc2?: boolean
     abc3?: boolean
-    park?: boolean | parksDefaultArgs<ExtArgs>
+    park?: boolean | parks_footfall_analysis$parkArgs<ExtArgs>
+    person?: boolean | parks_footfall_analysis$personArgs<ExtArgs>
   }, ExtArgs["result"]["parks_footfall_analysis"]>
 
 
@@ -31502,19 +31540,21 @@ export namespace Prisma {
 
   export type parks_footfall_analysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "park_Id" | "detection_Id" | "person_Id" | "gender" | "is_child" | "time" | "detected_camera_Id" | "detected_camera_name" | "abc1" | "abc2" | "abc3", ExtArgs["result"]["parks_footfall_analysis"]>
   export type parks_footfall_analysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    park?: boolean | parksDefaultArgs<ExtArgs>
+    park?: boolean | parks_footfall_analysis$parkArgs<ExtArgs>
+    person?: boolean | parks_footfall_analysis$personArgs<ExtArgs>
   }
 
   export type $parks_footfall_analysisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "parks_footfall_analysis"
     objects: {
-      park: Prisma.$parksPayload<ExtArgs>
+      park: Prisma.$parksPayload<ExtArgs> | null
+      person: Prisma.$usersPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      park_Id: number
+      park_Id: number | null
       detection_Id: string
-      person_Id: number
+      person_Id: number | null
       gender: string | null
       is_child: boolean
       time: Date
@@ -31863,7 +31903,8 @@ export namespace Prisma {
    */
   export interface Prisma__parks_footfall_analysisClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    park<T extends parksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, parksDefaultArgs<ExtArgs>>): Prisma__parksClient<$Result.GetResult<Prisma.$parksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    park<T extends parks_footfall_analysis$parkArgs<ExtArgs> = {}>(args?: Subset<T, parks_footfall_analysis$parkArgs<ExtArgs>>): Prisma__parksClient<$Result.GetResult<Prisma.$parksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    person<T extends parks_footfall_analysis$personArgs<ExtArgs> = {}>(args?: Subset<T, parks_footfall_analysis$personArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -32248,6 +32289,44 @@ export namespace Prisma {
   }
 
   /**
+   * parks_footfall_analysis.park
+   */
+  export type parks_footfall_analysis$parkArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the parks
+     */
+    select?: parksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the parks
+     */
+    omit?: parksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: parksInclude<ExtArgs> | null
+    where?: parksWhereInput
+  }
+
+  /**
+   * parks_footfall_analysis.person
+   */
+  export type parks_footfall_analysis$personArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the users
+     */
+    select?: usersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the users
+     */
+    omit?: usersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
+    where?: usersWhereInput
+  }
+
+  /**
    * parks_footfall_analysis without action
    */
   export type parks_footfall_analysisDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -32483,9 +32562,9 @@ export namespace Prisma {
 
   export type Offices_footfall_analysisGroupByOutputType = {
     id: number
-    office_Id: number
+    office_Id: number | null
     detection_Id: string
-    person_Id: number
+    person_Id: number | null
     gender: string | null
     is_child: boolean
     time: Date
@@ -32528,8 +32607,8 @@ export namespace Prisma {
     abc1?: boolean
     abc2?: boolean
     abc3?: boolean
-    office?: boolean | officesDefaultArgs<ExtArgs>
-    person?: boolean | usersDefaultArgs<ExtArgs>
+    office?: boolean | offices_footfall_analysis$officeArgs<ExtArgs>
+    person?: boolean | offices_footfall_analysis$personArgs<ExtArgs>
   }, ExtArgs["result"]["offices_footfall_analysis"]>
 
 
@@ -32551,21 +32630,21 @@ export namespace Prisma {
 
   export type offices_footfall_analysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "office_Id" | "detection_Id" | "person_Id" | "gender" | "is_child" | "time" | "detected_camera_Id" | "detected_camera_name" | "abc1" | "abc2" | "abc3", ExtArgs["result"]["offices_footfall_analysis"]>
   export type offices_footfall_analysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    office?: boolean | officesDefaultArgs<ExtArgs>
-    person?: boolean | usersDefaultArgs<ExtArgs>
+    office?: boolean | offices_footfall_analysis$officeArgs<ExtArgs>
+    person?: boolean | offices_footfall_analysis$personArgs<ExtArgs>
   }
 
   export type $offices_footfall_analysisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "offices_footfall_analysis"
     objects: {
-      office: Prisma.$officesPayload<ExtArgs>
-      person: Prisma.$usersPayload<ExtArgs>
+      office: Prisma.$officesPayload<ExtArgs> | null
+      person: Prisma.$usersPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      office_Id: number
+      office_Id: number | null
       detection_Id: string
-      person_Id: number
+      person_Id: number | null
       gender: string | null
       is_child: boolean
       time: Date
@@ -32914,8 +32993,8 @@ export namespace Prisma {
    */
   export interface Prisma__offices_footfall_analysisClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    office<T extends officesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, officesDefaultArgs<ExtArgs>>): Prisma__officesClient<$Result.GetResult<Prisma.$officesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    person<T extends usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, usersDefaultArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    office<T extends offices_footfall_analysis$officeArgs<ExtArgs> = {}>(args?: Subset<T, offices_footfall_analysis$officeArgs<ExtArgs>>): Prisma__officesClient<$Result.GetResult<Prisma.$officesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    person<T extends offices_footfall_analysis$personArgs<ExtArgs> = {}>(args?: Subset<T, offices_footfall_analysis$personArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -33297,6 +33376,44 @@ export namespace Prisma {
      * Limit how many offices_footfall_analyses to delete.
      */
     limit?: number
+  }
+
+  /**
+   * offices_footfall_analysis.office
+   */
+  export type offices_footfall_analysis$officeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the offices
+     */
+    select?: officesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the offices
+     */
+    omit?: officesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: officesInclude<ExtArgs> | null
+    where?: officesWhereInput
+  }
+
+  /**
+   * offices_footfall_analysis.person
+   */
+  export type offices_footfall_analysis$personArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the users
+     */
+    select?: usersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the users
+     */
+    omit?: usersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
+    where?: usersWhereInput
   }
 
   /**
@@ -38197,6 +38314,7 @@ export namespace Prisma {
     live_stream_favourites?: Live_stream_favouritesListRelationFilter
     offices_attendance?: Offices_attendanceListRelationFilter
     offices_footfall_analysis?: Offices_footfall_analysisListRelationFilter
+    parks_footfall_analysis?: Parks_footfall_analysisListRelationFilter
     parks_attendance?: Parks_attendanceListRelationFilter
     users_roles?: XOR<Users_rolesNullableScalarRelationFilter, users_rolesWhereInput> | null
   }
@@ -38237,6 +38355,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesOrderByRelationAggregateInput
     offices_attendance?: offices_attendanceOrderByRelationAggregateInput
     offices_footfall_analysis?: offices_footfall_analysisOrderByRelationAggregateInput
+    parks_footfall_analysis?: parks_footfall_analysisOrderByRelationAggregateInput
     parks_attendance?: parks_attendanceOrderByRelationAggregateInput
     users_roles?: users_rolesOrderByWithRelationInput
     _relevance?: usersOrderByRelevanceInput
@@ -38281,6 +38400,7 @@ export namespace Prisma {
     live_stream_favourites?: Live_stream_favouritesListRelationFilter
     offices_attendance?: Offices_attendanceListRelationFilter
     offices_footfall_analysis?: Offices_footfall_analysisListRelationFilter
+    parks_footfall_analysis?: Parks_footfall_analysisListRelationFilter
     parks_attendance?: Parks_attendanceListRelationFilter
     users_roles?: XOR<Users_rolesNullableScalarRelationFilter, users_rolesWhereInput> | null
   }, "Id" | "user_Id">
@@ -38711,9 +38831,9 @@ export namespace Prisma {
     OR?: parks_footfall_analysisWhereInput[]
     NOT?: parks_footfall_analysisWhereInput | parks_footfall_analysisWhereInput[]
     id?: IntFilter<"parks_footfall_analysis"> | number
-    park_Id?: IntFilter<"parks_footfall_analysis"> | number
+    park_Id?: IntNullableFilter<"parks_footfall_analysis"> | number | null
     detection_Id?: StringFilter<"parks_footfall_analysis"> | string
-    person_Id?: IntFilter<"parks_footfall_analysis"> | number
+    person_Id?: IntNullableFilter<"parks_footfall_analysis"> | number | null
     gender?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     is_child?: BoolFilter<"parks_footfall_analysis"> | boolean
     time?: DateTimeFilter<"parks_footfall_analysis"> | Date | string
@@ -38722,14 +38842,15 @@ export namespace Prisma {
     abc1?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"parks_footfall_analysis"> | string | null
-    park?: XOR<ParksScalarRelationFilter, parksWhereInput>
+    park?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
+    person?: XOR<UsersNullableScalarRelationFilter, usersWhereInput> | null
   }
 
   export type parks_footfall_analysisOrderByWithRelationInput = {
     id?: SortOrder
-    park_Id?: SortOrder
+    park_Id?: SortOrderInput | SortOrder
     detection_Id?: SortOrder
-    person_Id?: SortOrder
+    person_Id?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     is_child?: SortOrder
     time?: SortOrder
@@ -38739,6 +38860,7 @@ export namespace Prisma {
     abc2?: SortOrderInput | SortOrder
     abc3?: SortOrderInput | SortOrder
     park?: parksOrderByWithRelationInput
+    person?: usersOrderByWithRelationInput
     _relevance?: parks_footfall_analysisOrderByRelevanceInput
   }
 
@@ -38747,9 +38869,9 @@ export namespace Prisma {
     AND?: parks_footfall_analysisWhereInput | parks_footfall_analysisWhereInput[]
     OR?: parks_footfall_analysisWhereInput[]
     NOT?: parks_footfall_analysisWhereInput | parks_footfall_analysisWhereInput[]
-    park_Id?: IntFilter<"parks_footfall_analysis"> | number
+    park_Id?: IntNullableFilter<"parks_footfall_analysis"> | number | null
     detection_Id?: StringFilter<"parks_footfall_analysis"> | string
-    person_Id?: IntFilter<"parks_footfall_analysis"> | number
+    person_Id?: IntNullableFilter<"parks_footfall_analysis"> | number | null
     gender?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     is_child?: BoolFilter<"parks_footfall_analysis"> | boolean
     time?: DateTimeFilter<"parks_footfall_analysis"> | Date | string
@@ -38758,14 +38880,15 @@ export namespace Prisma {
     abc1?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"parks_footfall_analysis"> | string | null
-    park?: XOR<ParksScalarRelationFilter, parksWhereInput>
+    park?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
+    person?: XOR<UsersNullableScalarRelationFilter, usersWhereInput> | null
   }, "id">
 
   export type parks_footfall_analysisOrderByWithAggregationInput = {
     id?: SortOrder
-    park_Id?: SortOrder
+    park_Id?: SortOrderInput | SortOrder
     detection_Id?: SortOrder
-    person_Id?: SortOrder
+    person_Id?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     is_child?: SortOrder
     time?: SortOrder
@@ -38786,9 +38909,9 @@ export namespace Prisma {
     OR?: parks_footfall_analysisScalarWhereWithAggregatesInput[]
     NOT?: parks_footfall_analysisScalarWhereWithAggregatesInput | parks_footfall_analysisScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"parks_footfall_analysis"> | number
-    park_Id?: IntWithAggregatesFilter<"parks_footfall_analysis"> | number
+    park_Id?: IntNullableWithAggregatesFilter<"parks_footfall_analysis"> | number | null
     detection_Id?: StringWithAggregatesFilter<"parks_footfall_analysis"> | string
-    person_Id?: IntWithAggregatesFilter<"parks_footfall_analysis"> | number
+    person_Id?: IntNullableWithAggregatesFilter<"parks_footfall_analysis"> | number | null
     gender?: StringNullableWithAggregatesFilter<"parks_footfall_analysis"> | string | null
     is_child?: BoolWithAggregatesFilter<"parks_footfall_analysis"> | boolean
     time?: DateTimeWithAggregatesFilter<"parks_footfall_analysis"> | Date | string
@@ -38804,9 +38927,9 @@ export namespace Prisma {
     OR?: offices_footfall_analysisWhereInput[]
     NOT?: offices_footfall_analysisWhereInput | offices_footfall_analysisWhereInput[]
     id?: IntFilter<"offices_footfall_analysis"> | number
-    office_Id?: IntFilter<"offices_footfall_analysis"> | number
+    office_Id?: IntNullableFilter<"offices_footfall_analysis"> | number | null
     detection_Id?: StringFilter<"offices_footfall_analysis"> | string
-    person_Id?: IntFilter<"offices_footfall_analysis"> | number
+    person_Id?: IntNullableFilter<"offices_footfall_analysis"> | number | null
     gender?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     is_child?: BoolFilter<"offices_footfall_analysis"> | boolean
     time?: DateTimeFilter<"offices_footfall_analysis"> | Date | string
@@ -38815,15 +38938,15 @@ export namespace Prisma {
     abc1?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"offices_footfall_analysis"> | string | null
-    office?: XOR<OfficesScalarRelationFilter, officesWhereInput>
-    person?: XOR<UsersScalarRelationFilter, usersWhereInput>
+    office?: XOR<OfficesNullableScalarRelationFilter, officesWhereInput> | null
+    person?: XOR<UsersNullableScalarRelationFilter, usersWhereInput> | null
   }
 
   export type offices_footfall_analysisOrderByWithRelationInput = {
     id?: SortOrder
-    office_Id?: SortOrder
+    office_Id?: SortOrderInput | SortOrder
     detection_Id?: SortOrder
-    person_Id?: SortOrder
+    person_Id?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     is_child?: SortOrder
     time?: SortOrder
@@ -38842,9 +38965,9 @@ export namespace Prisma {
     AND?: offices_footfall_analysisWhereInput | offices_footfall_analysisWhereInput[]
     OR?: offices_footfall_analysisWhereInput[]
     NOT?: offices_footfall_analysisWhereInput | offices_footfall_analysisWhereInput[]
-    office_Id?: IntFilter<"offices_footfall_analysis"> | number
+    office_Id?: IntNullableFilter<"offices_footfall_analysis"> | number | null
     detection_Id?: StringFilter<"offices_footfall_analysis"> | string
-    person_Id?: IntFilter<"offices_footfall_analysis"> | number
+    person_Id?: IntNullableFilter<"offices_footfall_analysis"> | number | null
     gender?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     is_child?: BoolFilter<"offices_footfall_analysis"> | boolean
     time?: DateTimeFilter<"offices_footfall_analysis"> | Date | string
@@ -38853,15 +38976,15 @@ export namespace Prisma {
     abc1?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"offices_footfall_analysis"> | string | null
-    office?: XOR<OfficesScalarRelationFilter, officesWhereInput>
-    person?: XOR<UsersScalarRelationFilter, usersWhereInput>
+    office?: XOR<OfficesNullableScalarRelationFilter, officesWhereInput> | null
+    person?: XOR<UsersNullableScalarRelationFilter, usersWhereInput> | null
   }, "id">
 
   export type offices_footfall_analysisOrderByWithAggregationInput = {
     id?: SortOrder
-    office_Id?: SortOrder
+    office_Id?: SortOrderInput | SortOrder
     detection_Id?: SortOrder
-    person_Id?: SortOrder
+    person_Id?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     is_child?: SortOrder
     time?: SortOrder
@@ -38882,9 +39005,9 @@ export namespace Prisma {
     OR?: offices_footfall_analysisScalarWhereWithAggregatesInput[]
     NOT?: offices_footfall_analysisScalarWhereWithAggregatesInput | offices_footfall_analysisScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"offices_footfall_analysis"> | number
-    office_Id?: IntWithAggregatesFilter<"offices_footfall_analysis"> | number
+    office_Id?: IntNullableWithAggregatesFilter<"offices_footfall_analysis"> | number | null
     detection_Id?: StringWithAggregatesFilter<"offices_footfall_analysis"> | string
-    person_Id?: IntWithAggregatesFilter<"offices_footfall_analysis"> | number
+    person_Id?: IntNullableWithAggregatesFilter<"offices_footfall_analysis"> | number | null
     gender?: StringNullableWithAggregatesFilter<"offices_footfall_analysis"> | string | null
     is_child?: BoolWithAggregatesFilter<"offices_footfall_analysis"> | boolean
     time?: DateTimeWithAggregatesFilter<"offices_footfall_analysis"> | Date | string
@@ -41279,6 +41402,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutUserInput
     offices_footfall_analysis?: offices_footfall_analysisCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceCreateNestedManyWithoutUserInput
     users_roles?: users_rolesCreateNestedOneWithoutUsersInput
   }
@@ -41319,6 +41443,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutUsersInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutUserInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -41356,6 +41481,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutUserNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUpdateManyWithoutUserNestedInput
     users_roles?: users_rolesUpdateOneWithoutUsersNestedInput
   }
@@ -41396,6 +41522,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutUsersNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutUserNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -41932,7 +42059,6 @@ export namespace Prisma {
 
   export type parks_footfall_analysisCreateInput = {
     detection_Id: string
-    person_Id: number
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -41941,14 +42067,15 @@ export namespace Prisma {
     abc1?: string | null
     abc2?: string | null
     abc3?: string | null
-    park: parksCreateNestedOneWithoutParks_footfall_analysisInput
+    park?: parksCreateNestedOneWithoutParks_footfall_analysisInput
+    person?: usersCreateNestedOneWithoutParks_footfall_analysisInput
   }
 
   export type parks_footfall_analysisUncheckedCreateInput = {
     id?: number
-    park_Id: number
+    park_Id?: number | null
     detection_Id: string
-    person_Id: number
+    person_Id?: number | null
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -41961,7 +42088,6 @@ export namespace Prisma {
 
   export type parks_footfall_analysisUpdateInput = {
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41970,14 +42096,15 @@ export namespace Prisma {
     abc1?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
-    park?: parksUpdateOneRequiredWithoutParks_footfall_analysisNestedInput
+    park?: parksUpdateOneWithoutParks_footfall_analysisNestedInput
+    person?: usersUpdateOneWithoutParks_footfall_analysisNestedInput
   }
 
   export type parks_footfall_analysisUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    park_Id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
+    person_Id?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41990,9 +42117,9 @@ export namespace Prisma {
 
   export type parks_footfall_analysisCreateManyInput = {
     id?: number
-    park_Id: number
+    park_Id?: number | null
     detection_Id: string
-    person_Id: number
+    person_Id?: number | null
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -42005,7 +42132,6 @@ export namespace Prisma {
 
   export type parks_footfall_analysisUpdateManyMutationInput = {
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42018,9 +42144,9 @@ export namespace Prisma {
 
   export type parks_footfall_analysisUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    park_Id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
+    person_Id?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42041,15 +42167,15 @@ export namespace Prisma {
     abc1?: string | null
     abc2?: string | null
     abc3?: string | null
-    office: officesCreateNestedOneWithoutOffices_footfall_analysisInput
-    person: usersCreateNestedOneWithoutOffices_footfall_analysisInput
+    office?: officesCreateNestedOneWithoutOffices_footfall_analysisInput
+    person?: usersCreateNestedOneWithoutOffices_footfall_analysisInput
   }
 
   export type offices_footfall_analysisUncheckedCreateInput = {
     id?: number
-    office_Id: number
+    office_Id?: number | null
     detection_Id: string
-    person_Id: number
+    person_Id?: number | null
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -42070,15 +42196,15 @@ export namespace Prisma {
     abc1?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
-    office?: officesUpdateOneRequiredWithoutOffices_footfall_analysisNestedInput
-    person?: usersUpdateOneRequiredWithoutOffices_footfall_analysisNestedInput
+    office?: officesUpdateOneWithoutOffices_footfall_analysisNestedInput
+    person?: usersUpdateOneWithoutOffices_footfall_analysisNestedInput
   }
 
   export type offices_footfall_analysisUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    office_Id?: IntFieldUpdateOperationsInput | number
+    office_Id?: NullableIntFieldUpdateOperationsInput | number | null
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
+    person_Id?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42091,9 +42217,9 @@ export namespace Prisma {
 
   export type offices_footfall_analysisCreateManyInput = {
     id?: number
-    office_Id: number
+    office_Id?: number | null
     detection_Id: string
-    person_Id: number
+    person_Id?: number | null
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -42118,9 +42244,9 @@ export namespace Prisma {
 
   export type offices_footfall_analysisUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    office_Id?: IntFieldUpdateOperationsInput | number
+    office_Id?: NullableIntFieldUpdateOperationsInput | number | null
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
+    person_Id?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44385,11 +44511,6 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type ParksScalarRelationFilter = {
-    is?: parksWhereInput
-    isNot?: parksWhereInput
-  }
-
   export type parks_footfall_analysisOrderByRelevanceInput = {
     fields: parks_footfall_analysisOrderByRelevanceFieldEnum | parks_footfall_analysisOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -44477,16 +44598,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type OfficesScalarRelationFilter = {
-    is?: officesWhereInput
-    isNot?: officesWhereInput
-  }
-
-  export type UsersScalarRelationFilter = {
-    is?: usersWhereInput
-    isNot?: usersWhereInput
   }
 
   export type offices_footfall_analysisOrderByRelevanceInput = {
@@ -46627,6 +46738,13 @@ export namespace Prisma {
     connect?: offices_footfall_analysisWhereUniqueInput | offices_footfall_analysisWhereUniqueInput[]
   }
 
+  export type parks_footfall_analysisCreateNestedManyWithoutPersonInput = {
+    create?: XOR<parks_footfall_analysisCreateWithoutPersonInput, parks_footfall_analysisUncheckedCreateWithoutPersonInput> | parks_footfall_analysisCreateWithoutPersonInput[] | parks_footfall_analysisUncheckedCreateWithoutPersonInput[]
+    connectOrCreate?: parks_footfall_analysisCreateOrConnectWithoutPersonInput | parks_footfall_analysisCreateOrConnectWithoutPersonInput[]
+    createMany?: parks_footfall_analysisCreateManyPersonInputEnvelope
+    connect?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
+  }
+
   export type parks_attendanceCreateNestedManyWithoutUserInput = {
     create?: XOR<parks_attendanceCreateWithoutUserInput, parks_attendanceUncheckedCreateWithoutUserInput> | parks_attendanceCreateWithoutUserInput[] | parks_attendanceUncheckedCreateWithoutUserInput[]
     connectOrCreate?: parks_attendanceCreateOrConnectWithoutUserInput | parks_attendanceCreateOrConnectWithoutUserInput[]
@@ -46659,6 +46777,13 @@ export namespace Prisma {
     connectOrCreate?: offices_footfall_analysisCreateOrConnectWithoutPersonInput | offices_footfall_analysisCreateOrConnectWithoutPersonInput[]
     createMany?: offices_footfall_analysisCreateManyPersonInputEnvelope
     connect?: offices_footfall_analysisWhereUniqueInput | offices_footfall_analysisWhereUniqueInput[]
+  }
+
+  export type parks_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput = {
+    create?: XOR<parks_footfall_analysisCreateWithoutPersonInput, parks_footfall_analysisUncheckedCreateWithoutPersonInput> | parks_footfall_analysisCreateWithoutPersonInput[] | parks_footfall_analysisUncheckedCreateWithoutPersonInput[]
+    connectOrCreate?: parks_footfall_analysisCreateOrConnectWithoutPersonInput | parks_footfall_analysisCreateOrConnectWithoutPersonInput[]
+    createMany?: parks_footfall_analysisCreateManyPersonInputEnvelope
+    connect?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
   }
 
   export type parks_attendanceUncheckedCreateNestedManyWithoutUserInput = {
@@ -46708,6 +46833,20 @@ export namespace Prisma {
     update?: offices_footfall_analysisUpdateWithWhereUniqueWithoutPersonInput | offices_footfall_analysisUpdateWithWhereUniqueWithoutPersonInput[]
     updateMany?: offices_footfall_analysisUpdateManyWithWhereWithoutPersonInput | offices_footfall_analysisUpdateManyWithWhereWithoutPersonInput[]
     deleteMany?: offices_footfall_analysisScalarWhereInput | offices_footfall_analysisScalarWhereInput[]
+  }
+
+  export type parks_footfall_analysisUpdateManyWithoutPersonNestedInput = {
+    create?: XOR<parks_footfall_analysisCreateWithoutPersonInput, parks_footfall_analysisUncheckedCreateWithoutPersonInput> | parks_footfall_analysisCreateWithoutPersonInput[] | parks_footfall_analysisUncheckedCreateWithoutPersonInput[]
+    connectOrCreate?: parks_footfall_analysisCreateOrConnectWithoutPersonInput | parks_footfall_analysisCreateOrConnectWithoutPersonInput[]
+    upsert?: parks_footfall_analysisUpsertWithWhereUniqueWithoutPersonInput | parks_footfall_analysisUpsertWithWhereUniqueWithoutPersonInput[]
+    createMany?: parks_footfall_analysisCreateManyPersonInputEnvelope
+    set?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
+    disconnect?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
+    delete?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
+    connect?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
+    update?: parks_footfall_analysisUpdateWithWhereUniqueWithoutPersonInput | parks_footfall_analysisUpdateWithWhereUniqueWithoutPersonInput[]
+    updateMany?: parks_footfall_analysisUpdateManyWithWhereWithoutPersonInput | parks_footfall_analysisUpdateManyWithWhereWithoutPersonInput[]
+    deleteMany?: parks_footfall_analysisScalarWhereInput | parks_footfall_analysisScalarWhereInput[]
   }
 
   export type parks_attendanceUpdateManyWithoutUserNestedInput = {
@@ -46774,6 +46913,20 @@ export namespace Prisma {
     update?: offices_footfall_analysisUpdateWithWhereUniqueWithoutPersonInput | offices_footfall_analysisUpdateWithWhereUniqueWithoutPersonInput[]
     updateMany?: offices_footfall_analysisUpdateManyWithWhereWithoutPersonInput | offices_footfall_analysisUpdateManyWithWhereWithoutPersonInput[]
     deleteMany?: offices_footfall_analysisScalarWhereInput | offices_footfall_analysisScalarWhereInput[]
+  }
+
+  export type parks_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput = {
+    create?: XOR<parks_footfall_analysisCreateWithoutPersonInput, parks_footfall_analysisUncheckedCreateWithoutPersonInput> | parks_footfall_analysisCreateWithoutPersonInput[] | parks_footfall_analysisUncheckedCreateWithoutPersonInput[]
+    connectOrCreate?: parks_footfall_analysisCreateOrConnectWithoutPersonInput | parks_footfall_analysisCreateOrConnectWithoutPersonInput[]
+    upsert?: parks_footfall_analysisUpsertWithWhereUniqueWithoutPersonInput | parks_footfall_analysisUpsertWithWhereUniqueWithoutPersonInput[]
+    createMany?: parks_footfall_analysisCreateManyPersonInputEnvelope
+    set?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
+    disconnect?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
+    delete?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
+    connect?: parks_footfall_analysisWhereUniqueInput | parks_footfall_analysisWhereUniqueInput[]
+    update?: parks_footfall_analysisUpdateWithWhereUniqueWithoutPersonInput | parks_footfall_analysisUpdateWithWhereUniqueWithoutPersonInput[]
+    updateMany?: parks_footfall_analysisUpdateManyWithWhereWithoutPersonInput | parks_footfall_analysisUpdateManyWithWhereWithoutPersonInput[]
+    deleteMany?: parks_footfall_analysisScalarWhereInput | parks_footfall_analysisScalarWhereInput[]
   }
 
   export type parks_attendanceUncheckedUpdateManyWithoutUserNestedInput = {
@@ -46896,6 +47049,12 @@ export namespace Prisma {
     connect?: parksWhereUniqueInput
   }
 
+  export type usersCreateNestedOneWithoutParks_footfall_analysisInput = {
+    create?: XOR<usersCreateWithoutParks_footfall_analysisInput, usersUncheckedCreateWithoutParks_footfall_analysisInput>
+    connectOrCreate?: usersCreateOrConnectWithoutParks_footfall_analysisInput
+    connect?: usersWhereUniqueInput
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -46904,12 +47063,24 @@ export namespace Prisma {
     set?: boolean
   }
 
-  export type parksUpdateOneRequiredWithoutParks_footfall_analysisNestedInput = {
+  export type parksUpdateOneWithoutParks_footfall_analysisNestedInput = {
     create?: XOR<parksCreateWithoutParks_footfall_analysisInput, parksUncheckedCreateWithoutParks_footfall_analysisInput>
     connectOrCreate?: parksCreateOrConnectWithoutParks_footfall_analysisInput
     upsert?: parksUpsertWithoutParks_footfall_analysisInput
+    disconnect?: parksWhereInput | boolean
+    delete?: parksWhereInput | boolean
     connect?: parksWhereUniqueInput
     update?: XOR<XOR<parksUpdateToOneWithWhereWithoutParks_footfall_analysisInput, parksUpdateWithoutParks_footfall_analysisInput>, parksUncheckedUpdateWithoutParks_footfall_analysisInput>
+  }
+
+  export type usersUpdateOneWithoutParks_footfall_analysisNestedInput = {
+    create?: XOR<usersCreateWithoutParks_footfall_analysisInput, usersUncheckedCreateWithoutParks_footfall_analysisInput>
+    connectOrCreate?: usersCreateOrConnectWithoutParks_footfall_analysisInput
+    upsert?: usersUpsertWithoutParks_footfall_analysisInput
+    disconnect?: usersWhereInput | boolean
+    delete?: usersWhereInput | boolean
+    connect?: usersWhereUniqueInput
+    update?: XOR<XOR<usersUpdateToOneWithWhereWithoutParks_footfall_analysisInput, usersUpdateWithoutParks_footfall_analysisInput>, usersUncheckedUpdateWithoutParks_footfall_analysisInput>
   }
 
   export type officesCreateNestedOneWithoutOffices_footfall_analysisInput = {
@@ -46924,18 +47095,22 @@ export namespace Prisma {
     connect?: usersWhereUniqueInput
   }
 
-  export type officesUpdateOneRequiredWithoutOffices_footfall_analysisNestedInput = {
+  export type officesUpdateOneWithoutOffices_footfall_analysisNestedInput = {
     create?: XOR<officesCreateWithoutOffices_footfall_analysisInput, officesUncheckedCreateWithoutOffices_footfall_analysisInput>
     connectOrCreate?: officesCreateOrConnectWithoutOffices_footfall_analysisInput
     upsert?: officesUpsertWithoutOffices_footfall_analysisInput
+    disconnect?: officesWhereInput | boolean
+    delete?: officesWhereInput | boolean
     connect?: officesWhereUniqueInput
     update?: XOR<XOR<officesUpdateToOneWithWhereWithoutOffices_footfall_analysisInput, officesUpdateWithoutOffices_footfall_analysisInput>, officesUncheckedUpdateWithoutOffices_footfall_analysisInput>
   }
 
-  export type usersUpdateOneRequiredWithoutOffices_footfall_analysisNestedInput = {
+  export type usersUpdateOneWithoutOffices_footfall_analysisNestedInput = {
     create?: XOR<usersCreateWithoutOffices_footfall_analysisInput, usersUncheckedCreateWithoutOffices_footfall_analysisInput>
     connectOrCreate?: usersCreateOrConnectWithoutOffices_footfall_analysisInput
     upsert?: usersUpsertWithoutOffices_footfall_analysisInput
+    disconnect?: usersWhereInput | boolean
+    delete?: usersWhereInput | boolean
     connect?: usersWhereUniqueInput
     update?: XOR<XOR<usersUpdateToOneWithWhereWithoutOffices_footfall_analysisInput, usersUpdateWithoutOffices_footfall_analysisInput>, usersUncheckedUpdateWithoutOffices_footfall_analysisInput>
   }
@@ -47252,6 +47427,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     offices_attendance?: offices_attendanceCreateNestedManyWithoutUserInput
     offices_footfall_analysis?: offices_footfall_analysisCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceCreateNestedManyWithoutUserInput
     users_roles?: users_rolesCreateNestedOneWithoutUsersInput
   }
@@ -47291,6 +47467,7 @@ export namespace Prisma {
     role_Id?: number | null
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutUserInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47433,6 +47610,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     offices_attendance?: offices_attendanceUpdateManyWithoutUserNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUpdateManyWithoutUserNestedInput
     users_roles?: users_rolesUpdateOneWithoutUsersNestedInput
   }
@@ -47472,6 +47650,7 @@ export namespace Prisma {
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutUserNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -47774,13 +47953,13 @@ export namespace Prisma {
     abc1?: string | null
     abc2?: string | null
     abc3?: string | null
-    person: usersCreateNestedOneWithoutOffices_footfall_analysisInput
+    person?: usersCreateNestedOneWithoutOffices_footfall_analysisInput
   }
 
   export type offices_footfall_analysisUncheckedCreateWithoutOfficeInput = {
     id?: number
     detection_Id: string
-    person_Id: number
+    person_Id?: number | null
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -47969,9 +48148,9 @@ export namespace Prisma {
     OR?: offices_footfall_analysisScalarWhereInput[]
     NOT?: offices_footfall_analysisScalarWhereInput | offices_footfall_analysisScalarWhereInput[]
     id?: IntFilter<"offices_footfall_analysis"> | number
-    office_Id?: IntFilter<"offices_footfall_analysis"> | number
+    office_Id?: IntNullableFilter<"offices_footfall_analysis"> | number | null
     detection_Id?: StringFilter<"offices_footfall_analysis"> | string
-    person_Id?: IntFilter<"offices_footfall_analysis"> | number
+    person_Id?: IntNullableFilter<"offices_footfall_analysis"> | number | null
     gender?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     is_child?: BoolFilter<"offices_footfall_analysis"> | boolean
     time?: DateTimeFilter<"offices_footfall_analysis"> | Date | string
@@ -48097,6 +48276,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
     offices_footfall_analysis?: offices_footfall_analysisCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceCreateNestedManyWithoutUserInput
     users_roles?: users_rolesCreateNestedOneWithoutUsersInput
   }
@@ -48136,6 +48316,7 @@ export namespace Prisma {
     role_Id?: number | null
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutUsersInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -48234,6 +48415,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUpdateManyWithoutUserNestedInput
     users_roles?: users_rolesUpdateOneWithoutUsersNestedInput
   }
@@ -48273,6 +48455,7 @@ export namespace Prisma {
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutUsersNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -50027,7 +50210,6 @@ export namespace Prisma {
 
   export type parks_footfall_analysisCreateWithoutParkInput = {
     detection_Id: string
-    person_Id: number
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -50036,12 +50218,13 @@ export namespace Prisma {
     abc1?: string | null
     abc2?: string | null
     abc3?: string | null
+    person?: usersCreateNestedOneWithoutParks_footfall_analysisInput
   }
 
   export type parks_footfall_analysisUncheckedCreateWithoutParkInput = {
     id?: number
     detection_Id: string
-    person_Id: number
+    person_Id?: number | null
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -50505,9 +50688,9 @@ export namespace Prisma {
     OR?: parks_footfall_analysisScalarWhereInput[]
     NOT?: parks_footfall_analysisScalarWhereInput | parks_footfall_analysisScalarWhereInput[]
     id?: IntFilter<"parks_footfall_analysis"> | number
-    park_Id?: IntFilter<"parks_footfall_analysis"> | number
+    park_Id?: IntNullableFilter<"parks_footfall_analysis"> | number | null
     detection_Id?: StringFilter<"parks_footfall_analysis"> | string
-    person_Id?: IntFilter<"parks_footfall_analysis"> | number
+    person_Id?: IntNullableFilter<"parks_footfall_analysis"> | number | null
     gender?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     is_child?: BoolFilter<"parks_footfall_analysis"> | boolean
     time?: DateTimeFilter<"parks_footfall_analysis"> | Date | string
@@ -50700,6 +50883,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutUserInput
     offices_footfall_analysis?: offices_footfall_analysisCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisCreateNestedManyWithoutPersonInput
     users_roles?: users_rolesCreateNestedOneWithoutUsersInput
   }
 
@@ -50739,6 +50923,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutUsersInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutUserInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
   }
 
   export type usersCreateOrConnectWithoutParks_attendanceInput = {
@@ -50849,6 +51034,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutUserNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUpdateManyWithoutPersonNestedInput
     users_roles?: users_rolesUpdateOneWithoutUsersNestedInput
   }
 
@@ -50888,6 +51074,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutUsersNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutUserNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
   }
 
   export type parksCreateWithoutParks_behaviour_alertsInput = {
@@ -53163,12 +53350,12 @@ export namespace Prisma {
     abc1?: string | null
     abc2?: string | null
     abc3?: string | null
-    office: officesCreateNestedOneWithoutOffices_footfall_analysisInput
+    office?: officesCreateNestedOneWithoutOffices_footfall_analysisInput
   }
 
   export type offices_footfall_analysisUncheckedCreateWithoutPersonInput = {
     id?: number
-    office_Id: number
+    office_Id?: number | null
     detection_Id: string
     gender?: string | null
     is_child?: boolean
@@ -53187,6 +53374,43 @@ export namespace Prisma {
 
   export type offices_footfall_analysisCreateManyPersonInputEnvelope = {
     data: offices_footfall_analysisCreateManyPersonInput | offices_footfall_analysisCreateManyPersonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type parks_footfall_analysisCreateWithoutPersonInput = {
+    detection_Id: string
+    gender?: string | null
+    is_child?: boolean
+    time?: Date | string
+    detected_camera_Id: string
+    detected_camera_name?: string | null
+    abc1?: string | null
+    abc2?: string | null
+    abc3?: string | null
+    park?: parksCreateNestedOneWithoutParks_footfall_analysisInput
+  }
+
+  export type parks_footfall_analysisUncheckedCreateWithoutPersonInput = {
+    id?: number
+    park_Id?: number | null
+    detection_Id: string
+    gender?: string | null
+    is_child?: boolean
+    time?: Date | string
+    detected_camera_Id: string
+    detected_camera_name?: string | null
+    abc1?: string | null
+    abc2?: string | null
+    abc3?: string | null
+  }
+
+  export type parks_footfall_analysisCreateOrConnectWithoutPersonInput = {
+    where: parks_footfall_analysisWhereUniqueInput
+    create: XOR<parks_footfall_analysisCreateWithoutPersonInput, parks_footfall_analysisUncheckedCreateWithoutPersonInput>
+  }
+
+  export type parks_footfall_analysisCreateManyPersonInputEnvelope = {
+    data: parks_footfall_analysisCreateManyPersonInput | parks_footfall_analysisCreateManyPersonInput[]
     skipDuplicates?: boolean
   }
 
@@ -53283,6 +53507,22 @@ export namespace Prisma {
   export type offices_footfall_analysisUpdateManyWithWhereWithoutPersonInput = {
     where: offices_footfall_analysisScalarWhereInput
     data: XOR<offices_footfall_analysisUpdateManyMutationInput, offices_footfall_analysisUncheckedUpdateManyWithoutPersonInput>
+  }
+
+  export type parks_footfall_analysisUpsertWithWhereUniqueWithoutPersonInput = {
+    where: parks_footfall_analysisWhereUniqueInput
+    update: XOR<parks_footfall_analysisUpdateWithoutPersonInput, parks_footfall_analysisUncheckedUpdateWithoutPersonInput>
+    create: XOR<parks_footfall_analysisCreateWithoutPersonInput, parks_footfall_analysisUncheckedCreateWithoutPersonInput>
+  }
+
+  export type parks_footfall_analysisUpdateWithWhereUniqueWithoutPersonInput = {
+    where: parks_footfall_analysisWhereUniqueInput
+    data: XOR<parks_footfall_analysisUpdateWithoutPersonInput, parks_footfall_analysisUncheckedUpdateWithoutPersonInput>
+  }
+
+  export type parks_footfall_analysisUpdateManyWithWhereWithoutPersonInput = {
+    where: parks_footfall_analysisScalarWhereInput
+    data: XOR<parks_footfall_analysisUpdateManyMutationInput, parks_footfall_analysisUncheckedUpdateManyWithoutPersonInput>
   }
 
   export type parks_attendanceUpsertWithWhereUniqueWithoutUserInput = {
@@ -53407,6 +53647,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutUserInput
     offices_footfall_analysis?: offices_footfall_analysisCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceCreateNestedManyWithoutUserInput
   }
 
@@ -53445,6 +53686,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutUsersInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutUserInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -53752,6 +53994,88 @@ export namespace Prisma {
     create: XOR<parksCreateWithoutParks_footfall_analysisInput, parksUncheckedCreateWithoutParks_footfall_analysisInput>
   }
 
+  export type usersCreateWithoutParks_footfall_analysisInput = {
+    user_Id?: string | null
+    emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
+    gender?: string | null
+    emp__eng_name?: string | null
+    emp__arabic_name?: string | null
+    location?: string | null
+    country_code?: string | null
+    phone?: string | null
+    telephone?: string | null
+    email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
+    dep_eng_name?: string | null
+    dep_arabic_name?: string | null
+    desig_eng_name?: string | null
+    desig_arabic_name?: string | null
+    unit_eng_name?: string | null
+    unit_arabic_name?: string | null
+    committe_eng_name?: string | null
+    committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
+    ai_engine_access?: boolean | null
+    last_login?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
+    offices_attendance?: offices_attendanceCreateNestedManyWithoutUserInput
+    offices_footfall_analysis?: offices_footfall_analysisCreateNestedManyWithoutPersonInput
+    parks_attendance?: parks_attendanceCreateNestedManyWithoutUserInput
+    users_roles?: users_rolesCreateNestedOneWithoutUsersInput
+  }
+
+  export type usersUncheckedCreateWithoutParks_footfall_analysisInput = {
+    Id?: number
+    user_Id?: string | null
+    emp_Id?: string | null
+    emp_code?: string | null
+    image?: string | null
+    gender?: string | null
+    emp__eng_name?: string | null
+    emp__arabic_name?: string | null
+    location?: string | null
+    country_code?: string | null
+    phone?: string | null
+    telephone?: string | null
+    email?: string | null
+    office_extension?: string | null
+    nationality?: string | null
+    joining_date?: Date | string | null
+    date_of_birth?: Date | string | null
+    dep_eng_name?: string | null
+    dep_arabic_name?: string | null
+    desig_eng_name?: string | null
+    desig_arabic_name?: string | null
+    unit_eng_name?: string | null
+    unit_arabic_name?: string | null
+    committe_eng_name?: string | null
+    committe_arabic_name?: string | null
+    is_attendance_user?: boolean | null
+    is_ai_login_user?: boolean | null
+    ai_engine_access?: boolean | null
+    last_login?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    role_Id?: number | null
+    live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutUsersInput
+    offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutUserInput
+    offices_footfall_analysis?: offices_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
+    parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type usersCreateOrConnectWithoutParks_footfall_analysisInput = {
+    where: usersWhereUniqueInput
+    create: XOR<usersCreateWithoutParks_footfall_analysisInput, usersUncheckedCreateWithoutParks_footfall_analysisInput>
+  }
+
   export type parksUpsertWithoutParks_footfall_analysisInput = {
     update: XOR<parksUpdateWithoutParks_footfall_analysisInput, parksUncheckedUpdateWithoutParks_footfall_analysisInput>
     create: XOR<parksCreateWithoutParks_footfall_analysisInput, parksUncheckedCreateWithoutParks_footfall_analysisInput>
@@ -53808,6 +54132,94 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUncheckedUpdateManyWithoutParksNestedInput
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
+  }
+
+  export type usersUpsertWithoutParks_footfall_analysisInput = {
+    update: XOR<usersUpdateWithoutParks_footfall_analysisInput, usersUncheckedUpdateWithoutParks_footfall_analysisInput>
+    create: XOR<usersCreateWithoutParks_footfall_analysisInput, usersUncheckedCreateWithoutParks_footfall_analysisInput>
+    where?: usersWhereInput
+  }
+
+  export type usersUpdateToOneWithWhereWithoutParks_footfall_analysisInput = {
+    where?: usersWhereInput
+    data: XOR<usersUpdateWithoutParks_footfall_analysisInput, usersUncheckedUpdateWithoutParks_footfall_analysisInput>
+  }
+
+  export type usersUpdateWithoutParks_footfall_analysisInput = {
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    country_code?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    desig_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
+    offices_attendance?: offices_attendanceUpdateManyWithoutUserNestedInput
+    offices_footfall_analysis?: offices_footfall_analysisUpdateManyWithoutPersonNestedInput
+    parks_attendance?: parks_attendanceUpdateManyWithoutUserNestedInput
+    users_roles?: users_rolesUpdateOneWithoutUsersNestedInput
+  }
+
+  export type usersUncheckedUpdateWithoutParks_footfall_analysisInput = {
+    Id?: IntFieldUpdateOperationsInput | number
+    user_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    emp_code?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    emp__arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    country_code?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    telephone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    office_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    joining_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dep_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    dep_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    desig_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    desig_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    committe_eng_name?: NullableStringFieldUpdateOperationsInput | string | null
+    committe_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    is_attendance_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ai_login_user?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ai_engine_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    last_login?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutUsersNestedInput
+    offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutUserNestedInput
+    offices_footfall_analysis?: offices_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
+    parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type officesCreateWithoutOffices_footfall_analysisInput = {
@@ -53883,6 +54295,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
     offices_attendance?: offices_attendanceCreateNestedManyWithoutUserInput
+    parks_footfall_analysis?: parks_footfall_analysisCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceCreateNestedManyWithoutUserInput
     users_roles?: users_rolesCreateNestedOneWithoutUsersInput
   }
@@ -53922,6 +54335,7 @@ export namespace Prisma {
     role_Id?: number | null
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutUsersInput
     offices_attendance?: offices_attendanceUncheckedCreateNestedManyWithoutUserInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedCreateNestedManyWithoutPersonInput
     parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -54020,6 +54434,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutUserNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUpdateManyWithoutUserNestedInput
     users_roles?: users_rolesUpdateOneWithoutUsersNestedInput
   }
@@ -54059,6 +54474,7 @@ export namespace Prisma {
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutUsersNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutUserNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -54099,7 +54515,7 @@ export namespace Prisma {
   export type offices_footfall_analysisCreateManyOfficeInput = {
     id?: number
     detection_Id: string
-    person_Id: number
+    person_Id?: number | null
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -54247,13 +54663,13 @@ export namespace Prisma {
     abc1?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
-    person?: usersUpdateOneRequiredWithoutOffices_footfall_analysisNestedInput
+    person?: usersUpdateOneWithoutOffices_footfall_analysisNestedInput
   }
 
   export type offices_footfall_analysisUncheckedUpdateWithoutOfficeInput = {
     id?: IntFieldUpdateOperationsInput | number
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
+    person_Id?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54267,7 +54683,7 @@ export namespace Prisma {
   export type offices_footfall_analysisUncheckedUpdateManyWithoutOfficeInput = {
     id?: IntFieldUpdateOperationsInput | number
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
+    person_Id?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55230,7 +55646,7 @@ export namespace Prisma {
   export type parks_footfall_analysisCreateManyParkInput = {
     id?: number
     detection_Id: string
-    person_Id: number
+    person_Id?: number | null
     gender?: string | null
     is_child?: boolean
     time?: Date | string
@@ -55556,7 +55972,6 @@ export namespace Prisma {
 
   export type parks_footfall_analysisUpdateWithoutParkInput = {
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55565,12 +55980,13 @@ export namespace Prisma {
     abc1?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
+    person?: usersUpdateOneWithoutParks_footfall_analysisNestedInput
   }
 
   export type parks_footfall_analysisUncheckedUpdateWithoutParkInput = {
     id?: IntFieldUpdateOperationsInput | number
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
+    person_Id?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55584,7 +56000,7 @@ export namespace Prisma {
   export type parks_footfall_analysisUncheckedUpdateManyWithoutParkInput = {
     id?: IntFieldUpdateOperationsInput | number
     detection_Id?: StringFieldUpdateOperationsInput | string
-    person_Id?: IntFieldUpdateOperationsInput | number
+    person_Id?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
     time?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56168,7 +56584,21 @@ export namespace Prisma {
 
   export type offices_footfall_analysisCreateManyPersonInput = {
     id?: number
-    office_Id: number
+    office_Id?: number | null
+    detection_Id: string
+    gender?: string | null
+    is_child?: boolean
+    time?: Date | string
+    detected_camera_Id: string
+    detected_camera_name?: string | null
+    abc1?: string | null
+    abc2?: string | null
+    abc3?: string | null
+  }
+
+  export type parks_footfall_analysisCreateManyPersonInput = {
+    id?: number
+    park_Id?: number | null
     detection_Id: string
     gender?: string | null
     is_child?: boolean
@@ -56248,12 +56678,12 @@ export namespace Prisma {
     abc1?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
-    office?: officesUpdateOneRequiredWithoutOffices_footfall_analysisNestedInput
+    office?: officesUpdateOneWithoutOffices_footfall_analysisNestedInput
   }
 
   export type offices_footfall_analysisUncheckedUpdateWithoutPersonInput = {
     id?: IntFieldUpdateOperationsInput | number
-    office_Id?: IntFieldUpdateOperationsInput | number
+    office_Id?: NullableIntFieldUpdateOperationsInput | number | null
     detection_Id?: StringFieldUpdateOperationsInput | string
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
@@ -56267,7 +56697,48 @@ export namespace Prisma {
 
   export type offices_footfall_analysisUncheckedUpdateManyWithoutPersonInput = {
     id?: IntFieldUpdateOperationsInput | number
-    office_Id?: IntFieldUpdateOperationsInput | number
+    office_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    detection_Id?: StringFieldUpdateOperationsInput | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    is_child?: BoolFieldUpdateOperationsInput | boolean
+    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    detected_camera_Id?: StringFieldUpdateOperationsInput | string
+    detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
+    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    abc2?: NullableStringFieldUpdateOperationsInput | string | null
+    abc3?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type parks_footfall_analysisUpdateWithoutPersonInput = {
+    detection_Id?: StringFieldUpdateOperationsInput | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    is_child?: BoolFieldUpdateOperationsInput | boolean
+    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    detected_camera_Id?: StringFieldUpdateOperationsInput | string
+    detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
+    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    abc2?: NullableStringFieldUpdateOperationsInput | string | null
+    abc3?: NullableStringFieldUpdateOperationsInput | string | null
+    park?: parksUpdateOneWithoutParks_footfall_analysisNestedInput
+  }
+
+  export type parks_footfall_analysisUncheckedUpdateWithoutPersonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    detection_Id?: StringFieldUpdateOperationsInput | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    is_child?: BoolFieldUpdateOperationsInput | boolean
+    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    detected_camera_Id?: StringFieldUpdateOperationsInput | string
+    detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
+    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    abc2?: NullableStringFieldUpdateOperationsInput | string | null
+    abc3?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type parks_footfall_analysisUncheckedUpdateManyWithoutPersonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
     detection_Id?: StringFieldUpdateOperationsInput | string
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     is_child?: BoolFieldUpdateOperationsInput | boolean
@@ -56426,6 +56897,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
     offices_attendance?: offices_attendanceUpdateManyWithoutUserNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUpdateManyWithoutUserNestedInput
   }
 
@@ -56464,6 +56936,7 @@ export namespace Prisma {
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutUsersNestedInput
     offices_attendance?: offices_attendanceUncheckedUpdateManyWithoutUserNestedInput
     offices_footfall_analysis?: offices_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedUpdateManyWithoutPersonNestedInput
     parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutUserNestedInput
   }
 
