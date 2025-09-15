@@ -11,7 +11,7 @@ export interface ParkType {
 export interface SmokingDetectionType {
   park_Id: number;
   location: string;
-  camera_Id: number;
+  camera_Id: string;
   occurrence_date: Date;
   occurrence_time: Date;
   snap_shot: string;
@@ -50,6 +50,13 @@ export interface LitterDetectionType {
   occurrence_time: Date;
   snap_shot: string;
   status: string;
+  detection_Id?: string;
+  detection_date?: Date;
+  detection_time?: Date;
+  description?: string;
+  current_status?: string;
+  camera_Id?: string;
+  after_image?: string;
 }
 
 export interface LandscapingType {

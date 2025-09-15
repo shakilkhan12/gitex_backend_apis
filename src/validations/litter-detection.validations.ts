@@ -39,7 +39,44 @@ export const litterDetectionValidations = [
         .notEmpty()
         .withMessage('Status is required')
         .isLength({ max: 50 })
-        .withMessage('Status must not exceed 50 characters')
-        // .isIn(['pending', 'in_progress', 'resolved', 'closed'])
-        // .withMessage('Status must be one of: pending, in_progress, resolved, closed'),
+        .withMessage('Status must not exceed 50 characters'),
+
+    body('detection_Id')
+        .optional()
+        .trim()
+        .isLength({ max: 100 })
+        .withMessage('Detection ID must not exceed 100 characters'),
+    
+    body('detection_date')
+        .optional()
+        .isISO8601()
+        .withMessage('Detection date must be a valid date'),
+    
+    body('detection_time')
+        .optional()
+        .isISO8601()
+        .withMessage('Detection time must be a valid time'),
+    
+    body('description')
+        .optional()
+        .trim()
+        .isLength({ max: 1000 })
+        .withMessage('Description must not exceed 1000 characters'),
+    
+    body('current_status')
+        .optional()
+        .trim()
+        .isLength({ max: 100 })
+        .withMessage('Current status must not exceed 100 characters'),
+    
+    body('camera_Id')
+        .optional()
+        .isString()
+        .withMessage('Camera ID must be a valid string'),
+    
+    body('after_image')
+        .optional()
+        .trim()
+        .isLength({ max: 255 })
+        .withMessage('After image must not exceed 255 characters'),
 ]; 

@@ -29,7 +29,7 @@ const litterDetectionRouter = Router();
  *               park_Id:
  *                 type: integer
  *                 description: ID of the park where litter was detected
- *                 example: 1
+ *                 example: 37
  *               case_Id:
  *                 type: string
  *                 description: Unique case identifier for the litter detection
@@ -40,14 +40,14 @@ const litterDetectionRouter = Router();
  *                 example: "Playground Area"
  *               occurrence_date:
  *                 type: string
- *                 format: date
- *                 description: Date when litter was detected
- *                 example: "2024-01-15"
+ *                 format: date-time
+ *                 description: Date when litter was detected (ISO8601 format)
+ *                 example: "2024-01-15T00:00:00.000Z"
  *               occurrence_time:
  *                 type: string
- *                 format: time
- *                 description: Time when litter was detected
- *                 example: "10:30:00"
+ *                 format: date-time
+ *                 description: Time when litter was detected (ISO8601 format)
+ *                 example: "2024-01-15T10:30:00.000Z"
  *               snap_shot:
  *                 type: string
  *                 description: Image path or URL of the litter detection
@@ -64,13 +64,13 @@ const litterDetectionRouter = Router();
  *               detection_date:
  *                 type: string
  *                 format: date-time
- *                 description: Date and time when detection was processed
- *                 example: "2024-01-15T10:30:00Z"
+ *                 description: Date and time when detection was processed (ISO8601 format)
+ *                 example: "2024-01-15T10:30:00.000Z"
  *               detection_time:
  *                 type: string
- *                 format: time
- *                 description: Time when detection was processed
- *                 example: "10:30:00"
+ *                 format: date-time
+ *                 description: Time when detection was processed (ISO8601 format)
+ *                 example: "2024-01-15T10:30:00.000Z"
  *               description:
  *                 type: string
  *                 description: Detailed description of the litter detection
@@ -80,9 +80,9 @@ const litterDetectionRouter = Router();
  *                 description: Current status of the detection
  *                 example: "active"
  *               camera_Id:
- *                 type: integer
- *                 description: ID of the camera that detected the litter
- *                 example: 3
+ *                 type: string
+ *                 description: Camera ID string (e.g., "79") - will be looked up in park_cameras table
+ *                 example: "79"
  *               after_image:
  *                 type: string
  *                 description: Image taken after cleanup (if available)
@@ -100,7 +100,7 @@ const litterDetectionRouter = Router();
  *                   example: 1
  *                 park_Id:
  *                   type: integer
- *                   example: 1
+ *                   example: 37
  *                 case_Id:
  *                   type: string
  *                   example: "LITTER_20240115_001"
@@ -109,12 +109,12 @@ const litterDetectionRouter = Router();
  *                   example: "Playground Area"
  *                 occurrence_date:
  *                   type: string
- *                   format: date
- *                   example: "2024-01-15"
+ *                   format: date-time
+ *                   example: "2024-01-15T00:00:00.000Z"
  *                 occurrence_time:
  *                   type: string
- *                   format: time
- *                   example: "10:30:00"
+ *                   format: date-time
+ *                   example: "2024-01-15T10:30:00.000Z"
  *                 snap_shot:
  *                   type: string
  *                   example: "litter_detection_20240115_103000.jpg"
@@ -128,11 +128,11 @@ const litterDetectionRouter = Router();
  *                 detection_date:
  *                   type: string
  *                   format: date-time
- *                   example: "2024-01-15T10:30:00Z"
+ *                   example: "2024-01-15T10:30:00.000Z"
  *                 detection_time:
  *                   type: string
- *                   format: time
- *                   example: "10:30:00"
+ *                   format: date-time
+ *                   example: "2024-01-15T10:30:00.000Z"
  *                 description:
  *                   type: string
  *                   example: "Litter detected in playground area"
@@ -141,7 +141,7 @@ const litterDetectionRouter = Router();
  *                   example: "active"
  *                 camera_Id:
  *                   type: integer
- *                   example: 3
+ *                   example: 1
  *                 after_image:
  *                   type: string
  *                   example: "litter_after_cleanup_20240115_103000.jpg"
@@ -207,7 +207,7 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  *                     example: 1
  *                   park_Id:
  *                     type: integer
- *                     example: 1
+ *                     example: 37
  *                   case_Id:
  *                     type: string
  *                     example: "LITTER_20240115_001"
@@ -216,12 +216,12 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  *                     example: "Playground Area"
  *                   occurrence_date:
  *                     type: string
- *                     format: date
- *                     example: "2024-01-15"
+ *                     format: date-time
+ *                     example: "2024-01-15T00:00:00.000Z"
  *                   occurrence_time:
  *                     type: string
- *                     format: time
- *                     example: "10:30:00"
+ *                     format: date-time
+ *                     example: "2024-01-15T10:30:00.000Z"
  *                   snap_shot:
  *                     type: string
  *                     example: "litter_detection_20240115_103000.jpg"
@@ -235,11 +235,11 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  *                   detection_date:
  *                     type: string
  *                     format: date-time
- *                     example: "2024-01-15T10:30:00Z"
+ *                     example: "2024-01-15T10:30:00.000Z"
  *                   detection_time:
  *                     type: string
- *                     format: time
- *                     example: "10:30:00"
+ *                     format: date-time
+ *                     example: "2024-01-15T10:30:00.000Z"
  *                   description:
  *                     type: string
  *                     example: "Litter detected in playground area"
@@ -248,7 +248,7 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  *                     example: "active"
  *                   camera_Id:
  *                     type: integer
- *                     example: 3
+ *                     example: 1
  *                   after_image:
  *                     type: string
  *                     example: "litter_after_cleanup_20240115_103000.jpg"

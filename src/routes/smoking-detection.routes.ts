@@ -28,39 +28,39 @@ const smokingDetectionRouter = Router();
  *               park_Id:
  *                 type: integer
  *                 description: ID of the park where smoking was detected
- *                 example: 1
+ *                 example: 37
  *               location:
  *                 type: string
  *                 description: Specific location within the park
  *                 example: "Main Entrance Area"
  *               camera_Id:
- *                 type: integer
- *                 description: ID of the camera that detected the smoking
- *                 example: 5
+ *                 type: string
+ *                 description: Camera ID string (e.g., "77") - will be looked up in park_cameras table
+ *                 example: "77"
  *               occurrence_date:
  *                 type: string
- *                 format: date
- *                 description: Date when smoking was detected
- *                 example: "2024-01-15"
+ *                 format: date-time
+ *                 description: Date when smoking was detected (ISO8601 format)
+ *                 example: "2024-01-15T00:00:00.000Z"
  *               occurrence_time:
  *                 type: string
- *                 format: time
- *                 description: Time when smoking was detected
- *                 example: "14:30:00"
+ *                 format: date-time
+ *                 description: Time when smoking was detected (ISO8601 format)
+ *                 example: "2024-01-15T14:30:00.000Z"
  *               snap_shot:
  *                 type: string
  *                 description: Image path or URL of the smoking detection
  *                 example: "smoking_detection_20240115_143000.jpg"
  *               posted_to_intranet_date:
  *                 type: string
- *                 format: date
- *                 description: Date when detection was posted to intranet
- *                 example: "2024-01-15"
+ *                 format: date-time
+ *                 description: Date when detection was posted to intranet (ISO8601 format)
+ *                 example: "2024-01-15T00:00:00.000Z"
  *               posted_to_intranet_time:
  *                 type: string
- *                 format: time
- *                 description: Time when detection was posted to intranet
- *                 example: "14:35:00"
+ *                 format: date-time
+ *                 description: Time when detection was posted to intranet (ISO8601 format)
+ *                 example: "2024-01-15T14:35:00.000Z"
  *               detection_Id:
  *                 type: string
  *                 description: Unique detection identifier
@@ -68,13 +68,13 @@ const smokingDetectionRouter = Router();
  *               detection_date:
  *                 type: string
  *                 format: date-time
- *                 description: Date and time when detection was processed
- *                 example: "2024-01-15T14:30:00Z"
+ *                 description: Date and time when detection was processed (ISO8601 format)
+ *                 example: "2024-01-15T14:30:00.000Z"
  *               detection_time:
  *                 type: string
- *                 format: time
- *                 description: Time when detection was processed
- *                 example: "14:30:00"
+ *                 format: date-time
+ *                 description: Time when detection was processed (ISO8601 format)
+ *                 example: "2024-01-15T14:30:00.000Z"
  *               description:
  *                 type: string
  *                 description: Detailed description of the smoking detection
@@ -100,43 +100,43 @@ const smokingDetectionRouter = Router();
  *                   example: 1
  *                 park_Id:
  *                   type: integer
- *                   example: 1
+ *                   example: 37
  *                 location:
  *                   type: string
  *                   example: "Main Entrance Area"
  *                 camera_Id:
  *                   type: integer
- *                   example: 5
+ *                   example: 1
  *                 occurrence_date:
  *                   type: string
- *                   format: date
- *                   example: "2024-01-15"
+ *                   format: date-time
+ *                   example: "2024-01-15T00:00:00.000Z"
  *                 occurrence_time:
  *                   type: string
- *                   format: time
- *                   example: "14:30:00"
+ *                   format: date-time
+ *                   example: "2024-01-15T14:30:00.000Z"
  *                 snap_shot:
  *                   type: string
  *                   example: "smoking_detection_20240115_143000.jpg"
  *                 posted_to_intranet_date:
  *                   type: string
- *                   format: date
- *                   example: "2024-01-15"
+ *                   format: date-time
+ *                   example: "2024-01-15T00:00:00.000Z"
  *                 posted_to_intranet_time:
  *                   type: string
- *                   format: time
- *                   example: "14:35:00"
+ *                   format: date-time
+ *                   example: "2024-01-15T14:35:00.000Z"
  *                 detection_Id:
  *                   type: string
  *                   example: "SMOKE_20240115_001"
  *                 detection_date:
  *                   type: string
  *                   format: date-time
- *                   example: "2024-01-15T14:30:00Z"
+ *                   example: "2024-01-15T14:30:00.000Z"
  *                 detection_time:
  *                   type: string
- *                   format: time
- *                   example: "14:30:00"
+ *                   format: date-time
+ *                   example: "2024-01-15T14:30:00.000Z"
  *                 description:
  *                   type: string
  *                   example: "Smoking detected near main entrance"
@@ -208,43 +208,43 @@ smokingDetectionRouter.post('/add', smokingDetectionValidations, SmokingDetectio
  *                     example: 1
  *                   park_Id:
  *                     type: integer
- *                     example: 1
+ *                     example: 37
  *                   location:
  *                     type: string
  *                     example: "Main Entrance Area"
  *                   camera_Id:
  *                     type: integer
- *                     example: 5
+ *                     example: 1
  *                   occurrence_date:
  *                     type: string
- *                     format: date
- *                     example: "2024-01-15"
+ *                     format: date-time
+ *                     example: "2024-01-15T00:00:00.000Z"
  *                   occurrence_time:
  *                     type: string
- *                     format: time
- *                     example: "14:30:00"
+ *                     format: date-time
+ *                     example: "2024-01-15T14:30:00.000Z"
  *                   snap_shot:
  *                     type: string
  *                     example: "smoking_detection_20240115_143000.jpg"
  *                   posted_to_intranet_date:
  *                     type: string
- *                     format: date
- *                     example: "2024-01-15"
+ *                     format: date-time
+ *                     example: "2024-01-15T00:00:00.000Z"
  *                   posted_to_intranet_time:
  *                     type: string
- *                     format: time
- *                     example: "14:35:00"
+ *                     format: date-time
+ *                     example: "2024-01-15T14:35:00.000Z"
  *                   detection_Id:
  *                     type: string
  *                     example: "SMOKE_20240115_001"
  *                   detection_date:
  *                     type: string
  *                     format: date-time
- *                     example: "2024-01-15T14:30:00Z"
+ *                     example: "2024-01-15T14:30:00.000Z"
  *                   detection_time:
  *                     type: string
- *                     format: time
- *                     example: "14:30:00"
+ *                     format: date-time
+ *                     example: "2024-01-15T14:30:00.000Z"
  *                   description:
  *                     type: string
  *                     example: "Smoking detected near main entrance"
@@ -376,14 +376,14 @@ smokingDetectionRouter.get('/get/:id', SmokingDetectionController.getSmokingDete
  *                 example: true
  *               posted_to_intranet_date:
  *                 type: string
- *                 format: date
- *                 description: Updated intranet posting date
- *                 example: "2024-01-16"
+ *                 format: date-time
+ *                 description: Updated intranet posting date (ISO8601 format)
+ *                 example: "2024-01-16T00:00:00.000Z"
  *               posted_to_intranet_time:
  *                 type: string
- *                 format: time
- *                 description: Updated intranet posting time
- *                 example: "15:00:00"
+ *                 format: date-time
+ *                 description: Updated intranet posting time (ISO8601 format)
+ *                 example: "2024-01-16T15:00:00.000Z"
  *     responses:
  *       200:
  *         description: Smoking detection updated successfully

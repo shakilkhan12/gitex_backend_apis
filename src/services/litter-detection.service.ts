@@ -17,9 +17,24 @@ class LitterDetectionService {
          }
          console.log("✅ [LitterDetectionService] Park exists:", parkExists.park_english_name);
 
+         // Find camera by camera_Id string and get its database Id
+         let cameraDatabaseId = null;
+         if (litterDetection.camera_Id) {
+            const cameraExists = await db.park_cameras.findFirst({
+               where: { camera_Id: litterDetection.camera_Id.toString() },
+            });
+            if (!cameraExists) {
+               console.error("❌ [LitterDetectionService] Camera not found with camera_Id:", litterDetection.camera_Id);
+               throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
+            }
+            cameraDatabaseId = cameraExists.Id;
+            console.log("✅ [LitterDetectionService] Camera exists:", cameraExists.camera_english_name);
+         }
+
          const result = await db.parks_litter_detection.create({
             data: {
                ...litterDetection,
+               camera_Id: cameraDatabaseId,
                createdAt: new Date(),
                updatedAt: new Date()
             },

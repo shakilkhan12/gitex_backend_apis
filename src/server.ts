@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = process.env.NODE_ENV === 'production'?[
   'https://gitexai-1dd08c5fca2d.herokuapp.com',
   
-]:['http://localhost:3000']
+]:['http://localhost:3000','http://localhost:5000']
 
 app.use(cors({
   origin: function(origin, callback){

@@ -17,22 +17,26 @@ class SmokingDetectionService {
          }
          console.log("✅ [SmokingDetectionService] Park exists:", parkExists.park_english_name);
 
-         // Check if camera exists
-         const cameraExists = await db.park_cameras.findFirst({
-            where: { Id: smokingDetection.camera_Id },
-         });
-         if (!cameraExists) {
-            console.error("❌ [SmokingDetectionService] Camera not found with Id:", smokingDetection.camera_Id);
-            throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
+         // Find camera by camera_Id string and get its database Id
+         let cameraDatabaseId = null;
+         if (smokingDetection.camera_Id) {
+            const cameraExists = await db.park_cameras.findFirst({
+               where: { camera_Id: smokingDetection.camera_Id.toString() },
+            });
+            if (!cameraExists) {
+               console.error("❌ [SmokingDetectionService] Camera not found with camera_Id:", smokingDetection.camera_Id);
+               throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
+            }
+            cameraDatabaseId = cameraExists.Id;
+            console.log("✅ [SmokingDetectionService] Camera exists:", cameraExists.camera_english_name);
          }
-         console.log("✅ [SmokingDetectionService] Camera exists:", cameraExists.camera_english_name);
 
          // Insert detection record with new schema fields
          const result = await db.parks_smoking_detection.create({
             data: {
                park_Id: smokingDetection.park_Id,
                location: smokingDetection.location,
-               camera_Id: smokingDetection.camera_Id,
+               camera_Id: cameraDatabaseId,
                occurrence_date: smokingDetection.occurrence_date || new Date(),
                occurrence_time: smokingDetection.occurrence_time || new Date(),
                snap_shot: smokingDetection.snap_shot,
@@ -172,12 +176,31 @@ class SmokingDetectionService {
       console.log(`🟢 [SmokingDetectionService] Updating smoking detection with ID ${detectionId}...`);
 
       try {
+         // Handle camera lookup if camera_Id is provided
+         let cameraDatabaseId = undefined;
+         if (updateData.camera_Id) {
+            const cameraExists = await db.park_cameras.findFirst({
+               where: { camera_Id: updateData.camera_Id.toString() },
+            });
+            if (!cameraExists) {
+               console.error("❌ [SmokingDetectionService] Camera not found with camera_Id:", updateData.camera_Id);
+               throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
+            }
+            cameraDatabaseId = cameraExists.Id;
+            console.log("✅ [SmokingDetectionService] Camera exists:", cameraExists.camera_english_name);
+         }
+
+         // Prepare update data without camera_Id string
+         const { camera_Id, ...updateDataWithoutCameraId } = updateData;
+         const finalUpdateData = {
+            ...updateDataWithoutCameraId,
+            ...(cameraDatabaseId !== undefined && { camera_Id: cameraDatabaseId }),
+            updatedAt: new Date()
+         };
+
          const updatedDetection = await db.parks_smoking_detection.update({
             where: { Id: detectionId },
-            data: {
-               ...updateData,
-               updatedAt: new Date()
-            }
+            data: finalUpdateData
          });
 
          console.log("✅ [SmokingDetectionService] Successfully updated smoking detection");
