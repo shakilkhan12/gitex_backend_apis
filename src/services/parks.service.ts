@@ -142,7 +142,7 @@ class ParkService {
    protected static changeParkSettingService = async (setting: SettingInputTypes) => {
       const {password, stream_api_key, stream_path, stream_url, park_Id} = setting;
       const parkExist = await db.park_streams.findFirst({
-               where: { Id: Number(park_Id) },
+               where: { park_Id: Number(park_Id) },
            });
   let result;
   if(parkExist) {
@@ -170,15 +170,15 @@ class ParkService {
    }
    // update park basic info service
    protected static updateParkBasicInfoService = async (basicInfo: ParkType) => {
-      const {park_Id, park_arabic_name, park_english_name, latitude, longitude} = basicInfo
+      const {Id,park_Id, park_arabic_name, park_english_name, latitude, longitude} = basicInfo
       const parkExist = await db.parks.findFirst({
-               where: { Id: Number(park_Id) },
+               where: { Id: Id },
            });
            if(!parkExist) {
               throw new HttpException(STATUS.BAD_REQUEST, `No park found with the given ID`);
            }
-       const result = db.parks.update({
-        where: { Id: Number(park_Id) },
+       const result = await db.parks.update({
+        where: { park_Id: park_Id },
         data: {
         park_arabic_name,
         park_english_name,

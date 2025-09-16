@@ -22,23 +22,11 @@ const PORT = process.env.PORT || 5000;
 
 
 const allowedOrigins = process.env.NODE_ENV === 'production'?[
-  'https://gitexai-1dd08c5fca2d.herokuapp.com',
+  'https://gitexai-1dd08c5fca2d.herokuapp.com','http://localhost:4000','https://10.70.90.183:443','https://10.70.90.183'
   
-]:['http://localhost:3000','http://localhost:5000']
+]:['http://localhost:3000','http://localhost:5000','http://localhost:4000','https://10.70.90.183:443','https://10.70.90.183']
 
-app.use(cors({
-  origin: function(origin, callback){
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){
-      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization'],
-  credentials: true
-}));
+app.use(cors());
 
 // Handle preflight requests
 app.options('*', cors());

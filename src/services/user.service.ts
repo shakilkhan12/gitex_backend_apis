@@ -11,9 +11,8 @@ class UserService {
    protected static loginService = async (EmpCode: string, Password: string) => {
    
       try {
-         // 1️⃣ Fetch SecretKey from third-party API
          const secretKey = await this.fetchSecretFromAPI();
-       console.log('secretKey',secretKey)
+         console.log('secretKey',secretKey)
          // 2️⃣ Prepare payload for login API
          const payload = {
             EmpCode,
@@ -23,11 +22,13 @@ class UserService {
          };
    
          // 3️⃣ Call login API
+         console.log('🔑 [UserService] Calling login API with payload:', { EmpCode, SecretKey: secretKey ? '***' : 'null' });
          const response = await axios.post(
             "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeLoginService",
             payload,
             {
                headers: { "Content-Type": "application/json" },
+               timeout: 30000, // 30 seconds timeout (increased to accommodate secret key retries)
                httpsAgent: new https.Agent({ rejectUnauthorized: false }),
             }
          );
@@ -67,12 +68,23 @@ class UserService {
          return response.data;
    
       } catch (error: any) {
+         console.error('❌ [UserService] Login error:', error.message);
          
          if (error instanceof HttpException) {
             throw error;
          }
          
-         throw new HttpException(STATUS.BAD_REQUEST, "Login failed");
+         if (axios.isAxiosError(error)) {
+            if (error.code === 'ECONNABORTED') {
+               throw new HttpException(STATUS.BAD_REQUEST, "Login request timed out - please try again");
+            } else if (error.code === 'ECONNREFUSED') {
+               throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to login service");
+            } else if (error.response) {
+               throw new HttpException(STATUS.BAD_REQUEST, `Login service error: ${error.response.status} - ${error.response.statusText}`);
+            }
+         }
+         
+         throw new HttpException(STATUS.BAD_REQUEST, `Login failed: ${error.message}`);
       }
    }
 
@@ -293,33 +305,70 @@ class UserService {
 
    // Fetch secret key from third-party API (similar to access_secret service)
    private static async fetchSecretFromAPI(): Promise<string> {
-      try {
-         const response = await axios.post(
-            "https://192.168.164.7/website_demo/middleware/?action=Secretkey&class=general",
-            {
-               Username: "WebServiceUser",
-               Pwd: "A01834h123ds2",
-            },
-            {
-               headers: { "Content-Type": "application/json" },
-               httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      const maxRetries = 3;
+      const baseTimeout = 20000; // 20 seconds base timeout
+      
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+         try {
+            console.log(`🔐 [UserService] Fetching secret key from API... (Attempt ${attempt}/${maxRetries})`);
+            const response = await axios.post(
+               "https://192.168.164.7/website_demo/middleware/?action=Secretkey&class=general",
+               {
+                  Username: "WebServiceUser",
+                  Pwd: "A01834h123ds2",
+               },
+               {
+                  headers: { "Content-Type": "application/json" },
+                  timeout: baseTimeout * attempt, // Progressive timeout: 20s, 40s, 60s
+                  httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+               }
+            );
+            console.log('🔐 [UserService] Secret key API response status:', response.status);
+            console.log('🔐 [UserService] Secret key API response data:', response.data);
+            
+            // Adjust based on actual API response shape
+            if (response.data?.SecretKey) {
+               console.log('✅ [UserService] Secret key retrieved successfully');
+               return response.data.SecretKey;
             }
-         );
 
-         // Adjust based on actual API response shape
-         if (response.data?.SecretKey) return response.data.SecretKey;
-         if (response.data?.SecretKey) return response.data.SecretKey;
-
-         throw new HttpException(
-            STATUS.BAD_REQUEST,
-            "Secret key not found in API response"
-         );
-      } catch (error: any) {
-         throw new HttpException(
-            STATUS.BAD_REQUEST,
-            `Failed to fetch secret from API: ${error.message}`
-         );
+            console.error('❌ [UserService] Secret key not found in API response:', response.data);
+            throw new HttpException(
+               STATUS.BAD_REQUEST,
+               "Secret key not found in API response"
+            );
+         } catch (error: any) {
+            console.error(`❌ [UserService] Error fetching secret key (Attempt ${attempt}/${maxRetries}):`, error.message);
+            
+            if (axios.isAxiosError(error)) {
+               if (error.code === 'ECONNABORTED') {
+                  if (attempt === maxRetries) {
+                     throw new HttpException(STATUS.BAD_REQUEST, `Secret key API request timed out after ${maxRetries} attempts`);
+                  }
+                  console.log(`⏳ [UserService] Timeout on attempt ${attempt}, retrying...`);
+                  continue; // Retry on timeout
+               } else if (error.code === 'ECONNREFUSED') {
+                  throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to secret key API");
+               } else if (error.response) {
+                  throw new HttpException(STATUS.BAD_REQUEST, `Secret key API error: ${error.response.status} - ${error.response.statusText}`);
+               }
+            }
+            
+            if (attempt === maxRetries) {
+               throw new HttpException(
+                  STATUS.BAD_REQUEST,
+                  `Failed to fetch secret from API after ${maxRetries} attempts: ${error.message}`
+               );
+            }
+            
+            // Wait before retry (exponential backoff)
+            const waitTime = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
+            console.log(`⏳ [UserService] Waiting ${waitTime}ms before retry...`);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+         }
       }
+      
+      throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
    }
 
    // Fetch employee listing from third-party API and store in database
@@ -331,7 +380,7 @@ class UserService {
 
          // 2️⃣ Prepare payload for employee listing API
          const payload = {
-            SecretKey: `${secretKey}==`,
+            SecretKey: `${secretKey}`,
             Lang: "en"
          };
 
