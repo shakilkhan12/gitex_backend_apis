@@ -1,26 +1,17 @@
 const { PrismaClient } = require('../src/prisma/generated/prisma');
 
-// Always use live database
 const prisma = new PrismaClient();
 require('dotenv').config()
 
 async function main() {
-  console.log('🌱 Starting database seeding...');
-  console.log('📊 Using Live Database (AWS)');
 
-  // Skip cleanup since we're starting with a fresh database
-  console.log('📋 Fresh database detected, skipping cleanup...');
 
-  // 1. Seed access_secret (only 1 record as requested)
-  console.log('📝 Seeding access_secret...');
   await prisma.access_secret.create({
     data: {
       value: 'TWpBeU5TOHdPUzh3T1E9PQ=='
     }
   });
 
-  // 2. Seed users_roles
-  console.log('👥 Seeding users_roles...');
   const roles = await Promise.all([
     prisma.users_roles.create({ data: { role_name: 'Super Admin' } }),
     prisma.users_roles.create({ data: { role_name: 'Park Manager' } }),
@@ -31,11 +22,8 @@ async function main() {
     prisma.users_roles.create({ data: { role_name: 'Operations Manager' } })
   ]);
 
-  // Get created roles
   const rolesList = roles;
 
-  // 3. Seed users_permissions
-  console.log('🔐 Seeding users_permissions...');
   for (const role of rolesList) {
     await prisma.users_permissions.create({
       data: {
@@ -91,8 +79,8 @@ async function main() {
     });
   }
 
-  // 4. Seed users
-  console.log('👤 Seeding users...');
+ 4. Seed users
+👤 Seeding users...');
   const users = await Promise.all([
     prisma.users.create({
       data: {
@@ -243,11 +231,11 @@ async function main() {
     })
   ]);
 
-  // Get created users
+ Get created users
   const usersList = users;
 
-  // 5. Seed parks
-  console.log('🏞️ Seeding parks...');
+ 5. Seed parks
+🏞️ Seeding parks...');
   const parks = await prisma.parks.createMany({
     data: [
       {
@@ -309,11 +297,11 @@ async function main() {
     ]
   });
 
-  // Get created parks
+ Get created parks
   const parksList = await prisma.parks.findMany();
 
-  // 6. Seed offices
-  console.log('🏢 Seeding offices...');
+ 6. Seed offices
+🏢 Seeding offices...');
   const offices = await prisma.offices.createMany({
     data: [
       {
@@ -379,11 +367,11 @@ async function main() {
     ]
   });
 
-  // Get created offices
+ Get created offices
   const officesList = await prisma.offices.findMany();
 
-  // 7. Seed park_cameras
-  console.log('📹 Seeding park_cameras...');
+ 7. Seed park_cameras
+📹 Seeding park_cameras...');
   for (let i = 0; i < parksList.length; i++) {
     const park = parksList[i];
     await prisma.park_cameras.create({
@@ -402,8 +390,8 @@ async function main() {
     });
   }
 
-  // 8. Seed offices_cameras
-  console.log('📹 Seeding offices_cameras...');
+ 8. Seed offices_cameras
+📹 Seeding offices_cameras...');
   for (let i = 0; i < officesList.length; i++) {
     const office = officesList[i];
     await prisma.offices_cameras.create({
@@ -422,12 +410,12 @@ async function main() {
     });
   }
 
-  // Get cameras for further seeding
+ Get cameras for further seeding
   const parkCameras = await prisma.park_cameras.findMany();
   const officeCameras = await prisma.offices_cameras.findMany();
 
-  // 9. Seed park_zones
-  console.log('🌳 Seeding park_zones...');
+ 9. Seed park_zones
+🌳 Seeding park_zones...');
   for (let i = 0; i < parksList.length; i++) {
     const park = parksList[i];
     await prisma.park_zones.create({
@@ -445,11 +433,11 @@ async function main() {
     });
   }
 
-  // Get zones
+ Get zones
   const parkZones = await prisma.park_zones.findMany();
 
-  // 10. Seed park_streams
-  console.log('📺 Seeding park_streams...');
+ 10. Seed park_streams
+📺 Seeding park_streams...');
   for (let i = 0; i < parksList.length; i++) {
     const park = parksList[i];
     await prisma.park_streams.create({
@@ -463,8 +451,8 @@ async function main() {
     });
   }
 
-  // 11. Seed office_streams
-  console.log('📺 Seeding office_streams...');
+ 11. Seed office_streams
+📺 Seeding office_streams...');
   for (let i = 0; i < officesList.length; i++) {
     const office = officesList[i];
     await prisma.office_streams.create({
@@ -478,8 +466,8 @@ async function main() {
     });
   }
 
-  // 12. Seed live_stream_favourites
-  console.log('⭐ Seeding live_stream_favourites...');
+ 12. Seed live_stream_favourites
+⭐ Seeding live_stream_favourites...');
   for (let i = 0; i < 6; i++) {
     await prisma.live_stream_favourites.create({
       data: {
@@ -490,8 +478,8 @@ async function main() {
     });
   }
 
-  // 13. Seed parks_attendance
-  console.log('📝 Seeding parks_attendance...');
+ 13. Seed parks_attendance
+📝 Seeding parks_attendance...');
   for (let i = 0; i < 7; i++) {
     const entryTime = new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000);
     const exitTime = new Date(entryTime.getTime() + Math.random() * 8 * 60 * 60 * 1000);
@@ -506,8 +494,8 @@ async function main() {
     });
   }
 
-  // 14. Seed offices_attendance
-  console.log('📝 Seeding offices_attendance...');
+ 14. Seed offices_attendance
+📝 Seeding offices_attendance...');
   for (let i = 0; i < 7; i++) {
     const entryTime = new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000);
     const exitTime = new Date(entryTime.getTime() + Math.random() * 8 * 60 * 60 * 1000);
@@ -522,8 +510,8 @@ async function main() {
     });
   }
 
-  // 15. Seed parks_sentiment_analysis
-  console.log('😊 Seeding parks_sentiment_analysis...');
+ 15. Seed parks_sentiment_analysis
+😊 Seeding parks_sentiment_analysis...');
   const sentiments = ['happy', 'neutral', 'sad', 'angry', 'surprised'];
   for (let i = 0; i < 6; i++) {
     await prisma.parks_sentiment_analysis.create({
@@ -549,8 +537,8 @@ async function main() {
     });
   }
 
-  // 16. Seed offices_sentiment_analysis
-  console.log('😊 Seeding offices_sentiment_analysis...');
+ 16. Seed offices_sentiment_analysis
+😊 Seeding offices_sentiment_analysis...');
   for (let i = 0; i < 6; i++) {
     await prisma.offices_sentiment_analysis.create({
       data: {
@@ -575,8 +563,8 @@ async function main() {
     });
   }
 
-  // 17. Seed parks_behaviour_alerts
-  console.log('🚨 Seeding parks_behaviour_alerts...');
+ 17. Seed parks_behaviour_alerts
+🚨 Seeding parks_behaviour_alerts...');
   const behaviours = ['Running in restricted area', 'Climbing trees', 'Littering', 'Loud music', 'Pet without leash', 'Vandalism'];
   for (let i = 0; i < 6; i++) {
     await prisma.parks_behaviour_alerts.create({
@@ -596,8 +584,8 @@ async function main() {
     });
   }
 
-  // 18. Seed parks_intrusion_detection
-  console.log('🚫 Seeding parks_intrusion_detection...');
+ 18. Seed parks_intrusion_detection
+🚫 Seeding parks_intrusion_detection...');
   for (let i = 0; i < 6; i++) {
     await prisma.parks_intrusion_detection.create({
       data: {
@@ -619,8 +607,8 @@ async function main() {
     });
   }
 
-  // 19. Seed parks_smoking_detection
-  console.log('🚭 Seeding parks_smoking_detection...');
+ 19. Seed parks_smoking_detection
+🚭 Seeding parks_smoking_detection...');
   for (let i = 0; i < 6; i++) {
     await prisma.parks_smoking_detection.create({
       data: {
@@ -642,8 +630,8 @@ async function main() {
     });
   }
 
-  // 20. Seed parks_landscaping
-  console.log('🌱 Seeding parks_landscaping...');
+ 20. Seed parks_landscaping
+🌱 Seeding parks_landscaping...');
   const landscapingTypes = ['Tree Pruning', 'Grass Maintenance', 'Flower Bed Care', 'Irrigation Repair', 'Pest Control', 'Fertilization'];
   for (let i = 0; i < 6; i++) {
     await prisma.parks_landscaping.create({
@@ -665,8 +653,8 @@ async function main() {
     });
   }
 
-  // 21. Seed parks_litter_detection
-  console.log('🗑️ Seeding parks_litter_detection...');
+ 21. Seed parks_litter_detection
+🗑️ Seeding parks_litter_detection...');
   for (let i = 0; i < 6; i++) {
     await prisma.parks_litter_detection.create({
       data: {
@@ -688,8 +676,8 @@ async function main() {
     });
   }
 
-  // 22. Seed parks_irrigation_job_history
-  console.log('💧 Seeding parks_irrigation_job_history...');
+ 22. Seed parks_irrigation_job_history
+💧 Seeding parks_irrigation_job_history...');
   const jobStatuses = ['completed', 'running', 'scheduled', 'failed', 'cancelled'];
   for (let i = 0; i < 7; i++) {
     const startTime = new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000);
@@ -707,8 +695,8 @@ async function main() {
     });
   }
 
-  // 23. Seed parks_footfall_analysis
-  console.log('👥 Seeding parks_footfall_analysis...');
+ 23. Seed parks_footfall_analysis
+👥 Seeding parks_footfall_analysis...');
   for (let i = 0; i < 7; i++) {
     await prisma.parks_footfall_analysis.create({
       data: {
@@ -727,8 +715,8 @@ async function main() {
     });
   }
 
-  // 24. Seed offices_footfall_analysis
-  console.log('👥 Seeding offices_footfall_analysis...');
+ 24. Seed offices_footfall_analysis
+👥 Seeding offices_footfall_analysis...');
   for (let i = 0; i < 6; i++) {
     await prisma.offices_footfall_analysis.create({
       data: {
@@ -747,17 +735,17 @@ async function main() {
     });
   }
 
-  // Get created detection records for relationships
+ Get created detection records for relationships
   const littDetections = await prisma.parks_litter_detection.findMany();
   const landscapingRecords = await prisma.parks_landscaping.findMany();
   const smokingDetections = await prisma.parks_smoking_detection.findMany();
   const intrusionDetections = await prisma.parks_intrusion_detection.findMany();
 
-  // 25. Seed ticket_details_table
-  console.log('🎫 Seeding ticket_details_table...');
+ 25. Seed ticket_details_table
+🎫 Seeding ticket_details_table...');
   const ticketStatuses = ['initiated', 'assigned', 'completed', 'verified', 'failed_verification'];
   
-  // Create tickets for litter detection
+ Create tickets for litter detection
   for (let i = 0; i < 3; i++) {
     await prisma.ticket_details_table.create({
       data: {
@@ -775,7 +763,7 @@ async function main() {
     });
   }
   
-  // Create tickets for landscaping
+ Create tickets for landscaping
   for (let i = 0; i < 3; i++) {
     await prisma.ticket_details_table.create({
       data: {
@@ -793,10 +781,10 @@ async function main() {
     });
   }
 
-  // 26. Seed intranet_posting_history
-  console.log('📰 Seeding intranet_posting_history...');
+ 26. Seed intranet_posting_history
+📰 Seeding intranet_posting_history...');
   
-  // Create intranet posts for smoking detection
+ Create intranet posts for smoking detection
   for (let i = 0; i < 3; i++) {
     await prisma.intranet_posting_history.create({
       data: {
@@ -813,7 +801,7 @@ async function main() {
     });
   }
   
-  // Create intranet posts for intrusion detection
+ Create intranet posts for intrusion detection
   for (let i = 0; i < 3; i++) {
     await prisma.intranet_posting_history.create({
       data: {
@@ -830,8 +818,8 @@ async function main() {
     });
   }
 
-  // 27. Seed TermsPrivacy
-  console.log('📋 Seeding TermsPrivacy...');
+ 27. Seed TermsPrivacy
+📋 Seeding TermsPrivacy...');
   await prisma.TermsPrivacy.create({
     data: {
       terms: `TERMS OF SERVICE
@@ -893,8 +881,8 @@ If you have any questions about this Privacy Policy, please contact us at privac
     }
   });
 
-  // 28. Seed FAQ
-  console.log('❓ Seeding FAQ...');
+ 28. Seed FAQ
+❓ Seeding FAQ...');
   const faqs = [
     {
       question: "How do I access the parks and offices management system?",
@@ -944,36 +932,36 @@ If you have any questions about this Privacy Policy, please contact us at privac
     });
   }
 
-  console.log('✅ Database seeding completed successfully!');
-  console.log('📊 Summary of seeded data:');
-  console.log('- Access Secret: 1 record');
-  console.log('- Users Roles: 7 records');
-  console.log('- Users Permissions: 7 records');
-  console.log('- Users: 7 records');
-  console.log('- Parks: 7 records');
-  console.log('- Offices: 6 records');
-  console.log('- Park Cameras: 7 records');
-  console.log('- Office Cameras: 6 records');
-  console.log('- Park Zones: 7 records');
-  console.log('- Park Streams: 7 records');
-  console.log('- Office Streams: 6 records');
-  console.log('- Live Stream Favourites: 6 records');
-  console.log('- Parks Attendance: 7 records');
-  console.log('- Offices Attendance: 7 records');
-  console.log('- Parks Sentiment Analysis: 6 records');
-  console.log('- Offices Sentiment Analysis: 6 records');
-  console.log('- Parks Behaviour Alerts: 6 records');
-  console.log('- Parks Intrusion Detection: 6 records');
-  console.log('- Parks Smoking Detection: 6 records');
-  console.log('- Parks Landscaping: 6 records');
-  console.log('- Parks Litter Detection: 6 records');
-  console.log('- Parks Irrigation Job History: 7 records');
-  console.log('- Parks Footfall Analysis: 7 records');
-  console.log('- Offices Footfall Analysis: 6 records');
-  console.log('- Ticket Details: 6 records');
-  console.log('- Intranet Posting History: 6 records');
-  console.log('- Terms & Privacy: 1 record');
-  console.log('- FAQ: 10 records');
+✅ Database seeding completed successfully!');
+📊 Summary of seeded data:');
+- Access Secret: 1 record');
+- Users Roles: 7 records');
+- Users Permissions: 7 records');
+- Users: 7 records');
+- Parks: 7 records');
+- Offices: 6 records');
+- Park Cameras: 7 records');
+- Office Cameras: 6 records');
+- Park Zones: 7 records');
+- Park Streams: 7 records');
+- Office Streams: 6 records');
+- Live Stream Favourites: 6 records');
+- Parks Attendance: 7 records');
+- Offices Attendance: 7 records');
+- Parks Sentiment Analysis: 6 records');
+- Offices Sentiment Analysis: 6 records');
+- Parks Behaviour Alerts: 6 records');
+- Parks Intrusion Detection: 6 records');
+- Parks Smoking Detection: 6 records');
+- Parks Landscaping: 6 records');
+- Parks Litter Detection: 6 records');
+- Parks Irrigation Job History: 7 records');
+- Parks Footfall Analysis: 7 records');
+- Offices Footfall Analysis: 6 records');
+- Ticket Details: 6 records');
+- Intranet Posting History: 6 records');
+- Terms & Privacy: 1 record');
+- FAQ: 10 records');
 }
 
 main()

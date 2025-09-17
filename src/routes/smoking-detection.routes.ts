@@ -4,8 +4,6 @@ import { Router } from "express";
 
 const smokingDetectionRouter = Router();
 
-/**
- * @swagger
  * /smoking-detection/add:
  *   post:
  *     summary: Add a new smoking detection record
@@ -186,8 +184,6 @@ const smokingDetectionRouter = Router();
  */
 smokingDetectionRouter.post('/add', smokingDetectionValidations, SmokingDetectionController.addSmokingDetection)
 
-/**
- * @swagger
  * /smoking-detection/get:
  *   get:
  *     summary: Get all smoking detection records
@@ -303,8 +299,6 @@ smokingDetectionRouter.post('/add', smokingDetectionValidations, SmokingDetectio
  */
 smokingDetectionRouter.get('/get', SmokingDetectionController.viewSmokingDetections)
 
-/**
- * @swagger
  * /smoking-detection/get/{id}:
  *   get:
  *     summary: Get smoking detection by ID
@@ -332,8 +326,6 @@ smokingDetectionRouter.get('/get', SmokingDetectionController.viewSmokingDetecti
  */
 smokingDetectionRouter.get('/get/:id', SmokingDetectionController.getSmokingDetectionById)
 
-/**
- * @swagger
  * /smoking-detection/update/{id}:
  *   put:
  *     summary: Update smoking detection

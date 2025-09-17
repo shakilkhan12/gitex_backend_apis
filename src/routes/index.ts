@@ -12,7 +12,7 @@ import userRouter from "./user.routes";
 import accessSecretRouter from "./access-secret.routes";
 import usersRoles from "./users_roles.route";
 
-import parksRouter from "./parks.routes"
+import parksRouter from "./parks.routes";
 import officesRouter from "./offices.routes";
 import settingsRouter from "./settings.routes";
 import eventHandlerRouter from "./event-handler.routes";

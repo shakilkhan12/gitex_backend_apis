@@ -5,7 +5,6 @@ import { TermsPrivacyType } from "@/typescript"
 import { SettingsService } from "@/services";
 
 class Settings extends SettingsService {
-  // ✅ Add new Terms & Privacy
   public static addTermsPrivacy = async (
     req: Request<{}, {}, TermsPrivacyType>,
     res: Response,
@@ -26,7 +25,6 @@ class Settings extends SettingsService {
     }
   };
 
-  // ✅ Get Terms & Privacy
   public static getTermsPrivacy = async (
     req: Request,
     res: Response,
@@ -40,7 +38,6 @@ class Settings extends SettingsService {
     }
   };
 
-  // ✅ Update Terms & Privacy
   public static updateTermsPrivacy = async (
     req: Request<{}, {}, TermsPrivacyType>,
     res: Response,
@@ -66,7 +63,7 @@ class Settings extends SettingsService {
     return res.status(STATUS.BAD_REQUEST).json({ errors: errors.array() });
   }
 
-  const faqs = req.body; // expecting an array of {question, answer}
+  const faqs = req.body;
 
   if (!Array.isArray(faqs)) {
     return res.status(STATUS.BAD_REQUEST).json({ message: "FAQs must be an array" });
@@ -96,7 +93,7 @@ class Settings extends SettingsService {
     return res.status(STATUS.BAD_REQUEST).json({ errors: errors.array() });
   }
 
-  const faqs = req.body; // expecting array: [{id, question?, answer?}, ...]
+  const faqs = req.body;
   if (!Array.isArray(faqs)) {
     return res.status(STATUS.BAD_REQUEST).json({ message: "FAQs must be an array" });
   }
@@ -111,7 +108,6 @@ class Settings extends SettingsService {
 
   static async delete(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-   console.log(id)
     try {
       await SettingsService.deleteFAQ(Number(id));
       return res.status(STATUS.SUCCESS).json({ message: "FAQ deleted successfully" });

@@ -4,14 +4,13 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
 class ParkService {
-   // add park service
+ service
    protected static addParkService = async (park: ParkType) => {
       const result = await db.parks.create({
       data: {...park, createdAt: new Date()},
   });
   return result;
    }
-   // get parks service
    protected static getParksService = async () => {
       return await db.parks.findMany({
          include: {
@@ -27,7 +26,6 @@ class ParkService {
   },
       });
    }
-   // get park
    protected static getParkService = async (park_Id: number) => {
       if(!park_Id) {
          throw new HttpException(STATUS.BAD_REQUEST, `park id is required`)
@@ -38,7 +36,6 @@ class ParkService {
     },
       });
    }
-   // get park zones service
    protected static getParkZonesService = async (park_Id: number) => {
       if(!park_Id) {
           throw new HttpException(STATUS.BAD_REQUEST, `park id is required`)
@@ -55,8 +52,7 @@ class ParkService {
   },
    });
    }
-   // get park cameras service
-    protected static getParkCamerasService = async (park_Id: number) => {
+ camera    protected static getParkCamerasService = async (park_Id: number) => {
       if(!park_Id) {
           throw new HttpException(STATUS.BAD_REQUEST, `park id is required`)
       }
@@ -69,7 +65,7 @@ class ParkService {
   },
    });
    }
-   // add park zone service
+ service
    protected static addParkZoneService = async (zoneData: ParkZone) => {
       const result = await db.park_zones.create({
          data: {...zoneData, createdAt: new Date() }
@@ -84,7 +80,6 @@ class ParkService {
       });
       return result;
    }
-   // add park camera service
    protected static addParCameraService = async (cameraData: ParkCamera) => {
       const result = await db.park_cameras.create({
          data: {
@@ -103,8 +98,7 @@ class ParkService {
       })
       return result;
    }
-   // update park camera service 
-      protected static updateParkCameraService = async (cameraData: ParkCamera, id: number) => {
+   // update park      protected static updateParkCameraService = async (cameraData: ParkCamera, id: number) => {
       const result = await db.park_cameras.update({
          where: {Id: Number(id)},
          data: {
@@ -168,7 +162,7 @@ class ParkService {
   }
     return result;
    }
-   // update park basic info service
+   // update park service
    protected static updateParkBasicInfoService = async (basicInfo: ParkType) => {
       const {Id,park_Id, park_arabic_name, park_english_name, latitude, longitude} = basicInfo
       const parkExist = await db.parks.findFirst({
@@ -207,7 +201,7 @@ class ParkService {
           throw new HttpException(STATUS.BAD_REQUEST, `Park id is required`);
       }
       const settings = await db.park_streams.findFirst({
-         where: {Id: parkId}
+         where: {park_Id: parkId}
       })
       if(settings) {
          return settings
@@ -215,18 +209,16 @@ class ParkService {
          throw new HttpException(STATUS.NOT_FOUND, `No Settings found with the given ID`);
       }
    }
-   // update park image 
-   protected static updateParkImageService = async (data: {Id: number, image: string}) => {
-      const {Id, image} = data;
+   // update park   protected static updateParkImageService = async (data: {Id: number,: string}) => {
+      const {Id,} = data;
       const result = await db.parks.update({
          where: {Id},
          data: {
-            image
          }
       })
       return result;
    }
-   // update park zone status 
+   // update park status 
     protected static updateZoneStatusService = async (id: number, status: "active" | "inactive") => {
     if (!id) {
       throw new HttpException(STATUS.BAD_REQUEST, "Zone Id is required");
@@ -246,19 +238,15 @@ class ParkService {
     return result;
   };
 
-  // Get park footfall analysis service
-  protected static getParkFootfallAnalysisService = async (parkIds: number | number[], fromDate?: string, toDate?: string) => {
-    // Build where clause
+  // Get park footfall analysi  protected static getParkFootfallAnalysisService = async (parkIds: number | number[], fromDate?: string, toDate?: string) => {
     let whereClause: any = {};
     
-    // Handle park IDs (single or multiple)
     if (Array.isArray(parkIds)) {
       whereClause.park_Id = { in: parkIds };
     } else {
       whereClause.park_Id = parkIds;
     }
     
-    // Add date range if provided
     if (fromDate && toDate) {
       whereClause.time = {
         gte: new Date(fromDate),
@@ -266,7 +254,6 @@ class ParkService {
       };
     }
 
-    // Get footfall analysis data
     const footfallData = await db.parks_footfall_analysis.findMany({
       where: whereClause,
       include: {
@@ -283,10 +270,8 @@ class ParkService {
       }
     });
 
-    // Calculate statistics
     const totalFootfall = footfallData.length;
     
-    // Use person.gender if available, otherwise fall back to item.gender
     const maleCount = footfallData.filter(item => {
       const gender = item.gender;
       return gender === 'M' || gender === 'Male';
@@ -301,7 +286,6 @@ class ParkService {
     const employeeCount = footfallData.filter(item => item.person_Id !== null).length;
     const guestCount = totalFootfall - employeeCount;
 
-    // Get unique employees
     const uniqueEmployees = footfallData
       .filter(item => item.person_Id !== null)
       .reduce((acc: any[], item) => {
@@ -317,14 +301,12 @@ class ParkService {
         return acc;
       }, []);
 
-    // Get hourly distribution
     const hourlyDistribution = footfallData.reduce((acc, item) => {
       const hour = new Date(item.time).getHours();
       acc[hour] = (acc[hour] || 0) + 1;
       return acc;
     }, {} as Record<number, number>);
 
-    // Get daily distribution
     const dailyDistribution = footfallData.reduce((acc, item) => {
       const date = new Date(item.time).toISOString().split('T')[0];
       acc[date] = (acc[date] || 0) + 1;
@@ -347,9 +329,7 @@ class ParkService {
     };
   };
 
-  // Add park footfall analysis service
-  protected static addParkFootfallAnalysisService = async (footfallData: ParkFootfallAnalysisType) => {
-    // Validate required fields
+  // Add park footfall analysi  protected static addParkFootfallAnalysisService = async (footfallData: ParkFootfallAnalysisType) => {
     if (!footfallData.person_Id) {
       throw new HttpException(STATUS.BAD_REQUEST, 'person_Id is required');
     }

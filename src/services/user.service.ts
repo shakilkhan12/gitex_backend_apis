@@ -12,8 +12,6 @@ class UserService {
    
       try {
          const secretKey = await this.fetchSecretFromAPI();
-         console.log('secretKey',secretKey)
-         // 2️⃣ Prepare payload for login API
          const payload = {
             EmpCode,
             Password,
@@ -21,8 +19,6 @@ class UserService {
             Lang: "en"
          };
    
-         // 3️⃣ Call login API
-         console.log('🔑 [UserService] Calling login API with payload:', { EmpCode, SecretKey: secretKey ? '***' : 'null' });
          const response = await axios.post(
             "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeLoginService",
             payload,
@@ -34,16 +30,13 @@ class UserService {
          );
    
    
-         // 4️⃣ Check if login was successful
          if (response.data.status !== 'SUCCESS' || response.data.code !== 200) {
             throw new HttpException(STATUS.BAD_REQUEST, response.data.error?.msg || "Login failed");
          }
    
          const userId = response.data.data.UserID;
    
-         // 5️⃣ Find user in database and update last_login
          try {
-            // First, try to find by emp_Id (assuming emp_Id matches the UserID from API)
             const user = await db.users.findFirst({
                where: {
                   user_Id: userId
@@ -68,7 +61,6 @@ class UserService {
          return response.data;
    
       } catch (error: any) {
-         console.error('❌ [UserService] Login error:', error.message);
          
          if (error instanceof HttpException) {
             throw error;
@@ -132,7 +124,6 @@ class UserService {
          return users;
 
       } catch (error: any) {
-         console.error("💥 [UserService] Error fetching users:", error.message || error);
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to fetch users");
       }
    }
@@ -238,7 +229,6 @@ class UserService {
          if (error instanceof HttpException) {
             throw error;
          }
-         console.error("💥 [UserService] Error fetching user details:", error.message || error);
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to fetch user details");
       }
    }
@@ -246,27 +236,22 @@ class UserService {
    protected static updateUserRoleService = async (userId: number, roleId: number) => {
 
       try {
-         // Validate that the role exists
          const roleExists = await db.users_roles.findUnique({
             where: { Id: roleId }
          });
 
          if (!roleExists) {
-            console.error("❌ [UserService] Role not found:", roleId);
             throw new HttpException(STATUS.BAD_REQUEST, "Role not found");
          }
 
-         // Validate that the user exists
          const userExists = await db.users.findUnique({
             where: { Id: userId }
          });
 
          if (!userExists) {
-            console.error("❌ [UserService] User not found:", userId);
             throw new HttpException(STATUS.BAD_REQUEST, "User not found");
          }
 
-         // Update the user's roleId
          const updatedUser = await db.users.update({
             where: { Id: userId },
             data: {
@@ -290,7 +275,6 @@ class UserService {
          };
 
       } catch (error: any) {
-         console.error("💥 [UserService] Error updating user role:", error.message || error);
          
          if (error instanceof HttpException) {
             throw error;
@@ -303,14 +287,12 @@ class UserService {
       }
    }
 
-   // Fetch secret key from third-party API (similar to access_secret service)
    private static async fetchSecretFromAPI(): Promise<string> {
       const maxRetries = 3;
       const baseTimeout = 20000; // 20 seconds base timeout
       
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
          try {
-            console.log(`🔐 [UserService] Fetching secret key from API... (Attempt ${attempt}/${maxRetries})`);
             const response = await axios.post(
                "https://192.168.164.7/website_demo/middleware/?action=Secretkey&class=general",
                {
@@ -323,29 +305,22 @@ class UserService {
                   httpsAgent: new https.Agent({ rejectUnauthorized: false }),
                }
             );
-            console.log('🔐 [UserService] Secret key API response status:', response.status);
-            console.log('🔐 [UserService] Secret key API response data:', response.data);
             
-            // Adjust based on actual API response shape
             if (response.data?.SecretKey) {
-               console.log('✅ [UserService] Secret key retrieved successfully');
                return response.data.SecretKey;
             }
 
-            console.error('❌ [UserService] Secret key not found in API response:', response.data);
             throw new HttpException(
                STATUS.BAD_REQUEST,
                "Secret key not found in API response"
             );
          } catch (error: any) {
-            console.error(`❌ [UserService] Error fetching secret key (Attempt ${attempt}/${maxRetries}):`, error.message);
             
             if (axios.isAxiosError(error)) {
                if (error.code === 'ECONNABORTED') {
                   if (attempt === maxRetries) {
                      throw new HttpException(STATUS.BAD_REQUEST, `Secret key API request timed out after ${maxRetries} attempts`);
                   }
-                  console.log(`⏳ [UserService] Timeout on attempt ${attempt}, retrying...`);
                   continue; // Retry on timeout
                } else if (error.code === 'ECONNREFUSED') {
                   throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to secret key API");
@@ -361,9 +336,7 @@ class UserService {
                );
             }
             
-            // Wait before retry (exponential backoff)
             const waitTime = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
-            console.log(`⏳ [UserService] Waiting ${waitTime}ms before retry...`);
             await new Promise(resolve => setTimeout(resolve, waitTime));
          }
       }
@@ -371,20 +344,16 @@ class UserService {
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
    }
 
-   // Fetch employee listing from third-party API and store in database
    public static fetchAndStoreEmployeeListingService = async () => {
       
       try {
-         // 1️⃣ Fetch SecretKey from third-party API
          const secretKey = await this.fetchSecretFromAPI();
 
-         // 2️⃣ Prepare payload for employee listing API
          const payload = {
             SecretKey: `${secretKey}`,
             Lang: "en"
          };
 
-         // 3️⃣ Call employee listing API
          const response = await axios.post(
             "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeListingGet",
             payload,
@@ -394,7 +363,6 @@ class UserService {
                },
                timeout: 30000, // 30 seconds timeout
                httpsAgent: new https.Agent({
-                  rejectUnauthorized: false // Bypass SSL certificate verification for internal API
                })
             }
          )
@@ -409,18 +377,15 @@ class UserService {
 
          const userListing = response.data.data.UserListing;
 
-         // 5️⃣ Process and store each user
          let successCount = 0;
          let errorCount = 0;
 
          for (const userData of userListing) {
             try {
-               // Check if user already exists by user_Id
                const existingUser = await db.users.findFirst({
                   where: { user_Id: userData.UserID }
                });
 
-               // Transform API data to database format
                const userDataToProcess: UserType = {
                   user_Id: userData.UserID,
                   emp_Id: userData.EmpCode,
@@ -445,7 +410,6 @@ class UserService {
                };
 
                if (existingUser) {
-                  // Update existing user with new data
                   await db.users.update({
                      where: { Id: existingUser.Id },
                      data: userDataToProcess
@@ -453,7 +417,6 @@ class UserService {
 
                   successCount++;
                } else {
-                  // Create new user
                   await db.users.create({
                      data: {
                         ...userDataToProcess,
@@ -465,12 +428,10 @@ class UserService {
                }
 
             } catch (userError) {
-               console.error(`❌ [UserService] Error processing user ${userData.UserID}:`, userError);
                errorCount++;
             }
          }
 
-         // 6️⃣ Return summary
          const summary = {
             total: userListing.length,
             processed: successCount,

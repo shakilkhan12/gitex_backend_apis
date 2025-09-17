@@ -14,15 +14,13 @@ class AccessSecretService {
     Pwd: "A01834h123ds2",
   };
 
-  // Fetch secret key from 3rd-party API
   private static async fetchSecretFromAPI(): Promise<string> {
     try {
       const response = await axios.post(this.API_URL, this.API_BODY, {
         headers: { "Content-Type": "application/json" },
-        httpsAgent: new https.Agent({ rejectUnauthorized: false }), // in case SSL is self-signed
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       });
 
-      // Adjust based on actual API response shape
       if (response.data?.secret) return response.data.secret;
       if (response.data?.key) return response.data.key;
 
@@ -38,7 +36,6 @@ class AccessSecretService {
     }
   }
 
-  // Create or update the secret in DB
   public static async updateAccessSecret() {
     const secretValue = await this.fetchSecretFromAPI();
 
@@ -56,28 +53,20 @@ class AccessSecretService {
     }
   }
 
-  // Setup cron job inside service
   public static startCronJob() {
     cron.schedule("0 0 * * *", async () => {
       try {
-        console.log("🔑 Running Access Secret Cron Job...");
         const result = await this.updateAccessSecret();
-        console.log("✅ Access Secret Updated:", result);
       } catch (error) {
-        console.error("❌ Error running Access Secret Cron Job:", error);
       }
     });
   }
 
-  // ⭐ NEW: Test method to manually trigger the update
   public static async testUpdateAccessSecret() {
     try {
-      console.log("🧪 Testing Access Secret Update...");
       const result = await this.updateAccessSecret();
-      console.log("✅ Test Successful - Access Secret Updated:", result);
       return result;
     } catch (error) {
-      console.error("❌ Test Failed:", error);
       throw error;
     }
   }

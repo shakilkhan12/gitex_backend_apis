@@ -4,30 +4,22 @@ import { HttpException } from "@/utils/HttpException.utils";
 
 class IntrusionDetectionService {
    protected static addIntrusionDetectionService = async (intrusionDetection: IntrusionDetectionType) => {
-      console.log("🟢 [IntrusionDetectionService] Adding new intrusion detection:", intrusionDetection);
 
       try {
-         // Check if park exists
          const parkExists = await db.parks.findFirst({
             where: { Id: intrusionDetection.park_Id },
          });
          if (!parkExists) {
-            console.error("❌ [IntrusionDetectionService] Park not found with Id:", intrusionDetection.park_Id);
             throw new HttpException(STATUS.BAD_REQUEST, "Park does not exist");
          }
-         console.log("✅ [IntrusionDetectionService] Park exists:", parkExists.park_english_name);
 
-         // Check if camera exists
          const cameraExists = await db.park_cameras.findFirst({
             where: { Id: intrusionDetection.camera_Id },
          });
          if (!cameraExists) {
-            console.error("❌ [IntrusionDetectionService] Camera not found with Id:", intrusionDetection.camera_Id);
             throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
          }
-         console.log("✅ [IntrusionDetectionService] Camera exists:", cameraExists.camera_english_name);
 
-         // Insert detection record with new schema fields
          const result = await db.parks_intrusion_detection.create({
             data: {
                park_Id: intrusionDetection.park_Id,
@@ -49,17 +41,14 @@ class IntrusionDetectionService {
             },
          });
 
-         console.log("🎉 [IntrusionDetectionService] Intrusion detection saved successfully:", result.Id);
          return result;
 
       } catch (error: any) {
-         console.error("💥 [IntrusionDetectionService] Error adding intrusion detection:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to add intrusion detection");
       }
    }
 
    protected static viewIntrusionDetectionsService = async () => {
-      console.log("🟡 [IntrusionDetectionService] Fetching all intrusion detections...");
 
       try {
          const results = await db.parks_intrusion_detection.findMany({
@@ -102,17 +91,14 @@ class IntrusionDetectionService {
             }
          });
 
-         console.log(`📦 [IntrusionDetectionService] Retrieved ${results.length} intrusion detections.`);
          return results;
 
       } catch (error: any) {
-         console.error("💥 [IntrusionDetectionService] Error fetching intrusion detections:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch intrusion detections");
       }
    }
 
    protected static getIntrusionDetectionByIdService = async (detectionId: number) => {
-      console.log(`🟢 [IntrusionDetectionService] Getting intrusion detection with ID ${detectionId}...`);
 
       try {
          const detection = await db.parks_intrusion_detection.findUnique({
@@ -154,22 +140,18 @@ class IntrusionDetectionService {
          });
 
          if (!detection) {
-            console.log("🟡 [IntrusionDetectionService] Intrusion detection not found");
             throw new HttpException(STATUS.NOT_FOUND, "Intrusion detection not found");
          }
 
-         console.log("✅ [IntrusionDetectionService] Successfully retrieved intrusion detection data");
          return detection;
 
       } catch (error: any) {
-         console.error("💥 [IntrusionDetectionService] Error getting intrusion detection by ID:", error.message || error);
          if (error instanceof HttpException) throw error;
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch intrusion detection");
       }
    }
 
    protected static updateIntrusionDetectionService = async (detectionId: number, updateData: Partial<IntrusionDetectionType>) => {
-      console.log(`🟢 [IntrusionDetectionService] Updating intrusion detection with ID ${detectionId}...`);
 
       try {
          const updatedDetection = await db.parks_intrusion_detection.update({
@@ -180,11 +162,9 @@ class IntrusionDetectionService {
             }
          });
 
-         console.log("✅ [IntrusionDetectionService] Successfully updated intrusion detection");
          return updatedDetection;
 
       } catch (error: any) {
-         console.error("💥 [IntrusionDetectionService] Error updating intrusion detection:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to update intrusion detection");
       }
    }

@@ -4,8 +4,6 @@ import { Router } from "express";
 
 const parkRouter = Router();
 
-/**
- * @swagger
  * /parks/add:
  *   post:
  *     summary: Add a new park
@@ -85,8 +83,6 @@ const parkRouter = Router();
  */
 parkRouter.post('/add', parkValidations, ParkController.addPark)
 
-/**
- * @swagger
  * /parks/get:
  *   get:
  *     summary: Get all parks
@@ -110,8 +106,6 @@ parkRouter.post('/add', parkValidations, ParkController.addPark)
  */
 parkRouter.get('/get', ParkController.viewParks)
 
-/**
- * @swagger
  * /parks/get/{id}:
  *   get:
  *     summary: Get park by ID
@@ -139,8 +133,6 @@ parkRouter.get('/get', ParkController.viewParks)
  */
 parkRouter.get('/get/:id', ParkController.getParkById)
 
-/**
- * @swagger
  * /parks/get/parkId/{parkId}:
  *   get:
  *     summary: Get park by park ID
@@ -168,8 +160,6 @@ parkRouter.get('/get/:id', ParkController.getParkById)
  */
 parkRouter.get('/get/parkId/:parkId', ParkController.getParkByParkId)
 
-/**
- * @swagger
  * /parks/statistics/{id}:
  *   get:
  *     summary: Get park statistics

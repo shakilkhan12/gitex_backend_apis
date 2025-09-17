@@ -4,8 +4,6 @@ import { Router } from "express";
 
 const parkSentimentAnalysisRouter = Router();
 
-/**
- * @swagger
  * /park-sentiment-analysis/add:
  *   post:
  *     summary: Add a new park sentiment analysis record
@@ -166,8 +164,6 @@ const parkSentimentAnalysisRouter = Router();
  */
 parkSentimentAnalysisRouter.post('/add', parkSentimentAnalysisValidations, ParkSentimentAnalysisController.addParkSentimentAnalysis)
 
-/**
- * @swagger
  * /park-sentiment-analysis/get:
  *   get:
  *     summary: Get all park sentiment analysis records

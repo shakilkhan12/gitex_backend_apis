@@ -22,8 +22,6 @@ export const behaviorAlertsValidations = [
         .withMessage('Detected behaviour is required')
         .isLength({ max: 255 })
         .withMessage('Detected behaviour must not exceed 255 characters')
-        // .isIn(['fighting', 'vandalism', 'trespassing', 'suspicious_activity', 'crowding', 'other'])
-        // .withMessage('Detected behaviour must be one of: fighting, vandalism, trespassing, suspicious_activity, crowding, other'),
         ,
     
     body('snap_shot')

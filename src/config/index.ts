@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 
-// Load .env only in non-production
 if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: ".env" });
 }

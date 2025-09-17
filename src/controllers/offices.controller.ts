@@ -7,7 +7,6 @@ import { validationResult } from "express-validator";
 
 class OfficesController extends OfficesService {
   
-  // add new park
    public static addOffice = async (req: Request<{}, {}, OfficeType>, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
        try {
@@ -27,7 +26,6 @@ class OfficesController extends OfficesService {
     }
        }
    }
-//    get all offices
    public static getOffices = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const offices = await OfficesService.getOfficesService();
@@ -36,7 +34,6 @@ class OfficesController extends OfficesService {
       next(error)
     }
    }
-  // get all office cameras 
     public static getOfficeCameras = async (req: Request <{officeId: number}>, res: Response, next: NextFunction) => {
     const officeId = req.params.officeId
     try {
@@ -46,7 +43,6 @@ class OfficesController extends OfficesService {
       next(error)
     }
   }
-  // add office camera
   public static addOfficeCamera = async (req: Request <{}, {}, OfficeCamera>, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     try {
@@ -57,7 +53,6 @@ class OfficesController extends OfficesService {
         return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
       }
     } catch (error: any) {
-      console.log(error)
       if(error.code === 'P2002') {
           return res.status(STATUS.BAD_REQUEST).json({message: "This camera already exists in the selected office."});
       } else {
@@ -70,7 +65,6 @@ class OfficesController extends OfficesService {
   public static changeOfficeCameraFunctionality = async (req: Request, res: Response, next: NextFunction) => {
     try {
    const { camera_Id, ...fields } = req.body;
-     console.log('body -> ', req.body)
     const updatableFields = [
       "attendance",
       "footfall",
@@ -80,12 +74,10 @@ class OfficesController extends OfficesService {
       return res.status(STATUS.BAD_REQUEST).json({ message: "camera_Id is required" });
     }
 
-    // Filter only allowed fields
     const fieldsToUpdate = Object.keys(fields).filter((f) =>
       updatableFields.includes(f)
     );
 
-    // Ensure only one field is present
     if (fieldsToUpdate.length !== 1) {
       return res.status(STATUS.BAD_REQUEST).json({
         message: "You must provide exactly one field to update",
@@ -99,7 +91,6 @@ class OfficesController extends OfficesService {
       next(error)
     }
   }
-  // update setting 
   public static updateOfficeSetting = async (req: Request <{}, {}, OfficeSettingInputTypes>, res: Response, next: NextFunction) => {
     const officeId = req.body.office_Id
     if(!officeId) {
@@ -122,11 +113,9 @@ class OfficesController extends OfficesService {
         return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
       }
     } catch (error: any) {
-      console.log(error.message)
       next(error)
     }
   }
-  // get office details
   public static getOffice = async (req: Request, res: Response, next: NextFunction) => {
     const officeId: number = Number(req.params.id);
     try {
@@ -169,7 +158,6 @@ class OfficesController extends OfficesService {
       next(error)
     }
   }
-    // update office camera
   public static updateOfficeCamera = async (req: Request <{id: number}, {}, OfficeCamera>, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     try {
@@ -181,7 +169,6 @@ class OfficesController extends OfficesService {
         return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()})
       }
     } catch (error: any) {
-      console.log(error)
       if(error.code === 'P2002') {
           return res.status(STATUS.BAD_REQUEST).json({message: "This camera already exists in the selected office."})
       } else {
@@ -190,7 +177,6 @@ class OfficesController extends OfficesService {
     }
   }
 
-  // Get office footfall analysis
   public static getOfficeFootfallAnalysis = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { office_Id } = req.params;
@@ -199,9 +185,7 @@ class OfficesController extends OfficesService {
       let officeIdsToUse;
       
       if (officeIds) {
-        // Handle multiple office IDs from query parameter
         if (typeof officeIds === 'string' && officeIds.includes(',')) {
-          // Handle comma-separated string
           officeIdsToUse = officeIds.split(',').map(id => Number(id.trim()));
         } else if (Array.isArray(officeIds)) {
           officeIdsToUse = officeIds.map(id => Number(id));
@@ -209,7 +193,6 @@ class OfficesController extends OfficesService {
           officeIdsToUse = [Number(officeIds)];
         }
       } else if (office_Id) {
-        // Handle single office ID from URL parameter
         officeIdsToUse = Number(office_Id);
       } else {
         return res.status(STATUS.BAD_REQUEST).json({ message: 'office_Id or officeIds is required' });
@@ -227,7 +210,6 @@ class OfficesController extends OfficesService {
     }
   }
 
-  // Add office footfall analysis entry
   public static addOfficeFootfallAnalysis = async (req: Request<{}, {}, OfficeFootfallAnalysisType>, res: Response, next: NextFunction) => {
     try {
       const footfallData = req.body;

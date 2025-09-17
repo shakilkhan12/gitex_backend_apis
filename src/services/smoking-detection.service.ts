@@ -4,34 +4,26 @@ import { HttpException } from "@/utils/HttpException.utils";
 
 class SmokingDetectionService {
    protected static addSmokingDetectionService = async (smokingDetection: SmokingDetectionType) => {
-      console.log("🟢 [SmokingDetectionService] Adding new smoking detection:", smokingDetection);
 
       try {
-         // Check if park exists
          const parkExists = await db.parks.findFirst({
             where: { Id: smokingDetection.park_Id },
          });
          if (!parkExists) {
-            console.error("❌ [SmokingDetectionService] Park not found with Id:", smokingDetection.park_Id);
             throw new HttpException(STATUS.BAD_REQUEST, "Park does not exist");
          }
-         console.log("✅ [SmokingDetectionService] Park exists:", parkExists.park_english_name);
 
-         // Find camera by camera_Id string and get its database Id
          let cameraDatabaseId = null;
          if (smokingDetection.camera_Id) {
             const cameraExists = await db.park_cameras.findFirst({
                where: { camera_Id: smokingDetection.camera_Id.toString() },
             });
             if (!cameraExists) {
-               console.error("❌ [SmokingDetectionService] Camera not found with camera_Id:", smokingDetection.camera_Id);
                throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
             }
             cameraDatabaseId = cameraExists.Id;
-            console.log("✅ [SmokingDetectionService] Camera exists:", cameraExists.camera_english_name);
          }
 
-         // Insert detection record with new schema fields
          const result = await db.parks_smoking_detection.create({
             data: {
                park_Id: smokingDetection.park_Id,
@@ -53,17 +45,14 @@ class SmokingDetectionService {
             },
          });
 
-         console.log("🎉 [SmokingDetectionService] Smoking detection saved successfully:", result.Id);
          return result;
 
       } catch (error: any) {
-         console.error("💥 [SmokingDetectionService] Error adding smoking detection:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to add smoking detection");
       }
    }
 
    protected static viewSmokingDetectionsService = async () => {
-      console.log("🟡 [SmokingDetectionService] Fetching all smoking detections...");
 
       try {
          const results = await db.parks_smoking_detection.findMany({
@@ -106,17 +95,14 @@ class SmokingDetectionService {
             }
          });
 
-         console.log(`📦 [SmokingDetectionService] Retrieved ${results.length} smoking detections.`);
          return results;
 
       } catch (error: any) {
-         console.error("💥 [SmokingDetectionService] Error fetching smoking detections:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch smoking detections");
       }
    }
 
    protected static getSmokingDetectionByIdService = async (detectionId: number) => {
-      console.log(`🟢 [SmokingDetectionService] Getting smoking detection with ID ${detectionId}...`);
 
       try {
          const detection = await db.parks_smoking_detection.findUnique({
@@ -158,39 +144,31 @@ class SmokingDetectionService {
          });
 
          if (!detection) {
-            console.log("🟡 [SmokingDetectionService] Smoking detection not found");
             throw new HttpException(STATUS.NOT_FOUND, "Smoking detection not found");
          }
 
-         console.log("✅ [SmokingDetectionService] Successfully retrieved smoking detection data");
          return detection;
 
       } catch (error: any) {
-         console.error("💥 [SmokingDetectionService] Error getting smoking detection by ID:", error.message || error);
          if (error instanceof HttpException) throw error;
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch smoking detection");
       }
    }
 
    protected static updateSmokingDetectionService = async (detectionId: number, updateData: Partial<SmokingDetectionType>) => {
-      console.log(`🟢 [SmokingDetectionService] Updating smoking detection with ID ${detectionId}...`);
 
       try {
-         // Handle camera lookup if camera_Id is provided
          let cameraDatabaseId = undefined;
          if (updateData.camera_Id) {
             const cameraExists = await db.park_cameras.findFirst({
                where: { camera_Id: updateData.camera_Id.toString() },
             });
             if (!cameraExists) {
-               console.error("❌ [SmokingDetectionService] Camera not found with camera_Id:", updateData.camera_Id);
                throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
             }
             cameraDatabaseId = cameraExists.Id;
-            console.log("✅ [SmokingDetectionService] Camera exists:", cameraExists.camera_english_name);
          }
 
-         // Prepare update data without camera_Id string
          const { camera_Id, ...updateDataWithoutCameraId } = updateData;
          const finalUpdateData = {
             ...updateDataWithoutCameraId,
@@ -203,11 +181,9 @@ class SmokingDetectionService {
             data: finalUpdateData
          });
 
-         console.log("✅ [SmokingDetectionService] Successfully updated smoking detection");
          return updatedDetection;
 
       } catch (error: any) {
-         console.error("💥 [SmokingDetectionService] Error updating smoking detection:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to update smoking detection");
       }
    }

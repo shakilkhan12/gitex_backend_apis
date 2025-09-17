@@ -8,7 +8,6 @@ import { validationResult } from "express-validator";
 
 class ParksController extends ParksService {
   
-  // add new park
    public static addPark = async (req: Request<{}, {}, ParkType>, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
        try {
@@ -19,7 +18,6 @@ class ParksController extends ParksService {
           return res.status(STATUS.BAD_REQUEST).json({errors: errors.array()});
         }
        } catch (error: any) {
-        console.log(error)
          if (error.code === "P2002") {
       return res.status(
         STATUS.BAD_REQUEST
@@ -29,7 +27,6 @@ class ParksController extends ParksService {
     }
        }
    }
-  //  get all parks
    public static getParks = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const parks = await ParksService.getParksService();
@@ -38,7 +35,6 @@ class ParksController extends ParksService {
       next(error)
     }
    }
-  //  get all park zones
   public static getParkZones = async (req: Request <{parkId: number}>, res: Response, next: NextFunction) => {
     const parkId = req.params.parkId
     try {
@@ -48,7 +44,6 @@ class ParksController extends ParksService {
       next(error)
     }
   }
-  // get all park cameras 
     public static getParkCameras = async (req: Request <{parkId: number}>, res: Response, next: NextFunction) => {
     const parkId = req.params.parkId
     try {
@@ -58,7 +53,6 @@ class ParksController extends ParksService {
       next(error)
     }
   }
-  //  add new park zone
   public static addParkZone = async (req: Request <{}, {}, ParkZone>, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
     try {
@@ -76,7 +70,6 @@ class ParksController extends ParksService {
       } 
     }
   }
-  // update zone
   public static updateParkZone = async (req: Request <{id: string}, {}, ParkZone>, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
     const id = Number(req.params.id);
@@ -96,7 +89,6 @@ class ParksController extends ParksService {
     }
   }
 
-  // add park camera
   public static addParkCamera = async (req: Request <{}, {}, ParkCamera>, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     try {
@@ -135,7 +127,6 @@ class ParksController extends ParksService {
       }
     }
   }
-  // update park camera functionality
   public static changeParkCameraFunctionality = async (req: Request, res: Response, next: NextFunction) => {
     try {
 const { camera_Id, ...fields } = req.body;
@@ -155,12 +146,9 @@ const { camera_Id, ...fields } = req.body;
       return res.status(STATUS.BAD_REQUEST).json({ message: "camera_Id is required" });
     }
 
-    // Filter only allowed fields
     const fieldsToUpdate = Object.keys(fields).filter((f) =>
       updatableFields.includes(f)
     );
-    console.log(fieldsToUpdate)
-    // Ensure only one field is present
     if (fieldsToUpdate.length !== 1) {
       return res.status(STATUS.BAD_REQUEST).json({
         message: "You must provide exactly one field to update",
@@ -174,7 +162,6 @@ const { camera_Id, ...fields } = req.body;
       next(error)
     }
   }
-  // update setting 
   public static updateSetting = async (req: Request <{}, {}, SettingInputTypes>, res: Response, next: NextFunction) => {
     const parkId = req.body.park_Id
     if(!parkId) {
@@ -261,17 +248,14 @@ const { camera_Id, ...fields } = req.body;
     }
   }
 
-  // Get park footfall analysis
   public static getParkFootfallAnalysis = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { park_Id } = req.params;
       const { parkIds, fromDate, toDate } = req.query;
 
-      // Determine which park IDs to use
       let parkIdsToUse: number | number[];
       
       if (parkIds) {
-        // Handle comma-separated string or array
         if (typeof parkIds === 'string') {
           parkIdsToUse = parkIds.split(',').map(id => parseInt(id.trim()));
         } else if (Array.isArray(parkIds)) {
@@ -297,12 +281,10 @@ const { camera_Id, ...fields } = req.body;
     }
   };
 
-  // Add park footfall analysis
   public static addParkFootfallAnalysis = async (req: Request<{}, {}, ParkFootfallAnalysisType>, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     try {
       if (errors.isEmpty()) {
-        // Validate required fields
         const requiredFields = ['park_Id', 'detection_Id', 'person_Id', 'detected_camera_Id'];
         const missingFields = requiredFields.filter(field => !req.body[field as keyof ParkFootfallAnalysisType]);
         
