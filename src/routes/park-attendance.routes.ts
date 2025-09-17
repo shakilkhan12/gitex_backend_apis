@@ -4,6 +4,8 @@ import { Router } from "express";
 
 const parkAttendanceRouter = Router();
 
+/**
+ * @swagger
  * /park-attendance/add:
  *   post:
  *     summary: Add a new park attendance record
@@ -150,6 +152,8 @@ const parkAttendanceRouter = Router();
  */
 parkAttendanceRouter.post('/add', parkAttendanceValidations, ParkAttendanceController.addParkAttendance)
 
+/**
+ * @swagger
  * /park-attendance/get:
  *   get:
  *     summary: Get all park attendance records

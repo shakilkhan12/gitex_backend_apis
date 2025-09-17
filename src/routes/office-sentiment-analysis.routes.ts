@@ -4,6 +4,8 @@ import { Router } from "express";
 
 const officeSentimentAnalysisRouter = Router();
 
+/**
+ * @swagger
  * /office-sentiment-analysis/add:
  *   post:
  *     summary: Add a new office sentiment analysis record
@@ -164,6 +166,8 @@ const officeSentimentAnalysisRouter = Router();
  */
 officeSentimentAnalysisRouter.post('/add', officeSentimentAnalysisValidations, OfficeSentimentAnalysisController.addOfficeSentimentAnalysis)
 
+/**
+ * @swagger
  * /office-sentiment-analysis/get:
  *   get:
  *     summary: Get all office sentiment analysis records

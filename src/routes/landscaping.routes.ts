@@ -4,6 +4,8 @@ import { Router } from "express";
 
 const landscapingRouter = Router();
 
+/**
+ * @swagger
  * /landscaping/add:
  *   post:
  *     summary: Add a new landscaping record
@@ -120,6 +122,8 @@ const landscapingRouter = Router();
  */
 landscapingRouter.post('/add', landscapingValidations, LandscapingController.addLandscaping)
 
+/**
+ * @swagger
  * /landscaping/get:
  *   get:
  *     summary: Get all landscaping records

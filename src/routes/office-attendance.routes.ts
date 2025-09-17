@@ -4,6 +4,8 @@ import { Router } from "express";
 
 const officeAttendanceRouter = Router();
 
+/**
+ * @swagger
  * /office-attendance/add:
  *   post:
  *     summary: Add a new office attendance record
@@ -150,6 +152,8 @@ const officeAttendanceRouter = Router();
  */
 officeAttendanceRouter.post('/add', officeAttendanceValidations, OfficeAttendanceController.addOfficeAttendance)
 
+/**
+ * @swagger
  * /office-attendance/get:
  *   get:
  *     summary: Get all office attendance records

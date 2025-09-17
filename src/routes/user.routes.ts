@@ -4,6 +4,8 @@ import { Router } from "express";
 
 const userRouter = Router();
 
+/**
+ * @swagger
  * /users/login:
  *   post:
  *     summary: User login
@@ -61,6 +63,8 @@ userRouter.post('/login', userLoginValidations, UserController.login)
 
 userRouter.get('/get',UserController.getUsers)
 
+/**
+ * @swagger
  * /users/get-details:
  *   post:
  *     summary: Get user details by user_Id
@@ -330,6 +334,8 @@ userRouter.post('/get-details', UserController.getUserDetails)
 
 userRouter.put('/update/role/:userId',UserController.updateUserRole)
 
+/**
+ * @swagger
  * /users/fetch-employees:
  *   post:
  *     summary: Fetch and store employee listing from third-party API

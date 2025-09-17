@@ -4,6 +4,8 @@ import { Router } from "express";
 
 const litterDetectionRouter = Router();
 
+/**
+ * @swagger
  * /litter-detection/add:
  *   post:
  *     summary: Add a new litter detection record
@@ -183,6 +185,8 @@ const litterDetectionRouter = Router();
  */
 litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionController.addLitterDetection)
 
+/**
+ * @swagger
  * /litter-detection/get:
  *   get:
  *     summary: Get all litter detection records
