@@ -24,7 +24,7 @@ class HandlingImagesService {
       );
 
       return {
-        image_url: result.secure_url
+        image_url:result.secure_url
       };
     } catch (error) {
       throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
