@@ -312,13 +312,13 @@ class ParkService {
       }, []);
 
     const hourlyDistribution = footfallData.reduce((acc, item) => {
-      const hour = new Date(item.time).getHours();
+      const hour = new Date(item?.time).getHours();
       acc[hour] = (acc[hour] || 0) + 1;
       return acc;
     }, {} as Record<number, number>);
 
     const dailyDistribution = footfallData.reduce((acc, item) => {
-      const date = new Date(item.time).toISOString().split('T')[0];
+      const date = new Date(item?.time).toISOString().split('T')[0];
       acc[date] = (acc[date] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
