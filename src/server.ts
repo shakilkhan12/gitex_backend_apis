@@ -10,7 +10,6 @@ import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
 import mainRouter from "@/routes";
 import { errorHandler } from "@/middlewares";
-import AccessSecretService from "@/services/access_secret.service";
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: '.env' });
@@ -29,9 +28,9 @@ app.use(cors());
 
 app.options('*', cors());
 
-app.use(express.json({ limit: '100mb' }));
-app.use(bodyParser.json({ limit: '100mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(compression());
@@ -46,9 +45,16 @@ app.use('/api', mainRouter)
 app.use(errorHandler)
 
 const startServer = async () => {
-  app.listen(PORT, () => {
-  });
-
+  try {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+      console.log(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
+      console.log(`🌐 Server URL: http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
 };
 
 
