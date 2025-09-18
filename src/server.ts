@@ -29,9 +29,9 @@ app.use(cors());
 
 app.options('*', cors());
 
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json({ limit: '100mb' }));
+app.use(bodyParser.json({ limit: '100mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(compression());

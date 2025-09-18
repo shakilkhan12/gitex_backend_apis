@@ -17,17 +17,17 @@ class HandlingImagesService {
         `data:image/jpeg;base64,${fileBuffer.toString('base64')}`,
         {
           resource_type: 'auto',
-          folder: 'handling-images',
-          quality: 'auto',
-          format: 'auto'
+          folder: 'event-images',
+          quality: 'auto'
         }
       );
 
       return {
-        image_url:result.secure_url
+        image_url: result.secure_url
       };
     } catch (error) {
-      throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Failed to upload image: ${errorMessage}`);
     }
   };
 }
