@@ -340,7 +340,7 @@ userRouter.put('/update/role/:userId',UserController.updateUserRole)
  *   post:
  *     summary: Fetch and store employee listing from third-party API
  *     tags: [Users]
- *     description: Fetches employee data from third-party API and stores it in the database. Updates existing users with new data, creates new users if they don't exist. Expects response format: { "status": "SUCCESS", "code": 200, "data": { "UserListing": [...] } }
+ *     description: Fetches employee data from third-party API and stores it in the database. Updates existing users with new data, creates new users if they don't exist. Expects response format with status SUCCESS, code 200, and data containing UserListing array
  *     responses:
  *       200:
  *         description: Employee listing fetch and store completed successfully
