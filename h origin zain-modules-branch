@@ -1,0 +1,3 @@
+[33m59ff3ab[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mzain-modules-branch[m[33m)[m Fix Swagger UI to use local specs instead of external URL
+[33me70d0cc[m[33m ([m[1;31morigin/zain-modules-branch[m[33m, [m[1;31mheroku/main[m[33m)[m Fix Swagger UI to load local API instead of Petstore
+[33mc7ba716[m Swagger issues rescolved
