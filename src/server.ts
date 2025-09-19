@@ -64,11 +64,24 @@ app.use('/api-docs', express.static('node_modules/swagger-ui-dist', {
   }
 }));
 
+// Serve the swagger.json file
+app.get('/api-docs/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(specs);
+});
+
 // Swagger UI configuration with proper static asset handling
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Khorfakkan Smart City API Documentation',
   swaggerOptions: {
+    url: '/api-docs/swagger.json',
+    urls: [
+      {
+        url: '/api-docs/swagger.json',
+        name: 'Khorfakkan Smart City API'
+      }
+    ],
     persistAuthorization: true,
     displayRequestDuration: true,
     docExpansion: 'none',
