@@ -2,30 +2,41 @@ import { body } from "express-validator";
 
 export const parkSentimentAnalysisValidations = [
     body('park_Id')
-        .isInt({ min: 1 })
-        .withMessage('Park ID must be a valid positive integer'),
+        .isString()
+        .withMessage('Park ID must be a valid string'),
     
     body('person_Id')
+        .optional()
         .trim()
-        .notEmpty()
-        .withMessage('Person ID is required')
         .isLength({ max: 255 })
-        .withMessage('Person ID must not exceed 255 characters'),
+        .withMessage('Employee ID must not exceed 255 characters'),
     
-    body('sentiment_of')
+    body('detection_Id')
         .trim()
         .notEmpty()
-        .withMessage('Sentiment of is required')
-        .isIn(['employee', 'visitor'])
-        .withMessage('Sentiment of must be either employee or visitor'),
+        .withMessage('Detection ID is required')
+        .isLength({ max: 100 })
+        .withMessage('Detection ID must not exceed 100 characters'),
+    
+    body('gender')
+        .optional()
+        .trim()
+        .isLength({ max: 50 })
+        .withMessage('Gender must not exceed 50 characters'),
+    
+    body('check_in_image')
+        .optional()
+        .trim()
+        .isLength({ max: 255 })
+        .withMessage('Check in image must not exceed 255 characters'),
     
     body('check_in_date')
         .isISO8601()
         .withMessage('Check in date must be a valid date'),
     
     body('check_in_time')
-        .isISO8601()
-        .withMessage('Check in time must be a valid time'),
+        .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)
+        .withMessage('Check in time must be in HH:MM:SS format'),
     
     body('check_in_sentiment')
         .trim()
@@ -38,8 +49,17 @@ export const parkSentimentAnalysisValidations = [
         ,
     
     body('entry_camera_Id')
-        .isInt({ min: 1 })
-        .withMessage('Entry camera ID must be a valid positive integer'),
+        .isString()
+        .withMessage('Entry camera ID must be a valid string'),
+]
+
+export const parkSentimentAnalysisUpdateValidations = [
+    body('detection_Id')
+        .trim()
+        .notEmpty()
+        .withMessage('Detection ID is required')
+        .isLength({ max: 100 })
+        .withMessage('Detection ID must not exceed 100 characters'),
     
     body('check_out_date')
         .optional()
@@ -48,8 +68,8 @@ export const parkSentimentAnalysisValidations = [
     
     body('check_out_time')
         .optional()
-        .isISO8601()
-        .withMessage('Check out time must be a valid time'),
+        .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)
+        .withMessage('Check out time must be in HH:MM:SS format'),
     
     body('check_out_capture')
         .optional()
@@ -57,8 +77,14 @@ export const parkSentimentAnalysisValidations = [
         .isLength({ max: 255 })
         .withMessage('Check out capture must not exceed 255 characters'),
     
+    body('check_out_sentiment')
+        .optional()
+        .trim()
+        .isLength({ max: 50 })
+        .withMessage('Check out sentiment must not exceed 50 characters'),
+    
     body('exit_camera_Id')
         .optional()
-        .isInt({ min: 1 })
-        .withMessage('Exit camera ID must be a valid positive integer'),
-]; 
+        .isString()
+        .withMessage('Exit camera ID must be a valid string'),
+]

@@ -36,21 +36,6 @@ class SmokingDetectionController extends SmokingDetectionService {
          next(error);
       }
    }
-
-   public static updateSmokingDetection = async (req: Request, res: Response, next: NextFunction) => {
-      const errors = validationResult(req);
-      try {
-         if (errors.isEmpty()) {
-            const { id } = req.params;
-            const detection = await SmokingDetectionService.updateSmokingDetectionService(parseInt(id), req.body);
-            return res.status(STATUS.SUCCESS).json(detection);
-         } else {
-            return res.status(STATUS.BAD_REQUEST).json({ errors: errors.array() });
-         }
-      } catch (error) {
-         next(error);
-      }
-   }
 }
 
 export default SmokingDetectionController; 

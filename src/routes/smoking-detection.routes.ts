@@ -26,9 +26,9 @@ const smokingDetectionRouter = Router();
  *               - snap_shot
  *             properties:
  *               park_Id:
- *                 type: integer
+ *                 type: string
  *                 description: ID of the park where smoking was detected
- *                 example: 37
+ *                 example: "PARK_001"
  *               location:
  *                 type: string
  *                 description: Specific location within the park
@@ -44,23 +44,13 @@ const smokingDetectionRouter = Router();
  *                 example: "2024-01-15T00:00:00.000Z"
  *               occurrence_time:
  *                 type: string
- *                 format: date-time
- *                 description: Time when smoking was detected (ISO8601 format)
- *                 example: "2024-01-15T14:30:00.000Z"
+ *                 format: time
+ *                 description: Time when smoking was detected (HH:MM:SS format)
+ *                 example: "14:30:00"
  *               snap_shot:
  *                 type: string
  *                 description: Image path or URL of the smoking detection
  *                 example: "smoking_detection_20240115_143000.jpg"
- *               posted_to_intranet_date:
- *                 type: string
- *                 format: date-time
- *                 description: Date when detection was posted to intranet (ISO8601 format)
- *                 example: "2024-01-15T00:00:00.000Z"
- *               posted_to_intranet_time:
- *                 type: string
- *                 format: date-time
- *                 description: Time when detection was posted to intranet (ISO8601 format)
- *                 example: "2024-01-15T14:35:00.000Z"
  *               detection_Id:
  *                 type: string
  *                 description: Unique detection identifier
@@ -72,9 +62,9 @@ const smokingDetectionRouter = Router();
  *                 example: "2024-01-15T14:30:00.000Z"
  *               detection_time:
  *                 type: string
- *                 format: date-time
- *                 description: Time when detection was processed (ISO8601 format)
- *                 example: "2024-01-15T14:30:00.000Z"
+ *                 format: time
+ *                 description: Time when detection was processed (HH:MM:SS format)
+ *                 example: "14:30:00"
  *               description:
  *                 type: string
  *                 description: Detailed description of the smoking detection
@@ -118,14 +108,6 @@ const smokingDetectionRouter = Router();
  *                 snap_shot:
  *                   type: string
  *                   example: "smoking_detection_20240115_143000.jpg"
- *                 posted_to_intranet_date:
- *                   type: string
- *                   format: date-time
- *                   example: "2024-01-15T00:00:00.000Z"
- *                 posted_to_intranet_time:
- *                   type: string
- *                   format: date-time
- *                   example: "2024-01-15T14:35:00.000Z"
  *                 detection_Id:
  *                   type: string
  *                   example: "SMOKE_20240115_001"
@@ -146,6 +128,14 @@ const smokingDetectionRouter = Router();
  *                 current_status:
  *                   type: string
  *                   example: "active"
+ *                 posted_to_intranet_date:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2024-01-15T14:35:00.000Z"
+ *                 posted_to_intranet_time:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2024-01-15T14:35:00.000Z"
  *                 createdAt:
  *                   type: string
  *                   format: date-time
@@ -226,14 +216,6 @@ smokingDetectionRouter.post('/add', smokingDetectionValidations, SmokingDetectio
  *                   snap_shot:
  *                     type: string
  *                     example: "smoking_detection_20240115_143000.jpg"
- *                   posted_to_intranet_date:
- *                     type: string
- *                     format: date-time
- *                     example: "2024-01-15T00:00:00.000Z"
- *                   posted_to_intranet_time:
- *                     type: string
- *                     format: date-time
- *                     example: "2024-01-15T14:35:00.000Z"
  *                   detection_Id:
  *                     type: string
  *                     example: "SMOKE_20240115_001"
@@ -254,6 +236,14 @@ smokingDetectionRouter.post('/add', smokingDetectionValidations, SmokingDetectio
  *                   current_status:
  *                     type: string
  *                     example: "active"
+ *                   posted_to_intranet_date:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2024-01-15T14:35:00.000Z"
+ *                   posted_to_intranet_time:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2024-01-15T14:35:00.000Z"
  *                   createdAt:
  *                     type: string
  *                     format: date-time
@@ -331,73 +321,5 @@ smokingDetectionRouter.get('/get', SmokingDetectionController.viewSmokingDetecti
  *         description: Internal server error
  */
 smokingDetectionRouter.get('/get/:id', SmokingDetectionController.getSmokingDetectionById)
-
-/**
- * @swagger
- * /smoking-detection/update/{id}:
- *   put:
- *     summary: Update smoking detection
- *     tags: [Smoking Detection]
- *     description: Update an existing smoking detection record
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: Smoking detection ID
- *         example: 1
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               location:
- *                 type: string
- *                 description: Updated location
- *                 example: "Updated Main Entrance Area"
- *               snap_shot:
- *                 type: string
- *                 description: Updated snapshot
- *                 example: "updated_smoking_detection_20240115_143000.jpg"
- *               description:
- *                 type: string
- *                 description: Updated description
- *                 example: "Updated smoking detection description"
- *               current_status:
- *                 type: string
- *                 description: Updated status
- *                 example: "resolved"
- *               is_employee:
- *                 type: boolean
- *                 description: Whether the person detected is an employee
- *                 example: true
- *               posted_to_intranet_date:
- *                 type: string
- *                 format: date-time
- *                 description: Updated intranet posting date (ISO8601 format)
- *                 example: "2024-01-16T00:00:00.000Z"
- *               posted_to_intranet_time:
- *                 type: string
- *                 format: date-time
- *                 description: Updated intranet posting time (ISO8601 format)
- *                 example: "2024-01-16T15:00:00.000Z"
- *     responses:
- *       200:
- *         description: Smoking detection updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/SmokingDetection'
- *       400:
- *         description: Bad request - validation errors
- *       404:
- *         description: Smoking detection not found
- *       500:
- *         description: Internal server error
- */
-smokingDetectionRouter.put('/update/:id', SmokingDetectionController.updateSmokingDetection)
 
 export default smokingDetectionRouter; 

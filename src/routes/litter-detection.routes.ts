@@ -27,9 +27,9 @@ const litterDetectionRouter = Router();
  *               - status
  *             properties:
  *               park_Id:
- *                 type: integer
+ *                 type: string
  *                 description: ID of the park where litter was detected
- *                 example: 37
+ *                 example: "PARK_001"
  *               case_Id:
  *                 type: string
  *                 description: Unique case identifier for the litter detection
@@ -45,9 +45,9 @@ const litterDetectionRouter = Router();
  *                 example: "2024-01-15T00:00:00.000Z"
  *               occurrence_time:
  *                 type: string
- *                 format: date-time
- *                 description: Time when litter was detected (ISO8601 format)
- *                 example: "2024-01-15T10:30:00.000Z"
+ *                 format: time
+ *                 description: Time when litter was detected (HH:MM:SS format)
+ *                 example: "10:30:00"
  *               snap_shot:
  *                 type: string
  *                 description: Image path or URL of the litter detection
@@ -68,9 +68,9 @@ const litterDetectionRouter = Router();
  *                 example: "2024-01-15T10:30:00.000Z"
  *               detection_time:
  *                 type: string
- *                 format: date-time
- *                 description: Time when detection was processed (ISO8601 format)
- *                 example: "2024-01-15T10:30:00.000Z"
+ *                 format: time
+ *                 description: Time when detection was processed (HH:MM:SS format)
+ *                 example: "10:30:00"
  *               description:
  *                 type: string
  *                 description: Detailed description of the litter detection
@@ -82,7 +82,7 @@ const litterDetectionRouter = Router();
  *               camera_Id:
  *                 type: string
  *                 description: Camera ID string (e.g., "79") - will be looked up in park_cameras table
- *                 example: "79"
+ *                 example: "CAM_001"
  *               after_image:
  *                 type: string
  *                 description: Image taken after cleanup (if available)

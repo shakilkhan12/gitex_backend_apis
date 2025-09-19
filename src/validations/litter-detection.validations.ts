@@ -2,8 +2,8 @@ import { body } from "express-validator";
 
 export const litterDetectionValidations = [
     body('park_Id')
-        .isInt({ min: 1 })
-        .withMessage('Park ID must be a valid positive integer'),
+        .isString()
+        .withMessage('Park ID must be a valid string'),
     
     body('case_Id')
         .trim()
@@ -24,8 +24,8 @@ export const litterDetectionValidations = [
         .withMessage('Occurrence date must be a valid date'),
     
     body('occurrence_time')
-        .isISO8601()
-        .withMessage('Occurrence time must be a valid time'),
+        .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)
+        .withMessage('Occurrence time must be in HH:MM:SS format'),
     
     body('snap_shot')
         .trim()
@@ -54,8 +54,8 @@ export const litterDetectionValidations = [
     
     body('detection_time')
         .optional()
-        .isISO8601()
-        .withMessage('Detection time must be a valid time'),
+        .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)
+        .withMessage('Detection time must be in HH:MM:SS format'),
     
     body('description')
         .optional()

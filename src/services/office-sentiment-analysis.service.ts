@@ -10,42 +10,52 @@ class OfficeSentimentAnalysisService {
       try {
          // Check if office exists
          const officeExists = await db.offices.findFirst({
-            where: { Id: sentimentAnalysis.office_Id },
+            where: { office_Id: sentimentAnalysis.office_Id },
          });
          if (!officeExists) {
-            console.error("❌ [OfficeSentimentAnalysisService] Office not found with Id:", sentimentAnalysis.office_Id);
+            console.error("❌ [OfficeSentimentAnalysisService] Office not found with office_Id:", sentimentAnalysis.office_Id);
             throw new HttpException(STATUS.BAD_REQUEST, "Office does not exist");
          }
          console.log("✅ [OfficeSentimentAnalysisService] Office exists:", officeExists.office_english_name);
 
          // Check if entry camera exists
          const entryCameraExists = await db.offices_cameras.findFirst({
-            where: { Id: sentimentAnalysis.entry_camera_Id },
+            where: { camera_Id: sentimentAnalysis.entry_camera_Id },
          });
          if (!entryCameraExists) {
-            console.error("❌ [OfficeSentimentAnalysisService] Entry camera not found with Id:", sentimentAnalysis.entry_camera_Id);
+            console.error("❌ [OfficeSentimentAnalysisService] Entry camera not found with camera_Id:", sentimentAnalysis.entry_camera_Id);
             throw new HttpException(STATUS.BAD_REQUEST, "Entry camera does not exist");
          }
          console.log("✅ [OfficeSentimentAnalysisService] Entry camera exists:", entryCameraExists.camera_english_name);
 
-         // Check if exit camera exists (if provided)
-         if (sentimentAnalysis.exit_camera_Id) {
-            const exitCameraExists = await db.offices_cameras.findFirst({
-               where: { Id: sentimentAnalysis.exit_camera_Id },
-            });
-            if (!exitCameraExists) {
-               console.error("❌ [OfficeSentimentAnalysisService] Exit camera not found with Id:", sentimentAnalysis.exit_camera_Id);
-               throw new HttpException(STATUS.BAD_REQUEST, "Exit camera does not exist");
-            }
-            console.log("✅ [OfficeSentimentAnalysisService] Exit camera exists:", exitCameraExists.camera_english_name);
-         }
+         // Find user by emp_Id and get the user's Id
+         const user = await db.users.findFirst({
+            where: { emp_Id: sentimentAnalysis.person_Id },
+         });
+
+         // Format date and time properly for database
+         const checkInDate = new Date(sentimentAnalysis.check_in_date);
+         const checkInTime = new Date(`1970-01-01T${sentimentAnalysis.check_in_time}Z`);
+
+         const createData: any = {
+            person_Id: user ? user.Id.toString() : null,
+            detection_Id: sentimentAnalysis.detection_Id,
+            sentiment_of: user ? 'employee' : 'visitor',
+            person_name: user ? user.emp__eng_name : 'Visitor',
+            person_image: user ? user.image : '',
+            gender: sentimentAnalysis.gender,
+            check_in_image: sentimentAnalysis.check_in_image,
+            check_in_date: checkInDate,
+            check_in_time: checkInTime,
+            check_in_sentiment: sentimentAnalysis.check_in_sentiment,
+            office_Id: officeExists.Id,
+            entry_camera_Id: entryCameraExists.Id,
+            createdAt: new Date(),
+            updatedAt: new Date()
+         };
 
          const result = await db.offices_sentiment_analysis.create({
-            data: {
-               ...sentimentAnalysis,
-               createdAt: new Date(),
-               updatedAt: new Date()
-            },
+            data: createData,
          });
 
          console.log("🎉 [OfficeSentimentAnalysisService] Office sentiment analysis saved successfully:", result.Id);
@@ -54,6 +64,90 @@ class OfficeSentimentAnalysisService {
       } catch (error: any) {
          console.error("💥 [OfficeSentimentAnalysisService] Error adding office sentiment analysis:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to add office sentiment analysis");
+      }
+   }
+
+   protected static updateOfficeSentimentAnalysisService = async (detection_Id: string, updateData: Partial<OfficeSentimentAnalysisType>) => {
+      try {
+         // Find the office sentiment analysis by detection_Id
+         const existingSentiment = await db.offices_sentiment_analysis.findFirst({
+            where: { detection_Id: detection_Id },
+         });
+
+         if (!existingSentiment) {
+            throw new HttpException(STATUS.NOT_FOUND, "Office sentiment analysis not found with the provided detection ID");
+         }
+
+         // Prepare update data, excluding detection_Id from updates
+         const { detection_Id: _, ...updateFields } = updateData;
+
+         // Prepare the update data object
+         const updateDataForDb: any = {
+            updatedAt: new Date()
+         };
+
+         // Handle each field individually to ensure proper type conversion
+         if (updateFields.person_Id !== undefined) updateDataForDb.person_Id = updateFields.person_Id;
+         if (updateFields.sentiment_of !== undefined) updateDataForDb.sentiment_of = updateFields.sentiment_of;
+         if (updateFields.check_in_date !== undefined) updateDataForDb.check_in_date = new Date(updateFields.check_in_date);
+         if (updateFields.check_in_time !== undefined) updateDataForDb.check_in_time = new Date(`1970-01-01T${updateFields.check_in_time}Z`);
+         if (updateFields.check_in_sentiment !== undefined) updateDataForDb.check_in_sentiment = updateFields.check_in_sentiment;
+         if (updateFields.check_out_date !== undefined) updateDataForDb.check_out_date = new Date(updateFields.check_out_date);
+         if (updateFields.check_out_time !== undefined) updateDataForDb.check_out_time = new Date(`1970-01-01T${updateFields.check_out_time}Z`);
+         if (updateFields.check_out_capture !== undefined) updateDataForDb.check_out_capture = updateFields.check_out_capture;
+         if (updateFields.person_name !== undefined) updateDataForDb.person_name = updateFields.person_name;
+         if (updateFields.person_image !== undefined) updateDataForDb.person_image = updateFields.person_image;
+         if (updateFields.gender !== undefined) updateDataForDb.gender = updateFields.gender;
+         if (updateFields.check_in_image !== undefined) updateDataForDb.check_in_image = updateFields.check_in_image;
+         if (updateFields.check_out_sentiment !== undefined) updateDataForDb.check_out_sentiment = updateFields.check_out_sentiment;
+
+         // If office_Id is being updated, validate it exists
+         if (updateFields.office_Id) {
+            const officeExists = await db.offices.findFirst({
+               where: { office_Id: updateFields.office_Id },
+            });
+            if (!officeExists) {
+               throw new HttpException(STATUS.BAD_REQUEST, "Office does not exist");
+            }
+            updateDataForDb.office_Id = officeExists.Id;
+         }
+
+         // If entry_camera_Id is being updated, validate it exists
+         if (updateFields.entry_camera_Id) {
+            const entryCameraExists = await db.offices_cameras.findFirst({
+               where: { camera_Id: updateFields.entry_camera_Id },
+            });
+            if (!entryCameraExists) {
+               throw new HttpException(STATUS.BAD_REQUEST, "Entry camera does not exist");
+            }
+            updateDataForDb.entry_camera_Id = entryCameraExists.Id;
+         }
+
+         // If exit_camera_Id is being updated, validate it exists
+         if (updateFields.exit_camera_Id) {
+            const exitCameraExists = await db.offices_cameras.findFirst({
+               where: { camera_Id: updateFields.exit_camera_Id },
+            });
+            if (!exitCameraExists) {
+               throw new HttpException(STATUS.BAD_REQUEST, "Exit camera does not exist");
+            }
+            updateDataForDb.exit_camera_Id = exitCameraExists.Id;
+         }
+
+         const result = await db.offices_sentiment_analysis.update({
+            where: { Id: existingSentiment.Id },
+            data: updateDataForDb,
+         });
+
+         console.log("🎉 [OfficeSentimentAnalysisService] Office sentiment analysis updated successfully:", result.Id);
+         return result;
+
+      } catch (error: any) {
+         console.error("💥 [OfficeSentimentAnalysisService] Error updating office sentiment analysis:", error.message || error);
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         throw new HttpException(STATUS.BAD_REQUEST, "Failed to update office sentiment analysis");
       }
    }
 
@@ -154,4 +248,5 @@ class OfficeSentimentAnalysisService {
    }
 }
 
-export default OfficeSentimentAnalysisService; 
+export default OfficeSentimentAnalysisService;
+export { OfficeSentimentAnalysisService }; 

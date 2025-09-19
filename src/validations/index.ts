@@ -5,8 +5,8 @@ export { intrusionDetectionValidations } from "./intrusion-detection.validations
 export { litterDetectionValidations } from "./litter-detection.validations";
 export { landscapingValidations } from "./landscaping.validations";
 export { behaviorAlertsValidations } from "./behavior-alerts.validations";
-export { officeSentimentAnalysisValidations } from "./office-sentiment-analysis.validations";
-export { parkSentimentAnalysisValidations } from "./park-sentiment-analysis.validations";
+export { officeSentimentAnalysisValidations, officeSentimentAnalysisUpdateValidations } from "./office-sentiment-analysis.validations";
+export { parkSentimentAnalysisValidations, parkSentimentAnalysisUpdateValidations } from "./park-sentiment-analysis.validations";
 export { officeAttendanceValidations } from "./office-attendance.validations";
 export { parkAttendanceValidations } from "./park-attendance.validations";
 export { userValidations, userLoginValidations } from "./user.validations";

@@ -18,6 +18,21 @@ class OfficeSentimentAnalysisController extends OfficeSentimentAnalysisService {
       }
    }
 
+   public static updateOfficeSentimentAnalysis = async (req: Request<{ detection_Id: string }, {}, Partial<OfficeSentimentAnalysisType>>, res: Response, next: NextFunction) => {
+      const errors = validationResult(req)
+      try {
+         if (errors.isEmpty()) {
+            const { detection_Id } = req.params;
+            const sentimentAnalysis = await OfficeSentimentAnalysisService.updateOfficeSentimentAnalysisService(detection_Id, req.body)
+            return res.status(STATUS.SUCCESS).json(sentimentAnalysis)
+         } else {
+            return res.status(STATUS.BAD_REQUEST).json({ errors: errors.array() });
+         }
+      } catch (error) {
+         next(error)
+      }
+   }
+
    public static viewOfficeSentimentAnalyses = async (req: Request, res: Response, next: NextFunction) => {
       try {
          const sentimentAnalyses = await OfficeSentimentAnalysisService.viewOfficeSentimentAnalysesService();

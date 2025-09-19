@@ -10,20 +10,20 @@ export interface ParkType {
 }
 
 export interface SmokingDetectionType {
-  park_Id: number;
+  park_Id: string;
   location: string;
   camera_Id: string;
   occurrence_date: Date;
   occurrence_time: Date;
   snap_shot: string;
-  posted_to_intranet_date?: Date;
-  posted_to_intranet_time?: Date;
   detection_Id?: string;
   detection_date?: Date;
   detection_time?: Date;
   description?: string;
   is_employee?: boolean;
   current_status?: string;
+  posted_to_intranet_date?: Date;
+  posted_to_intranet_time?: Date;
 }
 
 export interface IntrusionDetectionType {
@@ -44,7 +44,7 @@ export interface IntrusionDetectionType {
 }
 
 export interface LitterDetectionType {
-  park_Id: number;
+  park_Id: string;
   case_Id: string;
   location: string;
   occurrence_date: Date;
@@ -84,20 +84,20 @@ export interface BehaviorAlertType {
 }
 
 export interface OfficeSentimentAnalysisType {
-  office_Id: number;
-  person_Id: string;
-  sentiment_of: 'employee' | 'visitor';
+  office_Id: string;
+  person_Id?: string; // This should be the emp_Id from the users table (optional)
+  detection_Id: string;
+  sentiment_of?: 'employee' | 'visitor'; // Will be determined automatically based on user lookup
   check_in_date: Date;
   check_in_time: Date;
   check_in_sentiment: string;
-  entry_camera_Id: number;
+  entry_camera_Id: string;
   check_out_date?: Date;
   check_out_time?: Date;
   check_out_capture?: string;
-  exit_camera_Id?: number;
-  detection_Id?: string;
-  person_name?: string;
-  person_image?: string;
+  exit_camera_Id?: string;
+  person_name?: string; // Will be set automatically: user.emp__eng_name or "Visitor"
+  person_image?: string; // Will be set from request if provided
   gender?: string;
   check_in_image?: string;
   check_out_sentiment?: string;
@@ -129,20 +129,20 @@ export interface ParkFootfallAnalysisType {
 }
 
 export interface ParkSentimentAnalysisType {
-  park_Id: number;
-  person_Id: string;
-  sentiment_of: 'employee' | 'visitor';
+  park_Id: string;
+  person_Id?: string; // This should be the emp_Id from the users table (optional)
+  detection_Id: string;
+  sentiment_of?: 'employee' | 'visitor'; // Will be determined automatically based on user lookup
   check_in_date: Date;
   check_in_time: Date;
   check_in_sentiment: string;
-  entry_camera_Id: number;
+  entry_camera_Id: string;
   check_out_date?: Date;
   check_out_time?: Date;
   check_out_capture?: string;
-  exit_camera_Id?: number;
-  detection_Id?: string;
-  person_name?: string;
-  person_image?: string;
+  exit_camera_Id?: string;
+  person_name?: string; // Will be set automatically: user.emp__eng_name or "Visitor"
+  person_image?: string; // Will be set from request if provided
   gender?: string;
   check_in_image?: string;
   check_out_sentiment?: string;
