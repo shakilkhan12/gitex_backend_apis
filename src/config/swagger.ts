@@ -22,6 +22,10 @@ const options = {
         description: 'Development server'
       },
       {
+        url: 'https://gitexserver-aa7571f0c437.herokuapp.com/api',
+        description: 'Heroku Production server'
+      },
+      {
         url: 'https://api.khorfakkan.gov.ae/api',
         description: 'Production server'
       }

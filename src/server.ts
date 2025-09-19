@@ -31,13 +31,52 @@ app.options('*', cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    },
+  },
+}));
 app.use(morgan("dev"));
 app.use(compression());
 
+// Serve Swagger UI static assets with proper MIME types
+app.use('/api-docs', express.static('node_modules/swagger-ui-dist', {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    } else if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (path.match(/\.(png|jpg|jpeg|gif)$/)) {
+      res.setHeader('Content-Type', 'image/' + path.split('.').pop());
+    } else if (path.match(/\.(woff|woff2)$/)) {
+      res.setHeader('Content-Type', 'font/woff');
+    }
+  }
+}));
+
+// Swagger UI configuration with proper static asset handling
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Khorfakkan Smart City API Documentation'
+  customSiteTitle: 'Khorfakkan Smart City API Documentation',
+  swaggerOptions: {
+    persistAuthorization: true,
+    displayRequestDuration: true,
+    docExpansion: 'none',
+    filter: true,
+    showExtensions: true,
+    showCommonExtensions: true,
+    tryItOutEnabled: true
+  }
 }));
 
 app.get("/", (_req: Request, res: Response) => res.send("🚀 Welcome to the API "));
