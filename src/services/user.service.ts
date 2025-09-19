@@ -12,6 +12,7 @@ class UserService {
    
       try {
          const secretKey = await this.fetchSecretFromAPI();
+         console.log('secretKey',secretKey)
          const payload = {
             EmpCode,
             Password,
@@ -294,7 +295,7 @@ class UserService {
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
          try {
             const response = await axios.post(
-               "https://192.168.164.7/website_demo/middleware/?action=Secretkey&class=general",
+               "https://192.168.164.7/middleware/?action=Secretkey&class=general",
                {
                   Username: "WebServiceUser",
                   Pwd: "A01834h123ds2",
