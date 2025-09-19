@@ -71,7 +71,7 @@ app.get('/api-docs/swagger.json', (req, res) => {
 });
 
 // Swagger UI configuration with proper static asset handling
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(null, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Khorfakkan Smart City API Documentation',
   swaggerOptions: {
