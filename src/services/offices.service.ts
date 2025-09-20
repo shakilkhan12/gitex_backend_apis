@@ -245,20 +245,33 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          // Calculate statistics
          const totalFootfall = footfallData.length;
          
-         // Use person.gender if available, otherwise fall back to item.gender
-         const maleCount = footfallData.filter(item => {
+         // Separate data for employees and guests
+         const employeeData = footfallData.filter(item => item.person_Id !== null);
+         const guestData = footfallData.filter(item => item.person_Id === null || item.person_Id === undefined);
+         
+         // Employee counts
+         const employeeCount = employeeData.length;
+         const employeeMaleCount = employeeData.filter(item => {
             const gender = item.person?.gender || item.gender;
             return gender === 'M' || gender === 'Male';
          }).length;
-         
-         const femaleCount = footfallData.filter(item => {
+         const employeeFemaleCount = employeeData.filter(item => {
             const gender = item.person?.gender || item.gender;
             return gender === 'F' || gender === 'Female';
          }).length;
+         const employeeChildrenCount = employeeData.filter(item => item.is_child === true).length;
          
-         const childrenCount = footfallData.filter(item => item.is_child === true).length;
-         const employeeCount = footfallData.filter(item => item.person_Id !== null).length;
-         const guestCount = totalFootfall - employeeCount;
+         // Guest counts
+         const guestCount = guestData.length;
+         const guestMaleCount = guestData.filter(item => {
+            const gender = item.gender;
+            return gender === 'M' || gender === 'Male';
+         }).length;
+         const guestFemaleCount = guestData.filter(item => {
+            const gender = item.gender;
+            return gender === 'F' || gender === 'Female';
+         }).length;
+         const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
 
          // Get unique employees
          const uniqueEmployees = footfallData
@@ -270,30 +283,85 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                return acc;
             }, []);
 
-         // Get hourly distribution
+         // Create unique guests list based on detection_Id (since guests don't have person_Id)
+         const uniqueGuests = guestData
+            .reduce((acc: any[], item) => {
+               if (!acc.find(guest => guest.detection_Id === item.detection_Id)) {
+                  acc.push({
+                     detection_Id: item.detection_Id,
+                     guest_Id: `GUEST${item.detection_Id}`,
+                     guest_eng_name: `Guest ${item.detection_Id}`,
+                     guest_arabic_name: `زائر ${item.detection_Id}`,
+                     gender: item.gender,
+                     is_child: item.is_child,
+                     detected_camera_Id: item.detected_camera_Id,
+                     detected_camera_name: item.detected_camera_name,
+                     time: item.time
+                  });
+               }
+               return acc;
+            }, []);
+
+         // Enhanced hourly distribution with employee and guest breakdown
          const hourlyDistribution = footfallData.reduce((acc, item) => {
             const hour = new Date(item.time).getHours();
-            acc[hour] = (acc[hour] || 0) + 1;
+            const isEmployee = item.person_Id !== null;
+            
+            if (!acc[hour]) {
+               acc[hour] = {
+                  total: 0,
+                  employees: 0,
+                  guests: 0
+               };
+            }
+            
+            acc[hour].total += 1;
+            if (isEmployee) {
+               acc[hour].employees += 1;
+            } else {
+               acc[hour].guests += 1;
+            }
+            
             return acc;
-         }, {} as Record<number, number>);
+         }, {} as Record<number, { total: number; employees: number; guests: number }>);
 
-         // Get daily distribution
+         // Enhanced daily distribution with employee and guest breakdown
          const dailyDistribution = footfallData.reduce((acc, item) => {
             const date = new Date(item.time).toISOString().split('T')[0];
-            acc[date] = (acc[date] || 0) + 1;
+            const isEmployee = item.person_Id !== null;
+            
+            if (!acc[date]) {
+               acc[date] = {
+                  total: 0,
+                  employees: 0,
+                  guests: 0
+               };
+            }
+            
+            acc[date].total += 1;
+            if (isEmployee) {
+               acc[date].employees += 1;
+            } else {
+               acc[date].guests += 1;
+            }
+            
             return acc;
-         }, {} as Record<string, number>);
+         }, {} as Record<string, { total: number; employees: number; guests: number }>);
 
          return {
             summary: {
                totalFootfall,
-               maleCount,
-               femaleCount,
-               childrenCount,
                employeeCount,
-               guestCount
+               employeeMaleCount,
+               employeeFemaleCount,
+               employeeChildrenCount,
+               guestCount,
+               guestMaleCount,
+               guestFemaleCount,
+               guestChildrenCount
             },
             employees: uniqueEmployees,
+            guests: uniqueGuests,
             hourlyDistribution,
             dailyDistribution,
             rawData: footfallData
@@ -306,22 +374,18 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
    // Add footfall analysis entry
    protected static addOfficeFootfallAnalysisService = async (footfallData: OfficeFootfallAnalysisType) => {
       try {
-         // For guests/visitors, we need to create a temporary user record or use a default guest user
-         // For now, we'll require person_Id to be provided
-         if (!footfallData.person_Id) {
-            throw new HttpException(STATUS.BAD_REQUEST, 'person_Id is required for footfall analysis');
-         }
+         // person_Id can be null for guest entries, so we don't validate it as required
 
          const result = await db.offices_footfall_analysis.create({
             data: {
                office_Id: Number(footfallData.office_Id),
                detection_Id: footfallData.detection_Id,
-               person_Id: footfallData.person_Id,
+               person_Id: footfallData.person_Id || null, // Allow null for guests
                gender: footfallData.gender || undefined,
                is_child: footfallData.is_child || false,
                detected_camera_Id: footfallData.detected_camera_Id,
                detected_camera_name: footfallData.detected_camera_name || undefined,
-               time: new Date()
+               time: footfallData.time || new Date()
             }
          });
          return result;

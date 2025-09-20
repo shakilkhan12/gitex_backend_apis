@@ -306,6 +306,7 @@ class UserService {
                   httpsAgent: new https.Agent({ rejectUnauthorized: false }),
                }
             );
+            console.log('response', response)
             
             if (response.data?.SecretKey) {
                return response.data.SecretKey;

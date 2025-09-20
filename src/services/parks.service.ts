@@ -282,20 +282,35 @@ class ParkService {
 
     const totalFootfall = footfallData.length;
     
-    const maleCount = footfallData.filter(item => {
+    // Separate data for employees and guests
+    const employeeData = footfallData.filter(item => item.person_Id !== null);
+    const guestData = footfallData.filter(item => item.person_Id === null || item.person_Id === undefined);
+    
+    // Employee counts
+    const employeeCount = employeeData.length;
+    const employeeMaleCount = employeeData.filter(item => {
       const gender = item.gender;
       return gender === 'M' || gender === 'Male';
     }).length;
-    
-    const femaleCount = footfallData.filter(item => {
+    const employeeFemaleCount = employeeData.filter(item => {
       const gender = item.gender;
       return gender === 'F' || gender === 'Female';
     }).length;
+    const employeeChildrenCount = employeeData.filter(item => item.is_child === true).length;
     
-    const childrenCount = footfallData.filter(item => item.is_child === true).length;
-    const employeeCount = footfallData.filter(item => item.person_Id !== null).length;
-    const guestCount = totalFootfall - employeeCount;
-
+    // Guest counts
+    const guestCount = guestData.length;
+    const guestMaleCount = guestData.filter(item => {
+      const gender = item.gender;
+      return gender === 'M' || gender === 'Male.';
+    }).length;
+    const guestFemaleCount = guestData.filter(item => {
+      const gender = item.gender;
+      return gender === 'F' || gender === 'Female';
+    }).length;
+    const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
+    
+   
     const uniqueEmployees = footfallData
       .filter(item => item.person_Id !== null)
       .reduce((acc: any[], item) => {
@@ -311,26 +326,66 @@ class ParkService {
         return acc;
       }, []);
 
+    // Enhanced hourly distribution with employee and guest breakdown
     const hourlyDistribution = footfallData.reduce((acc, item) => {
       const hour = new Date(item?.time).getHours();
-      acc[hour] = (acc[hour] || 0) + 1;
+      const isEmployee = item.person_Id !== null;
+      
+      if (!acc[hour]) {
+        acc[hour] = {
+          total: 0,
+          employees: 0,
+          guests: 0
+        };
+      }
+      
+      acc[hour].total += 1;
+      if (isEmployee) {
+        acc[hour].employees += 1;
+      } else {
+        acc[hour].guests += 1;
+      }
+      
       return acc;
-    }, {} as Record<number, number>);
+    }, {} as Record<number, { total: number; employees: number; guests: number }>);
 
+    // Enhanced daily distribution with employee and guest breakdown
     const dailyDistribution = footfallData.reduce((acc, item) => {
       const date = new Date(item?.time).toISOString().split('T')[0];
-      acc[date] = (acc[date] || 0) + 1;
+      const isEmployee = item.person_Id !== null;
+      
+      if (!acc[date]) {
+        acc[date] = {
+          total: 0,
+          employees: 0,
+          guests: 0
+        };
+      }
+      
+      acc[date].total += 1;
+      if (isEmployee) {
+        acc[date].employees += 1;
+      } else {
+        acc[date].guests += 1;
+      }
+      
       return acc;
-    }, {} as Record<string, number>);
+    }, {} as Record<string, { total: number; employees: number; guests: number }>);
 
     return {
       summary: {
         totalFootfall,
-        maleCount,
-        femaleCount,
-        childrenCount,
-        employeeCount,
-        guestCount
+
+          employeeCount,
+          employeeMaleCount,
+          employeeFemaleCount,
+          employeeChildrenCount,
+       
+          guestCount,
+          guestMaleCount,
+           guestFemaleCount,
+          guestChildrenCount
+        
       },
       employees: uniqueEmployees,
       hourlyDistribution,
@@ -341,15 +396,13 @@ class ParkService {
 
   // Add park footfall analysis service
   protected static addParkFootfallAnalysisService = async (footfallData: ParkFootfallAnalysisType) => {
-    if (!footfallData.person_Id) {
-      throw new HttpException(STATUS.BAD_REQUEST, 'person_Id is required');
-    }
+    // person_Id can be null for guest entries, so we don't validate it as required
 
     const result = await db.parks_footfall_analysis.create({
       data: {
         park_Id: footfallData.park_Id,
         detection_Id: footfallData.detection_Id,
-        person_Id: footfallData.person_Id,
+        person_Id: footfallData.person_Id || null, // Allow null for guests
         gender: footfallData.gender,
         is_child: footfallData.is_child || false,
         detected_camera_Id: footfallData.detected_camera_Id,

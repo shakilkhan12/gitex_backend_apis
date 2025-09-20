@@ -263,20 +263,55 @@ class EventHandlerService {
 
           if(eventData){
              Logger.debug(`[EventHandlerService] Processing event data:`, { 
+                hasEventData: !!eventData.event,
                 hasLogData: !!eventData.logData,
+                eventKeys: eventData.event ? Object.keys(eventData.event) : [],
                 logDataKeys: eventData.logData ? Object.keys(eventData.logData) : []
              });
              
              const extractEventData = (data: any) => {
+                // Check for direct event structure (Format 2)
+                if (data.event?.params?.events?.[0]) {
+                   Logger.debug(`[EventHandlerService] Extracting event data from event.params.events[0]`);
+                   return data.event.params.events[0];
+                }
+                
+                // Check for deeply nested logData structure (Format 1)
+                // This handles: data.logData.logData.logData.params.events[0]
+                let currentLevel = data.logData;
+                let depth = 0;
+                const maxDepth = 10; // Prevent infinite loops
+                
+                while (currentLevel && depth < maxDepth) {
+                   // Check if current level has the event data
+                   if (currentLevel.params?.events?.[0]) {
+                      Logger.debug(`[EventHandlerService] Extracting event data from logData at depth ${depth}`);
+                      return currentLevel.params.events[0];
+                   }
+                   
+                   // Check if current level has nested logData
+                   if (currentLevel.logData) {
+                      currentLevel = currentLevel.logData;
+                      depth++;
+                   } else {
+                      break;
+                   }
+                }
+                
+                // Check for legacy logData structure (backward compatibility)
                 if (data.logData?.event?.params?.events?.[0]) {
                    Logger.debug(`[EventHandlerService] Extracting event data from logData.event.params.events[0]`);
                    return data.logData.event.params.events[0];
                 }
-                else if (data.logData?.logData?.params?.events?.[0]) {
-                   Logger.debug(`[EventHandlerService] Extracting event data from logData.logData.params.events[0]`);
-                   return data.logData.logData.params.events[0];
-                }
+                
                 Logger.warn(`[EventHandlerService] No valid event data found in expected structure`);
+                Logger.debug(`[EventHandlerService] Available data structure:`, {
+                   hasEvent: !!data.event,
+                   hasLogData: !!data.logData,
+                   logDataDepth: depth,
+                   eventKeys: data.event ? Object.keys(data.event) : [],
+                   logDataKeys: data.logData ? Object.keys(data.logData) : []
+                });
                 return null;
              };
              

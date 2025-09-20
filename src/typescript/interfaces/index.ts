@@ -106,7 +106,7 @@ export interface OfficeSentimentAnalysisType {
 export interface OfficeFootfallAnalysisType {
   office_Id: number;
   detection_Id: string;
-  person_Id: number;
+  person_Id?: number | null; // Optional for guest entries
   gender?: string;
   is_child?: boolean;
   detected_camera_Id: string;
@@ -117,7 +117,7 @@ export interface OfficeFootfallAnalysisType {
 export interface ParkFootfallAnalysisType {
   park_Id: number;
   detection_Id: string;
-  person_Id: number;
+  person_Id?: number | null; // Optional for guest entries
   gender?: string;
   is_child?: boolean;
   detected_camera_Id: string;
