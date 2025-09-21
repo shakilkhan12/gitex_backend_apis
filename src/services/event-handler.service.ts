@@ -397,13 +397,11 @@ class EventHandlerService {
                       camera_Id:parkcamera.Id,
                       occurrence_date:eventInfo.happenTime,
                       occurrence_time:eventInfo.happenTime,
-                      snap_shot:imageUrl, // Use Cloudinary URL instead of base64
-                      posted_to_intranet_date:eventData.timestamp,
-                      posted_to_intranet_time:eventData.timestamp,
+                      snap_shot:imageUrl,
                       detection_Id:eventInfo.eventId,
                       detection_date:eventInfo.happenTime,
                       detection_time:eventInfo.happenTime,
-                      is_employee:false, // Default to false since we don't have face data in this format
+                      is_employee:false,
                       description: `Intrusion detected at ${eventInfo.srcName} camera`
                    }
                    
@@ -419,6 +417,55 @@ class EventHandlerService {
                    })
                    
                    Logger.info(`[EventHandlerService] Successfully created intrusion detection record with ID: ${new_intrusion_detection.Id}`);
+
+                   const parkExists = await db.parks.findFirst({
+                      where: { Id: parkcamera.park_Id || 0},
+                   });
+
+                   let intranetHistory = null;
+                   let intranetResponse = null;
+                   let intranetSuccess = false;
+                   let intranetError: any = null;
+                   
+                   try {
+                      intranetResponse = await this.postToIntranetAPI(parkExists, intrusionData);
+                      intranetSuccess = true;
+                   } catch (error: any) {
+                      intranetError = error;
+                      intranetSuccess = false;
+                   }
+
+                   try {
+                      intranetHistory = await db.intranet_posting_history.create({
+                         data: {
+                            intrusionDetectionId: new_intrusion_detection.Id,
+                            title: `Alert Posted to Intranet`,
+                            intranet_id: intranetSuccess ? intranetResponse?.ApplicationNumber : null,
+                            comments: intranetSuccess 
+                               ? `Intrusion detected at ${intrusionData.description} - Posted successfully to intranet`
+                               : ``,
+                            date: new Date(),
+                            time: new Date(),
+                         }
+                      });
+
+                      if (intranetSuccess) {
+                         const updatedResult = await db.parks_intrusion_detection.update({
+                            where: { Id: new_intrusion_detection.Id },
+                            data: {
+                               posted_to_intranet_date: intranetHistory.date,
+                               posted_to_intranet_time: intranetHistory.time,
+                               updatedAt: new Date()
+                            }
+                         });
+                         Logger.info(`[EventHandlerService] Intrusion detection record updated with intranet details`);
+                      } else {
+                         Logger.info(`[EventHandlerService] Intrusion detection record saved without intranet details due to API failure`);
+                      }
+
+                   } catch (historyError: any) {
+                      Logger.error(`[EventHandlerService] Failed to create intranet posting history:`, historyError.message);
+                   }
                 }
                 else{
                    Logger.error(`[EventHandlerService] Park camera not found for camera index: ${eventInfo.srcIndex}`);
@@ -814,6 +861,99 @@ class EventHandlerService {
          const duration = Date.now() - startTime;
          Logger.error(`[EventHandlerService] Event processing failed after ${duration}ms`, error);
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to process event");
+      }
+   }
+
+   private static async fetchSecretFromAPI(): Promise<string> {
+      const maxRetries = 3;
+      const baseTimeout = 20000;
+      
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+         try {
+            const response = await axios.post(
+               "https://192.168.164.7/middleware/?action=Secretkey&class=general",
+               {
+                  Username: "WebServiceUser",
+                  Pwd: "A01834h123ds2",
+               },
+               {
+                  headers: { "Content-Type": "application/json" },
+                  timeout: baseTimeout * attempt,
+                  httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+               }
+            );
+            
+            if (response.data?.SecretKey) {
+               return response.data.SecretKey;
+            }
+
+            throw new HttpException(
+               STATUS.BAD_REQUEST,
+               "Secret key not found in API response"
+            );
+
+         } catch (error: any) {
+            if (error.code === 'ECONNABORTED') {
+               if (attempt === maxRetries) {
+                  throw new HttpException(STATUS.BAD_REQUEST, `Secret key API request timed out after ${maxRetries} attempts`);
+               }
+                  continue;
+            } else if (error.code === 'ECONNREFUSED') {
+               throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to secret key API");
+            } else if (error.response) {
+               throw new HttpException(STATUS.BAD_REQUEST, `Secret key API error: ${error.response.status} - ${error.response.statusText}`);
+            }
+            
+            if (attempt === maxRetries) {
+               throw error;
+            }
+            
+            const waitTime = Math.pow(2, attempt) * 1000;
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+         }
+      }
+      
+      throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
+   }
+
+   private static async postToIntranetAPI(parkExists: any, intrusionDetection: any): Promise<any> {
+      try {
+         const secretKey = await this.fetchSecretFromAPI();
+         const endpoint = "https://192.168.164.7/website_demo/middleware/?class=general&action=ParkViolationFineService";
+         const payload = {
+            SecretKey: secretKey,
+            Lang: "en",
+            ParkName: parkExists.park_english_name,
+            Photo: intrusionDetection.snap_shot,
+            EventID: '1'
+         };
+
+         const requestConfig = {
+            headers: { 
+               "Content-Type": "application/json",
+               "Accept": "*/*",
+               "User-Agent": "PostmanRuntime/7.46.1",
+               "Accept-Encoding": "gzip, deflate, br",
+               "Connection": "keep-alive",
+               "Cache-Control": "no-cache"
+            },
+            timeout: 30000,
+            httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+         };
+         
+         const response = await axios.post(endpoint, payload, requestConfig);
+
+         if (response.data?.status === "SUCCESS" && response.data?.code === 200) {
+            return response.data;
+         } else {
+            throw new HttpException(STATUS.BAD_REQUEST, `Intranet API returned error: ${response.data?.message || 'Unknown error'}`);
+         }
+
+      } catch (error: any) {
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         throw new HttpException(STATUS.BAD_REQUEST, `Failed to post to intranet API: ${error.message}`);
       }
    }
 }

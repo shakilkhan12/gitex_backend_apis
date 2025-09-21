@@ -51,6 +51,19 @@ class LitterDetectionService {
             },
          });
 
+         const ticketDetails = await db.ticket_details_table.create({
+            data: {
+               litterDetectionId: result.Id,
+               status: result.current_status,
+               date: result.occurrence_date,
+               time: result.occurrence_time,
+               comments: result.description,
+               image: result.snap_shot,
+               createdAt: new Date(),
+               updatedAt: new Date()
+            }
+         });
+
          return result;
 
       } catch (error: any) {
@@ -70,6 +83,18 @@ class LitterDetectionService {
                      latitude: true,
                      longitude: true
                   }
+               },
+               park_cameras: {
+                  select: {
+                     Id: true,
+                     camera_Id: true,
+                     camera_english_name: true,
+                     camera_arabic_name: true,
+                     ip_address: true,
+                     latitude: true,
+                     longitude: true,
+                     status: true
+                  }
                }
             },
             orderBy: {
@@ -77,7 +102,35 @@ class LitterDetectionService {
             }
          });
 
-         return results;
+         // Manually fetch intranet posting history for each litter detection
+         const resultsWithIntranetHistory = await Promise.all(
+            results.map(async (litterDetection) => {
+               const intranetHistory = await db.intranet_posting_history.findMany({
+                  where: {
+                     OR: [
+                        { abc1: litterDetection.Id.toString() },
+                        { abc2: litterDetection.Id.toString() },
+                        { abc3: litterDetection.Id.toString() }
+                     ]
+                  },
+                  select: {
+                     id: true,
+                     title: true,
+                     intranet_id: true,
+                     comments: true,
+                     date: true,
+                     time: true
+                  }
+               });
+
+               return {
+                  ...litterDetection,
+                  intranet_posting_history: intranetHistory
+               };
+            })
+         );
+
+         return resultsWithIntranetHistory;
 
       } catch (error: any) {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch litter detections");

@@ -6,20 +6,24 @@ import https from "https";
 
 class SmokingDetectionService {
    protected static addSmokingDetectionService = async (smokingDetection: SmokingDetectionType) => {
-
+console.log('smokingDetection',smokingDetection);
       try {
+         console.log('🔍 Looking for park with park_Id:', smokingDetection.park_Id);
          const parkExists = await db.parks.findFirst({
             where: { park_Id: smokingDetection.park_Id },
          });
+         console.log('🏞️ Park found:', parkExists ? 'YES' : 'NO', parkExists);
          if (!parkExists) {
             throw new HttpException(STATUS.BAD_REQUEST, "Park does not exist");
          }
 
          let cameraDatabaseId = null;
          if (smokingDetection.camera_Id) {
+            console.log('🔍 Looking for camera with camera_Id:', smokingDetection.camera_Id);
             const cameraExists = await db.park_cameras.findFirst({
                where: { camera_Id: smokingDetection.camera_Id },
             });
+            console.log('📹 Camera found:', cameraExists ? 'YES' : 'NO', cameraExists);
             if (!cameraExists) {
                throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
             }
@@ -52,6 +56,7 @@ class SmokingDetectionService {
             },
          });
 
+
          let intranetHistory = null;
          let intranetResponse = null;
          let intranetSuccess = false;
@@ -69,11 +74,11 @@ class SmokingDetectionService {
             intranetHistory = await db.intranet_posting_history.create({
                data: {
                   smokingDetectionId: result.Id,
-                  title: `Smoking Detection - ${parkExists.park_english_name}`,
+                  title: `Alert Posted to Intranet`,
                   intranet_id: intranetSuccess ? intranetResponse?.ApplicationNumber : null,
                   comments: intranetSuccess 
                      ? `Smoking detected at ${smokingDetection.location} - Posted successfully to intranet`
-                     : `Smoking detected at ${smokingDetection.location} - Failed to post to intranet: ${intranetError?.message || 'Unknown error'}`,
+                     : ``,
                   date: new Date(),
                   time: new Date(),
                }
@@ -98,7 +103,7 @@ class SmokingDetectionService {
          }
 
       } catch (error: any) {
-         throw new HttpException(STATUS.BAD_REQUEST, "Failed to add smoking detection");
+         throw new HttpException(STATUS.BAD_REQUEST, error);
       }
    }
 
@@ -283,7 +288,7 @@ class SmokingDetectionService {
          };
          
          const response = await axios.post(endpoint, payload, requestConfig);
-
+         console.log('response',response);
          if (response.data?.status === "SUCCESS" && response.data?.code === 200) {
             return response.data;
          } else {

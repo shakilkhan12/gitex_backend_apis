@@ -45,14 +45,14 @@ class BehaviorAlertsService {
                      park_english_name: true,
                      park_arabic_name: true,
                      latitude: true,
-                     longitude: true
+                     longitude: true   
                   }
                },
                park_cameras: {
                   select: {
                      camera_english_name: true,
                      camera_arabic_name: true,
-                     ip_address: true
+                     ip_address: true,
                   }
                }
             },
@@ -61,7 +61,41 @@ class BehaviorAlertsService {
             }
          });
 
-         return results;
+         // Enrich results with user information
+         const enrichedResults = await Promise.all(
+            results.map(async (alert) => {
+               let userInfo = null;
+               
+               // If person_Id exists and is_employee is true, try to find user by emp_Id
+               if (alert.person_Id && alert.is_employee) {
+                  try {
+                     userInfo = await db.users.findFirst({
+                        where: {
+                           emp_Id: alert.person_Id
+                        },
+                        select: {
+                           Id: true,
+                           emp_Id: true,
+                           emp__eng_name: true,
+                           emp__arabic_name: true,
+                           gender: true,
+                           image: true,
+                           
+                        }
+                     });
+                  } catch (userError) {
+                     console.log('Error fetching user info:', userError);
+                  }
+               }
+
+               return {
+                  ...alert,
+                  user: userInfo
+               };
+            })
+         );
+
+         return enrichedResults;
 
       } catch (error: any) {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch behavior alerts");

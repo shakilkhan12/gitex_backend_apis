@@ -24,28 +24,41 @@ const allowedOrigins = process.env.NODE_ENV === 'production'?[
   
 ]:['http://localhost:3000','http://localhost:5000','http://localhost:4000','https://10.70.90.183:443','https://10.70.90.183']
 
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 
 app.options('*', cors());
 
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"],
-      fontSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      mediaSrc: ["'self'"],
-      frameSrc: ["'none'"],
+// Apply CSP to all routes except Swagger UI
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api-docs')) {
+    // Disable CSP for Swagger UI routes
+    return next();
+  }
+  
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+      },
     },
-  },
-}));
+  })(req, res, next);
+});
 app.use(morgan("dev"));
 app.use(compression());
 
@@ -66,7 +79,13 @@ app.use('/api-docs', express.static('node_modules/swagger-ui-dist', {
 
 // Serve the swagger.json file
 app.get('/api-docs/swagger.json', (req, res) => {
+  console.log('Swagger specs generated:', Object.keys((specs as any).paths || {}).length, 'paths found');
+  console.log('Specs object keys:', Object.keys(specs));
+  console.log('Paths found:', Object.keys((specs as any).paths || {}));
   res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   res.send(specs);
 });
 
@@ -75,13 +94,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Khorfakkan Smart City API Documentation',
   swaggerOptions: {
-    persistAuthorization: true,
-    displayRequestDuration: true,
-    docExpansion: 'none',
-    filter: true,
-    showExtensions: true,
-    showCommonExtensions: true,
-    tryItOutEnabled: true
+    url: '/api-docs/swagger.json',
+    validatorUrl: null
   }
 }));
 

@@ -260,7 +260,43 @@ const options = {
       }
     ]
   },
-  apis: ['./src/routes/*.ts'],
+  apis: [
+    './src/routes/*.ts',
+    './src/routes/**/*.ts',
+    './dist/routes/*.js',
+    './dist/routes/**/*.js',
+    'src/routes/*.ts',
+    'src/routes/**/*.ts'
+  ]
 };
 
-export const specs = swaggerJsdoc(options); 
+let specs: any;
+
+try {
+  console.log('🔍 Scanning for API files with patterns:', options.apis);
+  specs = swaggerJsdoc(options);
+  
+  // Debug: Log the generated specs
+  console.log('✅ Swagger specs generated with', Object.keys((specs as any).paths || {}).length, 'API paths');
+  console.log('📋 Available paths:', Object.keys((specs as any).paths || {}));
+  
+  // If no paths found, log a warning
+  if (Object.keys((specs as any).paths || {}).length === 0) {
+    console.warn('⚠️  No API paths found in swagger specs. Check if route files have proper @swagger comments.');
+    console.log('🔍 Current working directory:', process.cwd());
+    console.log('🔍 Options used:', JSON.stringify(options, null, 2));
+  }
+} catch (error) {
+  console.error('❌ Error generating swagger specs:', error);
+  specs = {
+    openapi: '3.0.0',
+    info: {
+      title: 'Khorfakkan Smart City API',
+      version: '1.0.0',
+      description: 'API documentation for Khorfakkan Smart City Management System'
+    },
+    paths: {}
+  };
+}
+
+export { specs }; 
