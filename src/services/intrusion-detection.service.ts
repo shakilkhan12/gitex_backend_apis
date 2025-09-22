@@ -83,6 +83,9 @@ class IntrusionDetectionService {
                      comments: true,
                      date: true,
                      time: true
+                  },
+                  orderBy: {
+                     id: 'desc'
                   }
                }
             },

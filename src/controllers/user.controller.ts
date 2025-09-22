@@ -87,6 +87,18 @@ class UserController extends UserService {
         next(error);
       }
     }
+
+    public static addUser = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const userData = req.body;
+        
+        const result = await UserService.addUserService(userData);
+        
+        return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+        next(error);
+      }
+    }
 }
 
 export default UserController;

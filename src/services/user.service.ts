@@ -4,7 +4,7 @@ import { HttpException } from "@/utils/HttpException.utils";
 import { formatDate, formatTime } from "@/utils/dateTime.utils";
 import axios from "axios";
 import https from "https";
-import { UserType } from "@/typescript/interfaces";
+import { UserType, AddUserType } from "@/typescript/interfaces";
 
 class UserService {
 
@@ -464,6 +464,87 @@ class UserService {
          throw new HttpException(
             STATUS.BAD_REQUEST,
             (error as Error).message || "Failed to fetch and store employee listing"
+         );
+      }
+   }
+
+   protected static addUserService = async (userData: AddUserType) => {
+      try {
+         // Check if user already exists by user_Id
+         const existingUser = await db.users.findFirst({
+            where: {
+               user_Id: userData.user_Id.toString()
+            }
+         });
+
+         if (existingUser) {
+            throw new HttpException(STATUS.BAD_REQUEST, "User with this User ID already exists");
+         }
+
+         // Check if user already exists by emp_Id
+         const existingEmpUser = await db.users.findFirst({
+            where: {
+               emp_Id: userData.emp_Id
+            }
+         });
+
+         if (existingEmpUser) {
+            throw new HttpException(STATUS.BAD_REQUEST, "User with this Employee ID already exists");
+         }
+
+         // Check if user already exists by unique_id
+         const existingUniqueUser = await db.users.findFirst({
+            where: {
+               unique_id: userData.unique_id
+            }
+         });
+
+         if (existingUniqueUser) {
+            throw new HttpException(STATUS.BAD_REQUEST, "User with this Unique ID already exists");
+         }
+
+         // Create new user
+         const newUser = await db.users.create({
+            data: {
+               unique_id: userData.unique_id,
+               user_Id: userData.user_Id.toString(),
+               emp_Id: userData.emp_Id,
+               emp_code: userData.emp_code,
+               image: userData.image,
+               gender: userData.gender,
+               emp__eng_name: userData.emp__eng_name,
+               location: userData.location,
+               telephone: userData.telephone,
+               email: userData.email,
+               office_extension: userData.office_extension,
+               nationality: userData.nationality,
+               joining_date: userData.joining_date,
+               date_of_birth: userData.date_of_birth,
+               dep_eng_name: userData.dep_eng_name,
+               desig_eng_name: userData.desig_eng_name,
+               unit_arabic_name: userData.unit_arabic_name,
+               is_attendance_user: userData.is_attendance_user || false,
+               is_ai_login_user: userData.is_ai_login_user || false,
+               ai_engine_access: userData.ai_engine_access || false,
+               createdAt: new Date(),
+               updatedAt: new Date()
+            }
+         });
+
+         return {
+            success: true,
+            message: "User added successfully",
+            data: newUser
+         };
+
+      } catch (error: any) {
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         
+         throw new HttpException(
+            STATUS.BAD_REQUEST,
+            error.message || "Failed to add user"
          );
       }
    }

@@ -231,7 +231,7 @@ class EventHandlerService {
          const park_cameras=['3','4','5','6','75','76','77','78','79','186','187','188','189','190','191','192','193']
          let intrusion_detection_code=131585
          let attendance_code=131659
-         let bevaviour_code=[131596,131605,192515]
+         let bevaviour_code=[131593,131605,131592,131677,131596,192515]
          
          Logger.debug(`[EventHandlerService] Event type codes configured:`, {
             intrusion_detection_code,
@@ -411,6 +411,18 @@ class EventHandlerService {
                       detectionId: intrusionData.detection_Id,
                       hasImage: !!imageUrl
                    });
+                   
+                   // Check if intrusion detection with same detection_Id already exists
+                   const existingIntrusion = await db.parks_intrusion_detection.findFirst({
+                      where: {
+                         detection_Id: intrusionData.detection_Id
+                      }
+                   });
+                   
+                   if (existingIntrusion) {
+                      Logger.warn(`[EventHandlerService] Intrusion detection with detection_Id ${intrusionData.detection_Id} already exists. Skipping duplicate creation.`);
+                      return;
+                   }
                    
                    const new_intrusion_detection=await db.parks_intrusion_detection.create({
                       data: intrusionData
@@ -805,7 +817,7 @@ class EventHandlerService {
                         Logger.error(`[EventHandlerService] Failed to process behavior image:`, imageError);
                      }
       
-                     const detectedBehaviour = eventType===bevaviour_code[0]?'Violent Motion Detection':eventType===bevaviour_code[1]?'Falling Down':'Fire and Smoke Detection';
+                     const detectedBehaviour = eventType===bevaviour_code[0]?'People Gathering Alarm':eventType===bevaviour_code[1]?'Fall Down':eventType===bevaviour_code[2]?'Fast Moving':eventType===bevaviour_code[3]?'Physical Conflict':eventType===bevaviour_code[4]?'Violent Motion Detection':eventType===bevaviour_code[5]?'Fire and Smoke Detection':'Other';
                      
                      const behaviourData = {
                         park_Id: parkCamera?.park_Id,
@@ -829,6 +841,18 @@ class EventHandlerService {
                         detectedBehaviour: behaviourData.detected_behaviour,
                         hasImage: !!imageUrl
                      });
+                     
+                     // Check if behavior alert with same detection_Id already exists
+                     const existingBehaviour = await db.parks_behaviour_alerts.findFirst({
+                        where: {
+                           detection_Id: behaviourData.detection_Id
+                        }
+                     });
+                     
+                     if (existingBehaviour) {
+                        Logger.warn(`[EventHandlerService] Behavior alert with detection_Id ${behaviourData.detection_Id} already exists. Skipping duplicate creation.`);
+                        return;
+                     }
                      
                      const newBehaviourAlert = await db.parks_behaviour_alerts.create({
                         data: behaviourData

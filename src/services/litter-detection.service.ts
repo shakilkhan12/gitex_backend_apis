@@ -1,4 +1,4 @@
-import { LitterDetectionType, STATUS } from "@/typescript";
+import { LitterDetectionType, LitterDetectionCompleteType, STATUS } from "@/typescript";
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
@@ -95,6 +95,26 @@ class LitterDetectionService {
                      longitude: true,
                      status: true
                   }
+               },
+               ticket_details: {
+                  select: {
+                     id: true,
+                     status: true,
+                     date: true,
+                     time: true,
+                     comments: true,
+                     image: true,
+                     abc1: true,
+                     abc2: true,
+                     abc3: true,
+                     abc4: true,
+                     litterDetectionId: true,
+                     createdAt: true,
+                     updatedAt: true
+                  },
+                  orderBy: {
+                     createdAt: 'desc'
+                  }
                }
             },
             orderBy: {
@@ -134,6 +154,110 @@ class LitterDetectionService {
 
       } catch (error: any) {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch litter detections");
+      }
+   }
+
+   protected static completeLitterDetectionService = async (litterDetectionComplete: LitterDetectionCompleteType) => {
+      try {
+         console.log('🔍 Looking for litter detection with ID:', litterDetectionComplete.id);
+         
+         // Find the litter detection record by ID
+         const litterDetection = await db.parks_litter_detection.findUnique({
+            where: { Id: litterDetectionComplete.id },
+            include: {
+               parks: {
+                  select: {
+                     park_english_name: true,
+                     park_arabic_name: true,
+                     latitude: true,
+                     longitude: true
+                  }
+               },
+               park_cameras: {
+                  select: {
+                     camera_english_name: true,
+                     camera_arabic_name: true,
+                     ip_address: true
+                  }
+               }
+            }
+         });
+         
+         console.log('📋 Litter detection found:', litterDetection ? 'YES' : 'NO', litterDetection);
+         
+         if (!litterDetection) {
+            throw new HttpException(STATUS.NOT_FOUND, "Litter detection record not found");
+         }
+
+         // Check if the case is already completed
+         if (litterDetection.status === "complete") {
+            return {
+               message: "Case already closed",
+               litterDetection,
+               ticketDetails: null
+            };
+         }
+
+         // Get current date and time
+         const currentDate = new Date();
+         const currentTime = new Date();
+
+         // Create new ticket details record with status "Completed"
+         const ticketDetails = await db.ticket_details_table.create({
+            data: {
+               litterDetectionId: litterDetection.Id,
+               status: "Completed",
+               date: currentDate,
+               time: currentTime,
+               comments: litterDetectionComplete.comments,
+               createdAt: new Date(),
+               updatedAt: new Date()
+            }
+         });
+         
+
+         console.log('✅ New ticket details record created:', ticketDetails);
+
+         // Update the litter detection status to "complete"
+         const updatedLitterDetection = await db.parks_litter_detection.update({
+            where: { Id: litterDetection.Id },
+            data: {
+               status: "complete",
+               current_status: "complete",
+               updatedAt: new Date()
+            },
+            include: {
+               parks: {
+                  select: {
+                     park_english_name: true,
+                     park_arabic_name: true,
+                     latitude: true,
+                     longitude: true
+                  }
+               },
+               park_cameras: {
+                  select: {
+                     camera_english_name: true,
+                     camera_arabic_name: true,
+                     ip_address: true
+                  }
+               }
+            }
+         });
+
+         console.log('✅ Litter detection status updated to "complete":', updatedLitterDetection);
+
+         return {
+            litterDetection: updatedLitterDetection,
+            ticketDetails
+         };
+
+      } catch (error) {
+         console.error('❌ Error completing litter detection:', error);
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to complete litter detection");
       }
    }
 }

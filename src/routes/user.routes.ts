@@ -1,5 +1,5 @@
 import { UserController } from "@/controllers";
-import { userLoginValidations } from "@/validations";
+import { userLoginValidations, addUserValidations } from "@/validations";
 import { Router } from "express";
 
 const userRouter = Router();
@@ -384,5 +384,175 @@ userRouter.put('/update/role/:userId',UserController.updateUserRole)
  *         description: Internal server error
  */
 userRouter.post('/fetch-employees', UserController.fetchAndStoreEmployeeListing)
+
+/**
+ * @swagger
+ * /users/add:
+ *   post:
+ *     summary: Add a new user
+ *     tags: [Users]
+ *     description: Create a new user with the provided details. Validates for duplicate user_Id, emp_Id, and unique_id before creating.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - unique_id
+ *               - user_Id
+ *               - emp_Id
+ *               - emp_code
+ *               - gender
+ *               - emp__eng_name
+ *               - location
+ *               - telephone
+ *               - email
+ *               - nationality
+ *               - joining_date
+ *               - date_of_birth
+ *               - dep_eng_name
+ *               - desig_eng_name
+ *             properties:
+ *               unique_id:
+ *                 type: string
+ *                 description: Unique identifier for the user
+ *                 example: "UID-123456"
+ *               user_Id:
+ *                 type: integer
+ *                 description: User ID (must be positive integer)
+ *                 example: 12345
+ *               emp_Id:
+ *                 type: string
+ *                 description: Employee ID
+ *                 example: "EMP001"
+ *               emp_code:
+ *                 type: string
+ *                 description: Employee code
+ *                 example: "EMP001"
+ *               image:
+ *                 type: string
+ *                 format: url
+ *                 description: Profile image URL (optional)
+ *                 example: "https://example.com/profile.jpg"
+ *               gender:
+ *                 type: string
+ *                 description: Gender
+ *                 example: "Male"
+ *               emp__eng_name:
+ *                 type: string
+ *                 description: Employee English name
+ *                 example: "John Doe"
+ *               location:
+ *                 type: string
+ *                 description: Location
+ *                 example: "Dubai"
+ *               telephone:
+ *                 type: string
+ *                 description: Telephone number
+ *                 example: "+971500000000"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address
+ *                 example: "johndoe@example.com"
+ *               office_extension:
+ *                 type: string
+ *                 description: Office extension (optional)
+ *                 example: "1234"
+ *               nationality:
+ *                 type: string
+ *                 description: Nationality
+ *                 example: "Pakistani"
+ *               joining_date:
+ *                 type: string
+ *                 format: date
+ *                 description: Joining date
+ *                 example: "2020-01-15"
+ *               date_of_birth:
+ *                 type: string
+ *                 format: date
+ *                 description: Date of birth
+ *                 example: "1990-05-20"
+ *               dep_eng_name:
+ *                 type: string
+ *                 description: Department English name
+ *                 example: "IT Department"
+ *               desig_eng_name:
+ *                 type: string
+ *                 description: Designation English name
+ *                 example: "Software Engineer"
+ *               unit_arabic_name:
+ *                 type: string
+ *                 description: Unit Arabic name (optional)
+ *                 example: "الوحدة ١"
+ *               is_attendance_user:
+ *                 type: boolean
+ *                 description: Whether user is an attendance user (optional, defaults to false)
+ *                 example: true
+ *               is_ai_login_user:
+ *                 type: boolean
+ *                 description: Whether user is an AI login user (optional, defaults to false)
+ *                 example: false
+ *               ai_engine_access:
+ *                 type: boolean
+ *                 description: Whether user has AI engine access (optional, defaults to false)
+ *                 example: false
+ *     responses:
+ *       200:
+ *         description: User added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "User added successfully"
+ *                 data:
+ *                   type: object
+ *                   description: Created user data
+ *                   properties:
+ *                     Id:
+ *                       type: number
+ *                       example: 1
+ *                     unique_id:
+ *                       type: string
+ *                       example: "UID-123456"
+ *                     user_Id:
+ *                       type: string
+ *                       example: "12345"
+ *                     emp_Id:
+ *                       type: string
+ *                       example: "EMP001"
+ *                     emp__eng_name:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     email:
+ *                       type: string
+ *                       example: "johndoe@example.com"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Bad request - validation error or duplicate user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "User with this User ID already exists"
+ *       500:
+ *         description: Internal server error
+ */
+userRouter.post('/add', addUserValidations, UserController.addUser)
 
 export default userRouter;

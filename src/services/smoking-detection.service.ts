@@ -142,6 +142,9 @@ console.log('smokingDetection',smokingDetection);
                      comments: true,
                      date: true,
                      time: true
+                  },
+                  orderBy: {
+                     id: 'desc'
                   }
                }
             },

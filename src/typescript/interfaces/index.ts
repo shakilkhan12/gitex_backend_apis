@@ -322,3 +322,37 @@ export interface TermsPrivacyType {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface IntranetPostingHistoryType {
+  title: string;
+  intranet_id: string;
+  comments: string;
+}
+
+export interface LitterDetectionCompleteType {
+  id: number;
+  comments: string;
+}
+
+export interface AddUserType {
+  unique_id: string;
+  user_Id: string;
+  emp_Id: string;
+  emp_code: string;
+  image?: string;
+  gender: string;
+  emp__eng_name: string;
+  location: string;
+  telephone: string;
+  email: string;
+  office_extension?: string;
+  nationality: string;
+  joining_date: Date;
+  date_of_birth: Date;
+  dep_eng_name: string;
+  desig_eng_name: string;
+  unit_arabic_name?: string;
+  is_attendance_user?: boolean;
+  is_ai_login_user?: boolean;
+  ai_engine_access?: boolean;
+}

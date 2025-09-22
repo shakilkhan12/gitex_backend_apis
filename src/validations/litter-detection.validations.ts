@@ -79,4 +79,25 @@ export const litterDetectionValidations = [
         .trim()
         .isLength({ max: 255 })
         .withMessage('After image must not exceed 255 characters'),
+];
+
+export const litterDetectionCompleteValidations = [
+    body('id')
+        .isInt({ min: 1 })
+        .withMessage('ID must be a positive integer'),
+    
+    body('comments')
+        .trim()
+        .notEmpty()
+        .withMessage('Comments are required')
+        .isLength({ max: 1000 })
+        .withMessage('Comments must not exceed 1000 characters'),
+    
+    body('image')
+        .optional()
+        .trim()
+        .isLength({ max: 255 })
+        .withMessage('Image URL must not exceed 255 characters')
+        .isURL()
+        .withMessage('Image must be a valid URL'),
 ]; 

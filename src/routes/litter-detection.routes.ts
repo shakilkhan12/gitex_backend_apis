@@ -1,5 +1,5 @@
 import { LitterDetectionController } from "@/controllers";
-import { litterDetectionValidations } from "@/validations";
+import { litterDetectionValidations, litterDetectionCompleteValidations } from "@/validations";
 import { Router } from "express";
 
 const litterDetectionRouter = Router();
@@ -300,5 +300,208 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  *                   example: 500
  */
 litterDetectionRouter.get('/get', LitterDetectionController.viewLitterDetections)
+
+/**
+ * @swagger
+ * /litter-detection/complete:
+ *   post:
+ *     summary: Complete a litter detection case
+ *     tags: [Litter Detection]
+ *     description: Mark a litter detection case as completed by creating a ticket details record with status "Completed" and updating the litter detection status to "complete". Returns a message if the case is already closed.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *               - comments
+ *               - image
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 description: ID of the litter detection record to complete
+ *                 example: 1
+ *               comments:
+ *                 type: string
+ *                 description: Comments about the completion of the litter detection
+ *                 example: "Litter has been cleaned up successfully. Area is now clean."
+ *               image:
+ *                 type: string
+ *                 format: url
+ *                 description: URL of the image showing the completed work
+ *                 example: "https://example.com/images/litter_cleanup_completed.jpg"
+ *     responses:
+ *       201:
+ *         description: Litter detection case completed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 litterDetection:
+ *                   type: object
+ *                   properties:
+ *                     Id:
+ *                       type: integer
+ *                       example: 1
+ *                     park_Id:
+ *                       type: integer
+ *                       example: 37
+ *                     case_Id:
+ *                       type: string
+ *                       example: "LITTER_20240115_001"
+ *                     location:
+ *                       type: string
+ *                       example: "Playground Area"
+ *                     occurrence_date:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-15T00:00:00.000Z"
+ *                     occurrence_time:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-15T10:30:00.000Z"
+ *                     snap_shot:
+ *                       type: string
+ *                       example: "litter_detection_20240115_103000.jpg"
+ *                     status:
+ *                       type: string
+ *                       example: "complete"
+ *                     detection_Id:
+ *                       type: string
+ *                       example: "LITTER_DETECT_20240115_001"
+ *                     description:
+ *                       type: string
+ *                       example: "Litter detected in playground area"
+ *                     current_status:
+ *                       type: string
+ *                       example: "active"
+ *                     parks:
+ *                       type: object
+ *                       properties:
+ *                         park_english_name:
+ *                           type: string
+ *                           example: "Central Park"
+ *                         park_arabic_name:
+ *                           type: string
+ *                           example: "الحديقة المركزية"
+ *                         latitude:
+ *                           type: number
+ *                           example: 25.3314
+ *                         longitude:
+ *                           type: number
+ *                           example: 56.3419
+ *                     park_cameras:
+ *                       type: object
+ *                       properties:
+ *                         camera_english_name:
+ *                           type: string
+ *                           example: "Playground Camera"
+ *                         camera_arabic_name:
+ *                           type: string
+ *                           example: "كاميرا الملعب"
+ *                         ip_address:
+ *                           type: string
+ *                           example: "192.168.1.103"
+ *                 ticketDetails:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     status:
+ *                       type: string
+ *                       example: "Completed"
+ *                     date:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-15T14:30:00.000Z"
+ *                     time:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-15T14:30:00.000Z"
+ *                     comments:
+ *                       type: string
+ *                       example: "Litter has been cleaned up successfully. Area is now clean."
+ *                     image:
+ *                       type: string
+ *                       example: "https://example.com/images/litter_cleanup_completed.jpg"
+ *                     litterDetectionId:
+ *                       type: integer
+ *                       example: 1
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                 - type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: "Case already closed"
+ *                     litterDetection:
+ *                       type: object
+ *                       properties:
+ *                         Id:
+ *                           type: integer
+ *                           example: 1
+ *                         status:
+ *                           type: string
+ *                           example: "complete"
+ *                         location:
+ *                           type: string
+ *                           example: "Playground Area"
+ *                     ticketDetails:
+ *                       type: null
+ *                       example: null
+ *       400:
+ *         description: Bad request - validation errors
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       msg:
+ *                         type: string
+ *                       param:
+ *                         type: string
+ *                       location:
+ *                         type: string
+ *       404:
+ *         description: Litter detection record not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Litter detection record not found"
+ *                 status:
+ *                   type: integer
+ *                   example: 404
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ */
+litterDetectionRouter.post('/check-condition', litterDetectionCompleteValidations, LitterDetectionController.completeLitterDetection)
 
 export default litterDetectionRouter; 
