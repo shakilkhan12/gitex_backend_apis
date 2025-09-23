@@ -474,3 +474,5 @@ CREATE INDEX idx_offices_footfall_person_id ON offices_footfall_analysis(person_
 
 This documentation provides all the necessary details for developers to integrate with the enhanced footfall analysis services. The APIs now support comprehensive employee and guest tracking with detailed demographic analytics and time-based insights.
 
+
+

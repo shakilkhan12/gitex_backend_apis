@@ -524,6 +524,7 @@ class EventHandlerService {
                       let genderName = 'Unknown';
                       let isChild = false;
                       let person_Id = null;
+                      let faceData = null;
                       
                       if (eventInfo.data?.alarmResult?.faces) {
                          Logger.debug(`[EventHandlerService] Processing face recognition data for office attendance`);
@@ -546,7 +547,7 @@ class EventHandlerService {
                          
                          if (similarity !== 0 && humanId && humanId !== "-1") {
                             const user = await db.users.findFirst({
-                               where: { emp_Id: humanId.toString() }
+                               where: { unique_id: humanId.toString() }
                             });
                             if (user) {
                                person_Id = user.Id;
@@ -557,9 +558,77 @@ class EventHandlerService {
                                });
                             } else {
                                Logger.warn(`[EventHandlerService] Employee not found in database for empId: ${humanId}`);
+                               Logger.info(`[EventHandlerService] 👤 Employee not found, creating guest user for office attendance`, {
+                                  empId: humanId,
+                                  similarity,
+                                  gender: genderName
+                               });
+                               
+                               try {
+                                  if (eventInfo.data?.alarmResult?.faces?.faceData) {
+                                     faceData = eventInfo.data.alarmResult.faces.faceData;
+                                     Logger.debug(`[EventHandlerService] 📸 Extracted face data for guest user`, {
+                                        faceDataLength: faceData.length
+                                     });
+                                  } else {
+                                     Logger.warn(`[EventHandlerService] ⚠️ No face data available for guest user creation`);
+                                  }
+                                  
+                                  const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
+                                  person_Id = guestUser.Id;
+                                  
+                                  Logger.info(`[EventHandlerService] ✅ Successfully created guest user for office attendance`, {
+                                     guestUserId: person_Id,
+                                     guestName: guestUser.emp__eng_name,
+                                     gender: genderName,
+                                     unique_id: guestUser.unique_id,
+                                     originalEmpId: humanId
+                                  });
+                               } catch (guestError: any) {
+                                  Logger.error(`[EventHandlerService] ❌ Failed to create guest user for office attendance`, {
+                                     error: guestError.message,
+                                     empId: humanId,
+                                     gender: genderName,
+                                     hasFaceData: !!faceData
+                                  });
+                               }
                             }
                          } else {
                             Logger.debug(`[EventHandlerService] No valid employee identification (similarity: ${similarity}, humanId: ${humanId})`);
+                            Logger.info(`[EventHandlerService] 👤 Unknown person detected, creating guest user for office attendance`, {
+                               similarity,
+                               humanId,
+                               gender: genderName
+                            });
+                            
+                            try {
+                               if (eventInfo.data?.alarmResult?.faces?.faceData) {
+                                  faceData = eventInfo.data.alarmResult.faces.faceData;
+                                  Logger.debug(`[EventHandlerService] 📸 Extracted face data for unknown visitor`, {
+                                     faceDataLength: faceData.length
+                                  });
+                               } else {
+                                  Logger.warn(`[EventHandlerService] ⚠️ No face data available for unknown visitor guest creation`);
+                               }
+                               
+                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
+                               person_Id = guestUser.Id;
+                               
+                               Logger.info(`[EventHandlerService] ✅ Successfully created guest user for unknown office visitor`, {
+                                  guestUserId: person_Id,
+                                  guestName: guestUser.emp__eng_name,
+                                  gender: genderName,
+                                  unique_id: guestUser.unique_id,
+                                  originalHumanId: humanId
+                               });
+                             } catch (guestError: any) {
+                                Logger.error(`[EventHandlerService] ❌ Failed to create guest user for unknown office visitor`, {
+                                   error: guestError.message,
+                                   humanId,
+                                   gender: genderName,
+                                   hasFaceData: !!faceData
+                                });
+                             }
                          }
                       } else {
                          Logger.debug(`[EventHandlerService] No face recognition data available for office attendance`);
@@ -664,6 +733,7 @@ class EventHandlerService {
                       
                       const similarity = eventInfo.data.alarmResult.faces.identify.candidate.similarity
                       const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id
+                      let faceData = null;
                       
                       Logger.debug(`[EventHandlerService] Park face recognition details:`, {
                          genderValue,
@@ -677,7 +747,7 @@ class EventHandlerService {
                       let person_Id = null; // Default fallback - use null for unknown persons
                       if (similarity !== 0 && humanId && humanId !== "-1") {
                          const user = await db.users.findFirst({
-                            where: { emp_Id: humanId.toString() }
+                            where: { unique_id: humanId.toString() }
                          });
                          if (user) {
                             person_Id = user.Id;
@@ -688,9 +758,77 @@ class EventHandlerService {
                             });
                          } else {
                             Logger.warn(`[EventHandlerService] Employee not found in database for park attendance empId: ${humanId}`);
+                            Logger.info(`[EventHandlerService] 👤 Employee not found, creating guest user for park attendance`, {
+                               empId: humanId,
+                               similarity,
+                               gender: genderName
+                            });
+                            
+                            try {
+                               if (eventInfo.data?.alarmResult?.faces?.faceData) {
+                                  faceData = eventInfo.data.alarmResult.faces.faceData;
+                                  Logger.debug(`[EventHandlerService] 📸 Extracted face data for park guest user`, {
+                                     faceDataLength: faceData.length
+                                  });
+                               } else {
+                                  Logger.warn(`[EventHandlerService] ⚠️ No face data available for park guest user creation`);
+                               }
+                               
+                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
+                               person_Id = guestUser.Id;
+                               
+                               Logger.info(`[EventHandlerService] ✅ Successfully created guest user for park attendance`, {
+                                  guestUserId: person_Id,
+                                  guestName: guestUser.emp__eng_name,
+                                  gender: genderName,
+                                  unique_id: guestUser.unique_id,
+                                  originalEmpId: humanId
+                               });
+                            } catch (guestError: any) {
+                               Logger.error(`[EventHandlerService] ❌ Failed to create guest user for park attendance`, {
+                                  error: guestError.message,
+                                  empId: humanId,
+                                  gender: genderName,
+                                  hasFaceData: !!faceData
+                               });
+                            }
                          }
                       } else {
                          Logger.debug(`[EventHandlerService] No valid employee identification for park attendance (similarity: ${similarity}, humanId: ${humanId})`);
+                         Logger.info(`[EventHandlerService] 👤 Unknown person detected, creating guest user for park attendance`, {
+                            similarity,
+                            humanId,
+                            gender: genderName
+                         });
+                         
+                         try {
+                            if (eventInfo.data?.alarmResult?.faces?.faceData) {
+                               faceData = eventInfo.data.alarmResult.faces.faceData;
+                               Logger.debug(`[EventHandlerService] 📸 Extracted face data for unknown park visitor`, {
+                                  faceDataLength: faceData.length
+                               });
+                            } else {
+                               Logger.warn(`[EventHandlerService] ⚠️ No face data available for unknown park visitor guest creation`);
+                            }
+                            
+                            const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
+                            person_Id = guestUser.Id;
+                            
+                            Logger.info(`[EventHandlerService] ✅ Successfully created guest user for unknown park visitor`, {
+                               guestUserId: person_Id,
+                               guestName: guestUser.emp__eng_name,
+                               gender: genderName,
+                               unique_id: guestUser.unique_id,
+                               originalHumanId: humanId
+                            });
+                         } catch (guestError: any) {
+                            Logger.error(`[EventHandlerService] ❌ Failed to create guest user for unknown park visitor`, {
+                               error: guestError.message,
+                               humanId,
+                               gender: genderName,
+                               hasFaceData: !!faceData
+                            });
+                         }
                       }
                       
                       const parkFootfallData = {
@@ -765,13 +903,13 @@ class EventHandlerService {
              else if(bevaviour_code.includes(eventType)){
                 Logger.info(`[EventHandlerService] Processing behavior detection event for camera: ${eventInfo.srcIndex}`);
                 
-               const isParkCamera = park_cameras.includes(eventInfo.srcIndex)
+               const isParkCamera = park_cameras.includes(eventInfo.srcIndex.toString())
                
                if(isParkCamera){
                   Logger.info(`[EventHandlerService] Behavior detection on park camera`);
                   const parkCamera = await db.park_cameras.findFirst({
                      where: {
-                        camera_Id: eventInfo.srcIndex
+                        camera_Id: eventInfo.srcIndex.toString()
                      }
                   })
                   
@@ -828,7 +966,7 @@ class EventHandlerService {
                         detection_time: eventInfo.happenTime,
                         person_Id: '',
                         detected_behaviour: detectedBehaviour,
-                        snap_shot: imageUrl, // Store the Cloudinary URL instead of base64
+                        snap_shot: imageUrl,
                         is_employee: false,
                         description: `Behavior detected at ${eventInfo.srcName} camera`
                      }
@@ -938,6 +1076,175 @@ class EventHandlerService {
       }
       
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
+   }
+
+   private static async createGuestUserAndUploadToHikVision(gender: string, faceData: string): Promise<any> {
+      const startTime = Date.now();
+      Logger.info(`[EventHandlerService] 🚀 Starting guest user creation process`, {
+         gender,
+         hasFaceData: !!faceData,
+         faceDataLength: faceData ? faceData.length : 0
+      });
+
+      try {
+         Logger.debug(`[EventHandlerService] 🔍 Finding last guest user to determine next number`);
+         const lastGuest = await db.users.findFirst({
+            where: {
+               emp__eng_name: {
+                  startsWith: 'Guest'
+               }
+            },
+            orderBy: {
+               Id: 'desc'
+            }
+         });
+
+         let guestNumber = 1;
+         if (lastGuest && lastGuest.emp__eng_name) {
+            const match = lastGuest.emp__eng_name.match(/Guest(\d+)/);
+            if (match) {
+               guestNumber = parseInt(match[1]) + 1;
+               Logger.debug(`[EventHandlerService] 📊 Found last guest: ${lastGuest.emp__eng_name}, next number: ${guestNumber}`);
+            } else {
+               Logger.debug(`[EventHandlerService] 📊 Found guest with non-standard name: ${lastGuest.emp__eng_name}, using number: ${guestNumber}`);
+            }
+         } else {
+            Logger.debug(`[EventHandlerService] 📊 No existing guests found, using first number: ${guestNumber}`);
+         }
+
+         const guestName = `Guest${guestNumber}`;
+         Logger.info(`[EventHandlerService] 🏷️ Generated guest name: ${guestName}`);
+
+         Logger.info(`[EventHandlerService] 💾 Creating guest user in database`, {
+            guestName,
+            gender,
+            guestNumber
+         });
+
+         const guestUser = await db.users.create({
+            data: {
+               user_Id: null,
+               emp_Id: null,
+               emp_code: null,
+               image: null,
+               gender: gender,
+               emp__eng_name: guestName,
+               location: null,
+               telephone: null,
+               email: null,
+               office_extension: null,
+               nationality: null,
+               joining_date: null,
+               date_of_birth: null,
+               dep_eng_name: null,
+               desig_eng_name: null,
+               unit_arabic_name: null,
+               is_attendance_user: false,
+               is_ai_login_user: false,
+               ai_engine_access: false,
+               unique_id: null,
+               createdAt: new Date(),
+               updatedAt: new Date()
+            }
+         });
+
+         Logger.info(`[EventHandlerService] ✅ Successfully created guest user in database`, {
+            guestUserId: guestUser.Id,
+            guestName: guestUser.emp__eng_name,
+            gender: guestUser.gender,
+            createdAt: guestUser.createdAt
+         });
+
+         const hikVisionPayload = {
+            personCode: guestUser.Id.toString(),
+            personFamilyName: guestNumber.toString(),
+            personGivenName: "Guest",
+            gender: gender === "Male" ? 1 : 2,
+            orgIndexCode: "3",
+            faces: faceData ? [{ faceData: faceData }] : []
+         };
+
+         Logger.info(`[EventHandlerService] 📤 Preparing HIK Vision upload`, {
+            personCode: hikVisionPayload.personCode,
+            personFamilyName: hikVisionPayload.personFamilyName,
+            personGivenName: hikVisionPayload.personGivenName,
+            gender: hikVisionPayload.gender,
+            orgIndexCode: hikVisionPayload.orgIndexCode,
+            hasFaceData: !!faceData,
+            faceDataLength: faceData ? faceData.length : 0
+         });
+
+         Logger.debug(`[EventHandlerService] 🔄 Calling HIK Vision API for guest user upload`);
+         const hikVisionResponse = await this.callHikVisionAPI(
+            this.HIK_CONFIG.baseURL,
+            '/artemis/api/resource/v1/person/single/add',
+            this.HIK_CONFIG.appKey,
+            this.HIK_CONFIG.appSecret,
+            hikVisionPayload
+         );
+
+         Logger.debug(`[EventHandlerService] 📥 Received HIK Vision response`, {
+            code: hikVisionResponse?.code,
+            msg: hikVisionResponse?.msg,
+            hasData: !!hikVisionResponse?.data,
+            dataValue: hikVisionResponse?.data
+         });
+
+         if (hikVisionResponse && hikVisionResponse.code === '0' && hikVisionResponse.data) {
+            Logger.info(`[EventHandlerService] 🎉 HIK Vision upload successful, updating guest user with unique_id`);
+            const updatedGuestUser = await db.users.update({
+               where: { Id: guestUser.Id },
+               data: { unique_id: hikVisionResponse.data }
+            });
+
+            const duration = Date.now() - startTime;
+            Logger.info(`[EventHandlerService] ✅ Guest user creation and HIK Vision upload completed successfully`, {
+               guestUserId: guestUser.Id,
+               guestName: guestName,
+               hikVisionId: hikVisionResponse.data,
+               unique_id: updatedGuestUser.unique_id,
+               duration: `${duration}ms`,
+               gender: gender,
+               hasFaceData: !!faceData
+            });
+
+            return updatedGuestUser;
+         } else {
+            const duration = Date.now() - startTime;
+            Logger.error(`[EventHandlerService] ❌ HIK Vision API returned error for guest user`, {
+               guestUserId: guestUser.Id,
+               guestName: guestName,
+               hikVisionResponse,
+               duration: `${duration}ms`,
+               error: hikVisionResponse?.msg || 'Unknown error'
+            });
+            Logger.warn(`[EventHandlerService] ⚠️ Returning guest user without HIK Vision ID due to upload failure`);
+            return guestUser;
+         }
+
+      } catch (error: any) {
+         const duration = Date.now() - startTime;
+         Logger.error(`[EventHandlerService] 💥 Failed to create guest user and upload to HIK Vision`, {
+            error: error.message,
+            stack: error.stack,
+            duration: `${duration}ms`,
+            gender,
+            hasFaceData: !!faceData
+         });
+         if (error.code === 'ETIMEDOUT') {
+            Logger.error(`[EventHandlerService] 🌐 Network timeout error - HIK Vision server may be unreachable`);
+         } else if (error.response) {
+            Logger.error(`[EventHandlerService] 📡 HTTP error response`, {
+               status: error.response.status,
+               statusText: error.response.statusText,
+               responseData: error.response.data
+            });
+         } else if (error.code === 'ECONNREFUSED') {
+            Logger.error(`[EventHandlerService] 🔌 Connection refused - HIK Vision server may be down`);
+         }
+         
+         throw error;
+      }
    }
 
    private static async postToIntranetAPI(parkExists: any, intrusionDetection: any): Promise<any> {

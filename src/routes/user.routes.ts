@@ -383,7 +383,7 @@ userRouter.put('/update/role/:userId',UserController.updateUserRole)
  *       500:
  *         description: Internal server error
  */
-userRouter.post('/fetch-employees', UserController.fetchAndStoreEmployeeListing)
+userRouter.post('/fetch-employees', UserController.fetchAndStoreEmployeeListing);
 
 /**
  * @swagger

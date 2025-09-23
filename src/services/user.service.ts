@@ -86,6 +86,11 @@ class UserService {
 
       try {
          const users = await db.users.findMany({
+            where:{
+               unique_id: {
+                  not: null
+               }
+            },
             select: {
                Id: true,
                emp_Id: true,
@@ -349,15 +354,18 @@ class UserService {
    public static fetchAndStoreEmployeeListingService = async () => {
       
       try {
+         console.log('[UserService] Starting fetchAndStoreEmployeeListingService');
          const secretKey = await this.fetchSecretFromAPI();
+         console.log('[UserService] Secret key obtained:', secretKey);
 
          const payload = {
             SecretKey: `${secretKey}`,
             Lang: "en"
          };
 
+         console.log('[UserService] Making API request to EmployeeListingGet with payload:', payload);
          const response = await axios.post(
-            "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeListingGet",
+            "https://192.168.164.7/middleware/?class=general&action=EmployeeListingGet",
             payload,
             {
                headers: {
@@ -365,9 +373,11 @@ class UserService {
                },
                timeout: 30000, // 30 seconds timeout
                httpsAgent: new https.Agent({
+                  rejectUnauthorized: false
                })
             }
          )
+         console.log('[UserService] API response received:', response.status, response.data);
 
          if (!response.data?.data?.UserListing || !Array.isArray(response.data.data.UserListing)) {
             if (response.data?.error) {
@@ -381,18 +391,112 @@ class UserService {
 
          let successCount = 0;
          let errorCount = 0;
+         let deletedCount = 0;
 
+         // Get all emp_ids from API response
+         const apiEmpIds = new Set(userListing.map((user: any) => user.EmpCode as string));
+
+         // Find users in DB that are not in API response (excluding EMP001)
+         const usersToDelete = await db.users.findMany({
+            where: {
+               AND: [
+                  {
+                     emp_Id: {
+                        notIn: Array.from(apiEmpIds) as string[]
+                     }
+                  },
+                  {
+                     emp_Id: {
+                        not: 'EMP001'
+                     }
+                  }
+               ]
+            },
+            select: {
+               Id: true,
+               emp_Id: true,
+               emp__eng_name: true
+            }
+         });
+
+         // Delete users not present in API response (batch deletion for better performance)
+         if (usersToDelete.length > 0) {
+            console.log(`[UserService] Starting batch deletion of ${usersToDelete.length} users`);
+            
+            try {
+               // Use deleteMany for batch deletion instead of individual deletes
+               const deleteResult = await db.users.deleteMany({
+                  where: {
+                     Id: {
+                        in: usersToDelete.map(user => user.Id)
+                     }
+                  }
+               });
+               
+               deletedCount = deleteResult.count;
+               console.log(`[UserService] Successfully deleted ${deletedCount} users in batch`);
+               
+               // Log some examples of deleted users (first 5)
+               const sampleDeleted = usersToDelete.slice(0, 5);
+               sampleDeleted.forEach(user => {
+                  console.log(`Deleted user: ${user.emp_Id} - ${user.emp__eng_name}`);
+               });
+               
+               if (usersToDelete.length > 5) {
+                  console.log(`... and ${usersToDelete.length - 5} more users`);
+               }
+               
+            } catch (deleteError) {
+               console.error(`[UserService] Failed to delete users in batch:`, deleteError);
+               
+               // Fallback to individual deletion if batch fails
+               console.log(`[UserService] Falling back to individual deletion`);
+               for (const userToDelete of usersToDelete) {
+                  try {
+                     await db.users.delete({
+                        where: { Id: userToDelete.Id }
+                     });
+                     deletedCount++;
+                  } catch (individualDeleteError) {
+                     console.error(`Failed to delete user ${userToDelete.emp_Id}:`, individualDeleteError);
+                  }
+               }
+            }
+         }
+
+         console.log(`[UserService] Processing ${userListing.length} users from API`);
+         
          for (const userData of userListing) {
             try {
                const existingUser = await db.users.findFirst({
                   where: { user_Id: userData.UserID }
                });
 
+               // Helper function to safely parse dates
+               const parseDate = (dateString: string | null | undefined): Date | undefined => {
+                  if (!dateString || dateString.trim() === '') {
+                     return undefined;
+                  }
+                  
+                  try {
+                     const date = new Date(dateString);
+                     // Check if the date is valid
+                     if (isNaN(date.getTime())) {
+                        console.warn(`Invalid date format: ${dateString}`);
+                        return undefined;
+                     }
+                     return date;
+                  } catch (error) {
+                     console.warn(`Error parsing date: ${dateString}`, error);
+                     return undefined;
+                  }
+               };
+
                const userDataToProcess: UserType = {
                   user_Id: userData.UserID,
                   emp_Id: userData.EmpCode,
                   emp_code: userData.EmpCode,
-                  image: userData.Image,
+                  image: userData.EmployeeImage1 ||userData.EmployeeImage2,
                   gender: userData.Gender,
                   emp__eng_name: userData.Name,
                   location: userData.Location,
@@ -400,8 +504,8 @@ class UserService {
                   email: userData.Email,
                   office_extension: userData.OfficeExtension,
                   nationality: userData.Nationality,
-                  joining_date: userData.JoiningDate ? new Date(userData.JoiningDate) : undefined,
-                  date_of_birth: userData.DateOfBirth ? new Date(userData.DateOfBirth) : undefined,
+                  joining_date: parseDate(userData.JoiningDate),
+                  date_of_birth: parseDate(userData.DateOfBirth),
                   dep_eng_name: userData.Department,
                   desig_eng_name: userData.Designation,
                   unit_arabic_name: userData.Unit,
@@ -429,29 +533,50 @@ class UserService {
                   successCount++;
                }
 
+               // Log progress every 100 users
+               if (successCount % 100 === 0) {
+                  console.log(`[UserService] Processed ${successCount} users so far...`);
+               }
+
             } catch (userError) {
                errorCount++;
+               console.error(`[UserService] Error processing user ${userData.UserID}:`, userError);
             }
          }
 
          const summary = {
             total: userListing.length,
             processed: successCount,
-            errors: errorCount
+            errors: errorCount,
+            deleted: deletedCount
          };
 
-         return {
-            message: "Employee listing fetch and store completed - existing users updated, new users created",
+         console.log('[UserService] Processing completed. Summary:', summary);
+         
+         const result = {
+            message: "Employee listing fetch and store completed - existing users updated, new users created, obsolete users deleted (excluding EMP001)",
             summary
          };
+         
+         console.log('[UserService] Returning result:', result);
+         return result;
 
       } catch (error) {
+         console.error('[UserService] Error in fetchAndStoreEmployeeListingService:', error);
          
          if (error instanceof HttpException) {
+            console.error('[UserService] HttpException thrown:', error.message);
             throw error;
          }
          
          if (axios.isAxiosError(error)) {
+            console.error('[UserService] Axios error:', {
+               code: error.code,
+               message: error.message,
+               response: error.response?.data,
+               status: error.response?.status
+            });
+            
             if (error.code === 'ECONNREFUSED') {
                throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to third-party API");
             } else if (error.response) {
@@ -548,6 +673,303 @@ class UserService {
          );
       }
    }
+
+   /**
+    * Upload user to HIK Vision NVR system
+    * @param user - User object to upload
+    * @returns Promise with upload result
+    */
+   public static uploadUserToHikVision = async (user: any) => {
+      try {
+         console.log(`[UserService] Starting HIK Vision upload for user: ${user.emp_Id}`);
+
+         // Helper function to get image as base64
+         const getImageAsBase64 = async (imageUrl: string): Promise<string | null> => {
+            if (!imageUrl) {
+               console.warn(`[UserService] No image URL provided for user: ${user.emp_Id}`);
+               return null;
+            }
+
+            try {
+               // Use the same image data endpoint as in event-handler
+               const response = await this.callHikVisionAPI(
+                  'https://10.70.90.183:443',
+                  '/artemis/api/eventService/v1/image_data',
+                  '59315117',
+                  'YuWS8qCb61xbD8fEbwFJ',
+                  { picUri: imageUrl }
+               );
+               
+               if (response && typeof response === 'string') {
+                  return response; // The response is directly the base64 string
+               }
+               
+               console.warn(`[UserService] Invalid image data response for user: ${user.emp_Id}`);
+               return null;
+            } catch (error: any) {
+               console.error(`[UserService] Failed to get image data for user ${user.emp_Id}:`, error.message);
+               return null;
+            }
+         };
+
+         // Get image as base64
+         const faceData = await getImageAsBase64(user.image);
+         
+         // Prepare the payload
+         const nameParts = user.emp__eng_name ? user.emp__eng_name.trim().split(' ') : [];
+         const personGivenName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : '';
+         const personFamilyName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : user.emp__eng_name || '';
+
+         const payload = {
+            personCode: user.emp_Id,
+            personFamilyName: personFamilyName,
+            personGivenName: personGivenName,
+            gender: user.gender === "M" ? 1 : 2,
+            orgIndexCode: "2",
+            faces: faceData ? [{ faceData: faceData }] : []
+         };
+
+         console.log(`[UserService] Uploading user to HIK Vision:`, {
+            personCode: payload.personCode,
+            personFamilyName: payload.personGivenName,            
+            personGivenName: payload.personFamilyName,
+            gender: payload.gender,
+            hasFaceData: !!faceData
+         });
+
+         // Call HIK Vision API to add person
+         const response = await this.callHikVisionAPI(
+            'https://10.70.90.183:443',
+            '/artemis/api/resource/v1/person/single/add',
+            '59315117',
+            'YuWS8qCb61xbD8fEbwFJ',
+            payload
+         );
+
+         if (response && response.code === '0' && response.data) {
+            console.log(`[UserService] Successfully uploaded user to HIK Vision:`, {
+               personCode: payload.personCode,
+               hikVisionId: response.data
+            });
+
+            // Update user's unique_id with the response data
+            await db.users.update({
+               where: { Id: user.Id },
+               data: { unique_id: response.data }
+            });
+
+            console.log(`[UserService] Updated user unique_id: ${response.data}`);
+
+            return {
+               success: true,
+               message: "User uploaded to HIK Vision successfully",
+               data: {
+                  personCode: payload.personCode,
+                  hikVisionId: response.data,
+                  unique_id: response.data
+               }
+            };
+         } else {
+            console.error(`[UserService] HIK Vision API returned error:`, response);
+            throw new Error(`HIK Vision API error: ${response?.msg || 'Unknown error'}`);
+         }
+
+      } catch (error: any) {
+         console.error(`[UserService] Failed to upload user to HIK Vision:`, error);
+         throw new HttpException(
+            STATUS.INTERNAL_SERVER_ERROR,
+            `Failed to upload user to HIK Vision: ${error.message}`
+         );
+      }
+   };
+
+   /**
+    * Upload multiple users to HIK Vision NVR system
+    * @param users - Array of user objects to upload
+    * @returns Promise with upload results
+    */
+   public static uploadUsersToHikVision = async (users: any[]) => {
+      try {
+         console.log(`[UserService] Starting batch upload of ${users.length} users to HIK Vision`);
+
+         const results = {
+            success: 0,
+            failed: 0,
+            errors: [] as any[]
+         };
+
+         for (const user of users) {
+            try {
+               await this.uploadUserToHikVision(user);
+               results.success++;
+               console.log(`[UserService] Successfully uploaded user ${user.emp_Id} (${results.success}/${users.length})`);
+            } catch (error: any) {
+               results.failed++;
+               results.errors.push({
+                  user: user.emp_Id,
+                  error: error.message
+               });
+               console.error(`[UserService] Failed to upload user ${user.emp_Id}:`, error.message);
+            }
+         }
+
+         console.log(`[UserService] Batch upload completed:`, {
+            total: users.length,
+            success: results.success,
+            failed: results.failed
+         });
+
+         return {
+            success: results.failed === 0,
+            message: `Uploaded ${results.success} out of ${users.length} users to HIK Vision`,
+            data: results
+         };
+
+      } catch (error: any) {
+         console.error(`[UserService] Batch upload to HIK Vision failed:`, error);
+         throw new HttpException(
+            STATUS.INTERNAL_SERVER_ERROR,
+            `Failed to upload users to HIK Vision: ${error.message}`
+         );
+      }
+   };
+
+   /**
+    * Call HIK Vision API with proper authentication
+    * @param baseUrl - Base URL for the API
+    * @param endpoint - API endpoint
+    * @param appKey - Application key
+    * @param appSecret - Application secret
+    * @param requestData - Request payload
+    * @returns Promise with API response
+    */
+   private static async callHikVisionAPI(baseUrl: string, endpoint: string, appKey: string, appSecret: string, requestData: any) {
+      const axios = require('axios');
+      const https = require('https');
+      const crypto = require('crypto');
+
+      try {
+         const method = 'POST';
+         const accept = '*/*';
+         const contentType = 'application/json;charset=UTF-8';
+         const timestamp = Date.now();
+         const nonce = crypto.randomUUID();
+
+         const requestBody = JSON.stringify(requestData);
+
+         const bodyBytes = Buffer.from(requestBody, 'utf-8');
+         const md5Hash = crypto.createHash('md5').update(bodyBytes).digest();
+         const contentMD5 = md5Hash.toString('base64');
+
+         const date = new Date().toUTCString();
+
+         const customHeaders: { [key: string]: string } = {
+            'x-ca-key': appKey,
+            'x-ca-timestamp': timestamp.toString(),
+            'x-ca-nonce': nonce,
+         };
+
+         const sortedHeaderKeys = Object.keys(customHeaders).sort();
+
+         let signatureString = `${method}\n${accept}\n${contentMD5}\n${contentType}\n${date}\n`;
+         for (const key of sortedHeaderKeys) {
+            signatureString += `${key}:${customHeaders[key]}\n`;
+         }
+         signatureString += endpoint;
+
+         const hmac = crypto.createHmac('sha256', appSecret);
+         hmac.update(signatureString, 'utf-8');
+         const signature = hmac.digest('base64');
+
+         const headers = {
+            Accept: accept,
+            'Content-Type': contentType,
+            'Content-MD5': contentMD5,
+            Date: date,
+            'X-Ca-Key': appKey,
+            'X-Ca-Signature': signature,
+            'X-Ca-Signature-Headers': sortedHeaderKeys.join(','),
+            'X-Ca-Timestamp': timestamp.toString(),
+            'X-Ca-Nonce': nonce,
+         };
+
+         const response = await axios({
+            method,
+            url: `${baseUrl}${endpoint}`,
+            headers,
+            httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+            data: requestBody,
+            timeout: 30000,
+         });
+
+         return response.data;
+      } catch (error: any) {
+         console.error(`[UserService] HIK Vision API call failed:`, error);
+         throw error;
+      }
+   }
+
+   /**
+    * Upload the first two users (index 1 and 2) to HIK Vision NVR system
+    * Skips the user at index 0
+    * @returns Promise with upload results
+    */
+   public static uploadAllUsersToHikVision = async () => {
+      try {
+         console.log(`[UserService] Starting upload of first two users to HIK Vision (skipping index 0)`);
+
+         // Get all users ordered by Id
+         const allUsers = await db.users.findMany({
+            orderBy: { Id: 'asc' }
+         });
+
+         if (allUsers.length < 3) {
+            throw new HttpException(
+               STATUS.BAD_REQUEST,
+               `Not enough users in database. Found ${allUsers.length} users, need at least 3 to skip index 0 and upload 2 users.`
+            );
+         }
+
+         // Get users at index 1 and 2 (skip index 0)
+         const usersToUpload = allUsers.slice(1, 3); // Get index 1 and 2
+
+         console.log(`[UserService] Found ${allUsers.length} total users. Uploading users at index 1 and 2:`, {
+            user1: { id: usersToUpload[0].Id, emp_Id: usersToUpload[0].emp_Id, name: usersToUpload[0].emp__eng_name },
+            user2: { id: usersToUpload[1].Id, emp_Id: usersToUpload[1].emp_Id, name: usersToUpload[1].emp__eng_name }
+         });
+
+         // Upload the two users
+         const result = await this.uploadUsersToHikVision(usersToUpload);
+
+         console.log(`[UserService] Upload of first two users completed:`, result);
+
+         return {
+            success: result.success,
+            message: `Uploaded first two users (index 1 and 2) to HIK Vision. ${result.message}`,
+            data: {
+               ...result.data,
+               uploadedUsers: usersToUpload.map(user => ({
+                  id: user.Id,
+                  emp_Id: user.emp_Id,
+                  name: user.emp__eng_name,
+                  unique_id: user.unique_id
+               }))
+            }
+         };
+
+      } catch (error: any) {
+         console.error(`[UserService] Failed to upload first two users to HIK Vision:`, error);
+         
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         
+         throw new HttpException(
+            STATUS.INTERNAL_SERVER_ERROR,
+            `Failed to upload first two users to HIK Vision: ${error.message}`
+         );
+      }
+   };
 
 }
 

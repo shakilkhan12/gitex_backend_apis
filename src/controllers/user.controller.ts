@@ -75,15 +75,23 @@ class UserController extends UserService {
 
     public static fetchAndStoreEmployeeListing = async (req: Request, res: Response, next: NextFunction) => {
       try {
+        console.log('[UserController] Starting fetchAndStoreEmployeeListing');
         
         const result = await UserService.fetchAndStoreEmployeeListingService();
+        console.log('[UserController] Service result received:', result);
         
-        return res.status(STATUS.SUCCESS).json({
+        const response = {
           success: true,
           message: result.message,
           data: result.summary
-        });
+        };
+        
+        console.log('[UserController] Sending response:', response);
+        res.status(STATUS.SUCCESS).json(response);
+        console.log('[UserController] Response sent successfully');
+        return;
       } catch (error) {
+        console.error('[UserController] Error in fetchAndStoreEmployeeListing:', error);
         next(error);
       }
     }
