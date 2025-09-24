@@ -437,26 +437,31 @@ litterDetectionRouter.get('/get', LitterDetectionController.viewLitterDetections
  *                     updatedAt:
  *                       type: string
  *                       format: date-time
- *                 - type: object
+ *       200:
+ *         description: Case already closed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Case already closed"
+ *                 litterDetection:
+ *                   type: object
  *                   properties:
- *                     message:
+ *                     Id:
+ *                       type: integer
+ *                       example: 1
+ *                     status:
  *                       type: string
- *                       example: "Case already closed"
- *                     litterDetection:
- *                       type: object
- *                       properties:
- *                         Id:
- *                           type: integer
- *                           example: 1
- *                         status:
- *                           type: string
- *                           example: "complete"
- *                         location:
- *                           type: string
- *                           example: "Playground Area"
- *                     ticketDetails:
- *                       type: null
- *                       example: null
+ *                       example: "complete"
+ *                     location:
+ *                       type: string
+ *                       example: "Playground Area"
+ *                 ticketDetails:
+ *                   type: null
+ *                   example: null
  *       400:
  *         description: Bad request - validation errors
  *         content:
