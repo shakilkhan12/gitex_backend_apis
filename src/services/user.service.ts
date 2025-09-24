@@ -87,7 +87,7 @@ class UserService {
       try {
          const users = await db.users.findMany({
             where:{
-               unique_id: {
+               user_Id: {
                   not: null
                }
             },
