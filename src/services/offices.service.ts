@@ -203,9 +203,15 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       }
 
       try {
-         // Build where clause for date filtering
+         // Build where clause for date filtering and exclude exit cameras
          const whereClause: any = {
-            office_Id: Array.isArray(officeIds) ? { in: officeIds } : Number(officeIds)
+            office_Id: Array.isArray(officeIds) ? { in: officeIds } : Number(officeIds),
+            // Exclude cameras with "exit" in their name to count only entry events
+            detected_camera_name: {
+               not: {
+                  contains: 'exit'
+               }
+            }
          };
 
          if (fromDate && toDate) {
@@ -222,6 +228,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                person: {
                   select: {
                      Id: true,
+                     user_Id: true,
                      emp_Id: true,
                      emp__eng_name: true,
                      emp__arabic_name: true,
@@ -245,9 +252,21 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          // Calculate statistics
          const totalFootfall = footfallData.length;
          
-         // Separate data for employees and guests
-         const employeeData = footfallData.filter(item => item.person_Id !== null);
-         const guestData = footfallData.filter(item => item.person_Id === null || item.person_Id === undefined);
+         // Separate data for employees and guests based on user_Id
+         // Employees: have person_Id and user_Id is not empty/null
+         // Guests: either no person_Id or person_Id exists but user_Id is empty/null
+         const employeeData = footfallData.filter(item => 
+            item.person_Id !== null && 
+            item.person_Id !== undefined && 
+            item.person?.user_Id && 
+            item.person.user_Id.trim() !== ''
+         );
+         const guestData = footfallData.filter(item => 
+            item.person_Id === null || 
+            item.person_Id === undefined || 
+            !item.person?.user_Id || 
+            item.person.user_Id.trim() === ''
+         );
          
          // Employee counts
          const employeeCount = employeeData.length;
@@ -273,9 +292,15 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          }).length;
          const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
 
-         // Get unique employees
+         // Get unique employees (those with valid user_Id)
          const uniqueEmployees = footfallData
-            .filter(item => item.person_Id !== null && item.person !== null)
+            .filter(item => 
+               item.person_Id !== null && 
+               item.person_Id !== undefined && 
+               item.person !== null &&
+               item.person?.user_Id && 
+               item.person.user_Id.trim() !== ''
+            )
             .reduce((acc: any[], item) => {
                if (item.person && !acc.find(emp => emp.Id === item.person?.Id)) {
                   acc.push(item.person);
@@ -283,7 +308,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                return acc;
             }, []);
 
-         // Create unique guests list based on detection_Id (since guests don't have person_Id)
+         // Create unique guests list based on detection_Id (for those without valid user_Id)
          const uniqueGuests = guestData
             .reduce((acc: any[], item) => {
                if (!acc.find(guest => guest.detection_Id === item.detection_Id)) {
@@ -305,7 +330,10 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          // Enhanced hourly distribution with employee and guest breakdown
          const hourlyDistribution = footfallData.reduce((acc, item) => {
             const hour = new Date(item.time).getHours();
-            const isEmployee = item.person_Id !== null;
+            const isEmployee = item.person_Id !== null && 
+                              item.person_Id !== undefined && 
+                              item.person?.user_Id && 
+                              item.person.user_Id.trim() !== '';
             
             if (!acc[hour]) {
                acc[hour] = {
@@ -328,7 +356,10 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          // Enhanced daily distribution with employee and guest breakdown
          const dailyDistribution = footfallData.reduce((acc, item) => {
             const date = new Date(item.time).toISOString().split('T')[0];
-            const isEmployee = item.person_Id !== null;
+            const isEmployee = item.person_Id !== null && 
+                              item.person_Id !== undefined && 
+                              item.person?.user_Id && 
+                              item.person.user_Id.trim() !== '';
             
             if (!acc[date]) {
                acc[date] = {

@@ -692,7 +692,7 @@ class UserService {
 
             try {
                // Use the same image data endpoint as in event-handler
-               const response = await this.callHikVisionAPI(
+               const response = await UserService.callHikVisionAPI(
                   'https://10.70.90.183:443',
                   '/artemis/api/eventService/v1/image_data',
                   '59315117',
@@ -701,7 +701,8 @@ class UserService {
                );
                
                if (response && typeof response === 'string') {
-                  return response; // The response is directly the base64 string
+                  const base64Image = response.replace(/^data:image\/[a-z]+;base64,/, '');
+                  return base64Image;
                }
                
                console.warn(`[UserService] Invalid image data response for user: ${user.emp_Id}`);
@@ -738,7 +739,7 @@ class UserService {
          });
 
          // Call HIK Vision API to add person
-         const response = await this.callHikVisionAPI(
+         const response = await UserService.callHikVisionAPI(
             'https://10.70.90.183:443',
             '/artemis/api/resource/v1/person/single/add',
             '59315117',
@@ -931,7 +932,7 @@ class UserService {
          }
 
          // Get users at index 1 and 2 (skip index 0)
-         const usersToUpload = allUsers.slice(1, 3); // Get index 1 and 2
+         const usersToUpload = allUsers.slice(1, 3); 
 
          console.log(`[UserService] Found ${allUsers.length} total users. Uploading users at index 1 and 2:`, {
             user1: { id: usersToUpload[0].Id, emp_Id: usersToUpload[0].emp_Id, name: usersToUpload[0].emp__eng_name },
@@ -970,6 +971,7 @@ class UserService {
          );
       }
    };
+
 
 }
 
