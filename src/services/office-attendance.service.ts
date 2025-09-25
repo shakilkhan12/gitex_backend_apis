@@ -78,44 +78,97 @@ class OfficeAttendanceService {
             orderBy: { createdAt: "desc" },
          });
     
-         // Function to handle time conversion from UTC to local time
+         // Debug: Log the raw database results to see what fields are available
+         console.log('🔍 [OfficeAttendanceService] Total records found:', results.length);
+         console.log('🔍 [OfficeAttendanceService] Raw database results sample:', results.slice(0, 2));
+         console.log('🔍 [OfficeAttendanceService] First record structure:', results[0] ? Object.keys(results[0]) : 'No records');
+         
+         if (results.length > 0) {
+            console.log('🔍 [OfficeAttendanceService] First record office_Id:', results[0].office_Id);
+            console.log('🔍 [OfficeAttendanceService] First record office relation:', results[0].office);
+            console.log('🔍 [OfficeAttendanceService] First record person_Id:', results[0].person_Id);
+            
+            // Check if office_Id is null in any records
+            const nullOfficeIds = results.filter(r => r.office_Id === null || r.office_Id === undefined);
+            console.log('🔍 [OfficeAttendanceService] Records with null office_Id:', nullOfficeIds.length);
+            
+            // Show unique office_Id values
+            const uniqueOfficeIds = Array.from(new Set(results.map(r => r.office_Id).filter(id => id !== null)));
+            console.log('🔍 [OfficeAttendanceService] Unique office_Id values:', uniqueOfficeIds);
+         }
+    
+         // Function to handle time conversion from datetime string or Date object
          const convertTimeToString = (timeValue: any): string => {
             if (!timeValue) return "--";
             
-            // If it's already a string, return it
-            if (typeof timeValue === 'string') {
-               return timeValue;
-            }
-            
-            // If it's a Date object, format it
-            if (timeValue instanceof Date) {
-               const hours = timeValue.getHours().toString().padStart(2, '0');
-               const minutes = timeValue.getMinutes().toString().padStart(2, '0');
-               const seconds = timeValue.getSeconds().toString().padStart(2, '0');
+            try {
+               let dateObj: Date;
+               
+               // If it's already a string in format "2025-09-25 19:03:40"
+               if (typeof timeValue === 'string') {
+                  // Handle datetime string format "2025-09-25 19:03:40"
+                  if (timeValue.includes(' ') && timeValue.includes(':')) {
+                     dateObj = new Date(timeValue);
+                  } else {
+                     // If it's just time format "19:03:40"
+                     return timeValue;
+                  }
+               } else if (timeValue instanceof Date) {
+                  dateObj = timeValue;
+               } else {
+                  return "--";
+               }
+               
+               // Check if date is valid
+               if (isNaN(dateObj.getTime())) {
+                  return "--";
+               }
+               
+               const hours = dateObj.getHours().toString().padStart(2, '0');
+               const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+               const seconds = dateObj.getSeconds().toString().padStart(2, '0');
                return `${hours}:${minutes}:${seconds}`;
+            } catch (error) {
+               return "--";
             }
-            
-            return "--";
          };
     
-         // Function to convert Date objects to date strings
+         // Function to convert Date objects or datetime strings to date strings
          const convertDateToString = (dateValue: any): string => {
             if (!dateValue) return "No date";
             
-            // If it's already a string, return it
-            if (typeof dateValue === 'string') {
-               return dateValue;
-            }
-            
-            // If it's a Date object, format it as YYYY-MM-DD
-            if (dateValue instanceof Date) {
-               const year = dateValue.getFullYear();
-               const month = (dateValue.getMonth() + 1).toString().padStart(2, '0');
-               const day = dateValue.getDate().toString().padStart(2, '0');
+            try {
+               let dateObj: Date;
+               
+               // If it's already a string in format "2025-09-25 19:03:40"
+               if (typeof dateValue === 'string') {
+                  // Handle datetime string format "2025-09-25 19:03:40"
+                  if (dateValue.includes(' ') && dateValue.includes(':')) {
+                     dateObj = new Date(dateValue);
+                  } else if (dateValue.includes('-') && dateValue.length === 10) {
+                     // If it's just date format "2025-09-25"
+                     return dateValue;
+                  } else {
+                     return "No date";
+                  }
+               } else if (dateValue instanceof Date) {
+                  dateObj = dateValue;
+               } else {
+                  return "No date";
+               }
+               
+               // Check if date is valid
+               if (isNaN(dateObj.getTime())) {
+                  return "No date";
+               }
+               
+               const year = dateObj.getFullYear();
+               const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+               const day = dateObj.getDate().toString().padStart(2, '0');
                return `${year}-${month}-${day}`;
+            } catch (error) {
+               return "No date";
             }
-            
-            return "No date";
          };
     
          // Format date for display
@@ -143,13 +196,18 @@ class OfficeAttendanceService {
             if (!startTime || !endTime || startTime === "--" || endTime === "--") return 0;
             
             try {
-               const [startHours, startMinutes, startSeconds] = startTime.split(':').map(Number);
-               const [endHours, endMinutes, endSeconds] = endTime.split(':').map(Number);
+               // Handle time format "HH:MM:SS"
+               if (startTime.includes(':') && endTime.includes(':')) {
+                  const [startHours, startMinutes, startSeconds] = startTime.split(':').map(Number);
+                  const [endHours, endMinutes, endSeconds] = endTime.split(':').map(Number);
+                  
+                  const startTotalMinutes = startHours * 60 + startMinutes + startSeconds / 60;
+                  const endTotalMinutes = endHours * 60 + endMinutes + endSeconds / 60;
+                  
+                  return Math.max(0, endTotalMinutes - startTotalMinutes);
+               }
                
-               const startTotalMinutes = startHours * 60 + startMinutes + startSeconds / 60;
-               const endTotalMinutes = endHours * 60 + endMinutes + endSeconds / 60;
-               
-               return Math.max(0, endTotalMinutes - startTotalMinutes);
+               return 0;
             } catch (error) {
                return 0;
             }
@@ -161,6 +219,16 @@ class OfficeAttendanceService {
             const key = att.person_Id?.toString() ?? "UNKNOWN_USER";
             if (!grouped[key]) grouped[key] = [];
             grouped[key].push(att);
+         });
+         
+         // Debug: Log grouping information
+         console.log('🔍 [OfficeAttendanceService] Grouped records count:', Object.keys(grouped).length);
+         Object.entries(grouped).forEach(([personId, records]) => {
+            const officeIds = records.map(r => r.office_Id);
+            const uniqueOfficeIds = Array.from(new Set(officeIds));
+            if (uniqueOfficeIds.length > 1) {
+               console.log(`⚠️ [OfficeAttendanceService] Person ${personId} has records in multiple offices:`, uniqueOfficeIds);
+            }
          });
     
          // Transform each group into summary object
@@ -212,12 +280,13 @@ class OfficeAttendanceService {
             const displayName = user?.emp__eng_name || user?.emp__arabic_name || 
                               (isEmployee ? `Employee ${personId}` : `Visitor ${personId}`);
     
-            return {
+            const result = {
                id: personId,
                name: displayName,
                status: status,
                avatarUrl: user?.image,
                department: user?.dep_eng_name || user?.dep_arabic_name || (isEmployee ? "Unknown Department" : "Visitor"),
+               office_Id: records[0].office_Id, // Include office_Id for filtering
                date: formattedDate,
                firstEntry: firstEntry,
                entryCount: records.length,
@@ -232,6 +301,11 @@ class OfficeAttendanceService {
                   breakStatus: breakMinutes > 0 ? "On Break" : "No Break",
                },
             };
+            
+            // Debug: Log the office_Id being returned
+            console.log(`[OfficeAttendanceService] Returning record for ${displayName} with office_Id: ${records[0].office_Id}`);
+            
+            return result;
          });
     
          console.log(`📦 [OfficeAttendanceService] Built ${summaries.length} summarized attendances.`);
