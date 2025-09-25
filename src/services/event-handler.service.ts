@@ -219,16 +219,17 @@ class EventHandlerService {
       }
    }
 
-   public static handleEventService = async (eventData: any) => {
-       const startTime = Date.now();
-       Logger.info(`[EventHandlerService] Starting event processing`, { 
-          timestamp: eventData?.timestamp,
-          hasEventData: !!eventData 
-       });
-       
-       try { 
-         const office_cameras=['131','132','133','134','135','136']
-         const park_cameras=['3','4','5','6','75','76','77','78','79','186','187','188','189','190','191','192','193']
+  public static handleEventService = async (eventData: any) => {
+      const startTime = Date.now();
+      Logger.info(`[EventHandlerService] Starting event processing`, { 
+         timestamp: eventData?.timestamp,
+         hasEventData: !!eventData 
+      });
+      
+      try { 
+        // Fetch camera IDs from database
+        const office_cameras = await this.getOfficeCameraIds();
+        const park_cameras = await this.getParkCameraIds();
          let intrusion_detection_code=131585
          let attendance_code=131659
          let bevaviour_code=[131593,131605,131592,131677,131596,192515]
@@ -546,6 +547,7 @@ class EventHandlerService {
                          });
                          
                          if (similarity !== 0 && humanId && humanId !== "-1") {
+                           console.log('Yes Human')
                             const user = await db.users.findFirst({
                                where: { unique_id: humanId.toString() }
                             });
@@ -594,6 +596,7 @@ class EventHandlerService {
                                }
                             }
                          } else {
+                           console.log('No Human')
                             Logger.debug(`[EventHandlerService] No valid employee identification (similarity: ${similarity}, humanId: ${humanId})`);
                             Logger.info(`[EventHandlerService] 👤 Unknown person detected, creating guest user for office attendance`, {
                                similarity,
@@ -1226,8 +1229,9 @@ class EventHandlerService {
          });
 
          // Remove base64 prefix from faceData before sending to HikVision API
+         console.log('faceData',faceData)
          const cleanFaceData = faceData ? faceData.replace(/^data:image\/[a-z]+;base64,/, '') : null;
-         
+         console.log('cleanFaceData',cleanFaceData)
          const hikVisionPayload = {
             personCode: guestUser.Id.toString(),
             personFamilyName: guestNumber.toString(),
@@ -1358,6 +1362,56 @@ class EventHandlerService {
             throw error;
          }
          throw new HttpException(STATUS.BAD_REQUEST, `Failed to post to intranet API: ${error.message}`);
+      }
+   }
+
+   /**
+    * Get all office camera IDs from database
+    * @returns Promise<string[]> Array of office camera IDs
+    */
+   private static async getOfficeCameraIds(): Promise<string[]> {
+      try {
+         const officeCameras = await db.offices_cameras.findMany({
+            select: {
+               camera_Id: true
+            },
+            where: {
+               status: true // Only get active cameras
+            }
+         });
+         
+         return officeCameras
+            .map(camera => camera.camera_Id)
+            .filter((id): id is string => id !== null);
+      } catch (error) {
+         Logger.error(`[EventHandlerService] Error fetching office camera IDs:`, error);
+         // Return empty array as fallback
+         return [];
+      }
+   }
+
+   /**
+    * Get all park camera IDs from database
+    * @returns Promise<string[]> Array of park camera IDs
+    */
+   private static async getParkCameraIds(): Promise<string[]> {
+      try {
+         const parkCameras = await db.park_cameras.findMany({
+            select: {
+               camera_Id: true
+            },
+            where: {
+               status: true // Only get active cameras
+            }
+         });
+         
+         return parkCameras
+            .map(camera => camera.camera_Id)
+            .filter((id): id is string => id !== null);
+      } catch (error) {
+         Logger.error(`[EventHandlerService] Error fetching park camera IDs:`, error);
+         // Return empty array as fallback
+         return [];
       }
    }
 }
