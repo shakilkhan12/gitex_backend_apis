@@ -701,7 +701,9 @@ class UserService {
                );
                
                if (response && typeof response === 'string') {
+                  console.log('response',response)
                   const base64Image = response.replace(/^data:image\/[a-z]+;base64,/, '');
+                  console.log('base64Image',base64Image)
                   return base64Image;
                }
                
