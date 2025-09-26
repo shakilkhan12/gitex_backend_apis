@@ -6,7 +6,40 @@ import axios from "axios";
 import https from "https";
 import { UserType, AddUserType } from "@/typescript/interfaces";
 
+
+// urlToBase64.ts
+import fetch, { RequestInit } from "node-fetch";
+
+
+export async function urlToBase64(url: string): Promise<string | string> {
+  try {
+    const agent = new https.Agent({ rejectUnauthorized: false }); // ✅ Ignore SSL errors
+    const options: RequestInit = { agent };
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch URL: ${response.statusText}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString("base64");
+
+    console.log("\n✅ BASE64 OUTPUT:\n");
+   //  console.log(base64);
+
+    return base64;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("❌ Error:", error.message);
+    }
+    return "";
+  }
+}
+
 class UserService {
+
+   
 
    protected static loginService = async (EmpCode: string, Password: string) => {
    
@@ -692,18 +725,23 @@ class UserService {
 
             try {
                // Use the same image data endpoint as in event-handler
-               const response = await UserService.callHikVisionAPI(
-                  'https://10.70.90.183:443',
-                  '/artemis/api/eventService/v1/image_data',
-                  '59315117',
-                  'YuWS8qCb61xbD8fEbwFJ',
-                  { picUri: imageUrl }
-               );
+               // const response = await UserService.callHikVisionAPI(
+               //    'https://10.70.90.183:443',
+               //    '/artemis/api/eventService/v1/image_data',
+               //    '59315117',
+               //    'YuWS8qCb61xbD8fEbwFJ',
+               //    { picUri: imageUrl }
+               // );
+
+               const response1  = await urlToBase64(imageUrl);
+
+               // const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
+               //  const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
                
-               if (response && typeof response === 'string') {
-                  console.log('response',response)
-                  const base64Image = response.replace(/^data:image\/[a-z]+;base64,/, '');
-                  console.log('base64Image',base64Image)
+
+               if (response1 && typeof response1 === 'string') {
+                  const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
+                  // const base64WithoutPrefix = response1.replace(/^data:image\/[a-z]+;base64,/, "");
                   return base64Image;
                }
                
@@ -714,6 +752,8 @@ class UserService {
                return null;
             }
          };
+
+         console.log("Useeeeeeeeeeeeeeeeeeeeeer", user);
 
          // Get image as base64
          const faceData = await getImageAsBase64(user.image);
@@ -973,6 +1013,8 @@ class UserService {
          );
       }
    };
+
+   
 
 
 }
