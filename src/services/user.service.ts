@@ -738,6 +738,7 @@ class UserService {
                // const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
                //  const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
                
+
                if (response1 && typeof response1 === 'string') {
                   const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
                   // const base64WithoutPrefix = response1.replace(/^data:image\/[a-z]+;base64,/, "");

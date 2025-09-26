@@ -4,6 +4,23 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
 class ParkService {
+  // Helper function to determine if a footfall entry is an employee
+  private static isEmployee = (item: any): boolean => {
+    return item.person_Id !== null && 
+           item.person_Id !== undefined && 
+           item.person !== null &&
+           item.person?.user_Id && 
+           item.person.user_Id.trim() !== '';
+  };
+
+  // Helper function to determine if a footfall entry is a guest
+  private static isGuest = (item: any): boolean => {
+    return item.person_Id === null || 
+           item.person_Id === undefined || 
+           item.person === null ||
+           !item.person?.user_Id || 
+           item.person.user_Id.trim() === '';
+  };
    // add park service
    protected static addParkService = async (park: ParkType) => {
       const result = await db.parks.create({
@@ -306,28 +323,18 @@ class ParkService {
       // Separate data for employees and guests based on user_Id
       // Employees: have person_Id and user_Id is not empty/null
       // Guests: either no person_Id or person_Id exists but user_Id is empty/null
-      const employeeData = footfallData.filter(item => 
-        item.person_Id !== null && 
-        item.person_Id !== undefined && 
-        item.person?.user_Id && 
-        item.person.user_Id.trim() !== ''
-      );
-      const guestData = footfallData.filter(item => 
-        item.person_Id === null || 
-        item.person_Id === undefined || 
-        !item.person?.user_Id || 
-        item.person.user_Id.trim() === ''
-      );
+      const employeeData = footfallData.filter(item => this.isEmployee(item));
+      const guestData = footfallData.filter(item => this.isGuest(item));
       
       // Employee counts
       const employeeCount = employeeData.length;
       const employeeMaleCount = employeeData.filter(item => {
         const gender = item.person?.gender || item.gender;
-        return gender === 'M' || gender === 'Male';
+        return gender === 'M' || gender === 'Male.';
       }).length;
       const employeeFemaleCount = employeeData.filter(item => {
         const gender = item.person?.gender || item.gender;
-        return gender === 'F' || gender === 'Female';
+        return gender === 'F' || gender === 'Female.';
       }).length;
       const employeeChildrenCount = employeeData.filter(item => item.is_child === true).length;
       
@@ -335,23 +342,17 @@ class ParkService {
       const guestCount = guestData.length;
       const guestMaleCount = guestData.filter(item => {
         const gender = item.gender;
-        return gender === 'M' || gender === 'Male';
+        return gender === 'M' || gender === 'Male.';
       }).length;
       const guestFemaleCount = guestData.filter(item => {
         const gender = item.gender;
-        return gender === 'F' || gender === 'Female';
+        return gender === 'F' || gender === 'Female.';
       }).length;
       const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
 
       // Get unique employees (those with valid user_Id)
       const uniqueEmployees = footfallData
-        .filter(item => 
-          item.person_Id !== null && 
-          item.person_Id !== undefined && 
-          item.person !== null &&
-          item.person?.user_Id && 
-          item.person.user_Id.trim() !== ''
-        )
+        .filter(item => this.isEmployee(item))
         .reduce((acc: any[], item) => {
           if (item.person && !acc.find(emp => emp.Id === item.person?.Id)) {
             acc.push(item.person);
@@ -381,10 +382,7 @@ class ParkService {
       // Enhanced hourly distribution with employee and guest breakdown
       const hourlyDistribution = footfallData.reduce((acc, item) => {
         const hour = new Date(item.time).getHours();
-        const isEmployee = item.person_Id !== null && 
-                          item.person_Id !== undefined && 
-                          item.person?.user_Id && 
-                          item.person.user_Id.trim() !== '';
+        const isEmployee = this.isEmployee(item);
         
         if (!acc[hour]) {
           acc[hour] = {
@@ -407,10 +405,7 @@ class ParkService {
       // Enhanced daily distribution with employee and guest breakdown
       const dailyDistribution = footfallData.reduce((acc, item) => {
         const date = new Date(item.time).toISOString().split('T')[0];
-        const isEmployee = item.person_Id !== null && 
-                          item.person_Id !== undefined && 
-                          item.person?.user_Id && 
-                          item.person.user_Id.trim() !== '';
+        const isEmployee = this.isEmployee(item);
         
         if (!acc[date]) {
           acc[date] = {
