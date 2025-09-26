@@ -567,25 +567,18 @@ class EventHandlerService {
                                });
                                
                                try {
-                                  let eventPicUri = null;
-                                  try {
-                                     const eventIndexCode = eventInfo.eventId;
-                                     Logger.debug(`[EventHandlerService] Attempting to retrieve eventPicUri for guest user creation: ${eventIndexCode}`);
-                                     
-                                     const eventRecordsResponse = await this.getEventRecords(eventIndexCode);
-                                     
-                                     if (eventRecordsResponse && eventRecordsResponse.code === '0' && eventRecordsResponse.data?.list?.length > 0) {
-                                        const eventRecord = eventRecordsResponse.data.list[0];
-                                        eventPicUri = eventRecord.eventPicUri;
-                                        Logger.debug(`[EventHandlerService] Found eventPicUri for guest user: ${eventPicUri ? 'Yes' : 'No'}`);
-                                     } else {
-                                        Logger.warn(`[EventHandlerService] No event records found for guest user creation`);
-                                     }
-                                  } catch (eventError: any) {
-                                     Logger.error(`[EventHandlerService] Failed to get eventPicUri for guest user creation:`, eventError.message);
+                                  // Get faceData URL from event data
+                                  let faceData = null;
+                                  if (eventInfo.data?.alarmResult?.faces?.URL) {
+                                     faceData = eventInfo.data.alarmResult.faces.URL;
+                                     Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for guest user`, {
+                                        faceDataUrl: faceData
+                                     });
+                                  } else {
+                                     Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for guest user creation`);
                                   }
                                   
-                                  const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, eventPicUri);
+                                  const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
                                   person_Id = guestUser.Id;
                                   
                                   Logger.info(`[EventHandlerService] ✅ Successfully created guest user for office attendance`, {
@@ -614,26 +607,18 @@ class EventHandlerService {
                             });
                             
                             try {
-                               // Get eventPicUri to fetch image data
-                               let eventPicUri = null;
-                               try {
-                                  const eventIndexCode = eventInfo.eventId;
-                                  Logger.debug(`[EventHandlerService] Attempting to retrieve eventPicUri for unknown visitor: ${eventIndexCode}`);
-                                  
-                                  const eventRecordsResponse = await this.getEventRecords(eventIndexCode);
-                                  
-                                  if (eventRecordsResponse && eventRecordsResponse.code === '0' && eventRecordsResponse.data?.list?.length > 0) {
-                                     const eventRecord = eventRecordsResponse.data.list[0];
-                                     eventPicUri = eventRecord.eventPicUri;
-                                     Logger.debug(`[EventHandlerService] Found eventPicUri for unknown visitor: ${eventPicUri ? 'Yes' : 'No'}`);
-                                  } else {
-                                     Logger.warn(`[EventHandlerService] No event records found for unknown visitor`);
-                                  }
-                               } catch (eventError: any) {
-                                  Logger.error(`[EventHandlerService] Failed to get eventPicUri for unknown visitor:`, eventError.message);
+                               // Get faceData URL from event data
+                               let faceData = null;
+                               if (eventInfo.data?.alarmResult?.faces?.URL) {
+                                  faceData = eventInfo.data.alarmResult.faces.URL;
+                                  Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for unknown visitor`, {
+                                     faceDataUrl: faceData
+                                  });
+                               } else {
+                                  Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for unknown visitor guest creation`);
                                }
                                
-                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, eventPicUri);
+                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
                                   person_Id = guestUser.Id;
                                
                                Logger.info(`[EventHandlerService] ✅ Successfully created guest user for unknown office visitor`, {
@@ -687,18 +672,29 @@ class EventHandlerService {
                       }
                       
                       if(isEntry){
-                         Logger.info(`[EventHandlerService] Processing office entry attendance`);
-                         const officeAttendanceData = {
-                            office_Id: office_Id,
-                            person_Id: person_Id,
-                            entry_time: eventInfo.happenTime
+                         // Check if the person is a guest user
+                         const isGuest = await this.isGuestUser(person_Id);
+                         
+                         if (isGuest) {
+                            Logger.info(`[EventHandlerService] Skipping office entry attendance record for guest user`, {
+                               person_Id,
+                               office_Id,
+                               reason: "Guest users do not have attendance records"
+                            });
+                         } else {
+                            Logger.info(`[EventHandlerService] Processing office entry attendance`);
+                            const officeAttendanceData = {
+                               office_Id: office_Id,
+                               person_Id: person_Id,
+                               entry_time: eventInfo.happenTime
+                            }
+                            
+                            const officeAttendanceRecord = await db.offices_attendance.create({
+                               data: officeAttendanceData
+                            })
+                            
+                            Logger.info(`[EventHandlerService] Successfully created office entry attendance record with ID: ${officeAttendanceRecord.Id}`);
                          }
-                         
-                         const officeAttendanceRecord = await db.offices_attendance.create({
-                            data: officeAttendanceData
-                         })
-                         
-                         Logger.info(`[EventHandlerService] Successfully created office entry attendance record with ID: ${officeAttendanceRecord.Id}`);
                       } else if(isExit){
                          Logger.info(`[EventHandlerService] Processing office exit attendance`);
                          
@@ -743,14 +739,26 @@ class EventHandlerService {
                          })
                          
                          if(latestAttendance){
-                            Logger.info(`[EventHandlerService] Updating office exit attendance for record ID: ${latestAttendance.Id}`);
-                            await db.offices_attendance.update({
-                               where: { Id: latestAttendance.Id },
-                               data: {
-                                  exit_time: eventInfo.happenTime
-                               }
-                            })
-                            Logger.info(`[EventHandlerService] Successfully updated office exit attendance`);
+                            // Check if the person is a guest user
+                            const isGuest = await this.isGuestUser(searchPersonId);
+                            
+                            if (isGuest) {
+                               Logger.info(`[EventHandlerService] Skipping office exit attendance update for guest user`, {
+                                  person_Id: searchPersonId,
+                                  office_Id,
+                                  attendanceRecordId: latestAttendance.Id,
+                                  reason: "Guest users do not have attendance records"
+                               });
+                            } else {
+                               Logger.info(`[EventHandlerService] Updating office exit attendance for record ID: ${latestAttendance.Id}`);
+                               await db.offices_attendance.update({
+                                  where: { Id: latestAttendance.Id },
+                                  data: {
+                                     exit_time: eventInfo.happenTime
+                                  }
+                               })
+                               Logger.info(`[EventHandlerService] Successfully updated office exit attendance`);
+                            }
                          } else {
                             Logger.warn(`[EventHandlerService] No matching entry record found for office exit attendance`, {
                                office_Id,
@@ -829,26 +837,18 @@ class EventHandlerService {
                             });
                             
                             try {
-                               // Get eventPicUri to fetch image data
-                               let eventPicUri = null;
-                               try {
-                                  const eventIndexCode = eventInfo.eventId;
-                                  Logger.debug(`[EventHandlerService] Attempting to retrieve eventPicUri for park guest user: ${eventIndexCode}`);
-                                  
-                                  const eventRecordsResponse = await this.getEventRecords(eventIndexCode);
-                                  
-                                  if (eventRecordsResponse && eventRecordsResponse.code === '0' && eventRecordsResponse.data?.list?.length > 0) {
-                                     const eventRecord = eventRecordsResponse.data.list[0];
-                                     eventPicUri = eventRecord.eventPicUri;
-                                     Logger.debug(`[EventHandlerService] Found eventPicUri for park guest user: ${eventPicUri ? 'Yes' : 'No'}`);
-                                  } else {
-                                     Logger.warn(`[EventHandlerService] No event records found for park guest user`);
-                                  }
-                               } catch (eventError: any) {
-                                  Logger.error(`[EventHandlerService] Failed to get eventPicUri for park guest user:`, eventError.message);
+                               // Get faceData URL from event data
+                               let faceData = null;
+                               if (eventInfo.data?.alarmResult?.faces?.URL) {
+                                  faceData = eventInfo.data.alarmResult.faces.URL;
+                                  Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for park guest user`, {
+                                     faceDataUrl: faceData
+                                  });
+                               } else {
+                                  Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for park guest user creation`);
                                }
                                
-                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, eventPicUri);
+                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
                                person_Id = guestUser.Id;
                                
                                Logger.info(`[EventHandlerService] ✅ Successfully created guest user for park attendance`, {
@@ -876,26 +876,18 @@ class EventHandlerService {
                          });
                          
                          try {
-                            // Get eventPicUri to fetch image data
-                            let eventPicUri = null;
-                            try {
-                               const eventIndexCode = eventInfo.eventId;
-                               Logger.debug(`[EventHandlerService] Attempting to retrieve eventPicUri for unknown park visitor: ${eventIndexCode}`);
-                               
-                               const eventRecordsResponse = await this.getEventRecords(eventIndexCode);
-                               
-                               if (eventRecordsResponse && eventRecordsResponse.code === '0' && eventRecordsResponse.data?.list?.length > 0) {
-                                  const eventRecord = eventRecordsResponse.data.list[0];
-                                  eventPicUri = eventRecord.eventPicUri;
-                                  Logger.debug(`[EventHandlerService] Found eventPicUri for unknown park visitor: ${eventPicUri ? 'Yes' : 'No'}`);
-                               } else {
-                                  Logger.warn(`[EventHandlerService] No event records found for unknown park visitor`);
-                               }
-                            } catch (eventError: any) {
-                               Logger.error(`[EventHandlerService] Failed to get eventPicUri for unknown park visitor:`, eventError.message);
+                            // Get faceData URL from event data
+                            let faceData = null;
+                            if (eventInfo.data?.alarmResult?.faces?.URL) {
+                               faceData = eventInfo.data.alarmResult.faces.URL;
+                               Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for unknown park visitor`, {
+                                  faceDataUrl: faceData
+                               });
+                            } else {
+                               Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for unknown park visitor guest creation`);
                             }
                             
-                            const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, eventPicUri);
+                            const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
                                person_Id = guestUser.Id;
                             
                             Logger.info(`[EventHandlerService] ✅ Successfully created guest user for unknown park visitor`, {
@@ -946,18 +938,29 @@ class EventHandlerService {
                       }
                       
                       if(isEntry){
-                         Logger.info(`[EventHandlerService] Processing park entry attendance`);
-                         const parkAttendanceData = {
-                            park_Id: park_Id,
-                            person_Id: person_Id,
-                            entry_time: eventInfo.happenTime
+                         // Check if the person is a guest user
+                         const isGuest = await this.isGuestUser(person_Id);
+                         
+                         if (isGuest) {
+                            Logger.info(`[EventHandlerService] Skipping park entry attendance record for guest user`, {
+                               person_Id,
+                               park_Id,
+                               reason: "Guest users do not have attendance records"
+                            });
+                         } else {
+                            Logger.info(`[EventHandlerService] Processing park entry attendance`);
+                            const parkAttendanceData = {
+                               park_Id: park_Id,
+                               person_Id: person_Id,
+                               entry_time: eventInfo.happenTime
+                            }
+                            
+                            const parkAttendanceRecord = await db.parks_attendance.create({
+                               data: parkAttendanceData
+                            })
+                            
+                            Logger.info(`[EventHandlerService] Successfully created park entry attendance record with ID: ${parkAttendanceRecord.Id}`);
                          }
-                         
-                         const parkAttendanceRecord = await db.parks_attendance.create({
-                            data: parkAttendanceData
-                         })
-                         
-                         Logger.info(`[EventHandlerService] Successfully created park entry attendance record with ID: ${parkAttendanceRecord.Id}`);
                       } else if(isExit){
                          Logger.info(`[EventHandlerService] Processing park exit attendance`);
                          
@@ -1002,14 +1005,26 @@ class EventHandlerService {
                          })
                          
                          if(latestAttendance){
-                            Logger.info(`[EventHandlerService] Updating park exit attendance for record ID: ${latestAttendance.Id}`);
-                            await db.parks_attendance.update({
-                               where: { Id: latestAttendance.Id },
-                               data: {
-                                  exit_time: eventInfo.happenTime
-                               }
-                            })
-                            Logger.info(`[EventHandlerService] Successfully updated park exit attendance`);
+                            // Check if the person is a guest user
+                            const isGuest = await this.isGuestUser(searchPersonId);
+                            
+                            if (isGuest) {
+                               Logger.info(`[EventHandlerService] Skipping park exit attendance update for guest user`, {
+                                  person_Id: searchPersonId,
+                                  park_Id,
+                                  attendanceRecordId: latestAttendance.Id,
+                                  reason: "Guest users do not have attendance records"
+                               });
+                            } else {
+                               Logger.info(`[EventHandlerService] Updating park exit attendance for record ID: ${latestAttendance.Id}`);
+                               await db.parks_attendance.update({
+                                  where: { Id: latestAttendance.Id },
+                                  data: {
+                                     exit_time: eventInfo.happenTime
+                                  }
+                               })
+                               Logger.info(`[EventHandlerService] Successfully updated park exit attendance`);
+                            }
                          } else {
                             Logger.warn(`[EventHandlerService] No matching entry record found for park exit attendance`, {
                                park_Id,
@@ -1113,29 +1128,21 @@ class EventHandlerService {
                               });
                               
                               try {
-                                 // Get eventPicUri to fetch image data
-                                 let eventPicUri = null;
-                                 try {
-                                    const eventIndexCode = eventInfo.eventId;
-                                    Logger.debug(`[EventHandlerService] Attempting to retrieve eventPicUri for behavior guest user: ${eventIndexCode}`);
-                                    
-                                    const eventRecordsResponse = await this.getEventRecords(eventIndexCode);
-                                    
-                                    if (eventRecordsResponse && eventRecordsResponse.code === '0' && eventRecordsResponse.data?.list?.length > 0) {
-                                       const eventRecord = eventRecordsResponse.data.list[0];
-                                       eventPicUri = eventRecord.eventPicUri;
-                                       Logger.debug(`[EventHandlerService] Found eventPicUri for behavior guest user: ${eventPicUri ? 'Yes' : 'No'}`);
-                                    } else {
-                                       Logger.warn(`[EventHandlerService] No event records found for behavior guest user`);
-                                    }
-                                 } catch (eventError: any) {
-                                    Logger.error(`[EventHandlerService] Failed to get eventPicUri for behavior guest user:`, eventError.message);
+                                 // Get faceData URL from event data
+                                 let faceData = null;
+                                 if (eventInfo.data?.alarmResult?.faces?.URL) {
+                                    faceData = eventInfo.data.alarmResult.faces.URL;
+                                    Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for behavior guest user`, {
+                                       faceDataUrl: faceData
+                                    });
+                                 } else {
+                                    Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for behavior guest user creation`);
                                  }
                                  
                                  const genderValue = eventInfo.data.alarmResult.faces.gender.value
                                  const genderName = gender_types.find(gt => gt.code === genderValue)?.name || 'Unknown'
                                  
-                                 const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, eventPicUri);
+                                 const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
                                  person_Id = guestUser.Id.toString();
                                  
                                  Logger.info(`[EventHandlerService] ✅ Successfully created guest user for behavior detection`, {
@@ -1283,12 +1290,12 @@ class EventHandlerService {
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
    }
 
-   private static async createGuestUserAndUploadToHikVision(gender: string, picUri: string): Promise<any> {
+   private static async createGuestUserAndUploadToHikVision(gender: string, faceData: string): Promise<any> {
       const startTime = Date.now();
       Logger.info(`[EventHandlerService] 🚀 Starting guest user creation process`, {
          gender,
-         hasPicUri: !!picUri,
-         picUri: picUri
+         hasFaceData: !!faceData,
+         faceDataLength: faceData ? faceData.length : 0
       });
 
       try {
@@ -1360,25 +1367,31 @@ class EventHandlerService {
             createdAt: guestUser.createdAt
          });
 
-         // Get image data from HikVision API using picUri
-         let faceData = null;
-         if (picUri) {
-            Logger.info(`[EventHandlerService] 📸 Fetching image data for picUri: ${picUri}`);
-            const imageDataResponse = await this.getImageData(picUri);
-            
-            if (imageDataResponse) {
-               // The response is directly the base64 string, not wrapped in a data object
-               faceData = imageDataResponse;
-               Logger.info(`[EventHandlerService] ✅ Successfully retrieved image data, length: ${faceData.length}`);
-            } else {
-               Logger.warn(`[EventHandlerService] ⚠️ No image data received for picUri: ${picUri}`);
+         // Get base64 image data from faceData URL using getImageData API
+         let base64ImageData = null;
+         if (faceData) {
+            Logger.info(`[EventHandlerService] 📸 Fetching base64 image data from faceData URL: ${faceData}`);
+            try {
+               const imageDataResponse = await this.getImageData(faceData);
+               
+               if (imageDataResponse) {
+                  // The response is directly the base64 string, not wrapped in a data object
+                  base64ImageData = imageDataResponse;
+                  Logger.info(`[EventHandlerService] ✅ Successfully retrieved base64 image data, length: ${base64ImageData.length}`);
+               } else {
+                  Logger.warn(`[EventHandlerService] ⚠️ No image data received for faceData URL: ${faceData}`);
+               }
+            } catch (imageError: any) {
+               Logger.error(`[EventHandlerService] ❌ Failed to fetch image data from faceData URL:`, imageError.message);
             }
+         } else {
+            Logger.warn(`[EventHandlerService] ⚠️ No faceData URL provided for image retrieval`);
          }
 
-         // Remove base64 prefix from faceData before sending to HikVision API
-         console.log('faceData',faceData)
-         const cleanFaceData = faceData ? faceData.replace(/^data:image\/[a-z]+;base64,/, '') : null;
-         console.log('cleanFaceData',cleanFaceData)
+         // Remove base64 prefix from image data before sending to HikVision API
+         console.log('base64ImageData', base64ImageData)
+         const cleanFaceData = base64ImageData ? base64ImageData.replace(/^data:image\/[a-z]+;base64,/, '') : null;
+         console.log('cleanFaceData', cleanFaceData)
          const hikVisionPayload = {
             personCode: guestUser.Id.toString(),
             personFamilyName: guestNumber.toString(),
@@ -1394,8 +1407,8 @@ class EventHandlerService {
             personGivenName: hikVisionPayload.personGivenName,
             gender: hikVisionPayload.gender,
             orgIndexCode: hikVisionPayload.orgIndexCode,
-            hasFaceData: !!faceData,
-            faceDataLength: faceData ? faceData.length : 0
+            hasFaceData: !!base64ImageData,
+            faceDataLength: base64ImageData ? base64ImageData.length : 0
          });
 
          Logger.debug(`[EventHandlerService] 🔄 Calling HIK Vision API for guest user upload`);
@@ -1421,6 +1434,37 @@ class EventHandlerService {
                data: { unique_id: hikVisionResponse.data }
             });
 
+            // Add face information to guest group (group 5)
+            try {
+               Logger.info(`[EventHandlerService] 📸 Adding face information to guest group`);
+               const faceAdditionPayload = {
+                  personIndexCode: hikVisionResponse.data, // The unique_id from HikVision
+                  faceGroupIndexCode: "5" // Group 5 for guests
+               };
+
+               Logger.debug(`[EventHandlerService] Face addition payload:`, faceAdditionPayload);
+
+               const faceAdditionResponse = await this.callHikVisionAPI(
+                  this.HIK_CONFIG.baseURL,
+                  '/artemis/api/frs/v1/face/single/addition',
+                  this.HIK_CONFIG.appKey,
+                  this.HIK_CONFIG.appSecret,
+                  faceAdditionPayload
+               );
+
+               if (faceAdditionResponse && faceAdditionResponse.code === '0') {
+                  Logger.info(`[EventHandlerService] ✅ Face information added to guest group successfully`, {
+                     personIndexCode: faceAdditionPayload.personIndexCode,
+                     faceGroupIndexCode: faceAdditionPayload.faceGroupIndexCode
+                  });
+               } else {
+                  Logger.warn(`[EventHandlerService] ⚠️ Face addition API returned error:`, faceAdditionResponse);
+               }
+            } catch (faceAdditionError: any) {
+               Logger.error(`[EventHandlerService] ❌ Failed to add face information to guest group:`, faceAdditionError.message);
+               // Don't throw error here as the main guest creation was successful
+            }
+
             const duration = Date.now() - startTime;
             Logger.info(`[EventHandlerService] ✅ Guest user creation and HIK Vision upload completed successfully`, {
                guestUserId: guestUser.Id,
@@ -1429,7 +1473,7 @@ class EventHandlerService {
                unique_id: updatedGuestUser.unique_id,
                duration: `${duration}ms`,
                gender: gender,
-               hasFaceData: !!faceData
+               hasFaceData: !!base64ImageData
             });
 
             return updatedGuestUser;
@@ -1453,7 +1497,7 @@ class EventHandlerService {
             stack: error.stack,
             duration: `${duration}ms`,
             gender,
-            hasPicUri: !!picUri
+            hasFaceData: !!faceData
          });
          if (error.code === 'ETIMEDOUT') {
             Logger.error(`[EventHandlerService] 🌐 Network timeout error - HIK Vision server may be unreachable`);
@@ -1559,6 +1603,48 @@ class EventHandlerService {
          Logger.error(`[EventHandlerService] Error fetching park camera IDs:`, error);
          // Return empty array as fallback
          return [];
+      }
+   }
+
+   /**
+    * Check if a user is a guest user (not an employee)
+    * @param personId The person ID to check
+    * @returns Promise<boolean> True if the user is a guest, false if employee
+    */
+   private static async isGuestUser(personId: number): Promise<boolean> {
+      try {
+         const user = await db.users.findUnique({
+            where: { Id: personId },
+            select: { 
+               emp_Id: true,
+               emp_code: true,
+               is_attendance_user: true
+            }
+         });
+         
+         if (!user) {
+            Logger.warn(`[EventHandlerService] User not found for personId: ${personId}`);
+            return true; // Treat as guest if user not found
+         }
+         
+         // A user is considered a guest if:
+         // 1. emp_Id is null or empty
+         // 2. emp_code is null or empty  
+         // 3. is_attendance_user is false
+         const isGuest = !user.emp_Id || !user.emp_code || !user.is_attendance_user;
+         
+         Logger.debug(`[EventHandlerService] User type check:`, {
+            personId,
+            emp_Id: user.emp_Id,
+            emp_code: user.emp_code,
+            is_attendance_user: user.is_attendance_user,
+            isGuest
+         });
+         
+         return isGuest;
+      } catch (error) {
+         Logger.error(`[EventHandlerService] Error checking if user is guest:`, error);
+         return true; // Treat as guest on error to be safe
       }
    }
 }

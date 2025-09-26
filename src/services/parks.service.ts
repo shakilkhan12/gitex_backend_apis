@@ -4,22 +4,16 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
 class ParkService {
-  // Helper function to determine if a footfall entry is an employee
   private static isEmployee = (item: any): boolean => {
     return item.person_Id !== null && 
            item.person_Id !== undefined && 
            item.person !== null &&
            item.person?.user_Id && 
-           item.person.user_Id.trim() !== '';
+           item.person.user_Id.toString().trim() !== '';
   };
 
-  // Helper function to determine if a footfall entry is a guest
   private static isGuest = (item: any): boolean => {
-    return item.person_Id === null || 
-           item.person_Id === undefined || 
-           item.person === null ||
-           !item.person?.user_Id || 
-           item.person.user_Id.trim() === '';
+    return !this.isEmployee(item);
   };
    // add park service
    protected static addParkService = async (park: ParkType) => {
@@ -320,21 +314,58 @@ class ParkService {
       // Calculate statistics
       const totalFootfall = footfallData.length;
       
+      if (totalFootfall === 0) {
+         return {
+            summary: {
+               totalFootfall: 0,
+               employeeCount: 0,
+               employeeMaleCount: 0,
+               employeeFemaleCount: 0,
+               employeeChildrenCount: 0,
+               guestCount: 0,
+               guestMaleCount: 0,
+               guestFemaleCount: 0,
+               guestChildrenCount: 0
+            },
+            employees: [],
+            guests: [],
+            hourlyDistribution: {},
+            dailyDistribution: {},
+            rawData: []
+         };
+      }
+      
       // Separate data for employees and guests based on user_Id
-      // Employees: have person_Id and user_Id is not empty/null
-      // Guests: either no person_Id or person_Id exists but user_Id is empty/null
       const employeeData = footfallData.filter(item => this.isEmployee(item));
       const guestData = footfallData.filter(item => this.isGuest(item));
+      
+      // Debug: Log sample employee data to understand gender format
+      if (employeeData.length > 0) {
+         console.log('Sample park employee data:', {
+            totalEmployees: employeeData.length,
+            sampleEmployee: employeeData[0],
+            genderValues: employeeData.slice(0, 5).map(emp => ({
+               personGender: emp.person?.gender,
+               itemGender: emp.gender,
+               personId: emp.person_Id,
+               userId: emp.person?.user_Id
+            }))
+         });
+      }
       
       // Employee counts
       const employeeCount = employeeData.length;
       const employeeMaleCount = employeeData.filter(item => {
         const gender = item.person?.gender || item.gender;
-        return gender === 'M' || gender === 'Male.';
+        if (!gender) return false;
+        const genderStr = gender.toString().toLowerCase();
+        return genderStr === 'm' || genderStr === 'male' || genderStr === 'male.' || genderStr === '1';
       }).length;
       const employeeFemaleCount = employeeData.filter(item => {
         const gender = item.person?.gender || item.gender;
-        return gender === 'F' || gender === 'Female.';
+        if (!gender) return false;
+        const genderStr = gender.toString().toLowerCase();
+        return genderStr === 'f' || genderStr === 'female' || genderStr === 'female.' || genderStr === '2';
       }).length;
       const employeeChildrenCount = employeeData.filter(item => item.is_child === true).length;
       
@@ -342,20 +373,43 @@ class ParkService {
       const guestCount = guestData.length;
       const guestMaleCount = guestData.filter(item => {
         const gender = item.gender;
-        return gender === 'M' || gender === 'Male.';
+        if (!gender) return false;
+        const genderStr = gender.toString().toLowerCase();
+        return genderStr === 'm' || genderStr === 'male' || genderStr === 'male.' || genderStr === '1';
       }).length;
       const guestFemaleCount = guestData.filter(item => {
         const gender = item.gender;
-        return gender === 'F' || gender === 'Female.';
+        if (!gender) return false;
+        const genderStr = gender.toString().toLowerCase();
+        return genderStr === 'f' || genderStr === 'female' || genderStr === 'female.' || genderStr === '2';
       }).length;
       const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
+      
+      // Debug: Log calculated counts
+      console.log('Calculated park counts:', {
+         totalFootfall,
+         employeeCount,
+         employeeMaleCount,
+         employeeFemaleCount,
+         employeeChildrenCount,
+         guestCount,
+         guestMaleCount,
+         guestFemaleCount,
+         guestChildrenCount
+      });
 
       // Get unique employees (those with valid user_Id)
       const uniqueEmployees = footfallData
         .filter(item => this.isEmployee(item))
         .reduce((acc: any[], item) => {
           if (item.person && !acc.find(emp => emp.Id === item.person?.Id)) {
-            acc.push(item.person);
+            acc.push({
+               ...item.person,
+               detection_Id: item.detection_Id,
+               detected_camera_Id: item.detected_camera_Id,
+               detected_camera_name: item.detected_camera_name,
+               time: item.time
+            });
           }
           return acc;
         }, []);
