@@ -61,12 +61,11 @@ export interface LitterDetectionType {
 }
 
 export interface LandscapingType {
-  park_Id: number;
-  case_Id: string;
-  location: string;
-  snap_shot: string;
-  type: string;
-  status: string;
+  case_Id?: string;
+  image?: string;
+  name?: string;
+  status?: string;
+  suggestion?: string;
 }
 
 export interface BehaviorAlertType {

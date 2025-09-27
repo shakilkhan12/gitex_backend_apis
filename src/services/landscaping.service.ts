@@ -3,19 +3,39 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
 class LandscapingService {
-   protected static addLandscapingService = async (landscaping: LandscapingType) => {
-
-      try {
-         const parkExists = await db.parks.findFirst({
-            where: { Id: landscaping.park_Id },
+   protected static generateUniqueCaseId = async (): Promise<string> => {
+      let caseId: string;
+      let isUnique = false;
+      
+      while (!isUnique) {
+         // Generate a 6-digit random number
+         caseId = Math.floor(100000 + Math.random() * 900000).toString();
+         
+         // Check if this case_Id already exists
+         const existingRecord = await db.landscaping.findFirst({
+            where: { case_Id: caseId }
          });
-         if (!parkExists) {
-            throw new HttpException(STATUS.BAD_REQUEST, "Park does not exist");
+         
+         if (!existingRecord) {
+            isUnique = true;
          }
+      }
+      
+      return caseId!;
+   };
 
-         const result = await db.parks_landscaping.create({
+   protected static addLandscapingService = async (landscaping: LandscapingType) => {
+      try {
+         // Generate unique 6-digit case_Id
+         const caseId = await this.generateUniqueCaseId();
+
+         const result = await db.landscaping.create({
             data: {
-               ...landscaping,
+               case_Id: caseId,
+               image: landscaping.image || null,
+               name: landscaping.name || null,
+               status: landscaping.status || null,
+               suggestion: landscaping.suggestion || null,
                createdAt: new Date(),
                updatedAt: new Date()
             },
@@ -29,19 +49,8 @@ class LandscapingService {
    }
 
    protected static viewLandscapingsService = async () => {
-
       try {
-         const results = await db.parks_landscaping.findMany({
-            include: {
-               parks: {
-                  select: {
-                     park_english_name: true,
-                     park_arabic_name: true,
-                     latitude: true,
-                     longitude: true
-                  }
-               }
-            },
+         const results = await db.landscaping.findMany({
             orderBy: {
                createdAt: 'desc'
             }

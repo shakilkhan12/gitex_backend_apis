@@ -10,47 +10,30 @@ const landscapingRouter = Router();
  *   post:
  *     summary: Add a new landscaping record
  *     tags: [Landscaping]
- *     description: Create a new landscaping record with location and case details
+ *     description: Create a new landscaping record with auto-generated 6-digit case_Id
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - park_Id
- *               - case_Id
- *               - location
- *               - snap_shot
- *               - type
- *               - status
  *             properties:
- *               park_Id:
- *                 type: integer
- *                 description: ID of the park where landscaping work is needed
- *                 example: 1
- *               case_Id:
+ *               image:
  *                 type: string
- *                 description: Unique case identifier for the landscaping work
- *                 example: "LANDSCAPE_20240115_001"
- *               location:
+ *                 description: Image URL of the landscaping area
+ *                 example: "https://example.com/landscaping_image.jpg"
+ *               name:
  *                 type: string
- *                 description: Specific location within the park where landscaping is needed
- *                 example: "Garden Area"
- *               snap_shot:
- *                 type: string
- *                 description: Image path or URL of the landscaping area
- *                 example: "landscaping_20240115_001.jpg"
- *               type:
- *                 type: string
- *                 enum: [maintenance, planting, pruning, irrigation, cleaning, other]
- *                 description: Type of landscaping work required
- *                 example: "maintenance"
+ *                 description: Name or title of the landscaping case
+ *                 example: "Garden Maintenance"
  *               status:
  *                 type: string
- *                 enum: [pending, in_progress, completed, cancelled]
  *                 description: Current status of the landscaping work
  *                 example: "pending"
+ *               suggestion:
+ *                 type: string
+ *                 description: Suggestions or notes for the landscaping work
+ *                 example: "Need to trim the bushes and water the plants"
  *     responses:
  *       201:
  *         description: Landscaping record created successfully
@@ -59,42 +42,52 @@ const landscapingRouter = Router();
  *             schema:
  *               type: object
  *               properties:
- *                 Id:
- *                   type: integer
- *                   example: 1
- *                 park_Id:
- *                   type: integer
- *                   example: 1
- *                 case_Id:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
  *                   type: string
- *                   example: "LANDSCAPE_20240115_001"
- *                 location:
- *                   type: string
- *                   example: "Garden Area"
- *                 snap_shot:
- *                   type: string
- *                   example: "landscaping_20240115_001.jpg"
- *                 type:
- *                   type: string
- *                   enum: [maintenance, planting, pruning, irrigation, cleaning, other]
- *                   example: "maintenance"
- *                 status:
- *                   type: string
- *                   enum: [pending, in_progress, completed, cancelled]
- *                   example: "pending"
- *                 createdAt:
- *                   type: string
- *                   format: date-time
- *                 updatedAt:
- *                   type: string
- *                   format: date-time
+ *                   example: "Landscaping record created successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     case_Id:
+ *                       type: string
+ *                       example: "123456"
+ *                     image:
+ *                       type: string
+ *                       example: "https://example.com/landscaping_image.jpg"
+ *                     name:
+ *                       type: string
+ *                       example: "Garden Maintenance"
+ *                     status:
+ *                       type: string
+ *                       example: "pending"
+ *                     suggestion:
+ *                       type: string
+ *                       example: "Need to trim the bushes and water the plants"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
  *       400:
- *         description: Bad request - validation errors or invalid park
+ *         description: Bad request - validation errors
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Validation errors"
  *                 errors:
  *                   type: array
  *                   items:
@@ -128,61 +121,50 @@ landscapingRouter.post('/add', landscapingValidations, LandscapingController.add
  *   get:
  *     summary: Get all landscaping records
  *     tags: [Landscaping]
- *     description: Retrieve a list of all landscaping records with park details
+ *     description: Retrieve a list of all landscaping records
  *     responses:
  *       200:
  *         description: List of landscaping records retrieved successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   Id:
- *                     type: integer
- *                     example: 1
- *                   park_Id:
- *                     type: integer
- *                     example: 1
- *                   case_Id:
- *                     type: string
- *                     example: "LANDSCAPE_20240115_001"
- *                   location:
- *                     type: string
- *                     example: "Garden Area"
- *                   snap_shot:
- *                     type: string
- *                     example: "landscaping_20240115_001.jpg"
- *                   type:
- *                     type: string
- *                     enum: [maintenance, planting, pruning, irrigation, cleaning, other]
- *                     example: "maintenance"
- *                   status:
- *                     type: string
- *                     enum: [pending, in_progress, completed, cancelled]
- *                     example: "pending"
- *                   createdAt:
- *                     type: string
- *                     format: date-time
- *                   updatedAt:
- *                     type: string
- *                     format: date-time
- *                   parks:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Landscaping records retrieved successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
  *                     type: object
  *                     properties:
- *                       park_english_name:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       case_Id:
  *                         type: string
- *                         example: "Central Park"
- *                       park_arabic_name:
+ *                         example: "123456"
+ *                       image:
  *                         type: string
- *                         example: "الحديقة المركزية"
- *                       latitude:
- *                         type: number
- *                         example: 25.3314
- *                       longitude:
- *                         type: number
- *                         example: 56.3419
+ *                         example: "https://example.com/landscaping_image.jpg"
+ *                       name:
+ *                         type: string
+ *                         example: "Garden Maintenance"
+ *                       status:
+ *                         type: string
+ *                         example: "pending"
+ *                       suggestion:
+ *                         type: string
+ *                         example: "Need to trim the bushes and water the plants"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
  *       500:
  *         description: Internal server error
  *         content:

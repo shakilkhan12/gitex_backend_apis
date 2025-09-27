@@ -58,7 +58,6 @@ class ParkService {
           parks_behaviour_alerts: true,
           parks_intrusion_detection: true,
           parks_smoking_detection: true,
-          parks_landscaping: true,
           parks_litter_detection: true,
           parks_irrigation_job_history: {
             include: {
@@ -108,7 +107,6 @@ class ParkService {
           parks_behaviour_alerts: true,
           parks_intrusion_detection: true,
           parks_smoking_detection: true,
-          parks_landscaping: true,
           parks_litter_detection: true,
           parks_irrigation_job_history: {
             include: {
@@ -164,7 +162,6 @@ class ParkService {
           parks_behaviour_alerts: true,
           parks_intrusion_detection: true,
           parks_smoking_detection: true,
-          parks_landscaping: true,
           parks_litter_detection: true,
           parks_irrigation_job_history: {
             include: {
@@ -200,7 +197,6 @@ class ParkService {
         behaviorAlertsCount,
         intrusionCount,
         smokingCount,
-        landscapingCount,
         litterCount,
         irrigationCount,
         footfallCount
@@ -210,7 +206,6 @@ class ParkService {
         db.parks_behaviour_alerts.count({ where: { park_Id: parkId } }),
         db.parks_intrusion_detection.count({ where: { park_Id: parkId } }),
         db.parks_smoking_detection.count({ where: { park_Id: parkId } }),
-        db.parks_landscaping.count({ where: { park_Id: parkId } }),
         db.parks_litter_detection.count({ where: { park_Id: parkId } }),
         db.parks_irrigation_job_history.count({ where: { park_Id: parkId } }),
         db.parks_footfall_analysis.count({ where: { park_Id: parkId } })
@@ -222,7 +217,6 @@ class ParkService {
         behaviorAlerts: behaviorAlertsCount,
         intrusionDetection: intrusionCount,
         smokingDetection: smokingCount,
-        landscaping: landscapingCount,
         litterDetection: litterCount,
         irrigationJobs: irrigationCount,
         footfallAnalysis: footfallCount

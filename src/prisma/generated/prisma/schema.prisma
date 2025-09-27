@@ -89,7 +89,8 @@ model offices_cameras {
   camera_arabic_name                                                                     String?                      @db.VarChar(255)
   latitude                                                                               Decimal?                     @db.Decimal(10, 8)
   longitude                                                                              Decimal?                     @db.Decimal(11, 8)
-  ip_address                                                                             String?                      @db.VarChar(45)
+  ip_address                                                                             String?
+  is_favorite                                                                            Boolean?                     @default(false)
   last_active_date                                                                       DateTime?                    @db.Date
   last_active_time                                                                       DateTime?                    @db.Time(0)
   status                                                                                 Boolean?                     @default(false)
@@ -143,7 +144,8 @@ model park_cameras {
   camera_arabic_name                                                              String?                     @db.VarChar(255)
   latitude                                                                        Decimal?                    @db.Decimal(10, 8)
   longitude                                                                       Decimal?                    @db.Decimal(11, 8)
-  ip_address                                                                      String?                     @db.VarChar(45)
+  ip_address                                                                      String?
+  is_favorite                                                                     Boolean?                    @default(false)
   last_active_date                                                                DateTime?                   @db.Date
   last_active_time                                                                DateTime?                   @db.Time(0)
   status                                                                          Boolean?                    @default(false)
@@ -153,7 +155,6 @@ model park_cameras {
   parks                                                                           parks?                      @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "park_cameras_ibfk_1")
   parks_behaviour_alerts                                                          parks_behaviour_alerts[]
   parks_intrusion_detection                                                       parks_intrusion_detection[]
-  parks_landscaping                                                               parks_landscaping[]         @relation("parks_landscaping_to_park_cameras")
   parks_litter_detection                                                          parks_litter_detection[]    @relation("parks_litter_detection_to_park_cameras")
   parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras parks_sentiment_analysis[]  @relation("parks_sentiment_analysis_entry_camera_IdTopark_cameras")
   parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras  parks_sentiment_analysis[]  @relation("parks_sentiment_analysis_exit_camera_IdTopark_cameras")
@@ -217,7 +218,6 @@ model parks {
   parks_footfall_analysis      parks_footfall_analysis[]
   parks_intrusion_detection    parks_intrusion_detection[]
   parks_irrigation_job_history parks_irrigation_job_history[]
-  parks_landscaping            parks_landscaping[]
   parks_litter_detection       parks_litter_detection[]
   parks_sentiment_analysis     parks_sentiment_analysis[]
   parks_smoking_detection      parks_smoking_detection[]
@@ -309,32 +309,6 @@ model parks_irrigation_job_history {
   @@map("parks_irrigation_job_history")
 }
 
-model parks_landscaping {
-  Id             Int                    @id @default(autoincrement())
-  park_Id        Int?
-  case_Id        String?                @db.VarChar(255)
-  location       String?                @db.VarChar(255)
-  snap_shot      String?                @db.VarChar(255)
-  type           String?                @db.VarChar(100)
-  status         String?                @db.VarChar(50)
-  detection_Id   String?                @db.VarChar(100)
-  detection_date DateTime?              @db.Timestamp(0)
-  detection_time DateTime?              @db.Time(0)
-  description    String?                @db.Text
-  current_status String?                @db.VarChar(100)
-  camera_Id      Int?
-  after_image    String?                @db.VarChar(255)
-  createdAt      DateTime?              @db.Timestamp(0)
-  updatedAt      DateTime               @default(now()) @db.Timestamp(0)
-  parks          parks?                 @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_landscaping_ibfk_1")
-  park_cameras   park_cameras?          @relation("parks_landscaping_to_park_cameras", fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_landscaping_ibfk_2")
-  ticket_details ticket_details_table[]
-
-  @@index([park_Id], map: "park_Id")
-  @@index([camera_Id], map: "camera_Id")
-  @@map("parks_landscaping")
-}
-
 model parks_litter_detection {
   Id              Int                    @id @default(autoincrement())
   park_Id         Int?
@@ -374,14 +348,11 @@ model ticket_details_table {
   abc3                   String?                 @db.VarChar(100)
   abc4                   String?                 @db.VarChar(100)
   litterDetectionId      Int?
-  landscapingId          Int?
   createdAt              DateTime?               @db.Timestamp(0)
   updatedAt              DateTime                @default(now()) @db.Timestamp(0)
-  parks_landscaping      parks_landscaping?      @relation(fields: [landscapingId], references: [Id], onDelete: Cascade)
   parks_litter_detection parks_litter_detection? @relation(fields: [litterDetectionId], references: [Id], onDelete: Cascade)
 
   @@index([litterDetectionId], map: "litterDetectionId_idx")
-  @@index([landscapingId], map: "landscapingId_idx")
   @@map("ticket_details_table")
 }
 
@@ -632,6 +603,19 @@ model FAQ {
   answer    String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model landscaping {
+  id         Int      @id @default(autoincrement())
+  case_Id    String?  @db.VarChar(255)
+  image      String?  @db.VarChar(500)
+  name       String?  @db.VarChar(255)
+  status     String?  @db.VarChar(100)
+  suggestion String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("landscaping")
 }
 
 enum offices_sentiment_analysis_sentiment_of {

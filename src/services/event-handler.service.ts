@@ -573,7 +573,7 @@ class EventHandlerService {
                                      Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for guest user`, {
                                         faceDataUrl: faceData
                                      });
-                                  } else {
+                                     } else {
                                      Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for guest user creation`);
                                   }
                                   
@@ -613,7 +613,7 @@ class EventHandlerService {
                                   Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for unknown visitor`, {
                                      faceDataUrl: faceData
                                   });
-                               } else {
+                                  } else {
                                   Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for unknown visitor guest creation`);
                                }
                                
@@ -654,18 +654,18 @@ class EventHandlerService {
                       // Only create footfall records for entry events, not exit events
                       if(isEntry){
                          Logger.info(`[EventHandlerService] Creating office footfall record for entry:`, {
-                            officeId: officeFootfallData.office_Id,
-                            personId: officeFootfallData.person_Id,
-                            gender: officeFootfallData.gender,
-                            isChild: officeFootfallData.is_child,
-                            detectionId: officeFootfallData.detection_Id
-                         });
-                         
-                         const officeFootfallRecord = await db.offices_footfall_analysis.create({
-                            data: officeFootfallData
-                         })
-                         
-                         Logger.info(`[EventHandlerService] Successfully created office footfall record with ID: ${officeFootfallRecord.id}`);
+                         officeId: officeFootfallData.office_Id,
+                         personId: officeFootfallData.person_Id,
+                         gender: officeFootfallData.gender,
+                         isChild: officeFootfallData.is_child,
+                         detectionId: officeFootfallData.detection_Id
+                      });
+                      
+                        const officeFootfallRecord = await db.offices_footfall_analysis.create({
+                           data: officeFootfallData
+                        })
+                        
+                        Logger.info(`[EventHandlerService] Successfully created office footfall record with ID: ${officeFootfallRecord.id}`);
                       } else {
                          Logger.info(`[EventHandlerService] Skipping office footfall record creation for exit event`);
                       }
@@ -779,7 +779,7 @@ class EventHandlerService {
                          check_out_sentiment: isExit ? detectedSentiment : null,
                          exit_camera_Id: isExit ? officeCamera.Id : null
                       }
-
+                    
                       if(isEntry){
                          // Create new sentiment analysis record for entry
                          Logger.info(`[EventHandlerService] Creating office sentiment analysis record for entry:`, {
@@ -867,18 +867,18 @@ class EventHandlerService {
                                reason: "Guest users do not have attendance records"
                             });
                          } else {
-                            Logger.info(`[EventHandlerService] Processing office entry attendance`);
-                            const officeAttendanceData = {
-                               office_Id: office_Id,
-                               person_Id: person_Id,
-                               entry_time: eventInfo.happenTime
-                            }
-                            
-                            const officeAttendanceRecord = await db.offices_attendance.create({
-                               data: officeAttendanceData
-                            })
-                            
-                            Logger.info(`[EventHandlerService] Successfully created office entry attendance record with ID: ${officeAttendanceRecord.Id}`);
+                         Logger.info(`[EventHandlerService] Processing office entry attendance`);
+                         const officeAttendanceData = {
+                            office_Id: office_Id,
+                            person_Id: person_Id,
+                            entry_time: eventInfo.happenTime
+                         }
+                         
+                         const officeAttendanceRecord = await db.offices_attendance.create({
+                            data: officeAttendanceData
+                         })
+                         
+                         Logger.info(`[EventHandlerService] Successfully created office entry attendance record with ID: ${officeAttendanceRecord.Id}`);
                             
                             // Call EmployeeEntryExitService API for entry
                             try {
@@ -975,14 +975,14 @@ class EventHandlerService {
                                   reason: "Guest users do not have attendance records"
                                });
                             } else {
-                               Logger.info(`[EventHandlerService] Updating office exit attendance for record ID: ${latestAttendance.Id}`);
-                               await db.offices_attendance.update({
-                                  where: { Id: latestAttendance.Id },
-                                  data: {
-                                     exit_time: eventInfo.happenTime
-                                  }
-                               })
-                               Logger.info(`[EventHandlerService] Successfully updated office exit attendance`);
+                            Logger.info(`[EventHandlerService] Updating office exit attendance for record ID: ${latestAttendance.Id}`);
+                            await db.offices_attendance.update({
+                               where: { Id: latestAttendance.Id },
+                               data: {
+                                  exit_time: eventInfo.happenTime
+                               }
+                            })
+                            Logger.info(`[EventHandlerService] Successfully updated office exit attendance`);
                                
                                // Call EmployeeEntryExitService API for exit
                                try {
@@ -1016,7 +1016,7 @@ class EventHandlerService {
                                         status: employeeExitResponse.status,
                                         data: employeeExitResponse.data
                                      });
-                                  } else {
+                         } else {
                                      Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${searchPersonId}`);
                                   }
                                } catch (employeeApiError: any) {
@@ -1109,7 +1109,7 @@ class EventHandlerService {
                                   Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for park guest user`, {
                                      faceDataUrl: faceData
                                   });
-                               } else {
+                                  } else {
                                   Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for park guest user creation`);
                                }
                                
@@ -1148,7 +1148,7 @@ class EventHandlerService {
                                Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for unknown park visitor`, {
                                   faceDataUrl: faceData
                                });
-                            } else {
+                               } else {
                                Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for unknown park visitor guest creation`);
                             }
                             
@@ -1186,18 +1186,18 @@ class EventHandlerService {
                       // Only create footfall records for entry events, not exit events
                       if(isEntry){
                          Logger.info(`[EventHandlerService] Creating park footfall record for entry:`, {
-                            parkId: parkFootfallData.park_Id,
-                            personId: parkFootfallData.person_Id,
-                            gender: parkFootfallData.gender,
-                            isChild: parkFootfallData.is_child,
-                            detectionId: parkFootfallData.detection_Id
-                         });
-                         
-                         const parkFootfallRecord = await db.parks_footfall_analysis.create({
-                            data: parkFootfallData
-                         })
-                         
-                         Logger.info(`[EventHandlerService] Successfully created park footfall record with ID: ${parkFootfallRecord.id}`);
+                         parkId: parkFootfallData.park_Id,
+                         personId: parkFootfallData.person_Id,
+                         gender: parkFootfallData.gender,
+                         isChild: parkFootfallData.is_child,
+                         detectionId: parkFootfallData.detection_Id
+                      });
+                     
+                        const parkFootfallRecord = await db.parks_footfall_analysis.create({
+                           data: parkFootfallData
+                        })
+                        
+                        Logger.info(`[EventHandlerService] Successfully created park footfall record with ID: ${parkFootfallRecord.id}`);
                       } else {
                          Logger.info(`[EventHandlerService] Skipping park footfall record creation for exit event`);
                       }
@@ -1311,7 +1311,7 @@ class EventHandlerService {
                          check_out_sentiment: isExit ? detectedSentiment : null,
                          exit_camera_Id: isExit ? parkCamera.Id : null
                       }
-
+                   
                       if(isEntry){
                          // Create new sentiment analysis record for entry
                          Logger.info(`[EventHandlerService] Creating park sentiment analysis record for entry:`, {
@@ -1399,18 +1399,18 @@ class EventHandlerService {
                                reason: "Guest users do not have attendance records"
                             });
                          } else {
-                            Logger.info(`[EventHandlerService] Processing park entry attendance`);
-                            const parkAttendanceData = {
-                               park_Id: park_Id,
-                               person_Id: person_Id,
-                               entry_time: eventInfo.happenTime
-                            }
-                            
-                            const parkAttendanceRecord = await db.parks_attendance.create({
-                               data: parkAttendanceData
-                            })
-                            
-                            Logger.info(`[EventHandlerService] Successfully created park entry attendance record with ID: ${parkAttendanceRecord.Id}`);
+                         Logger.info(`[EventHandlerService] Processing park entry attendance`);
+                         const parkAttendanceData = {
+                            park_Id: park_Id,
+                            person_Id: person_Id,
+                            entry_time: eventInfo.happenTime
+                         }
+                         
+                         const parkAttendanceRecord = await db.parks_attendance.create({
+                            data: parkAttendanceData
+                         })
+                         
+                         Logger.info(`[EventHandlerService] Successfully created park entry attendance record with ID: ${parkAttendanceRecord.Id}`);
                             
                             // Call EmployeeEntryExitService API for entry
                             try {
@@ -1507,14 +1507,14 @@ class EventHandlerService {
                                   reason: "Guest users do not have attendance records"
                                });
                             } else {
-                               Logger.info(`[EventHandlerService] Updating park exit attendance for record ID: ${latestAttendance.Id}`);
-                               await db.parks_attendance.update({
-                                  where: { Id: latestAttendance.Id },
-                                  data: {
-                                     exit_time: eventInfo.happenTime
-                                  }
-                               })
-                               Logger.info(`[EventHandlerService] Successfully updated park exit attendance`);
+                            Logger.info(`[EventHandlerService] Updating park exit attendance for record ID: ${latestAttendance.Id}`);
+                            await db.parks_attendance.update({
+                               where: { Id: latestAttendance.Id },
+                               data: {
+                                  exit_time: eventInfo.happenTime
+                               }
+                            })
+                            Logger.info(`[EventHandlerService] Successfully updated park exit attendance`);
                                
                                // Call EmployeeEntryExitService API for exit
                                try {
@@ -1548,7 +1548,7 @@ class EventHandlerService {
                                         status: employeeExitResponse.status,
                                         data: employeeExitResponse.data
                                      });
-                                  } else {
+                         } else {
                                      Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${searchPersonId}`);
                                   }
                                } catch (employeeApiError: any) {
@@ -1666,7 +1666,7 @@ class EventHandlerService {
                                     Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for behavior guest user`, {
                                        faceDataUrl: faceData
                                     });
-                                 } else {
+                                    } else {
                                     Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for behavior guest user creation`);
                                  }
                                  
@@ -1904,12 +1904,12 @@ class EventHandlerService {
             Logger.info(`[EventHandlerService] 📸 Fetching base64 image data from faceData URL: ${faceData}`);
             try {
                const imageDataResponse = await this.getImageData(faceData);
-               
-               if (imageDataResponse) {
-                  // The response is directly the base64 string, not wrapped in a data object
+            
+            if (imageDataResponse) {
+               // The response is directly the base64 string, not wrapped in a data object
                   base64ImageData = imageDataResponse;
                   Logger.info(`[EventHandlerService] ✅ Successfully retrieved base64 image data, length: ${base64ImageData.length}`);
-               } else {
+            } else {
                   Logger.warn(`[EventHandlerService] ⚠️ No image data received for faceData URL: ${faceData}`);
                }
             } catch (imageError: any) {

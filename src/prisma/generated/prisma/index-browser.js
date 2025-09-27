@@ -178,6 +178,7 @@ exports.Prisma.Offices_camerasScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   ip_address: 'ip_address',
+  is_favorite: 'is_favorite',
   last_active_date: 'last_active_date',
   last_active_time: 'last_active_time',
   status: 'status',
@@ -217,6 +218,7 @@ exports.Prisma.Park_camerasScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   ip_address: 'ip_address',
+  is_favorite: 'is_favorite',
   last_active_date: 'last_active_date',
   last_active_time: 'last_active_time',
   status: 'status',
@@ -322,25 +324,6 @@ exports.Prisma.Parks_irrigation_job_historyScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.Parks_landscapingScalarFieldEnum = {
-  Id: 'Id',
-  park_Id: 'park_Id',
-  case_Id: 'case_Id',
-  location: 'location',
-  snap_shot: 'snap_shot',
-  type: 'type',
-  status: 'status',
-  detection_Id: 'detection_Id',
-  detection_date: 'detection_date',
-  detection_time: 'detection_time',
-  description: 'description',
-  current_status: 'current_status',
-  camera_Id: 'camera_Id',
-  after_image: 'after_image',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.Parks_litter_detectionScalarFieldEnum = {
   Id: 'Id',
   park_Id: 'park_Id',
@@ -373,7 +356,6 @@ exports.Prisma.Ticket_details_tableScalarFieldEnum = {
   abc3: 'abc3',
   abc4: 'abc4',
   litterDetectionId: 'litterDetectionId',
-  landscapingId: 'landscapingId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -578,6 +560,17 @@ exports.Prisma.FAQScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.LandscapingScalarFieldEnum = {
+  id: 'id',
+  case_Id: 'case_Id',
+  image: 'image',
+  name: 'name',
+  status: 'status',
+  suggestion: 'suggestion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -678,18 +671,6 @@ exports.Prisma.parks_intrusion_detectionOrderByRelevanceFieldEnum = {
 exports.Prisma.parks_irrigation_job_historyOrderByRelevanceFieldEnum = {
   job_Id: 'job_Id',
   job_status: 'job_status'
-};
-
-exports.Prisma.parks_landscapingOrderByRelevanceFieldEnum = {
-  case_Id: 'case_Id',
-  location: 'location',
-  snap_shot: 'snap_shot',
-  type: 'type',
-  status: 'status',
-  detection_Id: 'detection_Id',
-  description: 'description',
-  current_status: 'current_status',
-  after_image: 'after_image'
 };
 
 exports.Prisma.parks_litter_detectionOrderByRelevanceFieldEnum = {
@@ -801,6 +782,14 @@ exports.Prisma.FAQOrderByRelevanceFieldEnum = {
   question: 'question',
   answer: 'answer'
 };
+
+exports.Prisma.landscapingOrderByRelevanceFieldEnum = {
+  case_Id: 'case_Id',
+  image: 'image',
+  name: 'name',
+  status: 'status',
+  suggestion: 'suggestion'
+};
 exports.offices_sentiment_analysis_sentiment_of = exports.$Enums.offices_sentiment_analysis_sentiment_of = {
   employee: 'employee',
   visitor: 'visitor'
@@ -827,7 +816,6 @@ exports.Prisma.ModelName = {
   parks_behaviour_alerts: 'parks_behaviour_alerts',
   parks_intrusion_detection: 'parks_intrusion_detection',
   parks_irrigation_job_history: 'parks_irrigation_job_history',
-  parks_landscaping: 'parks_landscaping',
   parks_litter_detection: 'parks_litter_detection',
   ticket_details_table: 'ticket_details_table',
   parks_sentiment_analysis: 'parks_sentiment_analysis',
@@ -839,7 +827,8 @@ exports.Prisma.ModelName = {
   parks_footfall_analysis: 'parks_footfall_analysis',
   offices_footfall_analysis: 'offices_footfall_analysis',
   TermsPrivacy: 'TermsPrivacy',
-  FAQ: 'FAQ'
+  FAQ: 'FAQ',
+  landscaping: 'landscaping'
 };
 
 /**

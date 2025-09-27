@@ -18,6 +18,7 @@ import settingsRouter from "./settings.routes";
 import eventHandlerRouter from "./event-handler.routes";
 import handlingImagesRouter from "./handling-images.routes";
 import intranetPostingHistoryRouter from "./intranet-posting-history.routes";
+import camerasRouter from "./cameras.routes";
 const mainRouter = Router();
 
 mainRouter.use('/smoking-detection', smokingDetectionRouter)
@@ -39,5 +40,6 @@ mainRouter.use('/settings', settingsRouter)
 mainRouter.use('/event-handler', eventHandlerRouter)
 mainRouter.use('/handling-images', handlingImagesRouter)
 mainRouter.use('/intranet-posting-history', intranetPostingHistoryRouter)
+mainRouter.use('/cameras', camerasRouter)
 
 export default mainRouter;

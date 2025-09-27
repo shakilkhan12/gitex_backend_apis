@@ -9,9 +9,17 @@ class LandscapingController extends LandscapingService {
       try {
          if (errors.isEmpty()) {
             const landscaping = await LandscapingService.addLandscapingService(req.body)
-            return res.status(STATUS.CREATED).json(landscaping)
+            return res.status(STATUS.CREATED).json({
+               success: true,
+               message: "Landscaping record created successfully",
+               data: landscaping
+            })
          } else {
-            return res.status(STATUS.BAD_REQUEST).json({ errors: errors.array() });
+            return res.status(STATUS.BAD_REQUEST).json({ 
+               success: false,
+               message: "Validation errors",
+               errors: errors.array() 
+            });
          }
       } catch (error) {
          next(error)
@@ -21,7 +29,11 @@ class LandscapingController extends LandscapingService {
    public static viewLandscapings = async (req: Request, res: Response, next: NextFunction) => {
       try {
          const landscapings = await LandscapingService.viewLandscapingsService();
-         return res.status(STATUS.SUCCESS).json(landscapings);
+         return res.status(STATUS.SUCCESS).json({
+            success: true,
+            message: "Landscaping records retrieved successfully",
+            data: landscapings
+         });
       } catch (error) {
          next(error)
       }
