@@ -546,8 +546,7 @@ class EventHandlerService {
                             humanId
                          });
                          
-                         if (similarity !== 0 && humanId && humanId !== "-1") {
-                           console.log('Yes Human')
+                         if (similarity && humanId) {
                             const user = await db.users.findFirst({
                                where: { unique_id: humanId.toString() }
                             });
@@ -670,6 +669,186 @@ class EventHandlerService {
                       } else {
                          Logger.info(`[EventHandlerService] Skipping office footfall record creation for exit event`);
                       }
+
+                      // Create sentiment analysis record for both entry and exit events
+                      let sentimentImageUrl = null;
+                      let detectedSentiment = 'neutral'; // Default sentiment
+                      
+                      // Get faceData URL from event data (same as guest user creation)
+                      if (eventInfo.data?.alarmResult?.faces?.URL) {
+                         try {
+                            Logger.info(`[EventHandlerService] Processing sentiment analysis image for office`);
+                            const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                            const imageDataResponse = await this.getImageData(faceDataUrl);
+                            
+                            if (imageDataResponse) {
+                               // The response is directly the base64 string, not wrapped in a data object
+                               const base64Image = imageDataResponse;
+                               
+                               // Upload to Cloudinary
+                               sentimentImageUrl = await this.uploadImageToCloudinary(base64Image, 'sentiment', eventInfo.eventId);
+                               Logger.info(`[EventHandlerService] Successfully uploaded sentiment image to Cloudinary for office`);
+                               
+                               // Get emotion detection from the uploaded image
+                               if (sentimentImageUrl) {
+                                  try {
+                                     Logger.info(`[EventHandlerService] Calling emotion detection API for office sentiment`);
+                                     const emotionResponse = await axios.post('http://127.0.0.1:8000/api/emotion-detection', {
+                                        image_url: sentimentImageUrl
+                                     }, {
+                                        timeout: 10000,
+                                        headers: { 'Content-Type': 'application/json' }
+                                     });
+                                     
+                                     if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
+                                        detectedSentiment = emotionResponse.data.faces[0].emotion;
+                                        Logger.info(`[EventHandlerService] Detected office sentiment: ${detectedSentiment}`, {
+                                           confidence: emotionResponse.data.faces[0].confidence,
+                                           processingTime: emotionResponse.data.processing_time
+                                        });
+                                     } else {
+                                        Logger.warn(`[EventHandlerService] No emotion detected for office image, using default: neutral`);
+                                     }
+                                  } catch (emotionError: any) {
+                                     Logger.error(`[EventHandlerService] Failed to detect emotion for office image:`, emotionError.message);
+                                     Logger.info(`[EventHandlerService] Using default sentiment: neutral`);
+                                  }
+                               }
+                            }
+                         } catch (imageError: any) {
+                            Logger.error(`[EventHandlerService] Failed to process office sentiment image:`, imageError);
+                         }
+                      }
+
+                      // Get user details for sentiment analysis
+                      let personName = 'Unknown';
+                      let personImage = null;
+                      let sentimentOf = 'visitor';
+                      
+                      if (person_Id) {
+                         const user = await db.users.findUnique({
+                            where: { Id: person_Id },
+                            select: { 
+                               emp__eng_name: true, 
+                               emp__arabic_name: true, 
+                               image: true,
+                               emp_Id: true,
+                               emp_code: true,
+                               is_attendance_user: true
+                            }
+                         });
+                         
+                         if (user) {
+                            personName = user.emp__eng_name || user.emp__arabic_name || 'Unknown';
+                            personImage = user.image;
+                            
+                            // Determine if employee or visitor
+                            const isEmployee = user.emp_Id && user.emp_code && user.is_attendance_user;
+                            sentimentOf = isEmployee ? 'employee' : 'visitor';
+                            
+                            Logger.debug(`[EventHandlerService] Office sentiment analysis user details:`, {
+                               personName,
+                               sentimentOf,
+                               hasPersonImage: !!personImage
+                            });
+                         }
+                      }
+
+                      const officeSentimentData = {
+                         office_Id: office_Id,
+                         person_Id: person_Id?.toString() || null,
+                         detection_Id: eventInfo.eventId,
+                         person_name: personName,
+                         person_image: personImage,
+                         gender: genderName,
+                         check_in_image: isEntry ? sentimentImageUrl : null,
+                         sentiment_of: sentimentOf as 'employee' | 'visitor',
+                         check_in_date: isEntry ? new Date(eventInfo.happenTime) : null,
+                         check_in_time: isEntry ? new Date(eventInfo.happenTime) : null,
+                         check_in_sentiment: isEntry ? detectedSentiment : null,
+                         entry_camera_Id: isEntry ? officeCamera.Id : null,
+                         check_out_date: isExit ? new Date(eventInfo.happenTime) : null,
+                         check_out_time: isExit ? new Date(eventInfo.happenTime) : null,
+                         check_out_capture: isExit ? sentimentImageUrl : null,
+                         check_out_sentiment: isExit ? detectedSentiment : null,
+                         exit_camera_Id: isExit ? officeCamera.Id : null
+                      }
+
+                      if(isEntry){
+                         // Create new sentiment analysis record for entry
+                         Logger.info(`[EventHandlerService] Creating office sentiment analysis record for entry:`, {
+                            officeId: officeSentimentData.office_Id,
+                            personId: officeSentimentData.person_Id,
+                            personName: officeSentimentData.person_name,
+                            sentimentOf: officeSentimentData.sentiment_of,
+                            hasImage: !!sentimentImageUrl
+                         });
+                         
+                         const officeSentimentRecord = await db.offices_sentiment_analysis.create({
+                            data: officeSentimentData
+                         });
+                         
+                         Logger.info(`[EventHandlerService] Successfully created office sentiment analysis record with ID: ${officeSentimentRecord.Id}`);
+                      } else if(isExit){
+                         // Find existing sentiment analysis record for exit (similar to attendance logic)
+                         Logger.info(`[EventHandlerService] Processing office exit sentiment analysis`);
+                         
+                         // If person_Id is null, try to find it using human_id from the event
+                         let searchPersonId = person_Id;
+                         if (!searchPersonId && eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id) {
+                            const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
+                            if (humanId && humanId !== "-1") {
+                               const user = await db.users.findFirst({
+                                  where: { unique_id: humanId.toString() }
+                               });
+                               if (user) {
+                                  searchPersonId = user.Id;
+                                  Logger.info(`[EventHandlerService] Found person_Id for exit sentiment using human_id: ${searchPersonId}`);
+                               }
+                            }
+                         }
+                         
+                         if (!searchPersonId) {
+                            Logger.warn(`[EventHandlerService] Cannot process exit sentiment - no valid person_Id found`);
+                            return;
+                         }
+                         
+                         const latestSentiment = await db.offices_sentiment_analysis.findFirst({
+                            where: {
+                               office_Id: office_Id,
+                               person_Id: searchPersonId.toString(),
+                               check_out_capture: null // Find record without exit data
+                            },
+                            orderBy: {
+                               check_in_date: 'desc'
+                            }
+                         });
+                         
+                         if(latestSentiment){
+                            Logger.info(`[EventHandlerService] Updating office exit sentiment analysis for record ID: ${latestSentiment.Id}`);
+                            await db.offices_sentiment_analysis.update({
+                               where: { Id: latestSentiment.Id },
+                               data: {
+                                  check_out_capture: sentimentImageUrl,
+                                  check_out_date: officeSentimentData.check_out_date,
+                                  check_out_time: officeSentimentData.check_out_time,
+                                  check_out_sentiment: officeSentimentData.check_out_sentiment,
+                                  exit_camera_Id: officeSentimentData.exit_camera_Id
+                               }
+                            });
+                            Logger.info(`[EventHandlerService] Successfully updated office exit sentiment analysis`);
+                         } else {
+                            Logger.warn(`[EventHandlerService] No matching entry record found for office exit sentiment analysis`, {
+                               office_Id,
+                               person_Id: searchPersonId,
+                               searchCriteria: {
+                                  office_Id,
+                                  person_Id: searchPersonId.toString(),
+                                  check_out_capture: null
+                               }
+                            });
+                         }
+                      }
                       
                       if(isEntry){
                          // Check if the person is a guest user
@@ -694,6 +873,46 @@ class EventHandlerService {
                             })
                             
                             Logger.info(`[EventHandlerService] Successfully created office entry attendance record with ID: ${officeAttendanceRecord.Id}`);
+                            
+                            // Call EmployeeEntryExitService API for entry
+                            try {
+                               const user = await db.users.findUnique({
+                                  where: { Id: person_Id },
+                                  select: { user_Id: true }
+                               });
+                               
+                               if (user && user.user_Id) {
+                                  Logger.info(`[EventHandlerService] Calling EmployeeEntryExitService API for office entry`);
+                                  const secretKey = await this.fetchSecretFromAPI();
+                                  
+                                  const employeeEntryPayload = {
+                                     SecretKey: secretKey,
+                                     Lang: "en",
+                                     UserID: user.user_Id,
+                                     Type: "1" // Entry
+                                  };
+                                  
+                                  const employeeEntryResponse = await axios.post(
+                                     "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeEntryExitService",
+                                     employeeEntryPayload,
+                                     {
+                                        headers: { "Content-Type": "application/json" },
+                                        timeout: 10000,
+                                        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+                                     }
+                                  );
+                                  
+                                  Logger.info(`[EventHandlerService] EmployeeEntryExitService API response for office entry:`, {
+                                     status: employeeEntryResponse.status,
+                                     data: employeeEntryResponse.data
+                                  });
+                               } else {
+                                  Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${person_Id}`);
+                               }
+                            } catch (employeeApiError: any) {
+                               Logger.error(`[EventHandlerService] Failed to call EmployeeEntryExitService for office entry:`, employeeApiError.message);
+                               // Don't throw error - attendance record was created successfully
+                            }
                          }
                       } else if(isExit){
                          Logger.info(`[EventHandlerService] Processing office exit attendance`);
@@ -758,6 +977,46 @@ class EventHandlerService {
                                   }
                                })
                                Logger.info(`[EventHandlerService] Successfully updated office exit attendance`);
+                               
+                               // Call EmployeeEntryExitService API for exit
+                               try {
+                                  const user = await db.users.findUnique({
+                                     where: { Id: searchPersonId },
+                                     select: { user_Id: true }
+                                  });
+                                  
+                                  if (user && user.user_Id) {
+                                     Logger.info(`[EventHandlerService] Calling EmployeeEntryExitService API for office exit`);
+                                     const secretKey = await this.fetchSecretFromAPI();
+                                     
+                                     const employeeExitPayload = {
+                                        SecretKey: secretKey,
+                                        Lang: "en",
+                                        UserID: user.user_Id,
+                                        Type: "2" // Exit
+                                     };
+                                     
+                                     const employeeExitResponse = await axios.post(
+                                        "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeEntryExitService",
+                                        employeeExitPayload,
+                                        {
+                                           headers: { "Content-Type": "application/json" },
+                                           timeout: 10000,
+                                           httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+                                        }
+                                     );
+                                     
+                                     Logger.info(`[EventHandlerService] EmployeeEntryExitService API response for office exit:`, {
+                                        status: employeeExitResponse.status,
+                                        data: employeeExitResponse.data
+                                     });
+                                  } else {
+                                     Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${searchPersonId}`);
+                                  }
+                               } catch (employeeApiError: any) {
+                                  Logger.error(`[EventHandlerService] Failed to call EmployeeEntryExitService for office exit:`, employeeApiError.message);
+                                  // Don't throw error - attendance record was updated successfully
+                               }
                             }
                          } else {
                             Logger.warn(`[EventHandlerService] No matching entry record found for office exit attendance`, {
@@ -817,7 +1076,7 @@ class EventHandlerService {
                       });
                       
                       let person_Id = null; // Default fallback - use null for unknown persons
-                      if (similarity !== 0 && humanId && humanId !== "-1") {
+                      if (similarity && humanId) {
                          const user = await db.users.findFirst({
                             where: { unique_id: humanId.toString() }
                          });
@@ -936,6 +1195,186 @@ class EventHandlerService {
                       } else {
                          Logger.info(`[EventHandlerService] Skipping park footfall record creation for exit event`);
                       }
+
+                      // Create sentiment analysis record for both entry and exit events
+                      let sentimentImageUrl = null;
+                      let detectedSentiment = 'neutral'; // Default sentiment
+                      
+                      // Get faceData URL from event data (same as guest user creation)
+                      if (eventInfo.data?.alarmResult?.faces?.URL) {
+                         try {
+                            Logger.info(`[EventHandlerService] Processing sentiment analysis image for park`);
+                            const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                            const imageDataResponse = await this.getImageData(faceDataUrl);
+                            
+                            if (imageDataResponse) {
+                               // The response is directly the base64 string, not wrapped in a data object
+                               const base64Image = imageDataResponse;
+                               
+                               // Upload to Cloudinary
+                               sentimentImageUrl = await this.uploadImageToCloudinary(base64Image, 'sentiment', eventInfo.eventId);
+                               Logger.info(`[EventHandlerService] Successfully uploaded sentiment image to Cloudinary for park`);
+                               
+                               // Get emotion detection from the uploaded image
+                               if (sentimentImageUrl) {
+                                  try {
+                                     Logger.info(`[EventHandlerService] Calling emotion detection API for park sentiment`);
+                                     const emotionResponse = await axios.post('http://127.0.0.1:8000/api/emotion-detection', {
+                                        image_url: sentimentImageUrl
+                                     }, {
+                                        timeout: 10000,
+                                        headers: { 'Content-Type': 'application/json' }
+                                     });
+                                     
+                                     if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
+                                        detectedSentiment = emotionResponse.data.faces[0].emotion;
+                                        Logger.info(`[EventHandlerService] Detected park sentiment: ${detectedSentiment}`, {
+                                           confidence: emotionResponse.data.faces[0].confidence,
+                                           processingTime: emotionResponse.data.processing_time
+                                        });
+                                     } else {
+                                        Logger.warn(`[EventHandlerService] No emotion detected for park image, using default: neutral`);
+                                     }
+                                  } catch (emotionError: any) {
+                                     Logger.error(`[EventHandlerService] Failed to detect emotion for park image:`, emotionError.message);
+                                     Logger.info(`[EventHandlerService] Using default sentiment: neutral`);
+                                  }
+                               }
+                            }
+                         } catch (imageError: any) {
+                            Logger.error(`[EventHandlerService] Failed to process park sentiment image:`, imageError);
+                         }
+                      }
+
+                      // Get user details for sentiment analysis
+                      let personName = 'Unknown';
+                      let personImage = null;
+                      let sentimentOf = 'visitor';
+                      
+                      if (person_Id) {
+                         const user = await db.users.findUnique({
+                            where: { Id: person_Id },
+                            select: { 
+                               emp__eng_name: true, 
+                               emp__arabic_name: true, 
+                               image: true,
+                               emp_Id: true,
+                               emp_code: true,
+                               is_attendance_user: true
+                            }
+                         });
+                         
+                         if (user) {
+                            personName = user.emp__eng_name || user.emp__arabic_name || 'Unknown';
+                            personImage = user.image;
+                            
+                            // Determine if employee or visitor
+                            const isEmployee = user.emp_Id && user.emp_code && user.is_attendance_user;
+                            sentimentOf = isEmployee ? 'employee' : 'visitor';
+                            
+                            Logger.debug(`[EventHandlerService] Park sentiment analysis user details:`, {
+                               personName,
+                               sentimentOf,
+                               hasPersonImage: !!personImage
+                            });
+                         }
+                      }
+
+                      const parkSentimentData = {
+                         park_Id: park_Id,
+                         person_Id: person_Id?.toString() || null,
+                         detection_Id: eventInfo.eventId,
+                         person_name: personName,
+                         person_image: personImage,
+                         gender: genderName,
+                         check_in_image: isEntry ? sentimentImageUrl : null,
+                         sentiment_of: sentimentOf as 'employee' | 'visitor',
+                         check_in_date: isEntry ? new Date(eventInfo.happenTime) : null,
+                         check_in_time: isEntry ? new Date(eventInfo.happenTime) : null,
+                         check_in_sentiment: isEntry ? detectedSentiment : null,
+                         entry_camera_Id: isEntry ? parkCamera.Id : null,
+                         check_out_date: isExit ? new Date(eventInfo.happenTime) : null,
+                         check_out_time: isExit ? new Date(eventInfo.happenTime) : null,
+                         check_out_capture: isExit ? sentimentImageUrl : null,
+                         check_out_sentiment: isExit ? detectedSentiment : null,
+                         exit_camera_Id: isExit ? parkCamera.Id : null
+                      }
+
+                      if(isEntry){
+                         // Create new sentiment analysis record for entry
+                         Logger.info(`[EventHandlerService] Creating park sentiment analysis record for entry:`, {
+                            parkId: parkSentimentData.park_Id,
+                            personId: parkSentimentData.person_Id,
+                            personName: parkSentimentData.person_name,
+                            sentimentOf: parkSentimentData.sentiment_of,
+                            hasImage: !!sentimentImageUrl
+                         });
+                         
+                         const parkSentimentRecord = await db.parks_sentiment_analysis.create({
+                            data: parkSentimentData
+                         });
+                         
+                         Logger.info(`[EventHandlerService] Successfully created park sentiment analysis record with ID: ${parkSentimentRecord.Id}`);
+                      } else if(isExit){
+                         // Find existing sentiment analysis record for exit (similar to attendance logic)
+                         Logger.info(`[EventHandlerService] Processing park exit sentiment analysis`);
+                         
+                         // If person_Id is null, try to find it using human_id from the event
+                         let searchPersonId = person_Id;
+                         if (!searchPersonId && eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id) {
+                            const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
+                            if (humanId && humanId !== "-1") {
+                               const user = await db.users.findFirst({
+                                  where: { unique_id: humanId.toString() }
+                               });
+                               if (user) {
+                                  searchPersonId = user.Id;
+                                  Logger.info(`[EventHandlerService] Found person_Id for park exit sentiment using human_id: ${searchPersonId}`);
+                               }
+                            }
+                         }
+                         
+                         if (!searchPersonId) {
+                            Logger.warn(`[EventHandlerService] Cannot process park exit sentiment - no valid person_Id found`);
+                            return;
+                         }
+                         
+                         const latestSentiment = await db.parks_sentiment_analysis.findFirst({
+                            where: {
+                               park_Id: park_Id,
+                               person_Id: searchPersonId.toString(),
+                               check_out_capture: null // Find record without exit data
+                            },
+                            orderBy: {
+                               check_in_date: 'desc'
+                            }
+                         });
+                         
+                         if(latestSentiment){
+                            Logger.info(`[EventHandlerService] Updating park exit sentiment analysis for record ID: ${latestSentiment.Id}`);
+                            await db.parks_sentiment_analysis.update({
+                               where: { Id: latestSentiment.Id },
+                               data: {
+                                  check_out_capture: sentimentImageUrl,
+                                  check_out_date: parkSentimentData.check_out_date,
+                                  check_out_time: parkSentimentData.check_out_time,
+                                  check_out_sentiment: parkSentimentData.check_out_sentiment,
+                                  exit_camera_Id: parkSentimentData.exit_camera_Id
+                               }
+                            });
+                            Logger.info(`[EventHandlerService] Successfully updated park exit sentiment analysis`);
+                         } else {
+                            Logger.warn(`[EventHandlerService] No matching entry record found for park exit sentiment analysis`, {
+                               park_Id,
+                               person_Id: searchPersonId,
+                               searchCriteria: {
+                                  park_Id,
+                                  person_Id: searchPersonId.toString(),
+                                  check_out_capture: null
+                               }
+                            });
+                         }
+                      }
                       
                       if(isEntry){
                          // Check if the person is a guest user
@@ -960,6 +1399,46 @@ class EventHandlerService {
                             })
                             
                             Logger.info(`[EventHandlerService] Successfully created park entry attendance record with ID: ${parkAttendanceRecord.Id}`);
+                            
+                            // Call EmployeeEntryExitService API for entry
+                            try {
+                               const user = await db.users.findUnique({
+                                  where: { Id: person_Id },
+                                  select: { user_Id: true }
+                               });
+                               
+                               if (user && user.user_Id) {
+                                  Logger.info(`[EventHandlerService] Calling EmployeeEntryExitService API for park entry`);
+                                  const secretKey = await this.fetchSecretFromAPI();
+                                  
+                                  const employeeEntryPayload = {
+                                     SecretKey: secretKey,
+                                     Lang: "en",
+                                     UserID: user.user_Id,
+                                     Type: "1" // Entry
+                                  };
+                                  
+                                  const employeeEntryResponse = await axios.post(
+                                     "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeEntryExitService",
+                                     employeeEntryPayload,
+                                     {
+                                        headers: { "Content-Type": "application/json" },
+                                        timeout: 10000,
+                                        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+                                     }
+                                  );
+                                  
+                                  Logger.info(`[EventHandlerService] EmployeeEntryExitService API response for park entry:`, {
+                                     status: employeeEntryResponse.status,
+                                     data: employeeEntryResponse.data
+                                  });
+                               } else {
+                                  Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${person_Id}`);
+                               }
+                            } catch (employeeApiError: any) {
+                               Logger.error(`[EventHandlerService] Failed to call EmployeeEntryExitService for park entry:`, employeeApiError.message);
+                               // Don't throw error - attendance record was created successfully
+                            }
                          }
                       } else if(isExit){
                          Logger.info(`[EventHandlerService] Processing park exit attendance`);
@@ -1024,6 +1503,46 @@ class EventHandlerService {
                                   }
                                })
                                Logger.info(`[EventHandlerService] Successfully updated park exit attendance`);
+                               
+                               // Call EmployeeEntryExitService API for exit
+                               try {
+                                  const user = await db.users.findUnique({
+                                     where: { Id: searchPersonId },
+                                     select: { user_Id: true }
+                                  });
+                                  
+                                  if (user && user.user_Id) {
+                                     Logger.info(`[EventHandlerService] Calling EmployeeEntryExitService API for park exit`);
+                                     const secretKey = await this.fetchSecretFromAPI();
+                                     
+                                     const employeeExitPayload = {
+                                        SecretKey: secretKey,
+                                        Lang: "en",
+                                        UserID: user.user_Id,
+                                        Type: "2" // Exit
+                                     };
+                                     
+                                     const employeeExitResponse = await axios.post(
+                                        "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeEntryExitService",
+                                        employeeExitPayload,
+                                        {
+                                           headers: { "Content-Type": "application/json" },
+                                           timeout: 10000,
+                                           httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+                                        }
+                                     );
+                                     
+                                     Logger.info(`[EventHandlerService] EmployeeEntryExitService API response for park exit:`, {
+                                        status: employeeExitResponse.status,
+                                        data: employeeExitResponse.data
+                                     });
+                                  } else {
+                                     Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${searchPersonId}`);
+                                  }
+                               } catch (employeeApiError: any) {
+                                  Logger.error(`[EventHandlerService] Failed to call EmployeeEntryExitService for park exit:`, employeeApiError.message);
+                                  // Don't throw error - attendance record was updated successfully
+                               }
                             }
                          } else {
                             Logger.warn(`[EventHandlerService] No matching entry record found for park exit attendance`, {
@@ -1109,7 +1628,7 @@ class EventHandlerService {
                            humanId
                         });
                         
-                        if (similarity !== 0 && humanId && humanId !== "-1") {
+                        if (similarity && humanId) {
                            const user = await db.users.findFirst({
                               where: { unique_id: humanId.toString() }
                            });

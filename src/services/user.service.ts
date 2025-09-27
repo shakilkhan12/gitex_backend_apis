@@ -8,13 +8,13 @@ import { UserType, AddUserType } from "@/typescript/interfaces";
 
 
 // urlToBase64.ts
-import fetch, { RequestInit } from "node-fetch";
+import fetch from "node-fetch";
 
 
 export async function urlToBase64(url: string): Promise<string | string> {
   try {
     const agent = new https.Agent({ rejectUnauthorized: false }); // ✅ Ignore SSL errors
-    const options: RequestInit = { agent };
+    const options: any = { agent };
 
     const response = await fetch(url, options);
 
