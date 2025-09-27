@@ -672,7 +672,7 @@ class EventHandlerService {
 
                       // Create sentiment analysis record for both entry and exit events
                       let sentimentImageUrl = null;
-                      let detectedSentiment = 'neutral'; // Default sentiment
+                      let detectedSentiment = 'unknown'; // Default sentiment
                       
                       // Get faceData URL from event data (same as guest user creation)
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
@@ -1204,7 +1204,7 @@ class EventHandlerService {
 
                       // Create sentiment analysis record for both entry and exit events
                       let sentimentImageUrl = null;
-                      let detectedSentiment = 'neutral'; // Default sentiment
+                      let detectedSentiment = 'unknown'; // Default sentiment
                       
                       // Get faceData URL from event data (same as guest user creation)
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
