@@ -710,8 +710,14 @@ class EventHandlerService {
                                         Logger.warn(`[EventHandlerService] No emotion detected for office image, using default: neutral`);
                                      }
                                   } catch (emotionError: any) {
-                                     Logger.error(`[EventHandlerService] Failed to detect emotion for office image:`, emotionError.message);
-                                     Logger.info(`[EventHandlerService] Using default sentiment: neutral`);
+                                     if (emotionError.code === 'ECONNREFUSED') {
+                                        Logger.warn(`[EventHandlerService] Emotion detection service is not available (ECONNREFUSED). Using default sentiment: neutral`);
+                                     } else if (emotionError.code === 'ETIMEDOUT') {
+                                        Logger.warn(`[EventHandlerService] Emotion detection service timed out. Using default sentiment: neutral`);
+                                     } else {
+                                        Logger.error(`[EventHandlerService] Failed to detect emotion for office image:`, emotionError.message);
+                                        Logger.info(`[EventHandlerService] Using default sentiment: neutral`);
+                                     }
                                   }
                                }
                             }
@@ -1236,8 +1242,14 @@ class EventHandlerService {
                                         Logger.warn(`[EventHandlerService] No emotion detected for park image, using default: neutral`);
                                      }
                                   } catch (emotionError: any) {
-                                     Logger.error(`[EventHandlerService] Failed to detect emotion for park image:`, emotionError.message);
-                                     Logger.info(`[EventHandlerService] Using default sentiment: neutral`);
+                                     if (emotionError.code === 'ECONNREFUSED') {
+                                        Logger.warn(`[EventHandlerService] Emotion detection service is not available (ECONNREFUSED). Using default sentiment: neutral`);
+                                     } else if (emotionError.code === 'ETIMEDOUT') {
+                                        Logger.warn(`[EventHandlerService] Emotion detection service timed out. Using default sentiment: neutral`);
+                                     } else {
+                                        Logger.error(`[EventHandlerService] Failed to detect emotion for park image:`, emotionError.message);
+                                        Logger.info(`[EventHandlerService] Using default sentiment: neutral`);
+                                     }
                                   }
                                }
                             }
