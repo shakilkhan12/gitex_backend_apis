@@ -181,20 +181,32 @@ class ParkSentimentAnalysisService {
             }
          });
 
-         // Get user details for each sentiment analysis record
-         const sentimentWithUsers = await Promise.all(
-            results.map(async (sentiment) => {
-               // Find the user by emp_Id (which should match person_Id)
-               const user = await db.users.findFirst({
-                  where: { emp_Id: sentiment.person_Id },
-                  include: {
-                     users_roles: {
-                        select: {
-                           role_name: true
-                        }
-                     }
+         // Get all unique person IDs from results
+         const personIds = Array.from(new Set(results.map(sentiment => sentiment.person_Id).filter(Boolean))) as string[];
+         
+         // Fetch all users in a single query
+         const users = await db.users.findMany({
+            where: { 
+               emp_Id: { 
+                  in: personIds 
+               } 
+            },
+            include: {
+               users_roles: {
+                  select: {
+                     role_name: true
                   }
-               });
+               }
+            }
+         });
+         
+         // Create a map for quick user lookup
+         const userMap = new Map(users.map(user => [user.emp_Id, user]));
+
+         // Get user details for each sentiment analysis record
+         const sentimentWithUsers = results.map((sentiment) => {
+               // Find the user from the map
+               const user = userMap.get(sentiment.person_Id);
 
                return {
                   ...sentiment,
@@ -222,8 +234,7 @@ class ParkSentimentAnalysisService {
                      updatedAt: user.updatedAt
                   } : null
                };
-            })
-         );
+            });
 
          // Format the dates and times
          const formattedResults = sentimentWithUsers.map(sentiment => ({
