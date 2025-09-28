@@ -4,7 +4,7 @@ import { HttpException } from "@/utils/HttpException.utils";
 
 class CamerasService {
   // Get all offices and parks cameras in a single response
-  protected static getAllCamerasService = async () => {
+  protected static getAllCamerasService = async (userId?: number) => {
     try {
       // Get all offices with their cameras
       const offices = await db.offices.findMany({
@@ -12,6 +12,13 @@ class CamerasService {
           offices_cameras: {
             where: {
               status: true
+            },
+            include: {
+              live_stream_favourites: userId ? {
+                where: {
+                  emp_Id: userId
+                }
+              } : false
             },
             orderBy: {
               Id: "desc"
@@ -60,6 +67,7 @@ class CamerasService {
           latitude: camera.latitude,
           longitude: camera.longitude,
           status: camera.status,
+          isFavorite: camera.is_favorite,
           lastActiveDate: camera.last_active_date,
           lastActiveTime: camera.last_active_time,
          
@@ -82,6 +90,7 @@ class CamerasService {
           latitude: camera.latitude,
           longitude: camera.longitude,
           status: camera.status,
+          isFavorite: camera.is_favorite,
           lastActiveDate: camera.last_active_date,
        
         }))
@@ -131,6 +140,47 @@ class CamerasService {
       };
     } catch (error: any) {
       throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch cameras data');
+    }
+  };
+
+  // Toggle camera favorite status
+  protected static toggleCameraFavoriteService = async (cameraId: number, cameraType: string, isFavorite: boolean) => {
+    try {
+      let updatedCamera;
+      
+      if (cameraType === 'office') {
+        updatedCamera = await db.offices_cameras.update({
+          where: {
+            Id: cameraId
+          },
+          data: {
+            is_favorite: isFavorite,
+            updatedAt: new Date()
+          }
+        });
+      } else if (cameraType === 'park') {
+        updatedCamera = await db.park_cameras.update({
+          where: {
+            Id: cameraId
+          },
+          data: {
+            is_favorite: isFavorite,
+            updatedAt: new Date()
+          }
+        });
+      } else {
+        throw new HttpException(STATUS.BAD_REQUEST, 'Invalid camera type');
+      }
+
+      return {
+        message: `Camera ${isFavorite ? 'added to' : 'removed from'} favorites`,
+        camera: updatedCamera
+      };
+    } catch (error: any) {
+      if (error.code === 'P2025') {
+        throw new HttpException(STATUS.NOT_FOUND, 'Camera not found');
+      }
+      throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to update camera favorite status');
     }
   };
 }

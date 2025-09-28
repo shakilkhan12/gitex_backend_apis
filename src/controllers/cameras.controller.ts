@@ -12,6 +12,17 @@ class CamerasController extends CamerasService {
       next(error);
     }
   };
+
+  // Toggle camera favorite status
+  public static toggleCameraFavorite = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { cameraId, cameraType, isFavorite } = req.body;
+      const result = await CamerasService.toggleCameraFavoriteService(parseInt(cameraId), cameraType, isFavorite);
+      return res.status(STATUS.SUCCESS).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default CamerasController;

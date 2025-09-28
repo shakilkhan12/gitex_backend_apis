@@ -546,7 +546,7 @@ class EventHandlerService {
                             humanId
                          });
                          
-                         if (similarity && humanId) {
+                         if (humanId) {
                             const user = await db.users.findFirst({
                                where: { unique_id: humanId.toString() }
                             });
@@ -1054,8 +1054,8 @@ class EventHandlerService {
                       });
                       
                       const park_Id = parkCamera.park_Id
-                      const isEntry = eventInfo.srcName === "ENTRY"
-                      const isExit = eventInfo.srcName === "EXIT"
+                      const isEntry = eventInfo.srcName.toLowerCase().includes("entry")
+                      const isExit = eventInfo.srcName.toLowerCase().includes("exit")
                       
                       Logger.debug(`[EventHandlerService] Park attendance type:`, {
                          srcName: eventInfo.srcName,
@@ -1082,7 +1082,7 @@ class EventHandlerService {
                       });
                       
                       let person_Id = null; // Default fallback - use null for unknown persons
-                      if (similarity && humanId) {
+                      if (humanId && similarity !== null && similarity !== undefined) {
                          const user = await db.users.findFirst({
                             where: { unique_id: humanId.toString() }
                          });
@@ -1640,7 +1640,7 @@ class EventHandlerService {
                            humanId
                         });
                         
-                        if (similarity && humanId) {
+                        if (humanId && similarity !== null && similarity !== undefined) {
                            const user = await db.users.findFirst({
                               where: { unique_id: humanId.toString() }
                            });
@@ -1922,7 +1922,7 @@ class EventHandlerService {
          // Remove base64 prefix from image data before sending to HikVision API
          const cleanFaceData = base64ImageData ? base64ImageData.replace(/^data:image\/[a-z]+;base64,/, '') : null;
          const hikVisionPayload = {
-            personCode: guestUser.Id.toString(),
+            personCode: `G-${guestUser.Id.toString()}`,
             personFamilyName: guestNumber.toString(),
             personGivenName: "Guest",
             gender: gender === "Male" ? 1 : 2,
