@@ -6,16 +6,19 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import compression from "compression";
 import express, { Request, Response } from "express";
+import { createServer } from 'http';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
 import mainRouter from "@/routes";
 import { errorHandler } from "@/middlewares";
+import SocketService from "@/services/socket.service";
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: '.env' });
 }
 
 const app = express();
+const server = createServer(app);
 const PORT = process.env.PORT || 5000;
 
 
@@ -105,10 +108,14 @@ app.use(errorHandler)
 
 const startServer = async () => {
   try {
-    app.listen(PORT, () => {
+    // Initialize Socket.IO
+    SocketService.initializeSocket(server);
+    
+    server.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
       console.log(`🌐 Server URL: http://localhost:${PORT}`);
+      console.log(`🔌 WebSocket server initialized`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

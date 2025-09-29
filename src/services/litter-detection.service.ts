@@ -72,6 +72,7 @@ class LitterDetectionService {
    }
 
    protected static viewLitterDetectionsService = async () => {
+      console.log("🟡 [LitterDetectionService] Starting to fetch litter detections...");
 
       try {
          const results = await db.parks_litter_detection.findMany({
@@ -122,37 +123,61 @@ class LitterDetectionService {
             }
          });
 
-         // Manually fetch intranet posting history for each litter detection
-         const resultsWithIntranetHistory = await Promise.all(
-            results.map(async (litterDetection) => {
-               const intranetHistory = await db.intranet_posting_history.findMany({
-                  where: {
-                     OR: [
-                        { abc1: litterDetection.Id.toString() },
-                        { abc2: litterDetection.Id.toString() },
-                        { abc3: litterDetection.Id.toString() }
-                     ]
-                  },
-                  select: {
-                     id: true,
-                     title: true,
-                     intranet_id: true,
-                     comments: true,
-                     date: true,
-                     time: true
-                  }
+         // Get all litter detection IDs for batch query
+         const litterDetectionIds = results.map(ld => ld.Id.toString());
+         
+         // Fetch all intranet posting history in a single query
+         const allIntranetHistory = await db.intranet_posting_history.findMany({
+            where: {
+               OR: [
+                  { abc1: { in: litterDetectionIds } },
+                  { abc2: { in: litterDetectionIds } },
+                  { abc3: { in: litterDetectionIds } }
+               ]
+            },
+            select: {
+               id: true,
+               title: true,
+               intranet_id: true,
+               comments: true,
+               date: true,
+               time: true,
+               abc1: true,
+               abc2: true,
+               abc3: true
+            }
+         });
+
+         // Group intranet history by litter detection ID
+         const intranetHistoryMap = new Map();
+         allIntranetHistory.forEach(history => {
+            const litterId = history.abc1 || history.abc2 || history.abc3;
+            if (litterId) {
+               if (!intranetHistoryMap.has(litterId)) {
+                  intranetHistoryMap.set(litterId, []);
+               }
+               intranetHistoryMap.get(litterId).push({
+                  id: history.id,
+                  title: history.title,
+                  intranet_id: history.intranet_id,
+                  comments: history.comments,
+                  date: history.date,
+                  time: history.time
                });
+            }
+         });
 
-               return {
-                  ...litterDetection,
-                  intranet_posting_history: intranetHistory
-               };
-            })
-         );
+         // Map intranet history to each litter detection
+         const resultsWithIntranetHistory = results.map(litterDetection => ({
+            ...litterDetection,
+            intranet_posting_history: intranetHistoryMap.get(litterDetection.Id.toString()) || []
+         }));
 
+         console.log(`📦 [LitterDetectionService] Successfully retrieved ${resultsWithIntranetHistory.length} litter detections.`);
          return resultsWithIntranetHistory;
 
       } catch (error: any) {
+         console.error("💥 [LitterDetectionService] Error fetching litter detections:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch litter detections");
       }
    }

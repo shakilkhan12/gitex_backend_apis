@@ -5,6 +5,8 @@ import axios from "axios";
 import https from "https";
 import * as nodeCrypto from 'crypto';
 import { v2 as cloudinary } from 'cloudinary';
+import { formatDate, formatTime } from "@/utils/dateTime.utils";
+import SocketService from "./socket.service";
 // Simple logger implementation
 const Logger = {
    info: (message: string, data?: any) => {
@@ -486,24 +488,33 @@ class EventHandlerService {
                 }
              }
              else if(eventType===attendance_code){
-                Logger.info(`[EventHandlerService] Processing attendance event for camera: ${eventInfo.srcIndex}`);
+                Logger.info(`[EventHandlerService] Processing attendance event for camera: ${eventInfo.srcIndex} (${eventInfo.srcName})`);
                 const isOfficeCamera = office_cameras.includes(eventInfo.srcIndex)
                 const isParkCamera = park_cameras.includes(eventInfo.srcIndex)
                 
-                Logger.debug(`[EventHandlerService] Camera type detection:`, {
+                Logger.info(`[EventHandlerService] Camera type detection:`, {
                    srcIndex: eventInfo.srcIndex,
+                   srcName: eventInfo.srcName,
                    isOfficeCamera,
                    isParkCamera,
-                   srcName: eventInfo.srcName
+                   officeCamerasList: office_cameras,
+                   parkCamerasList: park_cameras
                 });
                 
                 if(isOfficeCamera){
-                   Logger.info(`[EventHandlerService] Processing office camera attendance`);
+                   Logger.info(`[EventHandlerService] Processing office camera attendance - Camera: ${eventInfo.srcName} (${eventInfo.srcIndex})`);
                    const officeCamera = await db.offices_cameras.findFirst({
                       where: {
                          camera_Id: eventInfo.srcIndex
                       }
                    })
+                   
+                   Logger.info(`[EventHandlerService] Office camera lookup result:`, {
+                      found: !!officeCamera,
+                      cameraId: officeCamera?.Id,
+                      officeId: officeCamera?.office_Id,
+                      cameraName: officeCamera?.camera_english_name
+                   });
                    
                    if(officeCamera && officeCamera.office_Id){
                       Logger.info(`[EventHandlerService] Found office camera:`, {
@@ -513,13 +524,15 @@ class EventHandlerService {
                       });
                       
                       const office_Id = officeCamera.office_Id
-                      const isEntry = eventInfo.srcName.toLowerCase().includes("entry")
+                      const isEntry = eventInfo.srcName.toLowerCase().includes("entry") || eventInfo.srcName.toLowerCase().includes("test")
                       const isExit = eventInfo.srcName.toLowerCase().includes("exit")
                       
-                      Logger.debug(`[EventHandlerService] Office attendance type:`, {
+                      Logger.info(`[EventHandlerService] Office attendance type:`, {
                          srcName: eventInfo.srcName,
                          isEntry,
-                         isExit
+                         isExit,
+                         officeId: office_Id,
+                         srcIndex: eventInfo.srcIndex
                       });
                       
                       let genderName = 'Unknown';
@@ -652,13 +665,21 @@ class EventHandlerService {
                       }
                       
                       // Only create footfall records for entry events, not exit events
+                      Logger.info(`[EventHandlerService] Checking if should create footfall record:`, {
+                         isEntry,
+                         srcName: eventInfo.srcName,
+                         officeId: officeFootfallData.office_Id,
+                         personId: officeFootfallData.person_Id
+                      });
+                      
                       if(isEntry){
-                         Logger.info(`[EventHandlerService] Creating office footfall record for entry:`, {
+                         Logger.info(`[EventHandlerService] ✅ Creating office footfall record for entry:`, {
                          officeId: officeFootfallData.office_Id,
                          personId: officeFootfallData.person_Id,
                          gender: officeFootfallData.gender,
                          isChild: officeFootfallData.is_child,
-                         detectionId: officeFootfallData.detection_Id
+                         detectionId: officeFootfallData.detection_Id,
+                         srcName: eventInfo.srcName
                       });
                       
                         const officeFootfallRecord = await db.offices_footfall_analysis.create({
@@ -666,13 +687,68 @@ class EventHandlerService {
                         })
                         
                         Logger.info(`[EventHandlerService] Successfully created office footfall record with ID: ${officeFootfallRecord.id}`);
+
+                        let userDetails = null;
+                        if (person_Id) {
+                           const user = await db.users.findFirst({ where: { Id: person_Id } });
+                           if (user) {
+                              userDetails = {
+                                 Id: user.Id,
+                                 user_Id: user.user_Id,
+                                 emp_Id: user.emp_Id,
+                                 emp__eng_name: user.emp__eng_name,
+                                 emp__arabic_name: user.emp__arabic_name,
+                                 gender: user.gender,
+                                 image: user.image
+                              };
+                           }
+                        }
+
+                        const officeDetails = await db.offices.findFirst({ where: { Id: office_Id } });
+                        
+                        const officeCamera = await db.offices_cameras.findFirst({ where: { camera_Id: eventInfo.srcIndex } });
+
+                        const socketData = {
+                           type: 'new_entry',
+                           data: {
+                              id: officeFootfallRecord.id,
+                              office_Id: officeFootfallData.office_Id,
+                              detection_Id: officeFootfallData.detection_Id,
+                              person_Id: officeFootfallData.person_Id,
+                              gender: officeFootfallData.gender,
+                              is_child: officeFootfallData.is_child,
+                              detected_camera_Id: officeFootfallData.detected_camera_Id,
+                              detected_camera_name: officeFootfallData.detected_camera_name,
+                              time: formatDate(officeFootfallData.time),
+                              createdAt: new Date(),
+                              updatedAt: new Date(),
+                              person: userDetails,
+                              office: officeDetails ? {
+                                 Id: officeDetails.Id,
+                                 office_english_name: officeDetails.office_english_name,
+                                 office_arabic_name: officeDetails.office_arabic_name
+                              } : null,
+                              offices_cameras: officeCamera ? {
+                                 Id: officeCamera.Id,
+                                 camera_english_name: officeCamera.camera_english_name,
+                                 camera_arabic_name: officeCamera.camera_arabic_name,
+                                 ip_address: officeCamera.ip_address
+                              } : null
+                           }
+                        };
+                        
+                        SocketService.emitOfficeFootfallUpdate(socketData);
                       } else {
-                         Logger.info(`[EventHandlerService] Skipping office footfall record creation for exit event`);
+                         Logger.info(`[EventHandlerService] ❌ Skipping office footfall record creation for exit event:`, {
+                            srcName: eventInfo.srcName,
+                            isEntry,
+                            isExit
+                         });
                       }
 
                       // Create sentiment analysis record for both entry and exit events
                       let sentimentImageUrl = null;
-                      let detectedSentiment = 'unknown'; // Default sentiment
+                      let detectedSentiment = 'neutral'; // Default sentiment
                       
                       // Get faceData URL from event data (same as guest user creation)
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
@@ -726,21 +802,21 @@ class EventHandlerService {
                          }
                       }
 
-                      // Get user details for sentiment analysis
+                      // Get user details for sentiment analysis (same structure as office sentiment service)
                       let personName = 'Unknown';
                       let personImage = null;
                       let sentimentOf = 'visitor';
+                      let userDetails = null;
                       
                       if (person_Id) {
                          const user = await db.users.findUnique({
                             where: { Id: person_Id },
-                            select: { 
-                               emp__eng_name: true, 
-                               emp__arabic_name: true, 
-                               image: true,
-                               emp_Id: true,
-                               emp_code: true,
-                               is_attendance_user: true
+                            include: {
+                               users_roles: {
+                                  select: {
+                                     role_name: true
+                                  }
+                               }
                             }
                          });
                          
@@ -748,9 +824,37 @@ class EventHandlerService {
                             personName = user.emp__eng_name || user.emp__arabic_name || 'Unknown';
                             personImage = user.image;
                             
-                            // Determine if employee or visitor
-                            const isEmployee = user.emp_Id && user.emp_code && user.is_attendance_user;
+                            // Determine if employee or visitor (same logic as office sentiment service)
+                            const isEmployee = (user.emp_Id && user.emp_Id.trim() !== '') ||
+                                             (user.emp_code && user.emp_code.trim() !== '') ||
+                                             user.is_attendance_user === true;
                             sentimentOf = isEmployee ? 'employee' : 'visitor';
+                            
+                            // Create user details object (same structure as office sentiment service)
+                            userDetails = {
+                               Id: user.Id,
+                               user_Id: user.user_Id,
+                               emp_Id: user.emp_Id,
+                               emp__eng_name: user.emp__eng_name,
+                               emp__arabic_name: user.emp__arabic_name,
+                               gender: user.gender,
+                               country_code: user.country_code,
+                               phone: user.phone,
+                               email: user.email,
+                               dep_eng_name: user.dep_eng_name,
+                               dep_arabic_name: user.dep_arabic_name,
+                               desig_eng_name: user.desig_eng_name,
+                               desig_arabic_name: user.desig_arabic_name,
+                               unit_eng_name: user.unit_eng_name,
+                               unit_arabic_name: user.unit_arabic_name,
+                               committe_eng_name: user.committe_eng_name,
+                               committe_arabic_name: user.committe_arabic_name,
+                               ai_engine_access: user.ai_engine_access,
+                               last_login: user.last_login,
+                               role: user.users_roles?.role_name,
+                               createdAt: user.createdAt,
+                               updatedAt: user.updatedAt
+                            };
                             
                             Logger.debug(`[EventHandlerService] Office sentiment analysis user details:`, {
                                personName,
@@ -795,9 +899,106 @@ class EventHandlerService {
                          });
                          
                          Logger.info(`[EventHandlerService] Successfully created office sentiment analysis record with ID: ${officeSentimentRecord.Id}`);
+                         
+                         try {
+                            SocketService.emitOfficeSentimentUpdate({
+                               type: 'new_entry',
+                               data: {
+                                  id: officeSentimentRecord.Id,
+                                  person_Id: officeSentimentData.person_Id,
+                                  detection_Id: officeSentimentData.detection_Id,
+                                  sentiment_of: officeSentimentData.sentiment_of,
+                                  person_name: personName,
+                                  person_image: personImage,
+                                  gender: officeSentimentData.gender,
+                                  check_in_image: officeSentimentData.check_in_image,
+                                  check_in_date: formatDate(officeSentimentData.check_in_date),
+                                  check_in_time: formatTime(officeSentimentData.check_in_time),
+                                  check_in_sentiment: officeSentimentData.check_in_sentiment,
+                                  entry_camera_Id: officeSentimentData.entry_camera_Id,
+                                  check_out_date: officeSentimentData.check_out_date ? formatDate(officeSentimentData.check_out_date) : null,
+                                  check_out_time: officeSentimentData.check_out_time ? formatTime(officeSentimentData.check_out_time) : null,
+                                  check_out_capture: officeSentimentData.check_out_capture,
+                                  check_out_sentiment: officeSentimentData.check_out_sentiment,
+                                  exit_camera_Id: officeSentimentData.exit_camera_Id,
+                                  createdAt: officeSentimentRecord.createdAt,
+                                  updatedAt: officeSentimentRecord.updatedAt,
+                                  user: userDetails, // Complete user details (same as office sentiment service)
+                                  // Camera details (same structure as office sentiment service)
+                                  offices_cameras_offices_sentiment_analysis_entry_camera_IdTooffices_cameras: isEntry ? {
+                                     camera_english_name: officeCamera.camera_english_name,
+                                     camera_arabic_name: officeCamera.camera_arabic_name,
+                                     ip_address: officeCamera.ip_address
+                                  } : null,
+                                  offices_cameras_offices_sentiment_analysis_exit_camera_IdTooffices_cameras: isExit ? {
+                                     camera_english_name: officeCamera.camera_english_name,
+                                     camera_arabic_name: officeCamera.camera_arabic_name,
+                                     ip_address: officeCamera.ip_address
+                                  } : null
+                               }
+                            });
+                         } catch (socketError) {
+                            Logger.error(`[EventHandlerService] Failed to emit socket event:`, socketError);
+                         }
                       } else if(isExit){
                          // Find existing sentiment analysis record for exit (similar to attendance logic)
                          Logger.info(`[EventHandlerService] Processing office exit sentiment analysis`);
+                         
+                         // Process exit sentiment image and detection
+                         let exitSentimentImageUrl = null;
+                         let exitDetectedSentiment = 'neutral'; // Default sentiment
+                         
+                         // Get faceData URL from event data for exit sentiment
+                         if (eventInfo.data?.alarmResult?.faces?.URL) {
+                            try {
+                               Logger.info(`[EventHandlerService] Processing exit sentiment analysis image for office`);
+                               const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                               const imageDataResponse = await this.getImageData(faceDataUrl);
+                               
+                               if (imageDataResponse) {
+                                  // The response is directly the base64 string, not wrapped in a data object
+                                  const base64Image = imageDataResponse;
+                                  
+                                  // Upload to Cloudinary
+                                  exitSentimentImageUrl = await this.uploadImageToCloudinary(base64Image, 'sentiment', eventInfo.eventId);
+                                  Logger.info(`[EventHandlerService] Successfully uploaded exit sentiment image to Cloudinary for office`);
+                                  
+                                  // Get emotion detection from the uploaded image
+                                  if (exitSentimentImageUrl) {
+                                     try {
+                                        Logger.info(`[EventHandlerService] Calling emotion detection API for office exit sentiment`);
+                                        const emotionResponse = await axios.post('http://127.0.0.1:8000/api/emotion-detection', {
+                                           image_url: exitSentimentImageUrl
+                                        }, {
+                                           timeout: 10000,
+                                           headers: { 'Content-Type': 'application/json' }
+                                        });
+                                        
+                                        if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
+                                           exitDetectedSentiment = emotionResponse.data.faces[0].emotion;
+                                           Logger.info(`[EventHandlerService] Detected office exit sentiment: ${exitDetectedSentiment}`, {
+                                              confidence: emotionResponse.data.faces[0].confidence,
+                                              processingTime: emotionResponse.data.processing_time
+                                           });
+                                        } else {
+                                           Logger.warn(`[EventHandlerService] No emotion detected for office exit image, using default: neutral`);
+                                        }
+                                     } catch (emotionError: any) {
+                                        if (emotionError.code === 'ECONNREFUSED') {
+                                           Logger.warn(`[EventHandlerService] Emotion detection service is not available (ECONNREFUSED). Using default exit sentiment: neutral`);
+                                        } else if (emotionError.code === 'ETIMEDOUT') {
+                                           Logger.warn(`[EventHandlerService] Emotion detection service timed out. Using default exit sentiment: neutral`);
+                                        } else {
+                                           Logger.error(`[EventHandlerService] Failed to detect emotion for office exit image:`, emotionError.message);
+                                           Logger.info(`[EventHandlerService] Using default exit sentiment: neutral`);
+                                        }
+                                     }
+                                  }
+                               }
+                            } catch (imageError: any) {
+                               Logger.error(`[EventHandlerService] Failed to process office exit sentiment image:`, imageError);
+                            }
+                         }
                          
                          // If person_Id is null, try to find it using human_id from the event
                          let searchPersonId = person_Id;
@@ -835,14 +1036,66 @@ class EventHandlerService {
                             await db.offices_sentiment_analysis.update({
                                where: { Id: latestSentiment.Id },
                                data: {
-                                  check_out_capture: sentimentImageUrl,
+                                  check_out_capture: exitSentimentImageUrl,
                                   check_out_date: officeSentimentData.check_out_date,
                                   check_out_time: officeSentimentData.check_out_time,
-                                  check_out_sentiment: officeSentimentData.check_out_sentiment,
+                                  check_out_sentiment: exitDetectedSentiment,
                                   exit_camera_Id: officeSentimentData.exit_camera_Id
                                }
                             });
                             Logger.info(`[EventHandlerService] Successfully updated office exit sentiment analysis`);
+                            
+                            // Get entry camera details for the exit update
+                            let entryCameraDetails = null;
+                            if (latestSentiment.entry_camera_Id) {
+                               const entryCamera = await db.offices_cameras.findFirst({
+                                  where: { Id: latestSentiment.entry_camera_Id }
+                               });
+                               if (entryCamera) {
+                                  entryCameraDetails = {
+                                     camera_english_name: entryCamera.camera_english_name,
+                                     camera_arabic_name: entryCamera.camera_arabic_name,
+                                     ip_address: entryCamera.ip_address
+                                  };
+                               }
+                            }
+
+                            try {
+                               SocketService.emitOfficeSentimentUpdate({
+                                  type: 'exit_update',
+                                  data: {
+                                     id: latestSentiment.Id,
+                                     person_Id: latestSentiment.person_Id,
+                                     detection_Id: latestSentiment.detection_Id,
+                                     sentiment_of: latestSentiment.sentiment_of,
+                                     person_name: personName,
+                                     person_image: personImage,
+                                     gender: latestSentiment.gender,
+                                     check_in_image: latestSentiment.check_in_image,
+                                     check_in_date: formatDate(latestSentiment.check_in_date),
+                                     check_in_time: formatTime(latestSentiment.check_in_time),
+                                     check_in_sentiment: latestSentiment.check_in_sentiment,
+                                     entry_camera_Id: latestSentiment.entry_camera_Id,
+                                     check_out_date: formatDate(officeSentimentData.check_out_date),
+                                     check_out_time: formatTime(officeSentimentData.check_out_time),
+                                     check_out_capture: exitSentimentImageUrl,
+                                     check_out_sentiment: exitDetectedSentiment,
+                                     exit_camera_Id: officeSentimentData.exit_camera_Id,
+                                     createdAt: latestSentiment.createdAt,
+                                     updatedAt: latestSentiment.updatedAt,
+                                     user: userDetails, // Complete user details (same as office sentiment service)
+                                     // Camera details (same structure as office sentiment service)
+                                     offices_cameras_offices_sentiment_analysis_entry_camera_IdTooffices_cameras: entryCameraDetails,
+                                     offices_cameras_offices_sentiment_analysis_exit_camera_IdTooffices_cameras: {
+                                        camera_english_name: officeCamera.camera_english_name,
+                                        camera_arabic_name: officeCamera.camera_arabic_name,
+                                        ip_address: officeCamera.ip_address
+                                     }
+                                  }
+                               });
+                            } catch (socketError) {
+                               Logger.error(`[EventHandlerService] Failed to emit socket event for exit:`, socketError);
+                            }
                          } else {
                             Logger.warn(`[EventHandlerService] No matching entry record found for office exit sentiment analysis`, {
                                office_Id,
@@ -879,6 +1132,142 @@ class EventHandlerService {
                          })
                          
                          Logger.info(`[EventHandlerService] Successfully created office entry attendance record with ID: ${officeAttendanceRecord.Id}`);
+
+                         // Emit office attendance update via socket
+                         try {
+                            // Get user details
+                            const userDetails = officeAttendanceRecord.person_Id ? await db.users.findUnique({
+                               where: { Id: officeAttendanceRecord.person_Id },
+                               select: {
+                                  Id: true,
+                                  emp__eng_name: true,
+                                  emp__arabic_name: true,
+                                  emp_Id: true,
+                                  user_Id: true,
+                                  unique_id: true,
+                                  dep_eng_name: true,
+                                  dep_arabic_name: true,
+                                  gender: true,
+                                  image: true,
+                                  is_attendance_user: true
+                               }
+                            }) : null;
+
+                            // Get office details
+                            const officeDetails = officeAttendanceRecord.office_Id ? await db.offices.findUnique({
+                               where: { Id: officeAttendanceRecord.office_Id },
+                               select: {
+                                  Id: true,
+                                  office_english_name: true,
+                                  office_arabic_name: true,
+                                  latitude: true,
+                                  longitude: true
+                               }
+                            }) : null;
+
+                            // Format dates for frontend compatibility
+                            const formatTimeToString = (timeValue: any): string => {
+                               if (!timeValue) return "--";
+                               
+                               try {
+                                  let dateObj: Date;
+                                  
+                                  if (typeof timeValue === 'string') {
+                                     if (timeValue.includes(' ') && timeValue.includes(':')) {
+                                        dateObj = new Date(timeValue);
+                                     } else {
+                                        return timeValue;
+                                     }
+                                  } else if (timeValue instanceof Date) {
+                                     dateObj = timeValue;
+                                  } else {
+                                     return "--";
+                                  }
+                                  
+                                  if (isNaN(dateObj.getTime())) {
+                                     return "--";
+                                  }
+                                  const hours = dateObj.getUTCHours().toString().padStart(2, '0');
+                                  const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0');
+                                  const seconds = dateObj.getUTCSeconds().toString().padStart(2, '0');
+                                  return `${hours}:${minutes}:${seconds}`;
+                               } catch (error) {
+                                  return "--";
+                               }
+                            };
+
+                            const formatDateToString = (dateValue: any): string => {
+                               if (!dateValue) return "No date";
+                               
+                               try {
+                                  let dateObj: Date;
+                                  
+                                  if (typeof dateValue === 'string') {
+                                     if (dateValue.includes(' ') && dateValue.includes(':')) {
+                                        dateObj = new Date(dateValue);
+                                     } else if (dateValue.includes('-') && dateValue.length === 10) {
+                                        return dateValue;
+                                     } else {
+                                        return "No date";
+                                     }
+                                  } else if (dateValue instanceof Date) {
+                                     dateObj = dateValue;
+                                  } else {
+                                     return "No date";
+                                  }
+                                  
+                                  if (isNaN(dateObj.getTime())) {
+                                     return "No date";
+                                  }
+                                  
+                                  const year = dateObj.getUTCFullYear();
+                                  const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, '0');
+                                  const day = dateObj.getUTCDate().toString().padStart(2, '0');
+                                  return `${year}-${month}-${day}`;
+                               } catch (error) {
+                                  return "No date";
+                               }
+                            };
+
+                            const formatDateForDisplay = (dateString: string): string => {
+                               if (!dateString || dateString === "No date") return "No date";
+                               
+                               try {
+                                  const [year, month, day] = dateString.split('-');
+                                  const monthNames = [
+                                     "January", "February", "March", "April", "May", "June",
+                                     "July", "August", "September", "October", "November", "December"
+                                  ];
+                                  
+                                  const monthIndex = parseInt(month) - 1;
+                                  if (monthIndex < 0 || monthIndex > 11) return dateString;
+                                  
+                                  return `${parseInt(day)} ${monthNames[monthIndex]} ${year}`;
+                               } catch (error) {
+                                  return dateString;
+                               }
+                            };
+
+                            const socketData = {
+                               type: 'attendance_entry',
+                               data: {
+                                  ...officeAttendanceRecord,
+                                  user: userDetails,
+                                  office: officeDetails,
+                                  // Add formatted date/time fields for frontend compatibility
+                                  formattedEntryTime: formatTimeToString(officeAttendanceRecord.entry_time),
+                                  formattedDate: formatDateForDisplay(formatDateToString(officeAttendanceRecord.entry_time || officeAttendanceRecord.createdAt)),
+                                  rawDate: formatDateToString(officeAttendanceRecord.entry_time || officeAttendanceRecord.createdAt),
+                                  createdAt: new Date(),
+                                  updatedAt: new Date()
+                               }
+                            };
+
+
+                            SocketService.emitOfficeAttendanceUpdate(socketData);
+                         } catch (socketError: any) {
+                            Logger.error(`[EventHandlerService] ❌ Failed to emit office attendance entry socket update:`, socketError.message);
+                         }
                             
                             // Call EmployeeEntryExitService API for entry
                             try {
@@ -976,13 +1365,150 @@ class EventHandlerService {
                                });
                             } else {
                             Logger.info(`[EventHandlerService] Updating office exit attendance for record ID: ${latestAttendance.Id}`);
-                            await db.offices_attendance.update({
+                            const updatedAttendanceRecord = await db.offices_attendance.update({
                                where: { Id: latestAttendance.Id },
                                data: {
                                   exit_time: eventInfo.happenTime
                                }
                             })
                             Logger.info(`[EventHandlerService] Successfully updated office exit attendance`);
+
+                            // Emit office attendance exit update via socket
+                            try {
+                               // Get user details
+                               const userDetails = updatedAttendanceRecord.person_Id ? await db.users.findUnique({
+                                  where: { Id: updatedAttendanceRecord.person_Id },
+                                  select: {
+                                     Id: true,
+                                     emp__eng_name: true,
+                                     emp__arabic_name: true,
+                                     emp_Id: true,
+                                     user_Id: true,
+                                     unique_id: true,
+                                     dep_eng_name: true,
+                                     dep_arabic_name: true,
+                                     gender: true,
+                                     image: true,
+                                     is_attendance_user: true
+                                  }
+                               }) : null;
+
+                               // Get office details
+                               const officeDetails = updatedAttendanceRecord.office_Id ? await db.offices.findUnique({
+                                  where: { Id: updatedAttendanceRecord.office_Id },
+                                  select: {
+                                     Id: true,
+                                     office_english_name: true,
+                                     office_arabic_name: true,
+                                     latitude: true,
+                                     longitude: true
+                                  }
+                               }) : null;
+
+                               // Format dates for frontend compatibility (same functions as entry)
+                               const formatTimeToString = (timeValue: any): string => {
+                                  if (!timeValue) return "--";
+                                  
+                                  try {
+                                     let dateObj: Date;
+                                     
+                                     if (typeof timeValue === 'string') {
+                                        if (timeValue.includes(' ') && timeValue.includes(':')) {
+                                           dateObj = new Date(timeValue);
+                                        } else {
+                                           return timeValue;
+                                        }
+                                     } else if (timeValue instanceof Date) {
+                                        dateObj = timeValue;
+                                     } else {
+                                        return "--";
+                                     }
+                                     
+                                     if (isNaN(dateObj.getTime())) {
+                                        return "--";
+                                     }
+                                     const hours = dateObj.getUTCHours().toString().padStart(2, '0');
+                                     const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0');
+                                     const seconds = dateObj.getUTCSeconds().toString().padStart(2, '0');
+                                     return `${hours}:${minutes}:${seconds}`;
+                                  } catch (error) {
+                                     return "--";
+                                  }
+                               };
+
+                               const formatDateToString = (dateValue: any): string => {
+                                  if (!dateValue) return "No date";
+                                  
+                                  try {
+                                     let dateObj: Date;
+                                     
+                                     if (typeof dateValue === 'string') {
+                                        if (dateValue.includes(' ') && dateValue.includes(':')) {
+                                           dateObj = new Date(dateValue);
+                                        } else if (dateValue.includes('-') && dateValue.length === 10) {
+                                           return dateValue;
+                                        } else {
+                                           return "No date";
+                                        }
+                                     } else if (dateValue instanceof Date) {
+                                        dateObj = dateValue;
+                                     } else {
+                                        return "No date";
+                                     }
+                                     
+                                     if (isNaN(dateObj.getTime())) {
+                                        return "No date";
+                                     }
+                                     
+                                     const year = dateObj.getUTCFullYear();
+                                     const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, '0');
+                                     const day = dateObj.getUTCDate().toString().padStart(2, '0');
+                                     return `${year}-${month}-${day}`;
+                                  } catch (error) {
+                                     return "No date";
+                                  }
+                               };
+
+                               const formatDateForDisplay = (dateString: string): string => {
+                                  if (!dateString || dateString === "No date") return "No date";
+                                  
+                                  try {
+                                     const [year, month, day] = dateString.split('-');
+                                     const monthNames = [
+                                        "January", "February", "March", "April", "May", "June",
+                                        "July", "August", "September", "October", "November", "December"
+                                     ];
+                                     
+                                     const monthIndex = parseInt(month) - 1;
+                                     if (monthIndex < 0 || monthIndex > 11) return dateString;
+                                     
+                                     return `${parseInt(day)} ${monthNames[monthIndex]} ${year}`;
+                                  } catch (error) {
+                                     return dateString;
+                                  }
+                               };
+
+                               const socketData = {
+                                  type: 'attendance_exit',
+                                  data: {
+                                     ...updatedAttendanceRecord,
+                                     user: userDetails,
+                                     office: officeDetails,
+                                     // Add formatted date/time fields for frontend compatibility
+                                     formattedEntryTime: formatTimeToString(updatedAttendanceRecord.entry_time),
+                                     formattedExitTime: formatTimeToString(updatedAttendanceRecord.exit_time),
+                                     formattedDate: formatDateForDisplay(formatDateToString(updatedAttendanceRecord.entry_time || updatedAttendanceRecord.createdAt)),
+                                     rawDate: formatDateToString(updatedAttendanceRecord.entry_time || updatedAttendanceRecord.createdAt),
+                                     createdAt: new Date(),
+                                     updatedAt: new Date()
+                                  }
+                               };
+
+
+                               SocketService.emitOfficeAttendanceUpdate(socketData);
+                            } catch (socketError: any) {
+                               Logger.error(`[EventHandlerService] ❌ Failed to emit office attendance exit socket update:`, socketError.message);
+                            }
                                
                                // Call EmployeeEntryExitService API for exit
                                try {
@@ -1198,13 +1724,67 @@ class EventHandlerService {
                         })
                         
                         Logger.info(`[EventHandlerService] Successfully created park footfall record with ID: ${parkFootfallRecord.id}`);
+
+                        // Emit park footfall update via socket
+                        try {
+                           // Get user details
+                           const userDetails = parkFootfallRecord.person_Id ? await db.users.findUnique({
+                              where: { Id: parkFootfallRecord.person_Id },
+                              select: {
+                                 Id: true,
+                                 emp__eng_name: true,
+                                 emp__arabic_name: true,
+                                 emp_Id: true,
+                                 user_Id: true,
+                                 is_attendance_user: true
+                              }
+                           }) : null;
+
+                           // Get park details
+                           const parkDetails = parkFootfallRecord.park_Id ? await db.parks.findUnique({
+                              where: { Id: parkFootfallRecord.park_Id },
+                              select: {
+                                 Id: true,
+                                 park_english_name: true,
+                                 park_arabic_name: true
+                              }
+                           }) : null;
+
+                           // Get camera details - convert string to number for Id field
+                           const cameraDetails = parkFootfallRecord.detected_camera_Id ? await db.park_cameras.findUnique({
+                              where: { Id: parseInt(parkFootfallRecord.detected_camera_Id) },
+                              select: {
+                                 Id: true,
+                                 camera_english_name: true,
+                                 camera_arabic_name: true,
+                                 ip_address: true
+                              }
+                           }) : null;
+
+                           const socketData = {
+                              type: 'new_entry',
+                              data: {
+                                 ...parkFootfallRecord,
+                                 person: userDetails,
+                                 park: parkDetails,
+                                 park_cameras: cameraDetails,
+                                 createdAt: new Date(),
+                                 updatedAt: new Date()
+                              }
+                           };
+
+
+                           SocketService.emitParkFootfallUpdate(socketData);
+                        } catch (socketError: any) {
+                           Logger.error(`[EventHandlerService] ❌ Failed to emit park footfall socket update:`, socketError.message);
+                        }
                       } else {
                          Logger.info(`[EventHandlerService] Skipping park footfall record creation for exit event`);
                       }
 
                       // Create sentiment analysis record for both entry and exit events
                       let sentimentImageUrl = null;
-                      let detectedSentiment = 'unknown'; // Default sentiment
+                      let detectedSentiment = 'neutral'; // Default sentiment
                       
                       // Get faceData URL from event data (same as guest user creation)
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
@@ -1258,21 +1838,21 @@ class EventHandlerService {
                          }
                       }
 
-                      // Get user details for sentiment analysis
+                      // Get user details for sentiment analysis (same structure as park sentiment service)
                       let personName = 'Unknown';
                       let personImage = null;
                       let sentimentOf = 'visitor';
+                      let userDetails = null;
                       
                       if (person_Id) {
                          const user = await db.users.findUnique({
                             where: { Id: person_Id },
-                            select: { 
-                               emp__eng_name: true, 
-                               emp__arabic_name: true, 
-                               image: true,
-                               emp_Id: true,
-                               emp_code: true,
-                               is_attendance_user: true
+                            include: {
+                               users_roles: {
+                                  select: {
+                                     role_name: true
+                                  }
+                               }
                             }
                          });
                          
@@ -1280,9 +1860,37 @@ class EventHandlerService {
                             personName = user.emp__eng_name || user.emp__arabic_name || 'Unknown';
                             personImage = user.image;
                             
-                            // Determine if employee or visitor
-                            const isEmployee = user.emp_Id && user.emp_code && user.is_attendance_user;
+                            // Determine if employee or visitor (same logic as park sentiment service)
+                            const isEmployee = (user.emp_Id && user.emp_Id.trim() !== '') ||
+                                             (user.emp_code && user.emp_code.trim() !== '') ||
+                                             user.is_attendance_user === true;
                             sentimentOf = isEmployee ? 'employee' : 'visitor';
+                            
+                            // Create user details object (same structure as park sentiment service)
+                            userDetails = {
+                               Id: user.Id,
+                               user_Id: user.user_Id,
+                               emp_Id: user.emp_Id,
+                               emp__eng_name: user.emp__eng_name,
+                               emp__arabic_name: user.emp__arabic_name,
+                               gender: user.gender,
+                               country_code: user.country_code,
+                               phone: user.phone,
+                               email: user.email,
+                               dep_eng_name: user.dep_eng_name,
+                               dep_arabic_name: user.dep_arabic_name,
+                               desig_eng_name: user.desig_eng_name,
+                               desig_arabic_name: user.desig_arabic_name,
+                               unit_eng_name: user.unit_eng_name,
+                               unit_arabic_name: user.unit_arabic_name,
+                               committe_eng_name: user.committe_eng_name,
+                               committe_arabic_name: user.committe_arabic_name,
+                               ai_engine_access: user.ai_engine_access,
+                               last_login: user.last_login,
+                               role: user.users_roles?.role_name,
+                               createdAt: user.createdAt,
+                               updatedAt: user.updatedAt
+                            };
                             
                             Logger.debug(`[EventHandlerService] Park sentiment analysis user details:`, {
                                personName,
@@ -1327,9 +1935,107 @@ class EventHandlerService {
                          });
                          
                          Logger.info(`[EventHandlerService] Successfully created park sentiment analysis record with ID: ${parkSentimentRecord.Id}`);
+                         
+                         // Emit socket event for real-time updates (same structure as park sentiment service)
+                         try {
+                            SocketService.emitParkSentimentUpdate({
+                               type: 'new_entry',
+                               data: {
+                                  id: parkSentimentRecord.Id,
+                                  person_Id: parkSentimentData.person_Id,
+                                  detection_Id: parkSentimentData.detection_Id,
+                                  sentiment_of: parkSentimentData.sentiment_of,
+                                  person_name: personName,
+                                  person_image: personImage,
+                                  gender: parkSentimentData.gender,
+                                  check_in_image: parkSentimentData.check_in_image,
+                                  check_in_date: formatDate(parkSentimentData.check_in_date),
+                                  check_in_time: formatTime(parkSentimentData.check_in_time),
+                                  check_in_sentiment: parkSentimentData.check_in_sentiment,
+                                  entry_camera_Id: parkSentimentData.entry_camera_Id,
+                                  check_out_date: parkSentimentData.check_out_date ? formatDate(parkSentimentData.check_out_date) : null,
+                                  check_out_time: parkSentimentData.check_out_time ? formatTime(parkSentimentData.check_out_time) : null,
+                                  check_out_capture: parkSentimentData.check_out_capture,
+                                  check_out_sentiment: parkSentimentData.check_out_sentiment,
+                                  exit_camera_Id: parkSentimentData.exit_camera_Id,
+                                  createdAt: parkSentimentRecord.createdAt,
+                                  updatedAt: parkSentimentRecord.updatedAt,
+                                  user: userDetails, // Complete user details (same as park sentiment service)
+                                  // Camera details (same structure as park sentiment service)
+                                  park_cameras_parks_sentiment_analysis_entry_camera_IdTopark_cameras: isEntry ? {
+                                     camera_english_name: parkCamera.camera_english_name,
+                                     camera_arabic_name: parkCamera.camera_arabic_name,
+                                     ip_address: parkCamera.ip_address
+                                  } : null,
+                                  park_cameras_parks_sentiment_analysis_exit_camera_IdTopark_cameras: isExit ? {
+                                     camera_english_name: parkCamera.camera_english_name,
+                                     camera_arabic_name: parkCamera.camera_arabic_name,
+                                     ip_address: parkCamera.ip_address
+                                  } : null
+                               }
+                            });
+                         } catch (socketError) {
+                            Logger.error(`[EventHandlerService] Failed to emit park sentiment socket event:`, socketError);
+                         }
                       } else if(isExit){
                          // Find existing sentiment analysis record for exit (similar to attendance logic)
                          Logger.info(`[EventHandlerService] Processing park exit sentiment analysis`);
+                         
+                         // Process exit sentiment image and detection
+                         let exitSentimentImageUrl = null;
+                         let exitDetectedSentiment = 'neutral'; // Default sentiment
+                         
+                         // Get faceData URL from event data for exit sentiment
+                         if (eventInfo.data?.alarmResult?.faces?.URL) {
+                            try {
+                               Logger.info(`[EventHandlerService] Processing exit sentiment analysis image for park`);
+                               const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                               const imageDataResponse = await this.getImageData(faceDataUrl);
+                               
+                               if (imageDataResponse) {
+                                  // The response is directly the base64 string, not wrapped in a data object
+                                  const base64Image = imageDataResponse;
+                                  
+                                  // Upload to Cloudinary
+                                  exitSentimentImageUrl = await this.uploadImageToCloudinary(base64Image, 'sentiment', eventInfo.eventId);
+                                  Logger.info(`[EventHandlerService] Successfully uploaded exit sentiment image to Cloudinary for park`);
+                                  
+                                  // Get emotion detection from the uploaded image
+                                  if (exitSentimentImageUrl) {
+                                     try {
+                                        Logger.info(`[EventHandlerService] Calling emotion detection API for park exit sentiment`);
+                                        const emotionResponse = await axios.post('http://127.0.0.1:8000/api/emotion-detection', {
+                                           image_url: exitSentimentImageUrl
+                                        }, {
+                                           timeout: 10000,
+                                           headers: { 'Content-Type': 'application/json' }
+                                        });
+                                        
+                                        if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
+                                           exitDetectedSentiment = emotionResponse.data.faces[0].emotion;
+                                           Logger.info(`[EventHandlerService] Detected park exit sentiment: ${exitDetectedSentiment}`, {
+                                              confidence: emotionResponse.data.faces[0].confidence,
+                                              processingTime: emotionResponse.data.processing_time
+                                           });
+                                        } else {
+                                           Logger.warn(`[EventHandlerService] No emotion detected for park exit image, using default: neutral`);
+                                        }
+                                     } catch (emotionError: any) {
+                                        if (emotionError.code === 'ECONNREFUSED') {
+                                           Logger.warn(`[EventHandlerService] Emotion detection service is not available (ECONNREFUSED). Using default exit sentiment: neutral`);
+                                        } else if (emotionError.code === 'ETIMEDOUT') {
+                                           Logger.warn(`[EventHandlerService] Emotion detection service timed out. Using default exit sentiment: neutral`);
+                                        } else {
+                                           Logger.error(`[EventHandlerService] Failed to detect emotion for park exit image:`, emotionError.message);
+                                           Logger.info(`[EventHandlerService] Using default exit sentiment: neutral`);
+                                        }
+                                     }
+                                  }
+                               }
+                            } catch (imageError: any) {
+                               Logger.error(`[EventHandlerService] Failed to process park exit sentiment image:`, imageError);
+                            }
+                         }
                          
                          // If person_Id is null, try to find it using human_id from the event
                          let searchPersonId = person_Id;
@@ -1367,14 +2073,67 @@ class EventHandlerService {
                             await db.parks_sentiment_analysis.update({
                                where: { Id: latestSentiment.Id },
                                data: {
-                                  check_out_capture: sentimentImageUrl,
+                                  check_out_capture: exitSentimentImageUrl,
                                   check_out_date: parkSentimentData.check_out_date,
                                   check_out_time: parkSentimentData.check_out_time,
-                                  check_out_sentiment: parkSentimentData.check_out_sentiment,
+                                  check_out_sentiment: exitDetectedSentiment,
                                   exit_camera_Id: parkSentimentData.exit_camera_Id
                                }
                             });
                             Logger.info(`[EventHandlerService] Successfully updated park exit sentiment analysis`);
+                            
+                            // Get entry camera details for the exit update
+                            let entryCameraDetails = null;
+                            if (latestSentiment.entry_camera_Id) {
+                               const entryCamera = await db.park_cameras.findFirst({
+                                  where: { Id: latestSentiment.entry_camera_Id }
+                               });
+                               if (entryCamera) {
+                                  entryCameraDetails = {
+                                     camera_english_name: entryCamera.camera_english_name,
+                                     camera_arabic_name: entryCamera.camera_arabic_name,
+                                     ip_address: entryCamera.ip_address
+                                  };
+                               }
+                            }
+
+                            // Emit socket event for real-time updates (same structure as park sentiment service)
+                            try {
+                               SocketService.emitParkSentimentUpdate({
+                                  type: 'exit_update',
+                                  data: {
+                                     id: latestSentiment.Id,
+                                     person_Id: latestSentiment.person_Id,
+                                     detection_Id: latestSentiment.detection_Id,
+                                     sentiment_of: latestSentiment.sentiment_of,
+                                     person_name: personName,
+                                     person_image: personImage,
+                                     gender: latestSentiment.gender,
+                                     check_in_image: latestSentiment.check_in_image,
+                                     check_in_date: formatDate(latestSentiment.check_in_date),
+                                     check_in_time: formatTime(latestSentiment.check_in_time),
+                                     check_in_sentiment: latestSentiment.check_in_sentiment,
+                                     entry_camera_Id: latestSentiment.entry_camera_Id,
+                                     check_out_date: formatDate(parkSentimentData.check_out_date),
+                                     check_out_time: formatTime(parkSentimentData.check_out_time),
+                                     check_out_capture: exitSentimentImageUrl,
+                                     check_out_sentiment: exitDetectedSentiment,
+                                     exit_camera_Id: parkSentimentData.exit_camera_Id,
+                                     createdAt: latestSentiment.createdAt,
+                                     updatedAt: latestSentiment.updatedAt,
+                                     user: userDetails, // Complete user details (same as park sentiment service)
+                                     // Camera details (same structure as park sentiment service)
+                                     park_cameras_parks_sentiment_analysis_entry_camera_IdTopark_cameras: entryCameraDetails,
+                                     park_cameras_parks_sentiment_analysis_exit_camera_IdTopark_cameras: {
+                                        camera_english_name: parkCamera.camera_english_name,
+                                        camera_arabic_name: parkCamera.camera_arabic_name,
+                                        ip_address: parkCamera.ip_address
+                                     }
+                                  }
+                               });
+                            } catch (socketError) {
+                               Logger.error(`[EventHandlerService] Failed to emit park sentiment socket event for exit:`, socketError);
+                            }
                          } else {
                             Logger.warn(`[EventHandlerService] No matching entry record found for park exit sentiment analysis`, {
                                park_Id,

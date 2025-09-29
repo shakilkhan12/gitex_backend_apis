@@ -6,7 +6,6 @@ import https from "https";
 
 class SmokingDetectionService {
    protected static addSmokingDetectionService = async (smokingDetection: SmokingDetectionType) => {
-console.log('smokingDetection',smokingDetection);
       try {
          console.log('🔍 Looking for park with park_Id:', smokingDetection.park_Id);
          const parkExists = await db.parks.findFirst({
@@ -31,11 +30,13 @@ console.log('smokingDetection',smokingDetection);
          }
 
 
-         // Format date and time properly for database
+         // Format date and time properly for database with consistent timestamps
+         const currentTimestamp = new Date();
+         const currentTimeString = new Date().toTimeString().split(' ')[0]; // Get HH:MM:SS format
          const occurrenceDate = new Date(smokingDetection.occurrence_date);
          const occurrenceTime = new Date(`1970-01-01T${smokingDetection.occurrence_time}Z`);
-         const detectionDate = smokingDetection.detection_date ? new Date(smokingDetection.detection_date) : new Date();
-         const detectionTime = smokingDetection.detection_time ? new Date(`1970-01-01T${smokingDetection.detection_time}Z`) : new Date();
+         const detectionDate = smokingDetection.detection_date ? new Date(smokingDetection.detection_date) : currentTimestamp;
+         const detectionTime = smokingDetection.detection_time ? new Date(`1970-01-01T${smokingDetection.detection_time}Z`) : new Date(`1970-01-01T${currentTimeString}Z`);
 
          const result = await db.parks_smoking_detection.create({
             data: {
@@ -51,8 +52,8 @@ console.log('smokingDetection',smokingDetection);
                description: smokingDetection.description || `Smoking activity detected in ${smokingDetection.location}`,
                is_employee: smokingDetection.is_employee || false,
                current_status: smokingDetection.current_status || 'pending',
-               createdAt: new Date(),
-               updatedAt: new Date()
+               createdAt: currentTimestamp,
+               updatedAt: currentTimestamp
             },
          });
 
@@ -71,6 +72,10 @@ console.log('smokingDetection',smokingDetection);
          }
 
          try {
+            // Use consistent date/time for intranet posting
+            const currentDate = new Date();
+            const currentTime = new Date(`1970-01-01T${new Date().toTimeString().split(' ')[0]}Z`);
+            
             intranetHistory = await db.intranet_posting_history.create({
                data: {
                   smokingDetectionId: result.Id,
@@ -79,8 +84,8 @@ console.log('smokingDetection',smokingDetection);
                   comments: intranetSuccess 
                      ? `Smoking detected at ${smokingDetection.location} - Posted successfully to intranet`
                      : ``,
-                  date: new Date(),
-                  time: new Date(),
+                  date: currentDate,
+                  time: currentTime,
                }
             });
 
@@ -88,8 +93,8 @@ console.log('smokingDetection',smokingDetection);
                const updatedResult = await db.parks_smoking_detection.update({
                   where: { Id: result.Id },
                   data: {
-                     posted_to_intranet_date: intranetHistory.date,
-                     posted_to_intranet_time: intranetHistory.time,
+                     posted_to_intranet_date: currentDate,
+                     posted_to_intranet_time: currentTime,
                      updatedAt: new Date()
                   }
                });

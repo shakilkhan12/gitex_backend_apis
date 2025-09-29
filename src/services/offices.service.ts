@@ -320,19 +320,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          }).length;
          const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
          
-         // Debug: Log calculated counts
-         console.log('Calculated counts:', {
-            totalFootfall,
-            employeeCount,
-            employeeMaleCount,
-            employeeFemaleCount,
-            employeeChildrenCount,
-            guestCount,
-            guestMaleCount,
-            guestFemaleCount,
-            guestChildrenCount
-         });
-
+      
          // Get unique employees (those with valid user_Id)
          const uniqueEmployees = footfallData
             .filter(item => this.isEmployee(item))

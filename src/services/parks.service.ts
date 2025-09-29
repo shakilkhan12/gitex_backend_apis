@@ -339,20 +339,7 @@ class ParkService {
       const employeeData = footfallData.filter(item => this.isEmployee(item));
       const guestData = footfallData.filter(item => this.isGuest(item));
       
-      // Debug: Log sample employee data to understand gender format
-      if (employeeData.length > 0) {
-         console.log('Sample park employee data:', {
-            totalEmployees: employeeData.length,
-            sampleEmployee: employeeData[0],
-            genderValues: employeeData.slice(0, 5).map(emp => ({
-               personGender: emp.person?.gender,
-               itemGender: emp.gender,
-               personId: emp.person_Id,
-               userId: emp.person?.user_Id
-            }))
-         });
-      }
-      
+     
       // Employee counts
       const employeeCount = employeeData.length;
       const employeeMaleCount = employeeData.filter(item => {
@@ -385,19 +372,6 @@ class ParkService {
       }).length;
       const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
       
-      // Debug: Log calculated counts
-      console.log('Calculated park counts:', {
-         totalFootfall,
-         employeeCount,
-         employeeMaleCount,
-         employeeFemaleCount,
-         employeeChildrenCount,
-         guestCount,
-         guestMaleCount,
-         guestFemaleCount,
-         guestChildrenCount
-      });
-
       // Get unique employees (those with valid user_Id)
       const uniqueEmployees = footfallData
         .filter(item => this.isEmployee(item))

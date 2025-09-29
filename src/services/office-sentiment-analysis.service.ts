@@ -191,8 +191,8 @@ class OfficeSentimentAnalysisService {
          // Fetch all users in a single query
          const users = await db.users.findMany({
             where: { 
-               emp_Id: { 
-                  in: personIds 
+               Id: { 
+                  in: personIds.map(id => parseInt(id)).filter(id => !isNaN(id))
                } 
             },
             include: {
@@ -205,17 +205,18 @@ class OfficeSentimentAnalysisService {
          });
          
          // Create a map for quick user lookup
-         const userMap = new Map(users.map(user => [user.emp_Id, user]));
+         const userMap = new Map(users.map(user => [user.Id.toString(), user]));
 
          // Get user details for each sentiment analysis record
          const sentimentWithUsers = results.map((sentiment) => {
                // Find the user from the map
-               const user = userMap.get(sentiment.person_Id);
+               const user = sentiment.person_Id ? userMap.get(sentiment.person_Id) : null;
 
                return {
                   ...sentiment,
                   user: user ? {
                      Id: user.Id,
+                     user_Id: user.user_Id,
                      emp_Id: user.emp_Id,
                      emp__eng_name: user.emp__eng_name,
                      emp__arabic_name: user.emp__arabic_name,
@@ -248,7 +249,7 @@ class OfficeSentimentAnalysisService {
             check_out_date: formatDate(sentiment.check_out_date),
             check_out_time: formatTime(sentiment.check_out_time)
          }));
-
+         
          console.log(`📦 [OfficeSentimentAnalysisService] Retrieved ${formattedResults.length} office sentiment analyses with user details.`);
          return formattedResults;
 

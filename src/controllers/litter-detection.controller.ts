@@ -19,10 +19,13 @@ class LitterDetectionController extends LitterDetectionService {
    }
 
    public static viewLitterDetections = async (req: Request, res: Response, next: NextFunction) => {
+      console.log("🟡 [LitterDetectionController] viewLitterDetections called");
       try {
          const litterDetections = await LitterDetectionService.viewLitterDetectionsService();
+         console.log("✅ [LitterDetectionController] Successfully retrieved litter detections");
          return res.status(STATUS.SUCCESS).json(litterDetections);
       } catch (error) {
+         console.error("❌ [LitterDetectionController] Error in viewLitterDetections:", error);
          next(error)
       }
    }
