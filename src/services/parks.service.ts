@@ -491,7 +491,7 @@ class ParkService {
           detected_camera_Id: footfallData.detected_camera_Id,
           detected_camera_name: footfallData.detected_camera_name || undefined,
           time: footfallData.time || new Date(),
-          abc1: footfallData.abc1,
+          image: footfallData.image,
           abc2: footfallData.abc2,
           abc3: footfallData.abc3
         }

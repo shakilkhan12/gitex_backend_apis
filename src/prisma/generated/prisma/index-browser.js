@@ -524,7 +524,7 @@ exports.Prisma.Parks_footfall_analysisScalarFieldEnum = {
   time: 'time',
   detected_camera_Id: 'detected_camera_Id',
   detected_camera_name: 'detected_camera_name',
-  abc1: 'abc1',
+  image: 'image',
   abc2: 'abc2',
   abc3: 'abc3'
 };
@@ -539,7 +539,7 @@ exports.Prisma.Offices_footfall_analysisScalarFieldEnum = {
   time: 'time',
   detected_camera_Id: 'detected_camera_Id',
   detected_camera_name: 'detected_camera_name',
-  abc1: 'abc1',
+  image: 'image',
   abc2: 'abc2',
   abc3: 'abc3'
 };
@@ -758,7 +758,7 @@ exports.Prisma.parks_footfall_analysisOrderByRelevanceFieldEnum = {
   gender: 'gender',
   detected_camera_Id: 'detected_camera_Id',
   detected_camera_name: 'detected_camera_name',
-  abc1: 'abc1',
+  image: 'image',
   abc2: 'abc2',
   abc3: 'abc3'
 };
@@ -768,7 +768,7 @@ exports.Prisma.offices_footfall_analysisOrderByRelevanceFieldEnum = {
   gender: 'gender',
   detected_camera_Id: 'detected_camera_Id',
   detected_camera_name: 'detected_camera_name',
-  abc1: 'abc1',
+  image: 'image',
   abc2: 'abc2',
   abc3: 'abc3'
 };

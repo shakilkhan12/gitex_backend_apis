@@ -30019,7 +30019,7 @@ export namespace Prisma {
     time: Date | null
     detected_camera_Id: string | null
     detected_camera_name: string | null
-    abc1: string | null
+    image: string | null
     abc2: string | null
     abc3: string | null
   }
@@ -30034,7 +30034,7 @@ export namespace Prisma {
     time: Date | null
     detected_camera_Id: string | null
     detected_camera_name: string | null
-    abc1: string | null
+    image: string | null
     abc2: string | null
     abc3: string | null
   }
@@ -30049,7 +30049,7 @@ export namespace Prisma {
     time: number
     detected_camera_Id: number
     detected_camera_name: number
-    abc1: number
+    image: number
     abc2: number
     abc3: number
     _all: number
@@ -30078,7 +30078,7 @@ export namespace Prisma {
     time?: true
     detected_camera_Id?: true
     detected_camera_name?: true
-    abc1?: true
+    image?: true
     abc2?: true
     abc3?: true
   }
@@ -30093,7 +30093,7 @@ export namespace Prisma {
     time?: true
     detected_camera_Id?: true
     detected_camera_name?: true
-    abc1?: true
+    image?: true
     abc2?: true
     abc3?: true
   }
@@ -30108,7 +30108,7 @@ export namespace Prisma {
     time?: true
     detected_camera_Id?: true
     detected_camera_name?: true
-    abc1?: true
+    image?: true
     abc2?: true
     abc3?: true
     _all?: true
@@ -30210,7 +30210,7 @@ export namespace Prisma {
     time: Date
     detected_camera_Id: string
     detected_camera_name: string | null
-    abc1: string | null
+    image: string | null
     abc2: string | null
     abc3: string | null
     _count: Parks_footfall_analysisCountAggregateOutputType | null
@@ -30244,7 +30244,7 @@ export namespace Prisma {
     time?: boolean
     detected_camera_Id?: boolean
     detected_camera_name?: boolean
-    abc1?: boolean
+    image?: boolean
     abc2?: boolean
     abc3?: boolean
     park?: boolean | parks_footfall_analysis$parkArgs<ExtArgs>
@@ -30263,12 +30263,12 @@ export namespace Prisma {
     time?: boolean
     detected_camera_Id?: boolean
     detected_camera_name?: boolean
-    abc1?: boolean
+    image?: boolean
     abc2?: boolean
     abc3?: boolean
   }
 
-  export type parks_footfall_analysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "park_Id" | "detection_Id" | "person_Id" | "gender" | "is_child" | "time" | "detected_camera_Id" | "detected_camera_name" | "abc1" | "abc2" | "abc3", ExtArgs["result"]["parks_footfall_analysis"]>
+  export type parks_footfall_analysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "park_Id" | "detection_Id" | "person_Id" | "gender" | "is_child" | "time" | "detected_camera_Id" | "detected_camera_name" | "image" | "abc2" | "abc3", ExtArgs["result"]["parks_footfall_analysis"]>
   export type parks_footfall_analysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     park?: boolean | parks_footfall_analysis$parkArgs<ExtArgs>
     person?: boolean | parks_footfall_analysis$personArgs<ExtArgs>
@@ -30290,7 +30290,7 @@ export namespace Prisma {
       time: Date
       detected_camera_Id: string
       detected_camera_name: string | null
-      abc1: string | null
+      image: string | null
       abc2: string | null
       abc3: string | null
     }, ExtArgs["result"]["parks_footfall_analysis"]>
@@ -30673,7 +30673,7 @@ export namespace Prisma {
     readonly time: FieldRef<"parks_footfall_analysis", 'DateTime'>
     readonly detected_camera_Id: FieldRef<"parks_footfall_analysis", 'String'>
     readonly detected_camera_name: FieldRef<"parks_footfall_analysis", 'String'>
-    readonly abc1: FieldRef<"parks_footfall_analysis", 'String'>
+    readonly image: FieldRef<"parks_footfall_analysis", 'String'>
     readonly abc2: FieldRef<"parks_footfall_analysis", 'String'>
     readonly abc3: FieldRef<"parks_footfall_analysis", 'String'>
   }
@@ -31109,7 +31109,7 @@ export namespace Prisma {
     time: Date | null
     detected_camera_Id: string | null
     detected_camera_name: string | null
-    abc1: string | null
+    image: string | null
     abc2: string | null
     abc3: string | null
   }
@@ -31124,7 +31124,7 @@ export namespace Prisma {
     time: Date | null
     detected_camera_Id: string | null
     detected_camera_name: string | null
-    abc1: string | null
+    image: string | null
     abc2: string | null
     abc3: string | null
   }
@@ -31139,7 +31139,7 @@ export namespace Prisma {
     time: number
     detected_camera_Id: number
     detected_camera_name: number
-    abc1: number
+    image: number
     abc2: number
     abc3: number
     _all: number
@@ -31168,7 +31168,7 @@ export namespace Prisma {
     time?: true
     detected_camera_Id?: true
     detected_camera_name?: true
-    abc1?: true
+    image?: true
     abc2?: true
     abc3?: true
   }
@@ -31183,7 +31183,7 @@ export namespace Prisma {
     time?: true
     detected_camera_Id?: true
     detected_camera_name?: true
-    abc1?: true
+    image?: true
     abc2?: true
     abc3?: true
   }
@@ -31198,7 +31198,7 @@ export namespace Prisma {
     time?: true
     detected_camera_Id?: true
     detected_camera_name?: true
-    abc1?: true
+    image?: true
     abc2?: true
     abc3?: true
     _all?: true
@@ -31300,7 +31300,7 @@ export namespace Prisma {
     time: Date
     detected_camera_Id: string
     detected_camera_name: string | null
-    abc1: string | null
+    image: string | null
     abc2: string | null
     abc3: string | null
     _count: Offices_footfall_analysisCountAggregateOutputType | null
@@ -31334,7 +31334,7 @@ export namespace Prisma {
     time?: boolean
     detected_camera_Id?: boolean
     detected_camera_name?: boolean
-    abc1?: boolean
+    image?: boolean
     abc2?: boolean
     abc3?: boolean
     office?: boolean | offices_footfall_analysis$officeArgs<ExtArgs>
@@ -31353,12 +31353,12 @@ export namespace Prisma {
     time?: boolean
     detected_camera_Id?: boolean
     detected_camera_name?: boolean
-    abc1?: boolean
+    image?: boolean
     abc2?: boolean
     abc3?: boolean
   }
 
-  export type offices_footfall_analysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "office_Id" | "detection_Id" | "person_Id" | "gender" | "is_child" | "time" | "detected_camera_Id" | "detected_camera_name" | "abc1" | "abc2" | "abc3", ExtArgs["result"]["offices_footfall_analysis"]>
+  export type offices_footfall_analysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "office_Id" | "detection_Id" | "person_Id" | "gender" | "is_child" | "time" | "detected_camera_Id" | "detected_camera_name" | "image" | "abc2" | "abc3", ExtArgs["result"]["offices_footfall_analysis"]>
   export type offices_footfall_analysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     office?: boolean | offices_footfall_analysis$officeArgs<ExtArgs>
     person?: boolean | offices_footfall_analysis$personArgs<ExtArgs>
@@ -31380,7 +31380,7 @@ export namespace Prisma {
       time: Date
       detected_camera_Id: string
       detected_camera_name: string | null
-      abc1: string | null
+      image: string | null
       abc2: string | null
       abc3: string | null
     }, ExtArgs["result"]["offices_footfall_analysis"]>
@@ -31763,7 +31763,7 @@ export namespace Prisma {
     readonly time: FieldRef<"offices_footfall_analysis", 'DateTime'>
     readonly detected_camera_Id: FieldRef<"offices_footfall_analysis", 'String'>
     readonly detected_camera_name: FieldRef<"offices_footfall_analysis", 'String'>
-    readonly abc1: FieldRef<"offices_footfall_analysis", 'String'>
+    readonly image: FieldRef<"offices_footfall_analysis", 'String'>
     readonly abc2: FieldRef<"offices_footfall_analysis", 'String'>
     readonly abc3: FieldRef<"offices_footfall_analysis", 'String'>
   }
@@ -35433,7 +35433,7 @@ export namespace Prisma {
     time: 'time',
     detected_camera_Id: 'detected_camera_Id',
     detected_camera_name: 'detected_camera_name',
-    abc1: 'abc1',
+    image: 'image',
     abc2: 'abc2',
     abc3: 'abc3'
   };
@@ -35451,7 +35451,7 @@ export namespace Prisma {
     time: 'time',
     detected_camera_Id: 'detected_camera_Id',
     detected_camera_name: 'detected_camera_name',
-    abc1: 'abc1',
+    image: 'image',
     abc2: 'abc2',
     abc3: 'abc3'
   };
@@ -35745,7 +35745,7 @@ export namespace Prisma {
     gender: 'gender',
     detected_camera_Id: 'detected_camera_Id',
     detected_camera_name: 'detected_camera_name',
-    abc1: 'abc1',
+    image: 'image',
     abc2: 'abc2',
     abc3: 'abc3'
   };
@@ -35758,7 +35758,7 @@ export namespace Prisma {
     gender: 'gender',
     detected_camera_Id: 'detected_camera_Id',
     detected_camera_name: 'detected_camera_name',
-    abc1: 'abc1',
+    image: 'image',
     abc2: 'abc2',
     abc3: 'abc3'
   };
@@ -38391,7 +38391,7 @@ export namespace Prisma {
     time?: DateTimeFilter<"parks_footfall_analysis"> | Date | string
     detected_camera_Id?: StringFilter<"parks_footfall_analysis"> | string
     detected_camera_name?: StringNullableFilter<"parks_footfall_analysis"> | string | null
-    abc1?: StringNullableFilter<"parks_footfall_analysis"> | string | null
+    image?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     park?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
@@ -38408,7 +38408,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrderInput | SortOrder
-    abc1?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     abc2?: SortOrderInput | SortOrder
     abc3?: SortOrderInput | SortOrder
     park?: parksOrderByWithRelationInput
@@ -38429,7 +38429,7 @@ export namespace Prisma {
     time?: DateTimeFilter<"parks_footfall_analysis"> | Date | string
     detected_camera_Id?: StringFilter<"parks_footfall_analysis"> | string
     detected_camera_name?: StringNullableFilter<"parks_footfall_analysis"> | string | null
-    abc1?: StringNullableFilter<"parks_footfall_analysis"> | string | null
+    image?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     park?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
@@ -38446,7 +38446,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrderInput | SortOrder
-    abc1?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     abc2?: SortOrderInput | SortOrder
     abc3?: SortOrderInput | SortOrder
     _count?: parks_footfall_analysisCountOrderByAggregateInput
@@ -38469,7 +38469,7 @@ export namespace Prisma {
     time?: DateTimeWithAggregatesFilter<"parks_footfall_analysis"> | Date | string
     detected_camera_Id?: StringWithAggregatesFilter<"parks_footfall_analysis"> | string
     detected_camera_name?: StringNullableWithAggregatesFilter<"parks_footfall_analysis"> | string | null
-    abc1?: StringNullableWithAggregatesFilter<"parks_footfall_analysis"> | string | null
+    image?: StringNullableWithAggregatesFilter<"parks_footfall_analysis"> | string | null
     abc2?: StringNullableWithAggregatesFilter<"parks_footfall_analysis"> | string | null
     abc3?: StringNullableWithAggregatesFilter<"parks_footfall_analysis"> | string | null
   }
@@ -38487,7 +38487,7 @@ export namespace Prisma {
     time?: DateTimeFilter<"offices_footfall_analysis"> | Date | string
     detected_camera_Id?: StringFilter<"offices_footfall_analysis"> | string
     detected_camera_name?: StringNullableFilter<"offices_footfall_analysis"> | string | null
-    abc1?: StringNullableFilter<"offices_footfall_analysis"> | string | null
+    image?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     office?: XOR<OfficesNullableScalarRelationFilter, officesWhereInput> | null
@@ -38504,7 +38504,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrderInput | SortOrder
-    abc1?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     abc2?: SortOrderInput | SortOrder
     abc3?: SortOrderInput | SortOrder
     office?: officesOrderByWithRelationInput
@@ -38525,7 +38525,7 @@ export namespace Prisma {
     time?: DateTimeFilter<"offices_footfall_analysis"> | Date | string
     detected_camera_Id?: StringFilter<"offices_footfall_analysis"> | string
     detected_camera_name?: StringNullableFilter<"offices_footfall_analysis"> | string | null
-    abc1?: StringNullableFilter<"offices_footfall_analysis"> | string | null
+    image?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     office?: XOR<OfficesNullableScalarRelationFilter, officesWhereInput> | null
@@ -38542,7 +38542,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrderInput | SortOrder
-    abc1?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     abc2?: SortOrderInput | SortOrder
     abc3?: SortOrderInput | SortOrder
     _count?: offices_footfall_analysisCountOrderByAggregateInput
@@ -38565,7 +38565,7 @@ export namespace Prisma {
     time?: DateTimeWithAggregatesFilter<"offices_footfall_analysis"> | Date | string
     detected_camera_Id?: StringWithAggregatesFilter<"offices_footfall_analysis"> | string
     detected_camera_name?: StringNullableWithAggregatesFilter<"offices_footfall_analysis"> | string | null
-    abc1?: StringNullableWithAggregatesFilter<"offices_footfall_analysis"> | string | null
+    image?: StringNullableWithAggregatesFilter<"offices_footfall_analysis"> | string | null
     abc2?: StringNullableWithAggregatesFilter<"offices_footfall_analysis"> | string | null
     abc3?: StringNullableWithAggregatesFilter<"offices_footfall_analysis"> | string | null
   }
@@ -41561,7 +41561,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
     park?: parksCreateNestedOneWithoutParks_footfall_analysisInput
@@ -41578,7 +41578,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -41590,7 +41590,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
     park?: parksUpdateOneWithoutParks_footfall_analysisNestedInput
@@ -41607,7 +41607,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -41622,7 +41622,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -41634,7 +41634,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -41649,7 +41649,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -41661,7 +41661,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
     office?: officesCreateNestedOneWithoutOffices_footfall_analysisInput
@@ -41678,7 +41678,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -41690,7 +41690,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
     office?: officesUpdateOneWithoutOffices_footfall_analysisNestedInput
@@ -41707,7 +41707,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -41722,7 +41722,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -41734,7 +41734,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -41749,7 +41749,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -44012,7 +44012,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrder
-    abc1?: SortOrder
+    image?: SortOrder
     abc2?: SortOrder
     abc3?: SortOrder
   }
@@ -44033,7 +44033,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrder
-    abc1?: SortOrder
+    image?: SortOrder
     abc2?: SortOrder
     abc3?: SortOrder
   }
@@ -44048,7 +44048,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrder
-    abc1?: SortOrder
+    image?: SortOrder
     abc2?: SortOrder
     abc3?: SortOrder
   }
@@ -44101,7 +44101,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrder
-    abc1?: SortOrder
+    image?: SortOrder
     abc2?: SortOrder
     abc3?: SortOrder
   }
@@ -44122,7 +44122,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrder
-    abc1?: SortOrder
+    image?: SortOrder
     abc2?: SortOrder
     abc3?: SortOrder
   }
@@ -44137,7 +44137,7 @@ export namespace Prisma {
     time?: SortOrder
     detected_camera_Id?: SortOrder
     detected_camera_name?: SortOrder
-    abc1?: SortOrder
+    image?: SortOrder
     abc2?: SortOrder
     abc3?: SortOrder
   }
@@ -47318,7 +47318,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
     person?: usersCreateNestedOneWithoutOffices_footfall_analysisInput
@@ -47333,7 +47333,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -47525,7 +47525,7 @@ export namespace Prisma {
     time?: DateTimeFilter<"offices_footfall_analysis"> | Date | string
     detected_camera_Id?: StringFilter<"offices_footfall_analysis"> | string
     detected_camera_name?: StringNullableFilter<"offices_footfall_analysis"> | string | null
-    abc1?: StringNullableFilter<"offices_footfall_analysis"> | string | null
+    image?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"offices_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"offices_footfall_analysis"> | string | null
   }
@@ -49499,7 +49499,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
     person?: usersCreateNestedOneWithoutParks_footfall_analysisInput
@@ -49514,7 +49514,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -49934,7 +49934,7 @@ export namespace Prisma {
     time?: DateTimeFilter<"parks_footfall_analysis"> | Date | string
     detected_camera_Id?: StringFilter<"parks_footfall_analysis"> | string
     detected_camera_name?: StringNullableFilter<"parks_footfall_analysis"> | string | null
-    abc1?: StringNullableFilter<"parks_footfall_analysis"> | string | null
+    image?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc2?: StringNullableFilter<"parks_footfall_analysis"> | string | null
     abc3?: StringNullableFilter<"parks_footfall_analysis"> | string | null
   }
@@ -52179,7 +52179,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
     office?: officesCreateNestedOneWithoutOffices_footfall_analysisInput
@@ -52194,7 +52194,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -52216,7 +52216,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
     park?: parksCreateNestedOneWithoutParks_footfall_analysisInput
@@ -52231,7 +52231,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -53361,7 +53361,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -53503,7 +53503,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
     person?: usersUpdateOneWithoutOffices_footfall_analysisNestedInput
@@ -53518,7 +53518,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -53532,7 +53532,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -54423,7 +54423,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -54731,7 +54731,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
     person?: usersUpdateOneWithoutParks_footfall_analysisNestedInput
@@ -54746,7 +54746,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -54760,7 +54760,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -55223,7 +55223,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -55237,7 +55237,7 @@ export namespace Prisma {
     time?: Date | string
     detected_camera_Id: string
     detected_camera_name?: string | null
-    abc1?: string | null
+    image?: string | null
     abc2?: string | null
     abc3?: string | null
   }
@@ -55307,7 +55307,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
     office?: officesUpdateOneWithoutOffices_footfall_analysisNestedInput
@@ -55322,7 +55322,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -55336,7 +55336,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -55348,7 +55348,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
     park?: parksUpdateOneWithoutParks_footfall_analysisNestedInput
@@ -55363,7 +55363,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -55377,7 +55377,7 @@ export namespace Prisma {
     time?: DateTimeFieldUpdateOperationsInput | Date | string
     detected_camera_Id?: StringFieldUpdateOperationsInput | string
     detected_camera_name?: NullableStringFieldUpdateOperationsInput | string | null
-    abc1?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     abc2?: NullableStringFieldUpdateOperationsInput | string | null
     abc3?: NullableStringFieldUpdateOperationsInput | string | null
   }
