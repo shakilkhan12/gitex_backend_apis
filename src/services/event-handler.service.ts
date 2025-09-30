@@ -653,6 +653,10 @@ class EventHandlerService {
                          Logger.debug(`[EventHandlerService] No face recognition data available for office attendance`);
                       }
                       
+                      let image = null;
+                      if (eventInfo.data?.alarmResult?.faces?.URL) {
+                         image = eventInfo.data.alarmResult.faces.URL;
+                      }
                       const officeFootfallData = {
                          office_Id: office_Id,
                          detection_Id: eventInfo.eventId,
@@ -661,7 +665,8 @@ class EventHandlerService {
                          is_child: isChild,
                          time: eventInfo.happenTime,
                          detected_camera_Id: eventInfo.srcIndex,
-                         detected_camera_name: eventInfo.srcName
+                         detected_camera_name: eventInfo.srcName,
+                         image: image
                       }
                       
                       // Only create footfall records for entry events, not exit events
@@ -679,6 +684,7 @@ class EventHandlerService {
                          gender: officeFootfallData.gender,
                          isChild: officeFootfallData.is_child,
                          detectionId: officeFootfallData.detection_Id,
+                         image: officeFootfallData.image,
                          srcName: eventInfo.srcName
                       });
                       
@@ -1698,6 +1704,10 @@ class EventHandlerService {
                          }
                       }
                       
+                      let image = null;
+                      if (eventInfo.data?.alarmResult?.faces?.URL) {
+                         image = eventInfo.data.alarmResult.faces.URL;
+                      }
                       const parkFootfallData = {
                          park_Id: park_Id,
                          detection_Id: eventInfo.eventId,
@@ -1706,7 +1716,8 @@ class EventHandlerService {
                          is_child: isChild,
                          time: eventInfo.happenTime,
                          detected_camera_Id: eventInfo.srcIndex,
-                         detected_camera_name: eventInfo.srcName
+                         detected_camera_name: eventInfo.srcName,
+                         image: image
                       }
                       
                       // Only create footfall records for entry events, not exit events
@@ -1716,7 +1727,8 @@ class EventHandlerService {
                          personId: parkFootfallData.person_Id,
                          gender: parkFootfallData.gender,
                          isChild: parkFootfallData.is_child,
-                         detectionId: parkFootfallData.detection_Id
+                         detectionId: parkFootfallData.detection_Id,
+                         image: parkFootfallData.image
                       });
                      
                         const parkFootfallRecord = await db.parks_footfall_analysis.create({
@@ -1736,7 +1748,8 @@ class EventHandlerService {
                                  emp__arabic_name: true,
                                  emp_Id: true,
                                  user_Id: true,
-                                 is_attendance_user: true
+                                 is_attendance_user: true,
+                                 image: true
                               }
                            }) : null;
 

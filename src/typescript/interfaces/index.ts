@@ -122,7 +122,7 @@ export interface ParkFootfallAnalysisType {
   detected_camera_Id: string;
   detected_camera_name?: string;
   time?: Date;
-  abc1?: string;
+  image?: string;
   abc2?: string;
   abc3?: string;
 }

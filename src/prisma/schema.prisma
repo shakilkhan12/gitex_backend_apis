@@ -1,7 +1,7 @@
 generator client {
   provider      = "prisma-client-js"
   output        = "./generated/prisma"
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  binaryTargets = ["native", "debian-openssl-3.0.x", "darwin"]
 }
 
 datasource db {
@@ -558,7 +558,7 @@ model parks_footfall_analysis {
   time                 DateTime @default(now())
   detected_camera_Id   String
   detected_camera_name String?
-  abc1                 String?
+  image                String?
   abc2                 String?
   abc3                 String?
   park                 parks?   @relation(fields: [park_Id], references: [Id])
@@ -578,7 +578,7 @@ model offices_footfall_analysis {
   time                 DateTime @default(now())
   detected_camera_Id   String
   detected_camera_name String?
-  abc1                 String?
+  image                String?
   abc2                 String?
   abc3                 String?
   office               offices? @relation(fields: [office_Id], references: [Id])
