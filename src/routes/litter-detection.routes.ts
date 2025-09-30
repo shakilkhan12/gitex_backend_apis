@@ -303,6 +303,73 @@ litterDetectionRouter.get('/get', LitterDetectionController.viewLitterDetections
 
 /**
  * @swagger
+ * /litter-detection/assign:
+ *   post:
+ *     summary: Assign a litter detection case to a user
+ *     tags: [Litter Detection]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - litterDetectionId
+ *               - userId
+ *             properties:
+ *               litterDetectionId:
+ *                 type: integer
+ *                 description: ID of the litter detection case to assign
+ *                 example: 1
+ *               userId:
+ *                 type: integer
+ *                 description: ID of the user to assign the case to
+ *                 example: 123
+ *               title:
+ *                 type: string
+ *                 description: Title for the assignment
+ *                 example: "Assign to John Doe"
+ *               comments:
+ *                 type: string
+ *                 description: Comments for the assignment
+ *                 example: "Litter detection case assigned to John Doe"
+ *     responses:
+ *       200:
+ *         description: Litter detection case assigned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Litter detection case assigned successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     litterDetectionId:
+ *                       type: integer
+ *                       example: 1
+ *                     userId:
+ *                       type: integer
+ *                       example: 123
+ *                     ticketId:
+ *                       type: integer
+ *                       example: 1
+ *       400:
+ *         description: Bad request - validation errors
+ *       404:
+ *         description: Litter detection case not found
+ *       500:
+ *         description: Internal server error
+ */
+litterDetectionRouter.post('/assign', LitterDetectionController.assignLitterDetection)
+
+/**
+ * @swagger
  * /litter-detection/complete:
  *   post:
  *     summary: Complete a litter detection case

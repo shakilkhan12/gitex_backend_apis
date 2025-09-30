@@ -54,7 +54,7 @@ class LitterDetectionService {
          const ticketDetails = await db.ticket_details_table.create({
             data: {
                litterDetectionId: result.Id,
-               status: result.current_status,
+               status: 'Pending Cleanup',
                date: result.occurrence_date,
                time: result.occurrence_time,
                comments: result.description,
@@ -64,6 +64,7 @@ class LitterDetectionService {
             }
          });
 
+
          return result;
 
       } catch (error: any) {
@@ -72,7 +73,6 @@ class LitterDetectionService {
    }
 
    protected static viewLitterDetectionsService = async () => {
-      console.log("🟡 [LitterDetectionService] Starting to fetch litter detections...");
 
       try {
          const results = await db.parks_litter_detection.findMany({
@@ -97,6 +97,13 @@ class LitterDetectionService {
                      status: true
                   }
                },
+               assignedUser: {
+                  select: {
+                     Id: true,
+                     emp__eng_name: true,
+                     dep_eng_name: true
+                  }
+               },
                ticket_details: {
                   select: {
                      id: true,
@@ -111,7 +118,14 @@ class LitterDetectionService {
                      abc4: true,
                      litterDetectionId: true,
                      createdAt: true,
-                     updatedAt: true
+                     updatedAt: true,
+                     users: {
+                        select: {
+                           Id: true,
+                           emp__eng_name: true,
+                           dep_eng_name: true
+                        }
+                     }
                   },
                   orderBy: {
                      createdAt: 'desc'
@@ -173,18 +187,82 @@ class LitterDetectionService {
             intranet_posting_history: intranetHistoryMap.get(litterDetection.Id.toString()) || []
          }));
 
-         console.log(`📦 [LitterDetectionService] Successfully retrieved ${resultsWithIntranetHistory.length} litter detections.`);
          return resultsWithIntranetHistory;
 
       } catch (error: any) {
-         console.error("💥 [LitterDetectionService] Error fetching litter detections:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch litter detections");
+      }
+   }
+
+   public static assignLitterDetectionService = async (assignmentData: {
+      litterDetectionId: number;
+      userId: number;
+      title: string;
+      comments: string;
+   }) => {
+      try {
+         // Check if litter detection exists
+         const litterDetection = await db.parks_litter_detection.findFirst({
+            where: { Id: assignmentData.litterDetectionId }
+         });
+
+         if (!litterDetection) {
+            throw new HttpException(STATUS.NOT_FOUND, "Litter detection record not found");
+         }
+
+         // Check if user exists and has litter detection access
+         const user = await db.users.findFirst({
+            where: { 
+               Id: assignmentData.userId,
+               litter_detection_access: true
+            }
+         });
+
+         if (!user) {
+            throw new HttpException(STATUS.BAD_REQUEST, "User not found or doesn't have litter detection access");
+         }
+
+         // Update the litter detection record with assigned user
+         await db.parks_litter_detection.update({
+            where: { Id: assignmentData.litterDetectionId },
+            data: { assinged_to: assignmentData.userId, status:"In Progress" }
+         });
+
+         // Create a ticket details record for the assignment
+         // Use the same date and time format as in addLitterDetectionService
+         const currentDate = new Date();
+         const currentTime = new Date(`1970-01-01T${currentDate.toTimeString().split(' ')[0]}Z`);
+         
+         const ticketRecord = await db.ticket_details_table.create({
+            data: {
+               litterDetectionId: assignmentData.litterDetectionId,
+               user_Id: assignmentData.userId,
+               status: 'Assigned',
+               comments: "Case Assigned",
+               date: currentDate,
+               time: currentTime,
+               createdAt: new Date(),
+               updatedAt: new Date()
+            }
+         });
+
+
+         return {
+            litterDetectionId: assignmentData.litterDetectionId,
+            userId: assignmentData.userId,
+            ticketId: ticketRecord.id
+         };
+
+      } catch (error: any) {
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         throw new HttpException(STATUS.BAD_REQUEST, "Failed to assign litter detection");
       }
    }
 
    protected static completeLitterDetectionService = async (litterDetectionComplete: LitterDetectionCompleteType) => {
       try {
-         console.log('🔍 Looking for litter detection with ID:', litterDetectionComplete.id);
          
          // Find the litter detection record by ID
          const litterDetection = await db.parks_litter_detection.findUnique({
@@ -231,6 +309,7 @@ class LitterDetectionService {
          const ticketDetails = await db.ticket_details_table.create({
             data: {
                litterDetectionId: litterDetection.Id,
+               user_Id: litterDetectionComplete.userId,
                status: "Completed",
                date: currentDate,
                time: currentTime,

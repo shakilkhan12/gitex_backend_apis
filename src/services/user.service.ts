@@ -6,8 +6,6 @@ import axios from "axios";
 import https from "https";
 import { UserType, AddUserType } from "@/typescript/interfaces";
 
-
-// urlToBase64.ts
 import fetch from "node-fetch";
 
 
@@ -146,6 +144,9 @@ class UserService {
                last_login: true,
                createdAt: true,
                updatedAt: true,
+               landscaping_access: true,
+               plant_disease_access: true,
+               litter_detection_access: true,
                users_roles: {
                   select: {
                      role_name: true
@@ -169,6 +170,9 @@ class UserService {
 
    protected static getUserDetailsByUserIdService = async (user_Id: string) => {
       try {
+         console.log(`[UserService] Starting getUserDetailsByUserIdService for user_Id: ${user_Id}`);
+         
+         // First, get the basic user information
          const user = await db.users.findFirst({
             where: {
                user_Id: user_Id
@@ -195,76 +199,105 @@ class UserService {
                last_login: true,
                createdAt: true,
                updatedAt: true,
-               users_roles: {
-                  select: {
-                     role_name: true,
-                     users_permissions: {
-                        select: {
-                           dashboard_view: true,
-                           role_permission_view: true,
-                           role_permission_add: true,
-                           role_permission_update: true,
-                           offices_view: true,
-                           offices_add: true,
-                           offices_update: true,
-                           parks_view: true,
-                           parks_add: true,
-                           parks_update: true,
-                           system_report_view: true,
-                           alerts_view: true,
-                           office_attendance_view: true,
-                           office_attendance_add: true,
-                           office_attendance_update: true,
-                           office_footfall_view: true,
-                           office_footfall_add: true,
-                           office_footfall_update: true,
-                           office_sentimental_view: true,
-                           office_sentimental_add: true,
-                           office_sentimental_update: true,
-                           park_attendance_view: true,
-                           park_attendance_add: true,
-                           park_attendance_update: true,
-                           park_footfall_view: true,
-                           park_footfall_add: true,
-                           park_footfall_update: true,
-                           park_sentimental_view: true,
-                           park_sentimental_add: true,
-                           park_sentimental_update: true,
-                           park_irrigation_view: true,
-                           park_irrigation_add: true,
-                           park_irrigation_update: true,
-                           park_landscaping_view: true,
-                           park_landscaping_add: true,
-                           park_landscaping_update: true,
-                           park_litter_detection_view: true,
-                           park_litter_detection_add: true,
-                           park_litter_detection_update: true,
-                           park_intrusion_detection_view: true,
-                           park_intrusion_detection_add: true,
-                           park_intrusion_detection_update: true,
-                           park_smoking_detection_view: true,
-                           park_smoking_detection_add: true,
-                           park_smoking_detection_update: true,
-                           my_account_view: true,
-                           settings_view: true
-                        }
-                     }
-                  }
-               },
-               live_stream_favourites: false,
-               parks_attendance: false,
-               offices_attendance: false,
-               offices_footfall_analysis: false
+               role_Id: true,
+               landscaping_access: true,
+               plant_disease_access: true,
+               litter_detection_access: true
             }
          });
 
+         console.log(`[UserService] Basic user query completed for user_Id: ${user_Id}`);
+
          if (!user) {
+            console.log(`[UserService] User not found for user_Id: ${user_Id}`);
             throw new HttpException(STATUS.NOT_FOUND, "User not found");
          }
 
-         return user;
+         // If user has a role, fetch role and permissions separately
+         let users_roles = null;
+         if (user.role_Id) {
+            console.log(`[UserService] Fetching role and permissions for role_Id: ${user.role_Id}`);
+            
+            users_roles = await db.users_roles.findUnique({
+               where: {
+                  Id: user.role_Id
+               },
+               select: {
+                  role_name: true,
+                  users_permissions: {
+                     select: {
+                        dashboard_view: true,
+                        role_permission_view: true,
+                        role_permission_add: true,
+                        role_permission_update: true,
+                        offices_view: true,
+                        offices_add: true,
+                        offices_update: true,
+                        parks_view: true,
+                        parks_add: true,
+                        parks_update: true,
+                        system_report_view: true,
+                        alerts_view: true,
+                        office_attendance_view: true,
+                        office_attendance_add: true,
+                        office_attendance_update: true,
+                        office_footfall_view: true,
+                        office_footfall_add: true,
+                        office_footfall_update: true,
+                        office_sentimental_view: true,
+                        office_sentimental_add: true,
+                        office_sentimental_update: true,
+                        park_attendance_view: true,
+                        park_attendance_add: true,
+                        park_attendance_update: true,
+                        park_footfall_view: true,
+                        park_footfall_add: true,
+                        park_footfall_update: true,
+                        park_sentimental_view: true,
+                        park_sentimental_add: true,
+                        park_sentimental_update: true,
+                        park_irrigation_view: true,
+                        park_irrigation_add: true,
+                        park_irrigation_update: true,
+                        park_landscaping_view: true,
+                        park_landscaping_add: true,
+                        park_landscaping_update: true,
+                        park_litter_detection_view: true,
+                        park_litter_detection_add: true,
+                        park_litter_detection_update: true,
+                        park_intrusion_detection_view: true,
+                        park_intrusion_detection_add: true,
+                        park_intrusion_detection_update: true,
+                        park_smoking_detection_view: true,
+                        park_smoking_detection_add: true,
+                        park_smoking_detection_update: true,
+                        my_account_view: true,
+                        settings_view: true
+                     }
+                  }
+               }
+            });
+            
+            console.log(`[UserService] Role and permissions query completed for role_Id: ${user.role_Id}`);
+         }
+
+         // Remove role_Id from the response and add users_roles
+         const { role_Id, ...userWithoutRoleId } = user;
+         const result = {
+            ...userWithoutRoleId,
+            users_roles
+         };
+
+         console.log(`[UserService] Successfully retrieved user details for user_Id: ${user_Id}`);
+         return result;
 
       } catch (error: any) {
+         console.error(`[UserService] Error in getUserDetailsByUserIdService for user_Id: ${user_Id}`, {
+            error: error.message,
+            stack: error.stack,
+            name: error.name
+         });
+         
          if (error instanceof HttpException) {
             throw error;
          }
@@ -272,7 +305,11 @@ class UserService {
       }
    }
 
-   protected static updateUserRoleService = async (userId: number, roleId: number) => {
+   protected static updateUserRoleService = async (userId: number, roleId: number, supervisorAccess?: {
+      landscapingAccess?: boolean,
+      plantDiseaseAccess?: boolean,
+      litterDetectionAccess?: boolean
+   }) => {
 
       try {
          const roleExists = await db.users_roles.findUnique({
@@ -291,12 +328,28 @@ class UserService {
             throw new HttpException(STATUS.BAD_REQUEST, "User not found");
          }
 
+         // Prepare update data
+         const updateData: any = {
+            role_Id: roleId,
+            updatedAt: new Date()
+         };
+
+         // Add supervisor access fields if provided
+         if (supervisorAccess) {
+            if (supervisorAccess.landscapingAccess !== undefined) {
+               updateData.landscaping_access = supervisorAccess.landscapingAccess;
+            }
+            if (supervisorAccess.plantDiseaseAccess !== undefined) {
+               updateData.plant_disease_access = supervisorAccess.plantDiseaseAccess;
+            }
+            if (supervisorAccess.litterDetectionAccess !== undefined) {
+               updateData.litter_detection_access = supervisorAccess.litterDetectionAccess;
+            }
+         }
+
          const updatedUser = await db.users.update({
             where: { Id: userId },
-            data: {
-               role_Id: roleId,
-               updatedAt: new Date()
-            },
+            data: updateData,
             include: {
                users_roles: {
                   select: {
@@ -310,7 +363,7 @@ class UserService {
          return {
             status: STATUS.SUCCESS,
             data: updatedUser,
-            message: "User role updated successfully"
+            message: "User role and supervisor access updated successfully"
          };
 
       } catch (error: any) {

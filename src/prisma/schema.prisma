@@ -313,6 +313,7 @@ model parks_litter_detection {
   Id              Int                    @id @default(autoincrement())
   park_Id         Int?
   case_Id         String?                @db.VarChar(255)
+  assinged_to     Int?
   location        String?                @db.VarChar(255)
   occurrence_date DateTime?              @db.Date
   occurrence_time DateTime?              @db.Time(0)
@@ -330,6 +331,7 @@ model parks_litter_detection {
   parks           parks?                 @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_litter_detection_ibfk_1")
   park_cameras    park_cameras?          @relation("parks_litter_detection_to_park_cameras", fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_litter_detection_ibfk_2")
   ticket_details  ticket_details_table[]
+  assignedUser    users?                 @relation(fields: [assinged_to], references: [Id], onDelete: SetNull)
 
   @@index([park_Id], map: "park_Id")
   @@index([camera_Id], map: "camera_Id")
@@ -338,6 +340,7 @@ model parks_litter_detection {
 
 model ticket_details_table {
   id                     Int                     @id @default(autoincrement())
+  user_Id                Int?
   status                 String?                 @db.VarChar(50)
   date                   DateTime?               @db.Date
   time                   DateTime?               @db.Time(0)
@@ -351,8 +354,10 @@ model ticket_details_table {
   createdAt              DateTime?               @db.Timestamp(0)
   updatedAt              DateTime                @default(now()) @db.Timestamp(0)
   parks_litter_detection parks_litter_detection? @relation(fields: [litterDetectionId], references: [Id], onDelete: Cascade)
+  users                  users?                  @relation(fields: [user_Id], references: [Id], onDelete: Cascade)
 
   @@index([litterDetectionId], map: "litterDetectionId_idx")
+  @@index([user_Id], map: "user_Id")
   @@map("ticket_details_table")
 }
 
@@ -465,6 +470,9 @@ model users {
   is_ai_login_user          Boolean?                    @default(false)
   ai_engine_access          Boolean?                    @default(false)
   last_login                DateTime?                   @db.Timestamp(0)
+  landscaping_access        Boolean?                    @default(false)
+  plant_disease_access      Boolean?                    @default(false)
+  litter_detection_access   Boolean?                    @default(false)
   createdAt                 DateTime?                   @db.Timestamp(0)
   updatedAt                 DateTime                    @default(now()) @db.Timestamp(0)
   role_Id                   Int?
@@ -474,6 +482,10 @@ model users {
   parks_footfall_analysis   parks_footfall_analysis[]
   parks_attendance          parks_attendance[]          @relation("parks_attendance_to_user")
   users_roles               users_roles?                @relation(fields: [role_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "users_ibfk_1")
+  ticket_details_table      ticket_details_table[]
+  landscaping_history       landscaping_history[]
+  assigned_landscaping      landscaping[]
+  assigned_litter_detection parks_litter_detection[]
 
   @@index([role_Id], map: "role_Id")
   @@map("users")
@@ -606,16 +618,33 @@ model FAQ {
 }
 
 model landscaping {
-  id         Int      @id @default(autoincrement())
-  case_Id    String?  @db.VarChar(255)
-  image      String?  @db.VarChar(500)
-  name       String?  @db.VarChar(255)
-  status     String?  @db.VarChar(100)
-  suggestion String?  @db.Text
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                  Int                   @id @default(autoincrement())
+  case_Id             String?               @db.VarChar(255)
+  assinged_to         Int?
+  image               String?               @db.VarChar(500)
+  name                String?               @db.VarChar(255)
+  status              String?               @db.VarChar(100)
+  current_status      String?               @db.VarChar(100)
+  suggestion          String?               @db.Text
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  landscaping_history landscaping_history[]
+  assignedUser        users?                @relation(fields: [assinged_to], references: [Id], onDelete: SetNull)
 
   @@map("landscaping")
+}
+
+model landscaping_history {
+  id             Int          @id @default(autoincrement())
+  landscaping_Id Int?
+  user_Id        Int?
+  title          String?      @db.Text
+  comments       String?      @db.Text
+  image          String?      @db.VarChar(500)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  landscaping    landscaping? @relation(fields: [landscaping_Id], references: [id], onDelete: Cascade)
+  users          users?       @relation(fields: [user_Id], references: [Id], onDelete: Cascade)
 }
 
 enum offices_sentiment_analysis_sentiment_of {

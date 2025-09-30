@@ -331,6 +331,7 @@ export interface IntranetPostingHistoryType {
 export interface LitterDetectionCompleteType {
   id: number;
   comments: string;
+  userId: number;
 }
 
 export interface AddUserType {

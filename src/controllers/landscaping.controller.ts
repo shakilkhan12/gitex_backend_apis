@@ -38,6 +38,60 @@ class LandscapingController extends LandscapingService {
          next(error)
       }
    }
+
+   public static assignLandscaping = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const { landscapingId, userId, title, comments } = req.body;
+         
+         if (!landscapingId || !userId) {
+            return res.status(STATUS.BAD_REQUEST).json({
+               success: false,
+               message: "landscapingId and userId are required"
+            });
+         }
+
+         const result = await LandscapingService.assignLandscapingService({
+            landscapingId: Number(landscapingId),
+            userId: Number(userId),
+            title: title || "Case Assigned",
+            comments: comments || "Landscaping case assigned"
+         });
+
+         return res.status(STATUS.SUCCESS).json({
+            success: true,
+            message: "Landscaping case assigned successfully",
+            data: result
+         });
+      } catch (error) {
+         next(error)
+      }
+   }
+
+   public static markAsCompleted = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const { landscapingId, userId, title, comments, image } = req.body;
+         if (!landscapingId) {
+            return res.status(STATUS.BAD_REQUEST).json({
+               success: false,
+               message: "landscapingId is required"
+            });
+         }
+         const result = await LandscapingService.markAsCompletedService({
+            landscapingId: Number(landscapingId),
+            userId: userId ? Number(userId) : null,
+            title: title || "Marked as Completed",
+            comments: comments || "Landscaping case has been marked as completed",
+            image: image || null
+         });
+         return res.status(STATUS.SUCCESS).json({
+            success: true,
+            message: "Landscaping case marked as completed successfully",
+            data: result
+         });
+      } catch (error) {
+         next(error)
+      }
+   }
 }
 
 export default LandscapingController; 

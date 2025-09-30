@@ -181,4 +181,139 @@ landscapingRouter.post('/add', landscapingValidations, LandscapingController.add
  */
 landscapingRouter.get('/get', LandscapingController.viewLandscapings)
 
+/**
+ * @swagger
+ * /landscaping/assign:
+ *   post:
+ *     summary: Assign landscaping case to a user
+ *     tags: [Landscaping]
+ *     description: Assign a landscaping case to a user and create history record
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - landscapingId
+ *               - userId
+ *             properties:
+ *               landscapingId:
+ *                 type: integer
+ *                 description: ID of the landscaping case to assign
+ *                 example: 1
+ *               userId:
+ *                 type: integer
+ *                 description: ID of the user to assign the case to
+ *                 example: 123
+ *               title:
+ *                 type: string
+ *                 description: Title for the assignment history
+ *                 example: "Assigned to user"
+ *               comments:
+ *                 type: string
+ *                 description: Comments for the assignment
+ *                 example: "Landscaping case assigned to user"
+ *     responses:
+ *       200:
+ *         description: Landscaping case assigned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Landscaping case assigned successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     landscapingId:
+ *                       type: integer
+ *                       example: 1
+ *                     userId:
+ *                       type: integer
+ *                       example: 123
+ *                     historyId:
+ *                       type: integer
+ *                       example: 1
+ *       400:
+ *         description: Bad request - validation errors
+ *       404:
+ *         description: Landscaping case or user not found
+ *       500:
+ *         description: Internal server error
+ */
+landscapingRouter.post('/assign', LandscapingController.assignLandscaping)
+
+/**
+ * @swagger
+ * /landscaping/mark-completed:
+ *   post:
+ *     summary: Mark a landscaping case as completed
+ *     tags: [Landscaping]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - landscapingId
+ *             properties:
+ *               landscapingId:
+ *                 type: integer
+ *                 description: ID of the landscaping case to mark as completed
+ *                 example: 1
+ *               userId:
+ *                 type: integer
+ *                 description: ID of the user who is marking as completed
+ *                 example: 123
+ *               title:
+ *                 type: string
+ *                 description: Title for the history entry
+ *                 example: "Marked as Completed"
+ *               comments:
+ *                 type: string
+ *                 description: Comments for the history entry
+ *                 example: "Landscaping case has been marked as completed"
+ *               image:
+ *                 type: string
+ *                 description: URL of the completion image
+ *                 example: "https://cloudinary.com/image.jpg"
+ *     responses:
+ *       200:
+ *         description: Landscaping case marked as completed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Landscaping case marked as completed successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     landscapingId:
+ *                       type: integer
+ *                       example: 1
+ *                     historyId:
+ *                       type: integer
+ *                       example: 1
+ *       400:
+ *         description: Bad request - validation errors
+ *       404:
+ *         description: Landscaping case not found
+ *       500:
+ *         description: Internal server error
+ */
+landscapingRouter.post('/mark-completed', LandscapingController.markAsCompleted)
+
 export default landscapingRouter; 

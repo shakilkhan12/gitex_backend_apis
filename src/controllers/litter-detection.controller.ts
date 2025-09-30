@@ -30,6 +30,31 @@ class LitterDetectionController extends LitterDetectionService {
       }
    }
 
+   public static assignLitterDetection = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const { litterDetectionId, userId, title, comments } = req.body;
+         if (!litterDetectionId || !userId) {
+            return res.status(STATUS.BAD_REQUEST).json({
+               success: false,
+               message: "litterDetectionId and userId are required"
+            });
+         }
+         const result = await LitterDetectionService.assignLitterDetectionService({
+            litterDetectionId: Number(litterDetectionId),
+            userId: Number(userId),
+            title: title || "Assigned to user",
+            comments: comments || "Litter detection case assigned to user"
+         });
+         return res.status(STATUS.SUCCESS).json({
+            success: true,
+            message: "Litter detection case assigned successfully",
+            data: result
+         });
+      } catch (error) {
+         next(error)
+      }
+   }
+
    public static completeLitterDetection = async (req: Request<{}, {}, LitterDetectionCompleteType>, res: Response, next: NextFunction) => {
       const errors = validationResult(req)
       try {

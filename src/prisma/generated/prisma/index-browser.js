@@ -328,6 +328,7 @@ exports.Prisma.Parks_litter_detectionScalarFieldEnum = {
   Id: 'Id',
   park_Id: 'park_Id',
   case_Id: 'case_Id',
+  assinged_to: 'assinged_to',
   location: 'location',
   occurrence_date: 'occurrence_date',
   occurrence_time: 'occurrence_time',
@@ -346,6 +347,7 @@ exports.Prisma.Parks_litter_detectionScalarFieldEnum = {
 
 exports.Prisma.Ticket_details_tableScalarFieldEnum = {
   id: 'id',
+  user_Id: 'user_Id',
   status: 'status',
   date: 'date',
   time: 'time',
@@ -448,6 +450,9 @@ exports.Prisma.UsersScalarFieldEnum = {
   is_ai_login_user: 'is_ai_login_user',
   ai_engine_access: 'ai_engine_access',
   last_login: 'last_login',
+  landscaping_access: 'landscaping_access',
+  plant_disease_access: 'plant_disease_access',
+  litter_detection_access: 'litter_detection_access',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   role_Id: 'role_Id'
@@ -563,10 +568,23 @@ exports.Prisma.FAQScalarFieldEnum = {
 exports.Prisma.LandscapingScalarFieldEnum = {
   id: 'id',
   case_Id: 'case_Id',
+  assinged_to: 'assinged_to',
   image: 'image',
   name: 'name',
   status: 'status',
+  current_status: 'current_status',
   suggestion: 'suggestion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Landscaping_historyScalarFieldEnum = {
+  id: 'id',
+  landscaping_Id: 'landscaping_Id',
+  user_Id: 'user_Id',
+  title: 'title',
+  comments: 'comments',
+  image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -788,7 +806,14 @@ exports.Prisma.landscapingOrderByRelevanceFieldEnum = {
   image: 'image',
   name: 'name',
   status: 'status',
+  current_status: 'current_status',
   suggestion: 'suggestion'
+};
+
+exports.Prisma.landscaping_historyOrderByRelevanceFieldEnum = {
+  title: 'title',
+  comments: 'comments',
+  image: 'image'
 };
 exports.offices_sentiment_analysis_sentiment_of = exports.$Enums.offices_sentiment_analysis_sentiment_of = {
   employee: 'employee',
@@ -828,7 +853,8 @@ exports.Prisma.ModelName = {
   offices_footfall_analysis: 'offices_footfall_analysis',
   TermsPrivacy: 'TermsPrivacy',
   FAQ: 'FAQ',
-  landscaping: 'landscaping'
+  landscaping: 'landscaping',
+  landscaping_history: 'landscaping_history'
 };
 
 /**
