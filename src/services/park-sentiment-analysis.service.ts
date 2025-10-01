@@ -2,6 +2,7 @@ import { ParkSentimentAnalysisType, STATUS } from "@/typescript";
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import { formatDate, formatTime } from "@/utils/dateTime.utils";
+import { formatTimeFetchFromFullDate } from "./office-sentiment-analysis.service";
 
 class ParkSentimentAnalysisService {
    protected static addParkSentimentAnalysisService = async (sentimentAnalysis: ParkSentimentAnalysisType) => {
@@ -241,9 +242,9 @@ class ParkSentimentAnalysisService {
          const formattedResults = sentimentWithUsers.map(sentiment => ({
             ...sentiment,
             check_in_date: formatDate(sentiment.check_in_date),
-            check_in_time: formatTime(sentiment.check_in_time),
+            check_in_time: formatTimeFetchFromFullDate(sentiment.check_in_time),
             check_out_date: formatDate(sentiment.check_out_date),
-            check_out_time: formatTime(sentiment.check_out_time)
+            check_out_time: formatTimeFetchFromFullDate(sentiment.check_out_time)
          }));
 
          console.log(`📦 [ParkSentimentAnalysisService] Retrieved ${formattedResults.length} park sentiment analyses with user details.`);
