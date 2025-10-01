@@ -568,9 +568,11 @@ exports.Prisma.FAQScalarFieldEnum = {
 exports.Prisma.LandscapingScalarFieldEnum = {
   id: 'id',
   case_Id: 'case_Id',
+  park_Id: 'park_Id',
   assinged_to: 'assinged_to',
   image: 'image',
   name: 'name',
+  plant_type: 'plant_type',
   status: 'status',
   current_status: 'current_status',
   suggestion: 'suggestion',
@@ -805,6 +807,7 @@ exports.Prisma.landscapingOrderByRelevanceFieldEnum = {
   case_Id: 'case_Id',
   image: 'image',
   name: 'name',
+  plant_type: 'plant_type',
   status: 'status',
   current_status: 'current_status',
   suggestion: 'suggestion'

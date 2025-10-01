@@ -9,9 +9,17 @@ class LitterDetectionController extends LitterDetectionService {
       try {
          if (errors.isEmpty()) {
             const litterDetection = await LitterDetectionService.addLitterDetectionService(req.body)
-            return res.status(STATUS.CREATED).json(litterDetection)
+            return res.status(STATUS.CREATED).json({
+               success: true,
+               message: "Litter detection record created successfully",
+               data: litterDetection
+            })
          } else {
-            return res.status(STATUS.BAD_REQUEST).json({ errors: errors.array() });
+            return res.status(STATUS.BAD_REQUEST).json({ 
+               success: false,
+               message: "Validation errors",
+               errors: errors.array() 
+            });
          }
       } catch (error) {
          next(error)
@@ -23,7 +31,11 @@ class LitterDetectionController extends LitterDetectionService {
       try {
          const litterDetections = await LitterDetectionService.viewLitterDetectionsService();
          console.log("✅ [LitterDetectionController] Successfully retrieved litter detections");
-         return res.status(STATUS.SUCCESS).json(litterDetections);
+         return res.status(STATUS.SUCCESS).json({
+            success: true,
+            message: "Litter detection records retrieved successfully",
+            data: litterDetections
+         });
       } catch (error) {
          console.error("❌ [LitterDetectionController] Error in viewLitterDetections:", error);
          next(error)
@@ -60,9 +72,17 @@ class LitterDetectionController extends LitterDetectionService {
       try {
          if (errors.isEmpty()) {
             const result = await LitterDetectionService.completeLitterDetectionService(req.body)
-            return res.status(STATUS.CREATED).json(result)
+            return res.status(STATUS.CREATED).json({
+               success: true,
+               message: "Litter detection case completed successfully",
+               data: result
+            })
          } else {
-            return res.status(STATUS.BAD_REQUEST).json({ errors: errors.array() });
+            return res.status(STATUS.BAD_REQUEST).json({ 
+               success: false,
+               message: "Validation errors",
+               errors: errors.array() 
+            });
          }
       } catch (error) {
          next(error)

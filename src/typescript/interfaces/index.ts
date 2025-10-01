@@ -54,9 +54,9 @@ export interface LitterDetectionType {
   detection_Id?: string;
   detection_date?: Date;
   detection_time?: Date;
+  camera_Id?: string;
   description?: string;
   current_status?: string;
-  camera_Id?: string;
   after_image?: string;
 }
 
@@ -64,6 +64,8 @@ export interface LandscapingType {
   case_Id?: string;
   image?: string;
   name?: string;
+  park_Id?: number;
+  plant_type?: string;
   status?: string;
   suggestion?: string;
 }

@@ -159,6 +159,47 @@ landscapingRouter.post('/add', landscapingValidations, LandscapingController.add
  *                       suggestion:
  *                         type: string
  *                         example: "Need to trim the bushes and water the plants"
+ *                       parks:
+ *                         type: object
+ *                         nullable: true
+ *                         properties:
+ *                           Id:
+ *                             type: integer
+ *                             example: 1
+ *                           park_Id:
+ *                             type: string
+ *                             example: "PARK001"
+ *                           park_english_name:
+ *                             type: string
+ *                             example: "Central Park"
+ *                           park_arabic_name:
+ *                             type: string
+ *                             example: "الحديقة المركزية"
+ *                           image:
+ *                             type: string
+ *                             example: "https://example.com/park_image.jpg"
+ *                           latitude:
+ *                             type: number
+ *                             example: 25.2048
+ *                           longitude:
+ *                             type: number
+ *                             example: 55.2708
+ *                           location:
+ *                             type: string
+ *                             example: "Dubai, UAE"
+ *                       assignedUser:
+ *                         type: object
+ *                         nullable: true
+ *                         properties:
+ *                           Id:
+ *                             type: integer
+ *                             example: 123
+ *                           emp__eng_name:
+ *                             type: string
+ *                             example: "John Doe"
+ *                           dep_eng_name:
+ *                             type: string
+ *                             example: "Maintenance Department"
  *                       createdAt:
  *                         type: string
  *                         format: date-time

@@ -22,6 +22,20 @@ class LitterDetectionService {
                throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
             }
             cameraDatabaseId = cameraExists.Id;
+
+            // Check for existing litter detection for this camera that is not completed
+            const existingRecord = await db.parks_litter_detection.findFirst({
+               where: {
+                  camera_Id: cameraDatabaseId,
+                  current_status: {
+                     not: "complete"
+                  }
+               }
+            });
+            
+            if (existingRecord) {
+               throw new HttpException(STATUS.BAD_REQUEST, "Active litter detection case already exists for this camera. Please complete the existing case before creating a new one.");
+            }
          }
 
          // Format date and time properly for database
@@ -54,7 +68,7 @@ class LitterDetectionService {
          const ticketDetails = await db.ticket_details_table.create({
             data: {
                litterDetectionId: result.Id,
-               status: 'Pending Cleanup',
+               status: 'Pending',
                date: result.occurrence_date,
                time: result.occurrence_time,
                comments: result.description,
@@ -320,7 +334,6 @@ class LitterDetectionService {
          });
          
 
-         console.log('✅ New ticket details record created:', ticketDetails);
 
          // Update the litter detection status to "complete"
          const updatedLitterDetection = await db.parks_litter_detection.update({

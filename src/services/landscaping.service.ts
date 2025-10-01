@@ -34,8 +34,10 @@ class LandscapingService {
                case_Id: caseId,
                image: landscaping.image || null,
                name: landscaping.name || null,
+               park_Id: landscaping.park_Id || null,
+               plant_type:"Plant",
                status: landscaping.status || null,
-               current_status:"Peding",
+               current_status:"Pending",
                suggestion: landscaping.suggestion || null,
                createdAt: new Date(),
                updatedAt: new Date()
@@ -58,6 +60,18 @@ class LandscapingService {
                      Id: true,
                      emp__eng_name: true,
                      dep_eng_name: true
+                  }
+               },
+               parks: {
+                  select: {
+                     Id: true,
+                     park_Id: true,
+                     park_english_name: true,
+                     park_arabic_name: true,
+                     image: true,
+                     latitude: true,
+                     longitude: true,
+                     location: true
                   }
                },
                landscaping_history: {
@@ -103,7 +117,6 @@ class LandscapingService {
             throw new HttpException(STATUS.NOT_FOUND, "Landscaping case not found");
          }
 
-         // Check if user exists and has landscaping access
          const user = await db.users.findUnique({
             where: { Id: assignmentData.userId }
          });
@@ -116,13 +129,11 @@ class LandscapingService {
             throw new HttpException(STATUS.BAD_REQUEST, "User does not have landscaping access");
          }
 
-         // Update landscaping with assigned user
          await db.landscaping.update({
             where: { id: assignmentData.landscapingId },
             data: { assinged_to: assignmentData.userId,current_status:"In Progress" }
          });
 
-         // Create landscaping history record
          const historyRecord = await db.landscaping_history.create({
             data: {
                landscaping_Id: assignmentData.landscapingId,
@@ -147,7 +158,7 @@ class LandscapingService {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to assign landscaping case");
       }
    }
-
+   
    public static markAsCompletedService = async (completionData: {
       landscapingId: number;
       userId: number | null;

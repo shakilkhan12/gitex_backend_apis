@@ -221,6 +221,7 @@ model parks {
   parks_litter_detection       parks_litter_detection[]
   parks_sentiment_analysis     parks_sentiment_analysis[]
   parks_smoking_detection      parks_smoking_detection[]
+  landscaping                  landscaping[]
 
   @@map("parks")
 }
@@ -620,9 +621,11 @@ model FAQ {
 model landscaping {
   id                  Int                   @id @default(autoincrement())
   case_Id             String?               @db.VarChar(255)
+  park_Id             Int?
   assinged_to         Int?
   image               String?               @db.VarChar(500)
   name                String?               @db.VarChar(255)
+  plant_type          String?               @db.VarChar(255)
   status              String?               @db.VarChar(100)
   current_status      String?               @db.VarChar(100)
   suggestion          String?               @db.Text
@@ -630,6 +633,7 @@ model landscaping {
   updatedAt           DateTime              @updatedAt
   landscaping_history landscaping_history[]
   assignedUser        users?                @relation(fields: [assinged_to], references: [Id], onDelete: SetNull)
+  parks               parks?                @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "landscaping_ibfk_1")
 
   @@map("landscaping")
 }
