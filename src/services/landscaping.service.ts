@@ -237,66 +237,42 @@ class LandscapingService {
          const appKey = this.HIK_CONFIG.appKey;
          const secretKey = this.HIK_CONFIG.appSecret;
        
-         let parkCameras = [];
-         try {
-            // Get cameras one by one from database sequentially
-            let offset = 0;
-            const limit = 1; // Get one camera at a time
-            let hasMoreCameras = true;
-            
-            while (hasMoreCameras && parkCameras.length < 10) { // Limit to 10 cameras max
-               try {
-                  const camera = await db.park_cameras.findFirst({
-                     skip: offset,
-                     take: limit,
-                     where: {
-                        camera_Id: {
-                           not: null
-                        }
-                     },
-                     select: {
-                        camera_Id: true,
-                        park_Id: true
-                     }
-                  });
-                  
-                  if (camera && camera.camera_Id) {
-                     parkCameras.push(camera);
-                     offset++;
-                  } else {
-                     hasMoreCameras = false;
+         // Use hardcoded camera list (same as irrigation service)
+         const cameraIndexes = ["278", "283", "289", "288"];
+         
+         // Get park_Id for each camera from database
+         const parkCameras = [];
+         for (const cameraIndex of cameraIndexes) {
+            try {
+               const camera = await db.park_cameras.findFirst({
+                  where: {
+                     camera_Id: cameraIndex
+                  },
+                  select: {
+                     camera_Id: true,
+                     park_Id: true
                   }
-               } catch (individualError: any) {
-                  console.warn(`[LandscapingService] Failed to fetch camera at offset ${offset}:`, individualError.message);
-                  offset++;
-                  // Continue with next camera
+               });
+               
+               if (camera && camera.camera_Id) {
+                  parkCameras.push({
+                     camera_Id: camera.camera_Id,
+                     park_Id: camera.park_Id 
+                  });
+               } else {
+                  parkCameras.push({
+                     camera_Id: cameraIndex,
+                     park_Id: 1
+                  });
                }
-            }
-            
-            // If no cameras found from database, use fallback
-            if (parkCameras.length === 0) {
-               throw new Error("No cameras found in database");
-            }
-            
-         } catch (dbError: any) {
-            console.error('[LandscapingService] Database query failed:', dbError.message);
-            console.log('[LandscapingService] Using fallback camera list for testing...');
-            
-            // Fallback camera list for testing when database is not available
-            parkCameras = [
-               {
-                  camera_Id: "188",
+            } catch (dbError: any) {
+               console.warn(`[LandscapingService] Could not fetch park_Id for camera ${cameraIndex}:`, dbError.message);
+               // Fallback if database query fails
+               parkCameras.push({
+                  camera_Id: cameraIndex,
                   park_Id: 1
-               },
-               {
-                  camera_Id: "189",
-                  park_Id: 2
-               },
-               {
-                  camera_Id: "191",
-                  park_Id: 3
-               }
-            ];
+               });
+            }
          }
 
          const results = [];
@@ -340,7 +316,6 @@ class LandscapingService {
                      landscapingId: landscapingRecord.id
                   });
                } catch (dbError: any) {
-                  console.warn(`[LandscapingService] Database record creation failed for camera ${camera.camera_Id}:`, dbError.message);
                   results.push({
                      cameraId: camera.camera_Id,
                      parkId: camera.park_Id,
@@ -532,10 +507,9 @@ class LandscapingService {
    private static async analyzeImageWithGemini(cloudinaryUrl: string): Promise<string | null> {
       try {
          const GEMINI_API_KEY = 'AIzaSyAc6TkgL2AfKiPqcsVYf2JJC5VhF5vuNjM';
-         const MODEL = "models/gemini-1.5-flash";
-         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+         const MODEL = "gemini-2.5-flash";
+         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
          
-         console.log('[LandscapingService] Gemini API URL:', geminiApiUrl);
          
          const prompt = `*GRASS STATUS ANALYSIS REQUEST (JSON OUTPUT)*
 
@@ -601,9 +575,17 @@ The response must be a single JSON object structured exactly as follows. The cal
             const geminiResponse = response.data.candidates[0].content.parts[0].text;
             
             try {
-               const parsedResponse = JSON.parse(geminiResponse);
-               return JSON.stringify(parsedResponse);
+               let cleanResponse = geminiResponse;
+               if (cleanResponse.includes('```json')) {
+                  cleanResponse = cleanResponse.split('```json')[1].split('```')[0].trim();
+               } else if (cleanResponse.includes('```')) {
+                  cleanResponse = cleanResponse.split('```')[1].split('```')[0].trim();
+               }
+               
+               const parsedResponse = JSON.parse(cleanResponse);
+               return parsedResponse;
             } catch (parseError) {
+               console.warn('[LandscapingService] Failed to parse Gemini response as JSON, returning raw text');
                return geminiResponse;
             }
          }
@@ -626,10 +608,15 @@ The response must be a single JSON object structured exactly as follows. The cal
       parkId: number | undefined;
       cameraId: string;
       imageUrl: string;
-      geminiResponse: string;
+      geminiResponse: any;
    }): Promise<any> {
       try {
          const caseId = await this.generateUniqueCaseId();
+
+         const status = data.geminiResponse?.status || "Unknown";
+         const suggestions = data.geminiResponse?.suggestions || "No suggestions available";
+         const confidenceScore = data.geminiResponse?.confidence_score || "0";
+         const health = data.geminiResponse?.health || "0";
 
          const result = await db.landscaping.create({
             data: {
@@ -638,9 +625,9 @@ The response must be a single JSON object structured exactly as follows. The cal
                name: "Grass",
                park_Id: data.parkId,
                plant_type: "Grass Check",
-               status: "Auto Generated",
+               status: `${health}%`,
                current_status: "Pending",
-               suggestion: data.geminiResponse,
+               suggestion: suggestions,
                createdAt: new Date(),
                updatedAt: new Date()
             },

@@ -159,6 +159,7 @@ model park_cameras {
   parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras parks_sentiment_analysis[]  @relation("parks_sentiment_analysis_entry_camera_IdTopark_cameras")
   parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras  parks_sentiment_analysis[]  @relation("parks_sentiment_analysis_exit_camera_IdTopark_cameras")
   parks_smoking_detection                                                         parks_smoking_detection[]
+  parks_zones_job_history                                                         parks_zones_job_history[]
 
   @@index([park_Id], map: "park_Id")
   @@map("park_cameras")
@@ -199,6 +200,19 @@ model park_zones {
   @@map("park_zones")
 }
 
+model parks_zones_job_history {
+  Id             Int           @id @default(autoincrement())
+  camera_Id      Int?
+  zone_Id        Int?
+  job_Id         String?       @db.VarChar(255)
+  image          String?       @db.VarChar(255)
+  started_at     DateTime?     @db.Timestamp(0)
+  start_for_time String?       @db.VarChar(255)
+  createdAt      DateTime?     @db.Timestamp(0)
+  updatedAt      DateTime      @default(now()) @db.Timestamp(0)
+  park_cameras   park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_1")
+}
+
 model parks {
   Id                           Int                            @id @default(autoincrement())
   park_Id                      String?                        @unique(map: "park_Id") @db.VarChar(255)
@@ -221,6 +235,7 @@ model parks {
   parks_litter_detection       parks_litter_detection[]
   parks_sentiment_analysis     parks_sentiment_analysis[]
   parks_smoking_detection      parks_smoking_detection[]
+  landscaping                  landscaping[]
 
   @@map("parks")
 }
@@ -620,9 +635,11 @@ model FAQ {
 model landscaping {
   id                  Int                   @id @default(autoincrement())
   case_Id             String?               @db.VarChar(255)
+  park_Id             Int?
   assinged_to         Int?
   image               String?               @db.VarChar(500)
   name                String?               @db.VarChar(255)
+  plant_type          String?               @db.VarChar(255)
   status              String?               @db.VarChar(100)
   current_status      String?               @db.VarChar(100)
   suggestion          String?               @db.Text
@@ -630,6 +647,7 @@ model landscaping {
   updatedAt           DateTime              @updatedAt
   landscaping_history landscaping_history[]
   assignedUser        users?                @relation(fields: [assinged_to], references: [Id], onDelete: SetNull)
+  parks               parks?                @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "landscaping_ibfk_1")
 
   @@map("landscaping")
 }

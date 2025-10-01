@@ -12,6 +12,7 @@ import { specs } from './config/swagger';
 import mainRouter from "@/routes";
 import { errorHandler } from "@/middlewares";
 import SocketService from "@/services/socket.service";
+import CronService from "@/services/cron.service";
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: '.env' });
@@ -111,11 +112,15 @@ const startServer = async () => {
     // Initialize Socket.IO
     SocketService.initializeSocket(server);
     
+    // Initialize Cron Jobs
+    CronService.initializeCronJobs();
+    
     server.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
       console.log(`🌐 Server URL: http://localhost:${PORT}`);
       console.log(`🔌 WebSocket server initialized`);
+      console.log(`⏰ Cron jobs initialized - Morning grass monitoring at 7:00 AM daily`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
