@@ -357,4 +357,87 @@ landscapingRouter.post('/assign', LandscapingController.assignLandscaping)
  */
 landscapingRouter.post('/mark-completed', LandscapingController.markAsCompleted)
 
+/**
+ * @swagger
+ * /landscaping/monitor-cameras:
+ *   post:
+ *     summary: Monitor park cameras and create landscaping records
+ *     tags: [Landscaping]
+ *     description: Captures images from park cameras, processes them through Cloudinary and Gemini API, and creates landscaping records for grass monitoring
+ *     requestBody:
+ *       description: Optional payload for testing specific camera or providing credentials
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               apikey:
+ *                 type: string
+ *                 description: HIK Vision API key
+ *                 example: "59315117"
+ *               secretKey:
+ *                 type: string
+ *                 description: HIK Vision secret key
+ *                 example: "TWpBeU5TOHhNQzh3TVE9PQ=="
+ *               cameraIndex:
+ *                 type: string
+ *                 description: Specific camera index to test (optional)
+ *                 example: "188"
+ *     responses:
+ *       200:
+ *         description: Park camera monitoring completed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Park camera monitoring completed successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                       example: true
+ *                     message:
+ *                       type: string
+ *                       example: "Processed 5 cameras"
+ *                     results:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           cameraId:
+ *                             type: string
+ *                             example: "188"
+ *                           parkName:
+ *                             type: string
+ *                             example: "Central Park"
+ *                           success:
+ *                             type: boolean
+ *                             example: true
+ *                           landscapingId:
+ *                             type: integer
+ *                             example: 123
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ */
+landscapingRouter.post('/monitor-cameras', LandscapingController.monitorParkCameras)
+
 export default landscapingRouter; 

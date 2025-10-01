@@ -92,6 +92,19 @@ class LandscapingController extends LandscapingService {
          next(error)
       }
    }
+
+   public static monitorParkCameras = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const result = await LandscapingService.monitorParkCamerasService();
+         return res.status(STATUS.SUCCESS).json({
+            success: true,
+            message: "Park camera monitoring completed successfully",
+            data: result
+         });
+      } catch (error) {
+         next(error)
+      }
+   }
 }
 
 export default LandscapingController; 
