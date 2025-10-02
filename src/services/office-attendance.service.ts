@@ -1,7 +1,7 @@
 import { OfficeAttendanceType, STATUS } from "@/typescript";
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
-import { formatDate, formatTime } from "@/utils/dateTime.utils";
+import { formatDate, formatDuration, formatTime } from "@/utils/dateTime.utils";
 
 class OfficeAttendanceService {
   protected static addOfficeAttendanceService = async (
@@ -208,6 +208,125 @@ class OfficeAttendanceService {
         grouped[key].push(att);
       });
 
+      // const summaries = Object.values(grouped).map((records: any[]) => {
+      //   const uniqueId = records[0].user?.unique_id;
+      //   const user = records[0].user;
+
+      //   records.sort(
+      //     (a, b) =>
+      //       new Date(a.entry_time || a.createdAt).getTime() -
+      //       new Date(b.entry_time || b.createdAt).getTime()
+      //   );
+
+      //   const attendanceTimes: Array<{
+      //     type: string;
+      //     time: string;
+      //     datetime: any;
+      //   }> = [];
+      //   let inCount = 0;
+      //   let outCount = 0;
+
+      //   const allEvents: Array<{ type: string; time: string; datetime: any }> =
+      //     [];
+
+      //   records.forEach((record) => {
+      //     if (record.entry_time) {
+      //       inCount++;
+      //       allEvents.push({
+      //         type: "IN",
+      //         time: convertTimeToString(record.entry_time),
+      //         datetime: record.entry_time,
+      //       });
+      //     }
+      //     if (record.exit_time) {
+      //       outCount++;
+      //       allEvents.push({
+      //         type: "OUT",
+      //         time: convertTimeToString(record.exit_time),
+      //         datetime: record.exit_time,
+      //       });
+      //     }
+      //   });
+
+      //   allEvents.sort(
+      //     (a, b) =>
+      //       new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
+      //   );
+      //   attendanceTimes.push(...allEvents);
+
+      //   const firstEntry = convertTimeToString(records[0]?.entry_time);
+      //   const finalExit = convertTimeToString(
+      //     records[records.length - 1]?.exit_time
+      //   );
+
+      //   const rawDate = convertDateToString(
+      //     records[0]?.entry_time || records[0]?.createdAt
+      //   );
+      //   const formattedDate = formatDateForDisplay(rawDate);
+
+      //   let totalWorkingMinutes = 0;
+
+      //   records.forEach((record) => {
+      //     if (record.entry_time && record.exit_time) {
+      //       const entryTime = convertTimeToString(record.entry_time);
+      //       const exitTime = convertTimeToString(record.exit_time);
+      //       totalWorkingMinutes += calculateTimeDifference(entryTime, exitTime);
+      //     }
+      //   });
+
+      //   const workingHours = Math.floor(totalWorkingMinutes / 60);
+      //   const workingMinutes = totalWorkingMinutes % 60;
+      //   const totalWorkingHours = workingHours + workingMinutes / 60;
+
+      //   const standardWorkDayHours = 8;
+      //   const workingPercent = Math.min(
+      //     100,
+      //     Math.round((totalWorkingHours / standardWorkDayHours) * 100)
+      //   );
+
+      //   const breakMinutes = Math.round(totalWorkingMinutes * 0.1);
+      //   const breakPercent = 10;
+
+      //   const currentTime = new Date();
+      //   const lastRecord = records[records.length - 1];
+      //   const isCurrentlyInside = lastRecord.exit_time === null;
+      //   const status = isCurrentlyInside ? "Inside" : "Outside";
+
+      //   const isEmployee = user?.emp_Id?.startsWith("EMP") || false;
+      //   const displayName =
+      //     user?.emp__eng_name ||
+      //     user?.emp__arabic_name ||
+      //     (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
+
+      //   const result = {
+      //     id: user?.emp_Id,
+      //     name: displayName,
+      //     status: status,
+      //     avatarUrl: user?.image,
+      //     department:
+      //       user?.dep_eng_name ||
+      //       user?.dep_arabic_name ||
+      //       (isEmployee ? "Unknown Department" : "Visitor"),
+      //     office_Id: records[0].office_Id,
+      //     date: formattedDate,
+      //     firstEntry: firstEntry,
+      //     entryCount: inCount,
+      //     finalExit: finalExit,
+      //     exitCount: outCount,
+      //     attendanceTimes: attendanceTimes,
+      //     summary: {
+      //       workingPercent: workingPercent,
+      //       workingHours: parseFloat(totalWorkingHours.toFixed(1)),
+      //       breakPercent: breakPercent,
+      //       breakMinutes: breakMinutes,
+      //       status: status,
+      //       breakStatus: breakMinutes > 0 ? "On Break" : "No Break",
+      //     },
+      //   };
+
+      //   return result;
+      // });
+
       const summaries = Object.values(grouped).map((records: any[]) => {
         const uniqueId = records[0].user?.unique_id;
         const user = records[0].user;
@@ -235,7 +354,7 @@ class OfficeAttendanceService {
             allEvents.push({
               type: "IN",
               time: convertTimeToString(record.entry_time),
-              datetime: record.entry_time,
+              datetime: new Date(record.entry_time),
             });
           }
           if (record.exit_time) {
@@ -243,7 +362,7 @@ class OfficeAttendanceService {
             allEvents.push({
               type: "OUT",
               time: convertTimeToString(record.exit_time),
-              datetime: record.exit_time,
+              datetime: new Date(record.exit_time),
             });
           }
         });
@@ -265,32 +384,57 @@ class OfficeAttendanceService {
         const formattedDate = formatDateForDisplay(rawDate);
 
         let totalWorkingMinutes = 0;
+        let totalBreakMinutes = 0;
+        const now = new Date();
 
-        records.forEach((record) => {
-          if (record.entry_time && record.exit_time) {
-            const entryTime = convertTimeToString(record.entry_time);
-            const exitTime = convertTimeToString(record.exit_time);
-            totalWorkingMinutes += calculateTimeDifference(entryTime, exitTime);
+        // calculate working/breaks
+        for (let i = 0; i < allEvents.length; i++) {
+          const curr = allEvents[i];
+          const next = allEvents[i + 1];
+
+          if (curr.type === "IN") {
+            if (next && next.type === "OUT") {
+              // normal IN → OUT
+              totalWorkingMinutes +=
+                (new Date(next.datetime).getTime() -
+                  new Date(curr.datetime).getTime()) /
+                60000;
+            } else if (!next) {
+              // last IN with no OUT → count till now
+              totalWorkingMinutes +=
+                (now.getTime() - new Date(curr.datetime).getTime()) / 60000;
+            }
           }
-        });
 
-        const workingHours = Math.floor(totalWorkingMinutes / 60);
-        const workingMinutes = totalWorkingMinutes % 60;
-        const totalWorkingHours = workingHours + workingMinutes / 60;
+          if (curr.type === "OUT" && next && next.type === "IN") {
+            // OUT → next IN = break
+            totalBreakMinutes +=
+              (new Date(next.datetime).getTime() -
+                new Date(curr.datetime).getTime()) /
+              60000;
+          }
+        }
 
+        const workingHours = totalWorkingMinutes / 60;
         const standardWorkDayHours = 8;
         const workingPercent = Math.min(
           100,
-          Math.round((totalWorkingHours / standardWorkDayHours) * 100)
+          Math.round((workingHours / standardWorkDayHours) * 100)
         );
 
-        const breakMinutes = Math.round(totalWorkingMinutes * 0.1);
-        const breakPercent = 10;
+        const breakPercent = Math.min(
+          100,
+          Math.round(
+            (totalBreakMinutes / (workingHours * 60 + totalBreakMinutes)) * 100
+          )
+        );
 
-        const currentTime = new Date();
-        const lastRecord = records[records.length - 1];
-        const isCurrentlyInside = lastRecord.exit_time === null;
-        const status = isCurrentlyInside ? "Inside" : "Outside";
+        const lastRecord = allEvents[allEvents.length - 1];
+        const status = lastRecord?.type === "IN" ? "Inside" : "Outside";
+
+        // format into HH:mm:ss
+        const workingHHMMSS = formatDuration(totalWorkingMinutes);
+        const breakHHMMSS = formatDuration(totalBreakMinutes);
 
         const isEmployee = user?.emp_Id?.startsWith("EMP") || false;
         const displayName =
@@ -298,10 +442,10 @@ class OfficeAttendanceService {
           user?.emp__arabic_name ||
           (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
 
-        const result = {
-          id: uniqueId,
+        return {
+          id: user?.emp_Id,
           name: displayName,
-          status: status,
+          status,
           avatarUrl: user?.image,
           department:
             user?.dep_eng_name ||
@@ -309,22 +453,20 @@ class OfficeAttendanceService {
             (isEmployee ? "Unknown Department" : "Visitor"),
           office_Id: records[0].office_Id,
           date: formattedDate,
-          firstEntry: firstEntry,
+          firstEntry,
           entryCount: inCount,
-          finalExit: finalExit,
+          finalExit,
           exitCount: outCount,
-          attendanceTimes: attendanceTimes,
+          attendanceTimes,
           summary: {
-            workingPercent: workingPercent,
-            workingHours: parseFloat(totalWorkingHours.toFixed(1)),
-            breakPercent: breakPercent,
-            breakMinutes: breakMinutes,
-            status: status,
-            breakStatus: breakMinutes > 0 ? "On Break" : "No Break",
+            workingPercent,
+            workingHours: workingHHMMSS,
+            breakPercent,
+            breakMinutes: breakHHMMSS,
+            status,
+            breakStatus: totalBreakMinutes > 0 ? "On Break" : "No Break",
           },
         };
-
-        return result;
       });
 
       summaries.sort((a, b) => {

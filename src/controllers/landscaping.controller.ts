@@ -2,6 +2,7 @@ import { LandscapingService } from "@/services";
 import { LandscapingType, STATUS } from "@/typescript";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
+import CronService from "../services/cron.service";
 
 class LandscapingController extends LandscapingService {
    public static addLandscaping = async (req: Request<{}, {}, LandscapingType>, res: Response, next: NextFunction) => {
@@ -100,6 +101,19 @@ class LandscapingController extends LandscapingService {
             success: true,
             message: "Park camera monitoring completed successfully",
             data: result
+         });
+      } catch (error) {
+         next(error)
+      }
+   }
+
+   public static getCronStatus = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const status = CronService.getCronStatus();
+         return res.status(STATUS.SUCCESS).json({
+            success: true,
+            message: "Cron job status retrieved successfully",
+            data: status
          });
       } catch (error) {
          next(error)

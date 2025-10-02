@@ -3,6 +3,7 @@ export { default as SmokingDetectionService } from "@/services/smoking-detection
 export { default as IntrusionDetectionService } from "@/services/intrusion-detection.service";
 export { default as LitterDetectionService } from "@/services/litter-detection.service";
 export { default as LandscapingService } from "@/services/landscaping.service";
+export { IrrigationsService } from "@/services/irrigations.service";
 export { default as BehaviorAlertsService } from "@/services/behavior-alerts.service";
 export { default as OfficeSentimentAnalysisService } from "@/services/office-sentiment-analysis.service";
 export { default as ParkSentimentAnalysisService } from "@/services/park-sentiment-analysis.service";

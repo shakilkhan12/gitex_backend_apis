@@ -1,7 +1,7 @@
 import { ParkAttendanceType, STATUS } from "@/typescript";
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
-import { formatDate, formatTime } from "@/utils/dateTime.utils";
+import { formatDate, formatDuration, formatTime } from "@/utils/dateTime.utils";
 import { format } from "date-fns";
 
 class ParkAttendanceService {
@@ -214,6 +214,7 @@ class ParkAttendanceService {
         const uniqueId = records[0].user?.unique_id;
         const user = records[0].user;
 
+        // sort by time
         records.sort(
           (a, b) =>
             new Date(a.entry_time || a.createdAt).getTime() -
@@ -237,7 +238,7 @@ class ParkAttendanceService {
             allEvents.push({
               type: "IN",
               time: convertTimeToString(record.entry_time),
-              datetime: record.entry_time,
+              datetime: new Date(record.entry_time),
             });
           }
           if (record.exit_time) {
@@ -245,7 +246,7 @@ class ParkAttendanceService {
             allEvents.push({
               type: "OUT",
               time: convertTimeToString(record.exit_time),
-              datetime: record.exit_time,
+              datetime: new Date(record.exit_time),
             });
           }
         });
@@ -266,33 +267,59 @@ class ParkAttendanceService {
         );
         const formattedDate = formatDateForDisplay(rawDate);
 
+        // === NEW CALCULATION ===
         let totalWorkingMinutes = 0;
+        let totalBreakMinutes = 0;
+        const now = new Date();
 
-        records.forEach((record) => {
-          if (record.entry_time && record.exit_time) {
-            const entryTime = convertTimeToString(record.entry_time);
-            const exitTime = convertTimeToString(record.exit_time);
-            totalWorkingMinutes += calculateTimeDifference(entryTime, exitTime);
+        for (let i = 0; i < allEvents.length; i++) {
+          const curr = allEvents[i];
+          const next = allEvents[i + 1];
+
+          if (curr.type === "IN") {
+            if (next && next.type === "OUT") {
+              // IN → OUT = working
+              totalWorkingMinutes +=
+                (new Date(next.datetime).getTime() -
+                  new Date(curr.datetime).getTime()) /
+                60000;
+            } else if (!next) {
+              // last IN without OUT → till now
+              totalWorkingMinutes +=
+                (now.getTime() - new Date(curr.datetime).getTime()) / 60000;
+            }
           }
-        });
 
-        const workingHours = Math.floor(totalWorkingMinutes / 60);
-        const workingMinutes = totalWorkingMinutes % 60;
-        const totalWorkingHours = workingHours + workingMinutes / 60;
+          if (curr.type === "OUT" && next && next.type === "IN") {
+            // OUT → next IN = break
+            totalBreakMinutes +=
+              (new Date(next.datetime).getTime() -
+                new Date(curr.datetime).getTime()) /
+              60000;
+          }
+        }
 
+        const workingHours = totalWorkingMinutes / 60;
         const standardWorkDayHours = 8;
         const workingPercent = Math.min(
           100,
-          Math.round((totalWorkingHours / standardWorkDayHours) * 100)
+          Math.round((workingHours / standardWorkDayHours) * 100)
         );
 
-        const breakMinutes = Math.round(totalWorkingMinutes * 0.1);
-        const breakPercent = 10;
+        const breakPercent = Math.min(
+          100,
+          Math.round(
+            (totalBreakMinutes / (totalWorkingMinutes + totalBreakMinutes)) *
+              100
+          )
+        );
 
-        const currentTime = new Date();
-        const lastRecord = records[records.length - 1];
-        const isCurrentlyInside = lastRecord.exit_time === null;
-        const status = isCurrentlyInside ? "Inside" : "Outside";
+        const lastEvent = allEvents[allEvents.length - 1];
+        const status = lastEvent?.type === "IN" ? "Inside" : "Outside";
+
+        // format into HH:mm:ss
+        const workingHHMMSS = formatDuration(totalWorkingMinutes);
+        const breakHHMMSS = formatDuration(totalBreakMinutes);
 
         const isEmployee = user?.emp_Id?.startsWith("EMP") || false;
         const displayName =
@@ -300,10 +327,10 @@ class ParkAttendanceService {
           user?.emp__arabic_name ||
           (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
 
-        const result = {
-          id: uniqueId,
+        return {
+          id: user?.emp_Id,
           name: displayName,
-          status: status,
+          status,
           avatarUrl: user?.image,
           department:
             user?.dep_eng_name ||
@@ -311,22 +338,20 @@ class ParkAttendanceService {
             (isEmployee ? "Unknown Department" : "Visitor"),
           park_Id: records[0].park_Id,
           date: formattedDate,
-          firstEntry: firstEntry,
+          firstEntry,
           entryCount: inCount,
-          finalExit: finalExit,
+          finalExit,
           exitCount: outCount,
-          attendanceTimes: attendanceTimes,
+          attendanceTimes,
           summary: {
-            workingPercent: workingPercent,
-            workingHours: parseFloat(totalWorkingHours.toFixed(1)),
-            breakPercent: breakPercent,
-            breakMinutes: breakMinutes,
-            status: status,
-            breakStatus: breakMinutes > 0 ? "On Break" : "No Break",
+            workingPercent,
+            workingHours: workingHHMMSS,
+            breakPercent,
+            breakMinutes: breakHHMMSS,
+            status,
+            breakStatus: totalBreakMinutes > 0 ? "On Break" : "No Break",
           },
         };
-
-        return result;
       });
 
       summaries.sort((a, b) => {

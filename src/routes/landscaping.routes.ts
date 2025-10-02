@@ -440,4 +440,36 @@ landscapingRouter.post('/mark-completed', LandscapingController.markAsCompleted)
  */
 landscapingRouter.post('/monitor-cameras', LandscapingController.monitorParkCameras)
 
+/**
+ * @swagger
+ * /landscaping/cron-status:
+ *   get:
+ *     summary: Get cron job status
+ *     tags: [Landscaping]
+ *     responses:
+ *       200:
+ *         description: Cron job status retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     isRunning:
+ *                       type: boolean
+ *                     activeTasks:
+ *                       type: number
+ *                     tasks:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ */
+landscapingRouter.get('/cron-status', LandscapingController.getCronStatus)
+
 export default landscapingRouter; 

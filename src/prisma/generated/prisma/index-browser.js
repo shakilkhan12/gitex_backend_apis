@@ -252,6 +252,18 @@ exports.Prisma.Park_zonesScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.Parks_zones_job_historyScalarFieldEnum = {
+  Id: 'Id',
+  camera_Id: 'camera_Id',
+  zone_Id: 'zone_Id',
+  job_Id: 'job_Id',
+  image: 'image',
+  started_at: 'started_at',
+  start_for_time: 'start_for_time',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ParksScalarFieldEnum = {
   Id: 'Id',
   park_Id: 'park_Id',
@@ -663,6 +675,12 @@ exports.Prisma.park_zonesOrderByRelevanceFieldEnum = {
   status: 'status'
 };
 
+exports.Prisma.parks_zones_job_historyOrderByRelevanceFieldEnum = {
+  job_Id: 'job_Id',
+  image: 'image',
+  start_for_time: 'start_for_time'
+};
+
 exports.Prisma.parksOrderByRelevanceFieldEnum = {
   park_Id: 'park_Id',
   park_english_name: 'park_english_name',
@@ -839,6 +857,7 @@ exports.Prisma.ModelName = {
   park_cameras: 'park_cameras',
   park_streams: 'park_streams',
   park_zones: 'park_zones',
+  parks_zones_job_history: 'parks_zones_job_history',
   parks: 'parks',
   parks_attendance: 'parks_attendance',
   parks_behaviour_alerts: 'parks_behaviour_alerts',
