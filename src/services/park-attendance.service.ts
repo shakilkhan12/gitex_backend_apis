@@ -301,7 +301,7 @@ class ParkAttendanceService {
           (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
 
         const result = {
-          id: uniqueId,
+          id: user?.emp_Id,
           name: displayName,
           status: status,
           avatarUrl: user?.image,
