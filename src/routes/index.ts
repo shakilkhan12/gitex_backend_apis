@@ -20,8 +20,10 @@ import eventHandlerRouter from "./event-handler.routes";
 import handlingImagesRouter from "./handling-images.routes";
 import intranetPostingHistoryRouter from "./intranet-posting-history.routes";
 import camerasRouter from "./cameras.routes";
+import dashboardRouter from "./dashboard.routes";
 const mainRouter = Router();
 
+mainRouter.use('/dashboard', dashboardRouter)
 mainRouter.use('/smoking-detection', smokingDetectionRouter)
 mainRouter.use('/intrusion-detection', intrusionDetectionRouter)
 mainRouter.use('/litter-detection', litterDetectionRouter)
