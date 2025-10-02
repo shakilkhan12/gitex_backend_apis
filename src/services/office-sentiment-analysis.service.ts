@@ -252,7 +252,7 @@ class OfficeSentimentAnalysisService {
             },
         },
         orderBy: {
-          createdAt: "desc",
+          updatedAt: "desc",
         },
       });
 

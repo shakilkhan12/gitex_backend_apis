@@ -23,9 +23,9 @@ const PORT = process.env.PORT || 5000;
 
 
 const allowedOrigins = process.env.NODE_ENV === 'production'?[
-  'https://gitexai-1dd08c5fca2d.herokuapp.com','http://localhost:4000','https://10.70.90.183:443','https://10.70.90.183'
+  'https://gitexai-1dd08c5fca2d.herokuapp.com','http://localhost:4000','https://10.70.90.183:443','https://10.70.90.183', 'http://10.70.90.9:3000','https://10.70.90.9:3000', 'http://83.111.75.163:3000', 'https://83.111.75.163:3000'
   
-]:['http://localhost:3000','http://localhost:5000','http://localhost:4000','https://10.70.90.183:443','https://10.70.90.183']
+]:['http://localhost:3000','http://localhost:5000','http://localhost:4000','https://10.70.90.183:443','https://10.70.90.183', 'http://10.70.90.9:3000','https://10.70.90.9:3000', 'http://83.111.75.163:3000', 'https://83.111.75.163:3000']
 
 app.use(cors({
   origin: allowedOrigins,
