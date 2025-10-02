@@ -1,10 +1,9 @@
-
 export const formatDate = (date: Date | string | null): string | null => {
   if (!date) return null;
-  
+
   try {
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
-    return dateObj.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+    return dateObj.toISOString().split("T")[0]; // Returns YYYY-MM-DD format
   } catch (error) {
     return null;
   }
@@ -12,25 +11,28 @@ export const formatDate = (date: Date | string | null): string | null => {
 
 export const formatTime = (time: Date | string | null): string | null => {
   if (!time) return null;
-  
+
   try {
-    const timeObj = typeof time === 'string' ? new Date(time) : time;
-    
+    const timeObj = typeof time === "string" ? new Date(time) : time;
+
     if (timeObj.getFullYear() === 1970) {
-      return timeObj.toTimeString().split(' ')[0]; // Returns HH:MM:SS format
+      return timeObj.toTimeString().split(" ")[0]; // Returns HH:MM:SS format
     }
-    
-    return timeObj.toTimeString().split(' ')[0];
+
+    return timeObj.toTimeString().split(" ")[0];
   } catch (error) {
     return null;
   }
 };
 
-export const formatDateTime = (dateTime: Date | string | null): string | null => {
+export const formatDateTime = (
+  dateTime: Date | string | null
+): string | null => {
   if (!dateTime) return null;
-  
+
   try {
-    const dateTimeObj = typeof dateTime === 'string' ? new Date(dateTime) : dateTime;
+    const dateTimeObj =
+      typeof dateTime === "string" ? new Date(dateTime) : dateTime;
     return dateTimeObj.toISOString();
   } catch (error) {
     return null;
@@ -39,29 +41,33 @@ export const formatDateTime = (dateTime: Date | string | null): string | null =>
 
 export const mapPersonIdToEmpId = (personId: string): string => {
   const mapping: { [key: string]: string } = {
-    'P001': 'EMP001',
-    'P002': 'EMP002', 
-    'P003': 'EMP003',
-    'P004': 'EMP004',
-    'P005': 'EMP005',
+    P001: "EMP001",
+    P002: "EMP002",
+    P003: "EMP003",
+    P004: "EMP004",
+    P005: "EMP005",
   };
-  
+
   return mapping[personId] || personId;
 };
 
 export const mapEmpIdToPersonId = (empId: string): string => {
   const mapping: { [key: string]: string } = {
-    'EMP001': 'P001',
-    'EMP002': 'P002',
-    'EMP003': 'P003', 
-    'EMP004': 'P004',
-    'EMP005': 'P005',
+    EMP001: "P001",
+    EMP002: "P002",
+    EMP003: "P003",
+    EMP004: "P004",
+    EMP005: "P005",
   };
-  
+
   return mapping[empId] || empId;
 };
 
-
-
-
-
+export const formatDuration = (totalMinutes: number): string => {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = Math.floor(totalMinutes % 60);
+  const seconds = Math.floor((totalMinutes * 60) % 60);
+  return [hours, minutes, seconds]
+    .map((v) => String(v).padStart(2, "0"))
+    .join(":");
+};
