@@ -31,6 +31,7 @@ class DashboardService {
       officeFootfallMale,
       officeFootfallFemale,
       footfallSummary,
+      litterDetectionSummary,
       parksSentimentAnalysisToday,
       officesSentimentAnalysisToday,
     ] = await Promise.all([
@@ -45,6 +46,7 @@ class DashboardService {
       getFootfall("offices", "Male.", sevenDaysAgo, now),
       getFootfall("offices", "Female.", sevenDaysAgo, now),
       getFootfallSummary(now),
+      getLitterDetection(now),
       getSentimentAnalysis("parks", {
         where: {
           check_in_date: {
@@ -130,6 +132,7 @@ class DashboardService {
         footfallFemaleVisitorPercentage,
       },
       footfallSummary,
+      litterDetectionSummary,
       sentimentAnalysisToday,
     };
   };
@@ -181,6 +184,58 @@ async function getOfficeCheckins(todayStart: Date, todayEnd: Date) {
       check_out_sentiment: true,
     },
   });
+}
+
+async function getLitterDetection(now: Date) {
+  const days: Date[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(now.getDate() - i);
+    days.push(d);
+  }
+
+  const start = new Date(days[0]);
+  const end = new Date(now);
+  end.setHours(23, 59, 59, 999);
+
+  const results = await db.parks_litter_detection.findMany({
+    where: { createdAt: { gte: start, lte: end } },
+    select: { createdAt: true },
+  });
+
+  const countsByDate: Record<string, number> = {};
+  for (const row of results) {
+    if (row.createdAt) {
+      const d = new Date(row.createdAt as string | number | Date);
+      const dateStr =
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0");
+      countsByDate[dateStr] = (countsByDate[dateStr] || 0) + 1;
+    }
+  }
+
+  const daily: Array<{ date: string; count: number }> = [];
+  for (let i = 0; i < 7; i++) {
+    const day = days[i];
+    const dateStr =
+      day.getFullYear() +
+      "-" +
+      String(day.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(day.getDate()).padStart(2, "0");
+    daily.push({
+      date: dateStr,
+      count: countsByDate[dateStr] || 0,
+    });
+  }
+
+  const total = results.length;
+
+  return { total, daily };
 }
 
 async function getFootfallSummary(now: Date) {
