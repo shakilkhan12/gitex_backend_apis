@@ -1,3 +1,4 @@
+export { default as QMSService } from './qms.service';
 export { default as ParkService } from "@/services/park.service";
 export { default as SmokingDetectionService } from "@/services/smoking-detection.service";
 export { default as IntrusionDetectionService } from "@/services/intrusion-detection.service";

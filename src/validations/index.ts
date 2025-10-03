@@ -1,4 +1,5 @@
 export * from "@/validations/validations";
+export { qmsValidations, qmsUpdateValidations } from "./qms.validations";
 export { parkValidations } from "./park.validations";
 export { smokingDetectionValidations } from "./smoking-detection.validations";
 export { intrusionDetectionValidations } from "./intrusion-detection.validations";

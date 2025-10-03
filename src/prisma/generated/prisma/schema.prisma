@@ -674,3 +674,36 @@ enum parks_sentiment_analysis_sentiment_of {
   employee
   visitor
 }
+
+model qms_history {
+  visit_id              Int      @id @default(autoincrement())
+  visitor_id            Int?
+  gender                String?  @db.VarChar(50)
+  age_group             String?  @db.VarChar(50)
+  ticket_number         String?  @db.VarChar(100)
+  service_english_name  String?  @db.VarChar(255)
+  service_arabic_name   String?  @db.VarChar(255)
+  agent_english_name    String?  @db.VarChar(255)
+  agent_arabic_name     String?  @db.VarChar(255)
+  ticket_date           String?  @db.VarChar(10)
+  issue_time            String?  @db.VarChar(8)
+  processing_start_time String?  @db.VarChar(8)
+  processing_end_time   String?  @db.VarChar(8)
+  waiting_time          String?  @db.VarChar(8)
+  total_processing_time String?  @db.VarChar(8)
+  entry_image           String?  @db.VarChar(500)
+  entry_camera          String?  @db.VarChar(100)
+  entry_mode            String?  @db.VarChar(50)
+  entry_date            String?  @db.VarChar(10)
+  entry_time            String?  @db.VarChar(8)
+  exit_image            String?  @db.VarChar(500)
+  exit_camera           String?  @db.VarChar(100)
+  exit_mode             String?  @db.VarChar(50)
+  exit_date             String?  @db.VarChar(10)
+  exit_time             String?  @db.VarChar(8)
+  status                String?  @db.VarChar(50)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("qms_history")
+}

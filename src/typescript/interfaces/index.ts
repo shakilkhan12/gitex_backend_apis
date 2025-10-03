@@ -88,7 +88,7 @@ export interface OfficeSentimentAnalysisType {
   office_Id: string;
   person_Id?: string; // This should be the emp_Id from the users table (optional)
   detection_Id: string;
-  sentiment_of?: 'employee' | 'visitor'; // Will be determined automatically based on user lookup
+  sentiment_of?: "employee" | "visitor"; // Will be determined automatically based on user lookup
   check_in_date: Date;
   check_in_time: Date;
   check_in_sentiment: string;
@@ -133,7 +133,7 @@ export interface ParkSentimentAnalysisType {
   park_Id: string;
   person_Id?: string; // This should be the emp_Id from the users table (optional)
   detection_Id: string;
-  sentiment_of?: 'employee' | 'visitor'; // Will be determined automatically based on user lookup
+  sentiment_of?: "employee" | "visitor"; // Will be determined automatically based on user lookup
   check_in_date: Date;
   check_in_time: Date;
   check_in_sentiment: string;
@@ -163,14 +163,11 @@ export interface ParkAttendanceType {
   exit_time?: Date;
 }
 
-
-
-
 export interface SettingTypes {
   stream_url?: string;
   stream_api_key?: string;
   stream_path?: string;
-  password?:string;
+  password?: string;
 }
 
 interface ParkCombine {
@@ -185,16 +182,16 @@ export interface SettingTypes {
   stream_url?: string;
   stream_api_key?: string;
   stream_path?: string;
-  password?:string;
+  password?: string;
 }
 
 export interface OfficeType extends ParkCombine {
   office_Id: string;
-  office_english_name?:string;
-  office_arabic_name?:string;
-  image?:string;
-  location?:string;
-  status?:string;
+  office_english_name?: string;
+  office_arabic_name?: string;
+  image?: string;
+  location?: string;
+  status?: string;
 }
 export interface OfficeCamera extends ParkCombine {
   office_Id: number;
@@ -202,7 +199,7 @@ export interface OfficeCamera extends ParkCombine {
   camera_english_name?: string;
   camera_arabic_name?: string;
   ip_address?: string;
-  last_active_date?: Date,
+  last_active_date?: Date;
   last_active_time?: string;
   status?: boolean | string;
 }
@@ -219,24 +216,24 @@ export interface ParkZone extends ParkCombine {
   longitude: string;
 }
 
-export interface ParkCamera extends ParkCombine, SettingTypes{
+export interface ParkCamera extends ParkCombine, SettingTypes {
   park_Id: number;
   camera_Id: string;
   camera_english_name: string;
   camera_arabic_name: string;
   ip_address: string;
-  last_active_date: Date,
+  last_active_date: Date;
   last_active_time: string;
   status: boolean | string;
-  attendance?: boolean|undefined;
+  attendance?: boolean | undefined;
   footfall?: boolean | undefined;
-  behaviour?:boolean | undefined;
+  behaviour?: boolean | undefined;
   behaviour_alerts?: boolean | undefined;
-  irrigation?:boolean | undefined;
-  landscapping?:boolean | undefined;
-  litter_detection?:boolean | undefined;
-  intrusion?:boolean | undefined;
-  smooking_detection?:boolean | undefined;
+  irrigation?: boolean | undefined;
+  landscapping?: boolean | undefined;
+  litter_detection?: boolean | undefined;
+  intrusion?: boolean | undefined;
+  smooking_detection?: boolean | undefined;
 }
 
 export interface SettingInputTypes extends SettingTypes {
@@ -357,4 +354,59 @@ export interface AddUserType {
   is_attendance_user?: boolean;
   is_ai_login_user?: boolean;
   ai_engine_access?: boolean;
+}
+
+export interface QMSTriggerType {
+  // No input parameters needed for trigger
+}
+
+export interface QMSTriggerResponseType {
+  visit_id: number;
+  visitor_id: number | null;
+  gender: string | null;
+  age_group: string | null;
+}
+
+export interface QMSUpdateType {
+  visit_id: number;
+  ticket_number: string;
+  service_english_name: string;
+  service_arabic_name: string;
+  agent_english_name: string;
+  agent_arabic_name: string;
+  ticket_date: string;
+  issue_time: string;
+  processing_start_time: string;
+  processing_end_time: string;
+  waiting_time: string;
+  total_processing_time: string;
+}
+
+export interface QMSHistoryType {
+  visit_id?: number;
+  visitor_id?: number;
+  gender?: string;
+  age_group?: string;
+  ticket_number?: string;
+  service_english_name?: string;
+  service_arabic_name?: string;
+  agent_english_name?: string;
+  agent_arabic_name?: string;
+  ticket_date?: string;
+  issue_time?: string;
+  processing_start_time?: string;
+  processing_end_time?: string;
+  waiting_time?: string;
+  total_processing_time?: string;
+  entry_image?: string;
+  entry_camera?: string;
+  entry_mode?: string;
+  entry_date?: string;
+  entry_time?: string;
+  exit_image?: string;
+  exit_camera?: string;
+  exit_mode?: string;
+  exit_date?: string;
+  exit_time?: string;
+  status?: string;
 }
