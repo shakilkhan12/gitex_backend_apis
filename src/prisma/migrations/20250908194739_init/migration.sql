@@ -589,6 +589,40 @@ CREATE TABLE `FAQ` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `qms_history` (
+    `visit_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `visitor_id` INTEGER NULL,
+    `gender` VARCHAR(50) NULL,
+    `age_group` VARCHAR(50) NULL,
+    `ticket_number` VARCHAR(100) NULL,
+    `service_english_name` VARCHAR(255) NULL,
+    `service_arabic_name` VARCHAR(255) NULL,
+    `agent_english_name` VARCHAR(255) NULL,
+    `agent_arabic_name` VARCHAR(255) NULL,
+    `ticket_date` VARCHAR(10) NULL,
+    `issue_time` VARCHAR(8) NULL,
+    `processing_start_time` VARCHAR(8) NULL,
+    `processing_end_time` VARCHAR(8) NULL,
+    `waiting_time` VARCHAR(8) NULL,
+    `total_processing_time` VARCHAR(8) NULL,
+    `entry_image` VARCHAR(500) NULL,
+    `entry_camera` VARCHAR(100) NULL,
+    `entry_mode` VARCHAR(50) NULL,
+    `entry_date` VARCHAR(10) NULL,
+    `entry_time` VARCHAR(8) NULL,
+    `exit_image` VARCHAR(500) NULL,
+    `exit_camera` VARCHAR(100) NULL,
+    `exit_mode` VARCHAR(50) NULL,
+    `exit_date` VARCHAR(10) NULL,
+    `exit_time` VARCHAR(8) NULL,
+    `status` VARCHAR(50) NULL,
+    `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `updatedAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
+    PRIMARY KEY (`visit_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `live_stream_favourites` ADD CONSTRAINT `live_stream_favourites_ibfk_1` FOREIGN KEY (`emp_Id`) REFERENCES `users`(`Id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 

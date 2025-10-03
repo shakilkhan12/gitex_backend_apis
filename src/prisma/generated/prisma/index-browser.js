@@ -603,6 +603,37 @@ exports.Prisma.Landscaping_historyScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.Qms_historyScalarFieldEnum = {
+  visit_id: 'visit_id',
+  visitor_id: 'visitor_id',
+  gender: 'gender',
+  age_group: 'age_group',
+  ticket_number: 'ticket_number',
+  service_english_name: 'service_english_name',
+  service_arabic_name: 'service_arabic_name',
+  agent_english_name: 'agent_english_name',
+  agent_arabic_name: 'agent_arabic_name',
+  ticket_date: 'ticket_date',
+  issue_time: 'issue_time',
+  processing_start_time: 'processing_start_time',
+  processing_end_time: 'processing_end_time',
+  waiting_time: 'waiting_time',
+  total_processing_time: 'total_processing_time',
+  entry_image: 'entry_image',
+  entry_camera: 'entry_camera',
+  entry_mode: 'entry_mode',
+  entry_date: 'entry_date',
+  entry_time: 'entry_time',
+  exit_image: 'exit_image',
+  exit_camera: 'exit_camera',
+  exit_mode: 'exit_mode',
+  exit_date: 'exit_date',
+  exit_time: 'exit_time',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -836,6 +867,33 @@ exports.Prisma.landscaping_historyOrderByRelevanceFieldEnum = {
   comments: 'comments',
   image: 'image'
 };
+
+exports.Prisma.qms_historyOrderByRelevanceFieldEnum = {
+  gender: 'gender',
+  age_group: 'age_group',
+  ticket_number: 'ticket_number',
+  service_english_name: 'service_english_name',
+  service_arabic_name: 'service_arabic_name',
+  agent_english_name: 'agent_english_name',
+  agent_arabic_name: 'agent_arabic_name',
+  ticket_date: 'ticket_date',
+  issue_time: 'issue_time',
+  processing_start_time: 'processing_start_time',
+  processing_end_time: 'processing_end_time',
+  waiting_time: 'waiting_time',
+  total_processing_time: 'total_processing_time',
+  entry_image: 'entry_image',
+  entry_camera: 'entry_camera',
+  entry_mode: 'entry_mode',
+  entry_date: 'entry_date',
+  entry_time: 'entry_time',
+  exit_image: 'exit_image',
+  exit_camera: 'exit_camera',
+  exit_mode: 'exit_mode',
+  exit_date: 'exit_date',
+  exit_time: 'exit_time',
+  status: 'status'
+};
 exports.offices_sentiment_analysis_sentiment_of = exports.$Enums.offices_sentiment_analysis_sentiment_of = {
   employee: 'employee',
   visitor: 'visitor'
@@ -876,7 +934,8 @@ exports.Prisma.ModelName = {
   TermsPrivacy: 'TermsPrivacy',
   FAQ: 'FAQ',
   landscaping: 'landscaping',
-  landscaping_history: 'landscaping_history'
+  landscaping_history: 'landscaping_history',
+  qms_history: 'qms_history'
 };
 
 /**

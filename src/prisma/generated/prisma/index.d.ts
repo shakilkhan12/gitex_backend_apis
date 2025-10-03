@@ -163,6 +163,11 @@ export type landscaping = $Result.DefaultSelection<Prisma.$landscapingPayload>
  * 
  */
 export type landscaping_history = $Result.DefaultSelection<Prisma.$landscaping_historyPayload>
+/**
+ * Model qms_history
+ * 
+ */
+export type qms_history = $Result.DefaultSelection<Prisma.$qms_historyPayload>
 
 /**
  * Enums
@@ -610,6 +615,16 @@ export class PrismaClient<
     * ```
     */
   get landscaping_history(): Prisma.landscaping_historyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.qms_history`: Exposes CRUD operations for the **qms_history** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Qms_histories
+    * const qms_histories = await prisma.qms_history.findMany()
+    * ```
+    */
+  get qms_history(): Prisma.qms_historyDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1079,7 +1094,8 @@ export namespace Prisma {
     TermsPrivacy: 'TermsPrivacy',
     FAQ: 'FAQ',
     landscaping: 'landscaping',
-    landscaping_history: 'landscaping_history'
+    landscaping_history: 'landscaping_history',
+    qms_history: 'qms_history'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1098,7 +1114,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "access_secret" | "live_stream_favourites" | "office_streams" | "offices" | "offices_attendance" | "offices_cameras" | "offices_sentiment_analysis" | "park_cameras" | "park_streams" | "park_zones" | "parks_zones_job_history" | "parks" | "parks_attendance" | "parks_behaviour_alerts" | "parks_intrusion_detection" | "parks_irrigation_job_history" | "parks_litter_detection" | "ticket_details_table" | "parks_sentiment_analysis" | "parks_smoking_detection" | "intranet_posting_history" | "users" | "users_permissions" | "users_roles" | "parks_footfall_analysis" | "offices_footfall_analysis" | "termsPrivacy" | "fAQ" | "landscaping" | "landscaping_history"
+      modelProps: "access_secret" | "live_stream_favourites" | "office_streams" | "offices" | "offices_attendance" | "offices_cameras" | "offices_sentiment_analysis" | "park_cameras" | "park_streams" | "park_zones" | "parks_zones_job_history" | "parks" | "parks_attendance" | "parks_behaviour_alerts" | "parks_intrusion_detection" | "parks_irrigation_job_history" | "parks_litter_detection" | "ticket_details_table" | "parks_sentiment_analysis" | "parks_smoking_detection" | "intranet_posting_history" | "users" | "users_permissions" | "users_roles" | "parks_footfall_analysis" | "offices_footfall_analysis" | "termsPrivacy" | "fAQ" | "landscaping" | "landscaping_history" | "qms_history"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3082,6 +3098,72 @@ export namespace Prisma {
           }
         }
       }
+      qms_history: {
+        payload: Prisma.$qms_historyPayload<ExtArgs>
+        fields: Prisma.qms_historyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.qms_historyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$qms_historyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.qms_historyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$qms_historyPayload>
+          }
+          findFirst: {
+            args: Prisma.qms_historyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$qms_historyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.qms_historyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$qms_historyPayload>
+          }
+          findMany: {
+            args: Prisma.qms_historyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$qms_historyPayload>[]
+          }
+          create: {
+            args: Prisma.qms_historyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$qms_historyPayload>
+          }
+          createMany: {
+            args: Prisma.qms_historyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.qms_historyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$qms_historyPayload>
+          }
+          update: {
+            args: Prisma.qms_historyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$qms_historyPayload>
+          }
+          deleteMany: {
+            args: Prisma.qms_historyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.qms_historyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.qms_historyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$qms_historyPayload>
+          }
+          aggregate: {
+            args: Prisma.Qms_historyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateQms_history>
+          }
+          groupBy: {
+            args: Prisma.qms_historyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Qms_historyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.qms_historyCountArgs<ExtArgs>
+            result: $Utils.Optional<Qms_historyCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3208,6 +3290,7 @@ export namespace Prisma {
     fAQ?: FAQOmit
     landscaping?: landscapingOmit
     landscaping_history?: landscaping_historyOmit
+    qms_history?: qms_historyOmit
   }
 
   /* Types for Logging */
@@ -37726,6 +37809,1179 @@ export namespace Prisma {
 
 
   /**
+   * Model qms_history
+   */
+
+  export type AggregateQms_history = {
+    _count: Qms_historyCountAggregateOutputType | null
+    _avg: Qms_historyAvgAggregateOutputType | null
+    _sum: Qms_historySumAggregateOutputType | null
+    _min: Qms_historyMinAggregateOutputType | null
+    _max: Qms_historyMaxAggregateOutputType | null
+  }
+
+  export type Qms_historyAvgAggregateOutputType = {
+    visit_id: number | null
+    visitor_id: number | null
+  }
+
+  export type Qms_historySumAggregateOutputType = {
+    visit_id: number | null
+    visitor_id: number | null
+  }
+
+  export type Qms_historyMinAggregateOutputType = {
+    visit_id: number | null
+    visitor_id: number | null
+    gender: string | null
+    age_group: string | null
+    ticket_number: string | null
+    service_english_name: string | null
+    service_arabic_name: string | null
+    agent_english_name: string | null
+    agent_arabic_name: string | null
+    ticket_date: string | null
+    issue_time: string | null
+    processing_start_time: string | null
+    processing_end_time: string | null
+    waiting_time: string | null
+    total_processing_time: string | null
+    entry_image: string | null
+    entry_camera: string | null
+    entry_mode: string | null
+    entry_date: string | null
+    entry_time: string | null
+    exit_image: string | null
+    exit_camera: string | null
+    exit_mode: string | null
+    exit_date: string | null
+    exit_time: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Qms_historyMaxAggregateOutputType = {
+    visit_id: number | null
+    visitor_id: number | null
+    gender: string | null
+    age_group: string | null
+    ticket_number: string | null
+    service_english_name: string | null
+    service_arabic_name: string | null
+    agent_english_name: string | null
+    agent_arabic_name: string | null
+    ticket_date: string | null
+    issue_time: string | null
+    processing_start_time: string | null
+    processing_end_time: string | null
+    waiting_time: string | null
+    total_processing_time: string | null
+    entry_image: string | null
+    entry_camera: string | null
+    entry_mode: string | null
+    entry_date: string | null
+    entry_time: string | null
+    exit_image: string | null
+    exit_camera: string | null
+    exit_mode: string | null
+    exit_date: string | null
+    exit_time: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Qms_historyCountAggregateOutputType = {
+    visit_id: number
+    visitor_id: number
+    gender: number
+    age_group: number
+    ticket_number: number
+    service_english_name: number
+    service_arabic_name: number
+    agent_english_name: number
+    agent_arabic_name: number
+    ticket_date: number
+    issue_time: number
+    processing_start_time: number
+    processing_end_time: number
+    waiting_time: number
+    total_processing_time: number
+    entry_image: number
+    entry_camera: number
+    entry_mode: number
+    entry_date: number
+    entry_time: number
+    exit_image: number
+    exit_camera: number
+    exit_mode: number
+    exit_date: number
+    exit_time: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type Qms_historyAvgAggregateInputType = {
+    visit_id?: true
+    visitor_id?: true
+  }
+
+  export type Qms_historySumAggregateInputType = {
+    visit_id?: true
+    visitor_id?: true
+  }
+
+  export type Qms_historyMinAggregateInputType = {
+    visit_id?: true
+    visitor_id?: true
+    gender?: true
+    age_group?: true
+    ticket_number?: true
+    service_english_name?: true
+    service_arabic_name?: true
+    agent_english_name?: true
+    agent_arabic_name?: true
+    ticket_date?: true
+    issue_time?: true
+    processing_start_time?: true
+    processing_end_time?: true
+    waiting_time?: true
+    total_processing_time?: true
+    entry_image?: true
+    entry_camera?: true
+    entry_mode?: true
+    entry_date?: true
+    entry_time?: true
+    exit_image?: true
+    exit_camera?: true
+    exit_mode?: true
+    exit_date?: true
+    exit_time?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Qms_historyMaxAggregateInputType = {
+    visit_id?: true
+    visitor_id?: true
+    gender?: true
+    age_group?: true
+    ticket_number?: true
+    service_english_name?: true
+    service_arabic_name?: true
+    agent_english_name?: true
+    agent_arabic_name?: true
+    ticket_date?: true
+    issue_time?: true
+    processing_start_time?: true
+    processing_end_time?: true
+    waiting_time?: true
+    total_processing_time?: true
+    entry_image?: true
+    entry_camera?: true
+    entry_mode?: true
+    entry_date?: true
+    entry_time?: true
+    exit_image?: true
+    exit_camera?: true
+    exit_mode?: true
+    exit_date?: true
+    exit_time?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Qms_historyCountAggregateInputType = {
+    visit_id?: true
+    visitor_id?: true
+    gender?: true
+    age_group?: true
+    ticket_number?: true
+    service_english_name?: true
+    service_arabic_name?: true
+    agent_english_name?: true
+    agent_arabic_name?: true
+    ticket_date?: true
+    issue_time?: true
+    processing_start_time?: true
+    processing_end_time?: true
+    waiting_time?: true
+    total_processing_time?: true
+    entry_image?: true
+    entry_camera?: true
+    entry_mode?: true
+    entry_date?: true
+    entry_time?: true
+    exit_image?: true
+    exit_camera?: true
+    exit_mode?: true
+    exit_date?: true
+    exit_time?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type Qms_historyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which qms_history to aggregate.
+     */
+    where?: qms_historyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of qms_histories to fetch.
+     */
+    orderBy?: qms_historyOrderByWithRelationInput | qms_historyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: qms_historyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` qms_histories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` qms_histories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned qms_histories
+    **/
+    _count?: true | Qms_historyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Qms_historyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Qms_historySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Qms_historyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Qms_historyMaxAggregateInputType
+  }
+
+  export type GetQms_historyAggregateType<T extends Qms_historyAggregateArgs> = {
+        [P in keyof T & keyof AggregateQms_history]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateQms_history[P]>
+      : GetScalarType<T[P], AggregateQms_history[P]>
+  }
+
+
+
+
+  export type qms_historyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: qms_historyWhereInput
+    orderBy?: qms_historyOrderByWithAggregationInput | qms_historyOrderByWithAggregationInput[]
+    by: Qms_historyScalarFieldEnum[] | Qms_historyScalarFieldEnum
+    having?: qms_historyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Qms_historyCountAggregateInputType | true
+    _avg?: Qms_historyAvgAggregateInputType
+    _sum?: Qms_historySumAggregateInputType
+    _min?: Qms_historyMinAggregateInputType
+    _max?: Qms_historyMaxAggregateInputType
+  }
+
+  export type Qms_historyGroupByOutputType = {
+    visit_id: number
+    visitor_id: number | null
+    gender: string | null
+    age_group: string | null
+    ticket_number: string | null
+    service_english_name: string | null
+    service_arabic_name: string | null
+    agent_english_name: string | null
+    agent_arabic_name: string | null
+    ticket_date: string | null
+    issue_time: string | null
+    processing_start_time: string | null
+    processing_end_time: string | null
+    waiting_time: string | null
+    total_processing_time: string | null
+    entry_image: string | null
+    entry_camera: string | null
+    entry_mode: string | null
+    entry_date: string | null
+    entry_time: string | null
+    exit_image: string | null
+    exit_camera: string | null
+    exit_mode: string | null
+    exit_date: string | null
+    exit_time: string | null
+    status: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: Qms_historyCountAggregateOutputType | null
+    _avg: Qms_historyAvgAggregateOutputType | null
+    _sum: Qms_historySumAggregateOutputType | null
+    _min: Qms_historyMinAggregateOutputType | null
+    _max: Qms_historyMaxAggregateOutputType | null
+  }
+
+  type GetQms_historyGroupByPayload<T extends qms_historyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Qms_historyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Qms_historyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Qms_historyGroupByOutputType[P]>
+            : GetScalarType<T[P], Qms_historyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type qms_historySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    visit_id?: boolean
+    visitor_id?: boolean
+    gender?: boolean
+    age_group?: boolean
+    ticket_number?: boolean
+    service_english_name?: boolean
+    service_arabic_name?: boolean
+    agent_english_name?: boolean
+    agent_arabic_name?: boolean
+    ticket_date?: boolean
+    issue_time?: boolean
+    processing_start_time?: boolean
+    processing_end_time?: boolean
+    waiting_time?: boolean
+    total_processing_time?: boolean
+    entry_image?: boolean
+    entry_camera?: boolean
+    entry_mode?: boolean
+    entry_date?: boolean
+    entry_time?: boolean
+    exit_image?: boolean
+    exit_camera?: boolean
+    exit_mode?: boolean
+    exit_date?: boolean
+    exit_time?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["qms_history"]>
+
+
+
+  export type qms_historySelectScalar = {
+    visit_id?: boolean
+    visitor_id?: boolean
+    gender?: boolean
+    age_group?: boolean
+    ticket_number?: boolean
+    service_english_name?: boolean
+    service_arabic_name?: boolean
+    agent_english_name?: boolean
+    agent_arabic_name?: boolean
+    ticket_date?: boolean
+    issue_time?: boolean
+    processing_start_time?: boolean
+    processing_end_time?: boolean
+    waiting_time?: boolean
+    total_processing_time?: boolean
+    entry_image?: boolean
+    entry_camera?: boolean
+    entry_mode?: boolean
+    entry_date?: boolean
+    entry_time?: boolean
+    exit_image?: boolean
+    exit_camera?: boolean
+    exit_mode?: boolean
+    exit_date?: boolean
+    exit_time?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type qms_historyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"visit_id" | "visitor_id" | "gender" | "age_group" | "ticket_number" | "service_english_name" | "service_arabic_name" | "agent_english_name" | "agent_arabic_name" | "ticket_date" | "issue_time" | "processing_start_time" | "processing_end_time" | "waiting_time" | "total_processing_time" | "entry_image" | "entry_camera" | "entry_mode" | "entry_date" | "entry_time" | "exit_image" | "exit_camera" | "exit_mode" | "exit_date" | "exit_time" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["qms_history"]>
+
+  export type $qms_historyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "qms_history"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      visit_id: number
+      visitor_id: number | null
+      gender: string | null
+      age_group: string | null
+      ticket_number: string | null
+      service_english_name: string | null
+      service_arabic_name: string | null
+      agent_english_name: string | null
+      agent_arabic_name: string | null
+      ticket_date: string | null
+      issue_time: string | null
+      processing_start_time: string | null
+      processing_end_time: string | null
+      waiting_time: string | null
+      total_processing_time: string | null
+      entry_image: string | null
+      entry_camera: string | null
+      entry_mode: string | null
+      entry_date: string | null
+      entry_time: string | null
+      exit_image: string | null
+      exit_camera: string | null
+      exit_mode: string | null
+      exit_date: string | null
+      exit_time: string | null
+      status: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["qms_history"]>
+    composites: {}
+  }
+
+  type qms_historyGetPayload<S extends boolean | null | undefined | qms_historyDefaultArgs> = $Result.GetResult<Prisma.$qms_historyPayload, S>
+
+  type qms_historyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<qms_historyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Qms_historyCountAggregateInputType | true
+    }
+
+  export interface qms_historyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['qms_history'], meta: { name: 'qms_history' } }
+    /**
+     * Find zero or one Qms_history that matches the filter.
+     * @param {qms_historyFindUniqueArgs} args - Arguments to find a Qms_history
+     * @example
+     * // Get one Qms_history
+     * const qms_history = await prisma.qms_history.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends qms_historyFindUniqueArgs>(args: SelectSubset<T, qms_historyFindUniqueArgs<ExtArgs>>): Prisma__qms_historyClient<$Result.GetResult<Prisma.$qms_historyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Qms_history that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {qms_historyFindUniqueOrThrowArgs} args - Arguments to find a Qms_history
+     * @example
+     * // Get one Qms_history
+     * const qms_history = await prisma.qms_history.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends qms_historyFindUniqueOrThrowArgs>(args: SelectSubset<T, qms_historyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__qms_historyClient<$Result.GetResult<Prisma.$qms_historyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Qms_history that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {qms_historyFindFirstArgs} args - Arguments to find a Qms_history
+     * @example
+     * // Get one Qms_history
+     * const qms_history = await prisma.qms_history.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends qms_historyFindFirstArgs>(args?: SelectSubset<T, qms_historyFindFirstArgs<ExtArgs>>): Prisma__qms_historyClient<$Result.GetResult<Prisma.$qms_historyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Qms_history that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {qms_historyFindFirstOrThrowArgs} args - Arguments to find a Qms_history
+     * @example
+     * // Get one Qms_history
+     * const qms_history = await prisma.qms_history.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends qms_historyFindFirstOrThrowArgs>(args?: SelectSubset<T, qms_historyFindFirstOrThrowArgs<ExtArgs>>): Prisma__qms_historyClient<$Result.GetResult<Prisma.$qms_historyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Qms_histories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {qms_historyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Qms_histories
+     * const qms_histories = await prisma.qms_history.findMany()
+     * 
+     * // Get first 10 Qms_histories
+     * const qms_histories = await prisma.qms_history.findMany({ take: 10 })
+     * 
+     * // Only select the `visit_id`
+     * const qms_historyWithVisit_idOnly = await prisma.qms_history.findMany({ select: { visit_id: true } })
+     * 
+     */
+    findMany<T extends qms_historyFindManyArgs>(args?: SelectSubset<T, qms_historyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$qms_historyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Qms_history.
+     * @param {qms_historyCreateArgs} args - Arguments to create a Qms_history.
+     * @example
+     * // Create one Qms_history
+     * const Qms_history = await prisma.qms_history.create({
+     *   data: {
+     *     // ... data to create a Qms_history
+     *   }
+     * })
+     * 
+     */
+    create<T extends qms_historyCreateArgs>(args: SelectSubset<T, qms_historyCreateArgs<ExtArgs>>): Prisma__qms_historyClient<$Result.GetResult<Prisma.$qms_historyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Qms_histories.
+     * @param {qms_historyCreateManyArgs} args - Arguments to create many Qms_histories.
+     * @example
+     * // Create many Qms_histories
+     * const qms_history = await prisma.qms_history.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends qms_historyCreateManyArgs>(args?: SelectSubset<T, qms_historyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Qms_history.
+     * @param {qms_historyDeleteArgs} args - Arguments to delete one Qms_history.
+     * @example
+     * // Delete one Qms_history
+     * const Qms_history = await prisma.qms_history.delete({
+     *   where: {
+     *     // ... filter to delete one Qms_history
+     *   }
+     * })
+     * 
+     */
+    delete<T extends qms_historyDeleteArgs>(args: SelectSubset<T, qms_historyDeleteArgs<ExtArgs>>): Prisma__qms_historyClient<$Result.GetResult<Prisma.$qms_historyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Qms_history.
+     * @param {qms_historyUpdateArgs} args - Arguments to update one Qms_history.
+     * @example
+     * // Update one Qms_history
+     * const qms_history = await prisma.qms_history.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends qms_historyUpdateArgs>(args: SelectSubset<T, qms_historyUpdateArgs<ExtArgs>>): Prisma__qms_historyClient<$Result.GetResult<Prisma.$qms_historyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Qms_histories.
+     * @param {qms_historyDeleteManyArgs} args - Arguments to filter Qms_histories to delete.
+     * @example
+     * // Delete a few Qms_histories
+     * const { count } = await prisma.qms_history.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends qms_historyDeleteManyArgs>(args?: SelectSubset<T, qms_historyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Qms_histories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {qms_historyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Qms_histories
+     * const qms_history = await prisma.qms_history.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends qms_historyUpdateManyArgs>(args: SelectSubset<T, qms_historyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Qms_history.
+     * @param {qms_historyUpsertArgs} args - Arguments to update or create a Qms_history.
+     * @example
+     * // Update or create a Qms_history
+     * const qms_history = await prisma.qms_history.upsert({
+     *   create: {
+     *     // ... data to create a Qms_history
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Qms_history we want to update
+     *   }
+     * })
+     */
+    upsert<T extends qms_historyUpsertArgs>(args: SelectSubset<T, qms_historyUpsertArgs<ExtArgs>>): Prisma__qms_historyClient<$Result.GetResult<Prisma.$qms_historyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Qms_histories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {qms_historyCountArgs} args - Arguments to filter Qms_histories to count.
+     * @example
+     * // Count the number of Qms_histories
+     * const count = await prisma.qms_history.count({
+     *   where: {
+     *     // ... the filter for the Qms_histories we want to count
+     *   }
+     * })
+    **/
+    count<T extends qms_historyCountArgs>(
+      args?: Subset<T, qms_historyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Qms_historyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Qms_history.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Qms_historyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Qms_historyAggregateArgs>(args: Subset<T, Qms_historyAggregateArgs>): Prisma.PrismaPromise<GetQms_historyAggregateType<T>>
+
+    /**
+     * Group by Qms_history.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {qms_historyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends qms_historyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: qms_historyGroupByArgs['orderBy'] }
+        : { orderBy?: qms_historyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, qms_historyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetQms_historyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the qms_history model
+   */
+  readonly fields: qms_historyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for qms_history.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__qms_historyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the qms_history model
+   */
+  interface qms_historyFieldRefs {
+    readonly visit_id: FieldRef<"qms_history", 'Int'>
+    readonly visitor_id: FieldRef<"qms_history", 'Int'>
+    readonly gender: FieldRef<"qms_history", 'String'>
+    readonly age_group: FieldRef<"qms_history", 'String'>
+    readonly ticket_number: FieldRef<"qms_history", 'String'>
+    readonly service_english_name: FieldRef<"qms_history", 'String'>
+    readonly service_arabic_name: FieldRef<"qms_history", 'String'>
+    readonly agent_english_name: FieldRef<"qms_history", 'String'>
+    readonly agent_arabic_name: FieldRef<"qms_history", 'String'>
+    readonly ticket_date: FieldRef<"qms_history", 'String'>
+    readonly issue_time: FieldRef<"qms_history", 'String'>
+    readonly processing_start_time: FieldRef<"qms_history", 'String'>
+    readonly processing_end_time: FieldRef<"qms_history", 'String'>
+    readonly waiting_time: FieldRef<"qms_history", 'String'>
+    readonly total_processing_time: FieldRef<"qms_history", 'String'>
+    readonly entry_image: FieldRef<"qms_history", 'String'>
+    readonly entry_camera: FieldRef<"qms_history", 'String'>
+    readonly entry_mode: FieldRef<"qms_history", 'String'>
+    readonly entry_date: FieldRef<"qms_history", 'String'>
+    readonly entry_time: FieldRef<"qms_history", 'String'>
+    readonly exit_image: FieldRef<"qms_history", 'String'>
+    readonly exit_camera: FieldRef<"qms_history", 'String'>
+    readonly exit_mode: FieldRef<"qms_history", 'String'>
+    readonly exit_date: FieldRef<"qms_history", 'String'>
+    readonly exit_time: FieldRef<"qms_history", 'String'>
+    readonly status: FieldRef<"qms_history", 'String'>
+    readonly createdAt: FieldRef<"qms_history", 'DateTime'>
+    readonly updatedAt: FieldRef<"qms_history", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * qms_history findUnique
+   */
+  export type qms_historyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+    /**
+     * Filter, which qms_history to fetch.
+     */
+    where: qms_historyWhereUniqueInput
+  }
+
+  /**
+   * qms_history findUniqueOrThrow
+   */
+  export type qms_historyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+    /**
+     * Filter, which qms_history to fetch.
+     */
+    where: qms_historyWhereUniqueInput
+  }
+
+  /**
+   * qms_history findFirst
+   */
+  export type qms_historyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+    /**
+     * Filter, which qms_history to fetch.
+     */
+    where?: qms_historyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of qms_histories to fetch.
+     */
+    orderBy?: qms_historyOrderByWithRelationInput | qms_historyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for qms_histories.
+     */
+    cursor?: qms_historyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` qms_histories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` qms_histories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of qms_histories.
+     */
+    distinct?: Qms_historyScalarFieldEnum | Qms_historyScalarFieldEnum[]
+  }
+
+  /**
+   * qms_history findFirstOrThrow
+   */
+  export type qms_historyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+    /**
+     * Filter, which qms_history to fetch.
+     */
+    where?: qms_historyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of qms_histories to fetch.
+     */
+    orderBy?: qms_historyOrderByWithRelationInput | qms_historyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for qms_histories.
+     */
+    cursor?: qms_historyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` qms_histories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` qms_histories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of qms_histories.
+     */
+    distinct?: Qms_historyScalarFieldEnum | Qms_historyScalarFieldEnum[]
+  }
+
+  /**
+   * qms_history findMany
+   */
+  export type qms_historyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+    /**
+     * Filter, which qms_histories to fetch.
+     */
+    where?: qms_historyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of qms_histories to fetch.
+     */
+    orderBy?: qms_historyOrderByWithRelationInput | qms_historyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing qms_histories.
+     */
+    cursor?: qms_historyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` qms_histories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` qms_histories.
+     */
+    skip?: number
+    distinct?: Qms_historyScalarFieldEnum | Qms_historyScalarFieldEnum[]
+  }
+
+  /**
+   * qms_history create
+   */
+  export type qms_historyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+    /**
+     * The data needed to create a qms_history.
+     */
+    data: XOR<qms_historyCreateInput, qms_historyUncheckedCreateInput>
+  }
+
+  /**
+   * qms_history createMany
+   */
+  export type qms_historyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many qms_histories.
+     */
+    data: qms_historyCreateManyInput | qms_historyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * qms_history update
+   */
+  export type qms_historyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+    /**
+     * The data needed to update a qms_history.
+     */
+    data: XOR<qms_historyUpdateInput, qms_historyUncheckedUpdateInput>
+    /**
+     * Choose, which qms_history to update.
+     */
+    where: qms_historyWhereUniqueInput
+  }
+
+  /**
+   * qms_history updateMany
+   */
+  export type qms_historyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update qms_histories.
+     */
+    data: XOR<qms_historyUpdateManyMutationInput, qms_historyUncheckedUpdateManyInput>
+    /**
+     * Filter which qms_histories to update
+     */
+    where?: qms_historyWhereInput
+    /**
+     * Limit how many qms_histories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * qms_history upsert
+   */
+  export type qms_historyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+    /**
+     * The filter to search for the qms_history to update in case it exists.
+     */
+    where: qms_historyWhereUniqueInput
+    /**
+     * In case the qms_history found by the `where` argument doesn't exist, create a new qms_history with this data.
+     */
+    create: XOR<qms_historyCreateInput, qms_historyUncheckedCreateInput>
+    /**
+     * In case the qms_history was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<qms_historyUpdateInput, qms_historyUncheckedUpdateInput>
+  }
+
+  /**
+   * qms_history delete
+   */
+  export type qms_historyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+    /**
+     * Filter which qms_history to delete.
+     */
+    where: qms_historyWhereUniqueInput
+  }
+
+  /**
+   * qms_history deleteMany
+   */
+  export type qms_historyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which qms_histories to delete
+     */
+    where?: qms_historyWhereInput
+    /**
+     * Limit how many qms_histories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * qms_history without action
+   */
+  export type qms_historyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the qms_history
+     */
+    select?: qms_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the qms_history
+     */
+    omit?: qms_historyOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -38312,6 +39568,40 @@ export namespace Prisma {
   export type Landscaping_historyScalarFieldEnum = (typeof Landscaping_historyScalarFieldEnum)[keyof typeof Landscaping_historyScalarFieldEnum]
 
 
+  export const Qms_historyScalarFieldEnum: {
+    visit_id: 'visit_id',
+    visitor_id: 'visitor_id',
+    gender: 'gender',
+    age_group: 'age_group',
+    ticket_number: 'ticket_number',
+    service_english_name: 'service_english_name',
+    service_arabic_name: 'service_arabic_name',
+    agent_english_name: 'agent_english_name',
+    agent_arabic_name: 'agent_arabic_name',
+    ticket_date: 'ticket_date',
+    issue_time: 'issue_time',
+    processing_start_time: 'processing_start_time',
+    processing_end_time: 'processing_end_time',
+    waiting_time: 'waiting_time',
+    total_processing_time: 'total_processing_time',
+    entry_image: 'entry_image',
+    entry_camera: 'entry_camera',
+    entry_mode: 'entry_mode',
+    entry_date: 'entry_date',
+    entry_time: 'entry_time',
+    exit_image: 'exit_image',
+    exit_camera: 'exit_camera',
+    exit_mode: 'exit_mode',
+    exit_date: 'exit_date',
+    exit_time: 'exit_time',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type Qms_historyScalarFieldEnum = (typeof Qms_historyScalarFieldEnum)[keyof typeof Qms_historyScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -38628,6 +39918,36 @@ export namespace Prisma {
   };
 
   export type landscaping_historyOrderByRelevanceFieldEnum = (typeof landscaping_historyOrderByRelevanceFieldEnum)[keyof typeof landscaping_historyOrderByRelevanceFieldEnum]
+
+
+  export const qms_historyOrderByRelevanceFieldEnum: {
+    gender: 'gender',
+    age_group: 'age_group',
+    ticket_number: 'ticket_number',
+    service_english_name: 'service_english_name',
+    service_arabic_name: 'service_arabic_name',
+    agent_english_name: 'agent_english_name',
+    agent_arabic_name: 'agent_arabic_name',
+    ticket_date: 'ticket_date',
+    issue_time: 'issue_time',
+    processing_start_time: 'processing_start_time',
+    processing_end_time: 'processing_end_time',
+    waiting_time: 'waiting_time',
+    total_processing_time: 'total_processing_time',
+    entry_image: 'entry_image',
+    entry_camera: 'entry_camera',
+    entry_mode: 'entry_mode',
+    entry_date: 'entry_date',
+    entry_time: 'entry_time',
+    exit_image: 'exit_image',
+    exit_camera: 'exit_camera',
+    exit_mode: 'exit_mode',
+    exit_date: 'exit_date',
+    exit_time: 'exit_time',
+    status: 'status'
+  };
+
+  export type qms_historyOrderByRelevanceFieldEnum = (typeof qms_historyOrderByRelevanceFieldEnum)[keyof typeof qms_historyOrderByRelevanceFieldEnum]
 
 
   /**
@@ -41817,6 +43137,176 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"landscaping_history"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"landscaping_history"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"landscaping_history"> | Date | string
+  }
+
+  export type qms_historyWhereInput = {
+    AND?: qms_historyWhereInput | qms_historyWhereInput[]
+    OR?: qms_historyWhereInput[]
+    NOT?: qms_historyWhereInput | qms_historyWhereInput[]
+    visit_id?: IntFilter<"qms_history"> | number
+    visitor_id?: IntNullableFilter<"qms_history"> | number | null
+    gender?: StringNullableFilter<"qms_history"> | string | null
+    age_group?: StringNullableFilter<"qms_history"> | string | null
+    ticket_number?: StringNullableFilter<"qms_history"> | string | null
+    service_english_name?: StringNullableFilter<"qms_history"> | string | null
+    service_arabic_name?: StringNullableFilter<"qms_history"> | string | null
+    agent_english_name?: StringNullableFilter<"qms_history"> | string | null
+    agent_arabic_name?: StringNullableFilter<"qms_history"> | string | null
+    ticket_date?: StringNullableFilter<"qms_history"> | string | null
+    issue_time?: StringNullableFilter<"qms_history"> | string | null
+    processing_start_time?: StringNullableFilter<"qms_history"> | string | null
+    processing_end_time?: StringNullableFilter<"qms_history"> | string | null
+    waiting_time?: StringNullableFilter<"qms_history"> | string | null
+    total_processing_time?: StringNullableFilter<"qms_history"> | string | null
+    entry_image?: StringNullableFilter<"qms_history"> | string | null
+    entry_camera?: StringNullableFilter<"qms_history"> | string | null
+    entry_mode?: StringNullableFilter<"qms_history"> | string | null
+    entry_date?: StringNullableFilter<"qms_history"> | string | null
+    entry_time?: StringNullableFilter<"qms_history"> | string | null
+    exit_image?: StringNullableFilter<"qms_history"> | string | null
+    exit_camera?: StringNullableFilter<"qms_history"> | string | null
+    exit_mode?: StringNullableFilter<"qms_history"> | string | null
+    exit_date?: StringNullableFilter<"qms_history"> | string | null
+    exit_time?: StringNullableFilter<"qms_history"> | string | null
+    status?: StringNullableFilter<"qms_history"> | string | null
+    createdAt?: DateTimeFilter<"qms_history"> | Date | string
+    updatedAt?: DateTimeFilter<"qms_history"> | Date | string
+  }
+
+  export type qms_historyOrderByWithRelationInput = {
+    visit_id?: SortOrder
+    visitor_id?: SortOrderInput | SortOrder
+    gender?: SortOrderInput | SortOrder
+    age_group?: SortOrderInput | SortOrder
+    ticket_number?: SortOrderInput | SortOrder
+    service_english_name?: SortOrderInput | SortOrder
+    service_arabic_name?: SortOrderInput | SortOrder
+    agent_english_name?: SortOrderInput | SortOrder
+    agent_arabic_name?: SortOrderInput | SortOrder
+    ticket_date?: SortOrderInput | SortOrder
+    issue_time?: SortOrderInput | SortOrder
+    processing_start_time?: SortOrderInput | SortOrder
+    processing_end_time?: SortOrderInput | SortOrder
+    waiting_time?: SortOrderInput | SortOrder
+    total_processing_time?: SortOrderInput | SortOrder
+    entry_image?: SortOrderInput | SortOrder
+    entry_camera?: SortOrderInput | SortOrder
+    entry_mode?: SortOrderInput | SortOrder
+    entry_date?: SortOrderInput | SortOrder
+    entry_time?: SortOrderInput | SortOrder
+    exit_image?: SortOrderInput | SortOrder
+    exit_camera?: SortOrderInput | SortOrder
+    exit_mode?: SortOrderInput | SortOrder
+    exit_date?: SortOrderInput | SortOrder
+    exit_time?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _relevance?: qms_historyOrderByRelevanceInput
+  }
+
+  export type qms_historyWhereUniqueInput = Prisma.AtLeast<{
+    visit_id?: number
+    AND?: qms_historyWhereInput | qms_historyWhereInput[]
+    OR?: qms_historyWhereInput[]
+    NOT?: qms_historyWhereInput | qms_historyWhereInput[]
+    visitor_id?: IntNullableFilter<"qms_history"> | number | null
+    gender?: StringNullableFilter<"qms_history"> | string | null
+    age_group?: StringNullableFilter<"qms_history"> | string | null
+    ticket_number?: StringNullableFilter<"qms_history"> | string | null
+    service_english_name?: StringNullableFilter<"qms_history"> | string | null
+    service_arabic_name?: StringNullableFilter<"qms_history"> | string | null
+    agent_english_name?: StringNullableFilter<"qms_history"> | string | null
+    agent_arabic_name?: StringNullableFilter<"qms_history"> | string | null
+    ticket_date?: StringNullableFilter<"qms_history"> | string | null
+    issue_time?: StringNullableFilter<"qms_history"> | string | null
+    processing_start_time?: StringNullableFilter<"qms_history"> | string | null
+    processing_end_time?: StringNullableFilter<"qms_history"> | string | null
+    waiting_time?: StringNullableFilter<"qms_history"> | string | null
+    total_processing_time?: StringNullableFilter<"qms_history"> | string | null
+    entry_image?: StringNullableFilter<"qms_history"> | string | null
+    entry_camera?: StringNullableFilter<"qms_history"> | string | null
+    entry_mode?: StringNullableFilter<"qms_history"> | string | null
+    entry_date?: StringNullableFilter<"qms_history"> | string | null
+    entry_time?: StringNullableFilter<"qms_history"> | string | null
+    exit_image?: StringNullableFilter<"qms_history"> | string | null
+    exit_camera?: StringNullableFilter<"qms_history"> | string | null
+    exit_mode?: StringNullableFilter<"qms_history"> | string | null
+    exit_date?: StringNullableFilter<"qms_history"> | string | null
+    exit_time?: StringNullableFilter<"qms_history"> | string | null
+    status?: StringNullableFilter<"qms_history"> | string | null
+    createdAt?: DateTimeFilter<"qms_history"> | Date | string
+    updatedAt?: DateTimeFilter<"qms_history"> | Date | string
+  }, "visit_id">
+
+  export type qms_historyOrderByWithAggregationInput = {
+    visit_id?: SortOrder
+    visitor_id?: SortOrderInput | SortOrder
+    gender?: SortOrderInput | SortOrder
+    age_group?: SortOrderInput | SortOrder
+    ticket_number?: SortOrderInput | SortOrder
+    service_english_name?: SortOrderInput | SortOrder
+    service_arabic_name?: SortOrderInput | SortOrder
+    agent_english_name?: SortOrderInput | SortOrder
+    agent_arabic_name?: SortOrderInput | SortOrder
+    ticket_date?: SortOrderInput | SortOrder
+    issue_time?: SortOrderInput | SortOrder
+    processing_start_time?: SortOrderInput | SortOrder
+    processing_end_time?: SortOrderInput | SortOrder
+    waiting_time?: SortOrderInput | SortOrder
+    total_processing_time?: SortOrderInput | SortOrder
+    entry_image?: SortOrderInput | SortOrder
+    entry_camera?: SortOrderInput | SortOrder
+    entry_mode?: SortOrderInput | SortOrder
+    entry_date?: SortOrderInput | SortOrder
+    entry_time?: SortOrderInput | SortOrder
+    exit_image?: SortOrderInput | SortOrder
+    exit_camera?: SortOrderInput | SortOrder
+    exit_mode?: SortOrderInput | SortOrder
+    exit_date?: SortOrderInput | SortOrder
+    exit_time?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: qms_historyCountOrderByAggregateInput
+    _avg?: qms_historyAvgOrderByAggregateInput
+    _max?: qms_historyMaxOrderByAggregateInput
+    _min?: qms_historyMinOrderByAggregateInput
+    _sum?: qms_historySumOrderByAggregateInput
+  }
+
+  export type qms_historyScalarWhereWithAggregatesInput = {
+    AND?: qms_historyScalarWhereWithAggregatesInput | qms_historyScalarWhereWithAggregatesInput[]
+    OR?: qms_historyScalarWhereWithAggregatesInput[]
+    NOT?: qms_historyScalarWhereWithAggregatesInput | qms_historyScalarWhereWithAggregatesInput[]
+    visit_id?: IntWithAggregatesFilter<"qms_history"> | number
+    visitor_id?: IntNullableWithAggregatesFilter<"qms_history"> | number | null
+    gender?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    age_group?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    ticket_number?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    service_english_name?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    service_arabic_name?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    agent_english_name?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    agent_arabic_name?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    ticket_date?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    issue_time?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    processing_start_time?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    processing_end_time?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    waiting_time?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    total_processing_time?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    entry_image?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    entry_camera?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    entry_mode?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    entry_date?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    entry_time?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    exit_image?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    exit_camera?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    exit_mode?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    exit_date?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    exit_time?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    status?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"qms_history"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"qms_history"> | Date | string
   }
 
   export type access_secretCreateInput = {
@@ -45242,6 +46732,220 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type qms_historyCreateInput = {
+    visitor_id?: number | null
+    gender?: string | null
+    age_group?: string | null
+    ticket_number?: string | null
+    service_english_name?: string | null
+    service_arabic_name?: string | null
+    agent_english_name?: string | null
+    agent_arabic_name?: string | null
+    ticket_date?: string | null
+    issue_time?: string | null
+    processing_start_time?: string | null
+    processing_end_time?: string | null
+    waiting_time?: string | null
+    total_processing_time?: string | null
+    entry_image?: string | null
+    entry_camera?: string | null
+    entry_mode?: string | null
+    entry_date?: string | null
+    entry_time?: string | null
+    exit_image?: string | null
+    exit_camera?: string | null
+    exit_mode?: string | null
+    exit_date?: string | null
+    exit_time?: string | null
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type qms_historyUncheckedCreateInput = {
+    visit_id?: number
+    visitor_id?: number | null
+    gender?: string | null
+    age_group?: string | null
+    ticket_number?: string | null
+    service_english_name?: string | null
+    service_arabic_name?: string | null
+    agent_english_name?: string | null
+    agent_arabic_name?: string | null
+    ticket_date?: string | null
+    issue_time?: string | null
+    processing_start_time?: string | null
+    processing_end_time?: string | null
+    waiting_time?: string | null
+    total_processing_time?: string | null
+    entry_image?: string | null
+    entry_camera?: string | null
+    entry_mode?: string | null
+    entry_date?: string | null
+    entry_time?: string | null
+    exit_image?: string | null
+    exit_camera?: string | null
+    exit_mode?: string | null
+    exit_date?: string | null
+    exit_time?: string | null
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type qms_historyUpdateInput = {
+    visitor_id?: NullableIntFieldUpdateOperationsInput | number | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    age_group?: NullableStringFieldUpdateOperationsInput | string | null
+    ticket_number?: NullableStringFieldUpdateOperationsInput | string | null
+    service_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    service_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    agent_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    agent_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    ticket_date?: NullableStringFieldUpdateOperationsInput | string | null
+    issue_time?: NullableStringFieldUpdateOperationsInput | string | null
+    processing_start_time?: NullableStringFieldUpdateOperationsInput | string | null
+    processing_end_time?: NullableStringFieldUpdateOperationsInput | string | null
+    waiting_time?: NullableStringFieldUpdateOperationsInput | string | null
+    total_processing_time?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_camera?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_date?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_time?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_camera?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_date?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_time?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type qms_historyUncheckedUpdateInput = {
+    visit_id?: IntFieldUpdateOperationsInput | number
+    visitor_id?: NullableIntFieldUpdateOperationsInput | number | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    age_group?: NullableStringFieldUpdateOperationsInput | string | null
+    ticket_number?: NullableStringFieldUpdateOperationsInput | string | null
+    service_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    service_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    agent_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    agent_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    ticket_date?: NullableStringFieldUpdateOperationsInput | string | null
+    issue_time?: NullableStringFieldUpdateOperationsInput | string | null
+    processing_start_time?: NullableStringFieldUpdateOperationsInput | string | null
+    processing_end_time?: NullableStringFieldUpdateOperationsInput | string | null
+    waiting_time?: NullableStringFieldUpdateOperationsInput | string | null
+    total_processing_time?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_camera?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_date?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_time?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_camera?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_date?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_time?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type qms_historyCreateManyInput = {
+    visit_id?: number
+    visitor_id?: number | null
+    gender?: string | null
+    age_group?: string | null
+    ticket_number?: string | null
+    service_english_name?: string | null
+    service_arabic_name?: string | null
+    agent_english_name?: string | null
+    agent_arabic_name?: string | null
+    ticket_date?: string | null
+    issue_time?: string | null
+    processing_start_time?: string | null
+    processing_end_time?: string | null
+    waiting_time?: string | null
+    total_processing_time?: string | null
+    entry_image?: string | null
+    entry_camera?: string | null
+    entry_mode?: string | null
+    entry_date?: string | null
+    entry_time?: string | null
+    exit_image?: string | null
+    exit_camera?: string | null
+    exit_mode?: string | null
+    exit_date?: string | null
+    exit_time?: string | null
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type qms_historyUpdateManyMutationInput = {
+    visitor_id?: NullableIntFieldUpdateOperationsInput | number | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    age_group?: NullableStringFieldUpdateOperationsInput | string | null
+    ticket_number?: NullableStringFieldUpdateOperationsInput | string | null
+    service_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    service_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    agent_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    agent_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    ticket_date?: NullableStringFieldUpdateOperationsInput | string | null
+    issue_time?: NullableStringFieldUpdateOperationsInput | string | null
+    processing_start_time?: NullableStringFieldUpdateOperationsInput | string | null
+    processing_end_time?: NullableStringFieldUpdateOperationsInput | string | null
+    waiting_time?: NullableStringFieldUpdateOperationsInput | string | null
+    total_processing_time?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_camera?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_date?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_time?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_camera?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_date?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_time?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type qms_historyUncheckedUpdateManyInput = {
+    visit_id?: IntFieldUpdateOperationsInput | number
+    visitor_id?: NullableIntFieldUpdateOperationsInput | number | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    age_group?: NullableStringFieldUpdateOperationsInput | string | null
+    ticket_number?: NullableStringFieldUpdateOperationsInput | string | null
+    service_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    service_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    agent_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    agent_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    ticket_date?: NullableStringFieldUpdateOperationsInput | string | null
+    issue_time?: NullableStringFieldUpdateOperationsInput | string | null
+    processing_start_time?: NullableStringFieldUpdateOperationsInput | string | null
+    processing_end_time?: NullableStringFieldUpdateOperationsInput | string | null
+    waiting_time?: NullableStringFieldUpdateOperationsInput | string | null
+    total_processing_time?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_camera?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_date?: NullableStringFieldUpdateOperationsInput | string | null
+    entry_time?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_camera?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_date?: NullableStringFieldUpdateOperationsInput | string | null
+    exit_time?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -47752,6 +49456,115 @@ export namespace Prisma {
     id?: SortOrder
     landscaping_Id?: SortOrder
     user_Id?: SortOrder
+  }
+
+  export type qms_historyOrderByRelevanceInput = {
+    fields: qms_historyOrderByRelevanceFieldEnum | qms_historyOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type qms_historyCountOrderByAggregateInput = {
+    visit_id?: SortOrder
+    visitor_id?: SortOrder
+    gender?: SortOrder
+    age_group?: SortOrder
+    ticket_number?: SortOrder
+    service_english_name?: SortOrder
+    service_arabic_name?: SortOrder
+    agent_english_name?: SortOrder
+    agent_arabic_name?: SortOrder
+    ticket_date?: SortOrder
+    issue_time?: SortOrder
+    processing_start_time?: SortOrder
+    processing_end_time?: SortOrder
+    waiting_time?: SortOrder
+    total_processing_time?: SortOrder
+    entry_image?: SortOrder
+    entry_camera?: SortOrder
+    entry_mode?: SortOrder
+    entry_date?: SortOrder
+    entry_time?: SortOrder
+    exit_image?: SortOrder
+    exit_camera?: SortOrder
+    exit_mode?: SortOrder
+    exit_date?: SortOrder
+    exit_time?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type qms_historyAvgOrderByAggregateInput = {
+    visit_id?: SortOrder
+    visitor_id?: SortOrder
+  }
+
+  export type qms_historyMaxOrderByAggregateInput = {
+    visit_id?: SortOrder
+    visitor_id?: SortOrder
+    gender?: SortOrder
+    age_group?: SortOrder
+    ticket_number?: SortOrder
+    service_english_name?: SortOrder
+    service_arabic_name?: SortOrder
+    agent_english_name?: SortOrder
+    agent_arabic_name?: SortOrder
+    ticket_date?: SortOrder
+    issue_time?: SortOrder
+    processing_start_time?: SortOrder
+    processing_end_time?: SortOrder
+    waiting_time?: SortOrder
+    total_processing_time?: SortOrder
+    entry_image?: SortOrder
+    entry_camera?: SortOrder
+    entry_mode?: SortOrder
+    entry_date?: SortOrder
+    entry_time?: SortOrder
+    exit_image?: SortOrder
+    exit_camera?: SortOrder
+    exit_mode?: SortOrder
+    exit_date?: SortOrder
+    exit_time?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type qms_historyMinOrderByAggregateInput = {
+    visit_id?: SortOrder
+    visitor_id?: SortOrder
+    gender?: SortOrder
+    age_group?: SortOrder
+    ticket_number?: SortOrder
+    service_english_name?: SortOrder
+    service_arabic_name?: SortOrder
+    agent_english_name?: SortOrder
+    agent_arabic_name?: SortOrder
+    ticket_date?: SortOrder
+    issue_time?: SortOrder
+    processing_start_time?: SortOrder
+    processing_end_time?: SortOrder
+    waiting_time?: SortOrder
+    total_processing_time?: SortOrder
+    entry_image?: SortOrder
+    entry_camera?: SortOrder
+    entry_mode?: SortOrder
+    entry_date?: SortOrder
+    entry_time?: SortOrder
+    exit_image?: SortOrder
+    exit_camera?: SortOrder
+    exit_mode?: SortOrder
+    exit_date?: SortOrder
+    exit_time?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type qms_historySumOrderByAggregateInput = {
+    visit_id?: SortOrder
+    visitor_id?: SortOrder
   }
 
   export type NullableStringFieldUpdateOperationsInput = {

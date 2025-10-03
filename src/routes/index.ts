@@ -12,6 +12,7 @@ import parkAttendanceRouter from "./park-attendance.routes";
 import userRouter from "./user.routes";
 import accessSecretRouter from "./access-secret.routes";
 import usersRoles from "./users_roles.route";
+import qmsRouter from "./qms.routes";
 
 import parksRouter from "./parks.routes";
 import officesRouter from "./offices.routes";
@@ -37,6 +38,7 @@ mainRouter.use('/park-attendance', parkAttendanceRouter)
 mainRouter.use('/users', userRouter)
 mainRouter.use('/access-secret', accessSecretRouter)
 mainRouter.use('/users-roles', usersRoles)
+mainRouter.use('/qms', qmsRouter)
 
 mainRouter.use('/parks', parksRouter)
 mainRouter.use('/offices', officesRouter)
