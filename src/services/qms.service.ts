@@ -331,7 +331,7 @@ The response must be a single JSON object structured exactly as follows:
           temperature: 0.1,
           topK: 32,
           topP: 1,
-          maxOutputTokens: 512,
+          maxOutputTokens: 2048,
         },
       };
 

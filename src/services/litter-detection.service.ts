@@ -1,6 +1,7 @@
 import { LitterDetectionType, LitterDetectionCompleteType, STATUS } from "@/typescript";
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
+import axios from "axios";
 
 class LitterDetectionService {
    protected static addLitterDetectionService = async (litterDetection: LitterDetectionType) => {
@@ -23,7 +24,6 @@ class LitterDetectionService {
             }
             cameraDatabaseId = cameraExists.Id;
 
-            // Check for existing litter detection for this camera that is not completed
             const existingRecord = await db.parks_litter_detection.findFirst({
                where: {
                   camera_Id: cameraDatabaseId,
@@ -38,7 +38,6 @@ class LitterDetectionService {
             }
          }
 
-         // Format date and time properly for database
          const occurrenceDate = new Date(litterDetection.occurrence_date);
          const occurrenceTime = new Date(`1970-01-01T${litterDetection.occurrence_time}Z`);
          const detectionDate = litterDetection.detection_date ? new Date(litterDetection.detection_date) : new Date();
@@ -151,10 +150,8 @@ class LitterDetectionService {
             }
          });
 
-         // Get all litter detection IDs for batch query
          const litterDetectionIds = results.map(ld => ld.Id.toString());
          
-         // Fetch all intranet posting history in a single query
          const allIntranetHistory = await db.intranet_posting_history.findMany({
             where: {
                OR: [
@@ -176,7 +173,6 @@ class LitterDetectionService {
             }
          });
 
-         // Group intranet history by litter detection ID
          const intranetHistoryMap = new Map();
          allIntranetHistory.forEach(history => {
             const litterId = history.abc1 || history.abc2 || history.abc3;
@@ -195,7 +191,6 @@ class LitterDetectionService {
             }
          });
 
-         // Map intranet history to each litter detection
          const resultsWithIntranetHistory = results.map(litterDetection => ({
             ...litterDetection,
             intranet_posting_history: intranetHistoryMap.get(litterDetection.Id.toString()) || []
@@ -215,7 +210,6 @@ class LitterDetectionService {
       comments: string;
    }) => {
       try {
-         // Check if litter detection exists
          const litterDetection = await db.parks_litter_detection.findFirst({
             where: { Id: assignmentData.litterDetectionId }
          });
@@ -224,7 +218,6 @@ class LitterDetectionService {
             throw new HttpException(STATUS.NOT_FOUND, "Litter detection record not found");
          }
 
-         // Check if user exists and has litter detection access
          const user = await db.users.findFirst({
             where: { 
                Id: assignmentData.userId,
@@ -236,14 +229,11 @@ class LitterDetectionService {
             throw new HttpException(STATUS.BAD_REQUEST, "User not found or doesn't have litter detection access");
          }
 
-         // Update the litter detection record with assigned user
          await db.parks_litter_detection.update({
             where: { Id: assignmentData.litterDetectionId },
             data: { assinged_to: assignmentData.userId, status:"In Progress" }
          });
 
-         // Create a ticket details record for the assignment
-         // Use the same date and time format as in addLitterDetectionService
          const currentDate = new Date();
          const currentTime = new Date(`1970-01-01T${currentDate.toTimeString().split(' ')[0]}Z`);
          
@@ -278,7 +268,6 @@ class LitterDetectionService {
    protected static completeLitterDetectionService = async (litterDetectionComplete: LitterDetectionCompleteType) => {
       try {
          
-         // Find the litter detection record by ID
          const litterDetection = await db.parks_litter_detection.findUnique({
             where: { Id: litterDetectionComplete.id },
             include: {
@@ -292,6 +281,7 @@ class LitterDetectionService {
                },
                park_cameras: {
                   select: {
+                     camera_Id: true,
                      camera_english_name: true,
                      camera_arabic_name: true,
                      ip_address: true
@@ -306,7 +296,6 @@ class LitterDetectionService {
             throw new HttpException(STATUS.NOT_FOUND, "Litter detection record not found");
          }
 
-         // Check if the case is already completed
          if (litterDetection.status === "complete") {
             return {
                message: "Case already closed",
@@ -315,60 +304,110 @@ class LitterDetectionService {
             };
          }
 
-         // Get current date and time
          const currentDate = new Date();
          const currentTime = new Date();
 
-         // Create new ticket details record with status "Completed"
-         const ticketDetails = await db.ticket_details_table.create({
-            data: {
-               litterDetectionId: litterDetection.Id,
-               user_Id: litterDetectionComplete.userId,
-               status: "Completed",
-               date: currentDate,
-               time: currentTime,
-               comments: litterDetectionComplete.comments,
-               createdAt: new Date(),
-               updatedAt: new Date()
+         let verificationResult = null;
+         if (litterDetection.park_cameras?.camera_Id) {
+            try {
+               console.log('🔍 Calling cleanup verification API for camera:', litterDetection.park_cameras.camera_Id);
+               
+               const verificationResponse = await axios.post('http://localhost:5000/verify-cleanup', {
+                  camera_id: litterDetection.park_cameras.camera_Id,
+                  status: "pending"
+               }, {
+                  headers: {
+                     'Content-Type': 'application/json'
+                  },
+                  timeout: 30000 
+               });
+
+               verificationResult = verificationResponse.data;
+               console.log('✅ Cleanup verification response:', verificationResult);
+
+            } catch (verificationError: any) {
+               console.error('❌ Cleanup verification API error:', verificationError.message);
+               verificationResult = null;
             }
-         });
-         
+         }
 
+         if (verificationResult && verificationResult.success) {
+            if (verificationResult.status === "True") {
+               console.log('✅ Cleanup verification successful, marking as completed');
+               
+               const updatedLitterDetection = await db.parks_litter_detection.update({
+                  where: { Id: litterDetection.Id },
+                  data: {
+                     status: "complete",
+                     current_status: "complete",
+                     after_image: verificationResult.frame_url,
+                     updatedAt: new Date()
+                  },
+                  include: {
+                     parks: {
+                        select: {
+                           park_english_name: true,
+                           park_arabic_name: true,
+                           latitude: true,
+                           longitude: true
+                        }
+                     },
+                     park_cameras: {
+                        select: {
+                           camera_Id: true,
+                           camera_english_name: true,
+                           camera_arabic_name: true,
+                           ip_address: true
+                        }
+                     }
+                  }
+               });
 
-         // Update the litter detection status to "complete"
-         const updatedLitterDetection = await db.parks_litter_detection.update({
-            where: { Id: litterDetection.Id },
-            data: {
-               status: "complete",
-               current_status: "complete",
-               updatedAt: new Date()
-            },
-            include: {
-               parks: {
-                  select: {
-                     park_english_name: true,
-                     park_arabic_name: true,
-                     latitude: true,
-                     longitude: true
+               const ticketDetails = await db.ticket_details_table.create({
+                  data: {
+                     litterDetectionId: litterDetection.Id,
+                     user_Id: litterDetectionComplete.userId,
+                     status: "Completed",
+                     date: currentDate,
+                     time: currentTime,
+                     comments: verificationResult.message,
+                     image: verificationResult.frame_url,
+                     createdAt: new Date(),
+                     updatedAt: new Date()
                   }
-               },
-               park_cameras: {
-                  select: {
-                     camera_english_name: true,
-                     camera_arabic_name: true,
-                     ip_address: true
+               });
+
+               return {
+                  litterDetection: updatedLitterDetection,
+                  ticketDetails,
+                  verificationResult
+               };
+
+            } else if (verificationResult.status === "Incomplete") {
+               console.log('⚠️ Cleanup verification incomplete, creating AI Verification Failed ticket');
+               
+               const ticketDetails = await db.ticket_details_table.create({
+                  data: {
+                     litterDetectionId: litterDetection.Id,
+                     user_Id: litterDetectionComplete.userId,
+                     status: "AI Verification Failed",
+                     date: currentDate,
+                     time: currentTime,
+                     comments: `AI Verification Failed: ${verificationResult.message}. Detection count: ${verificationResult.detection_count}`,
+                     image: verificationResult.frame_url,
+                     createdAt: new Date(),
+                     updatedAt: new Date()
                   }
-               }
+               });
+
+               return {
+                  litterDetection,
+                  ticketDetails,
+                  verificationResult,
+                  message: "AI verification failed - litter still detected"
+               };
             }
-         });
-
-         console.log('✅ Litter detection status updated to "complete":', updatedLitterDetection);
-
-         return {
-            litterDetection: updatedLitterDetection,
-            ticketDetails
-         };
-
+         }
       } catch (error) {
          console.error('❌ Error completing litter detection:', error);
          if (error instanceof HttpException) {

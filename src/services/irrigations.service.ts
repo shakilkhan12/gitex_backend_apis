@@ -330,7 +330,7 @@ The response must be a single JSON object structured exactly as follows. The cal
                temperature: 0.1,
                topK: 32,
                topP: 1,
-               maxOutputTokens: 1024,
+               maxOutputTokens: 4096,
             }
          };
 
@@ -341,7 +341,8 @@ The response must be a single JSON object structured exactly as follows. The cal
             timeout: 60000 // Increased to 60 seconds
          });
 
-            if (response.data && response.data.candidates && response.data.candidates[0] && response.data.candidates[0].content) {
+         console.log('[IrrigationsService] Gemini API response structure:', JSON.stringify(response.data, null, 2));
+            if (response.data && response.data.candidates && response.data.candidates[0] && response.data.candidates[0].content && response.data.candidates[0].content.parts && response.data.candidates[0].content.parts[0]) {
                const geminiResponse = response.data.candidates[0].content.parts[0].text;
                
                try {
@@ -489,23 +490,27 @@ The response must be a single JSON object structured exactly as follows. The cal
       try {
          // Try to find the actual database ID for this camera index
          let cameraDbId = null;
+         let parkDbId = null;
          try {
             const camera = await db.park_cameras.findFirst({
                where: {
                   camera_Id: data.cameraIndex
                },
                select: {
-                  Id: true
+                  Id: true,
+                  park_Id: true
                }
             });
             cameraDbId = camera?.Id || null;
+            parkDbId = camera?.park_Id || null;
          } catch (dbError: any) {
             console.warn(`[IrrigationsService] Could not find camera database ID for index ${data.cameraIndex}:`, dbError.message);
          }
 
          const result = await db.parks_zones_job_history.create({
             data: {
-               camera_Id: cameraDbId, // Use actual database ID if found, otherwise null
+               camera_Id: cameraDbId,
+               park_Id: parkDbId,
                zone_Id: data.zoneId,
                job_Id: `IRRIGATION_${data.cameraIndex}_${data.zoneId}_${Date.now()}`,
                image: data.image,

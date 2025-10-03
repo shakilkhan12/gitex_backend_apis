@@ -3624,6 +3624,7 @@ export namespace Prisma {
     parks_sentiment_analysis: number
     parks_smoking_detection: number
     landscaping: number
+    parks_zones_job_history: number
   }
 
   export type ParksCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3639,6 +3640,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: boolean | ParksCountOutputTypeCountParks_sentiment_analysisArgs
     parks_smoking_detection?: boolean | ParksCountOutputTypeCountParks_smoking_detectionArgs
     landscaping?: boolean | ParksCountOutputTypeCountLandscapingArgs
+    parks_zones_job_history?: boolean | ParksCountOutputTypeCountParks_zones_job_historyArgs
   }
 
   // Custom InputTypes
@@ -3734,6 +3736,13 @@ export namespace Prisma {
    */
   export type ParksCountOutputTypeCountLandscapingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: landscapingWhereInput
+  }
+
+  /**
+   * ParksCountOutputType without action
+   */
+  export type ParksCountOutputTypeCountParks_zones_job_historyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: parks_zones_job_historyWhereInput
   }
 
 
@@ -15009,18 +15018,21 @@ export namespace Prisma {
   export type Parks_zones_job_historyAvgAggregateOutputType = {
     Id: number | null
     camera_Id: number | null
+    park_Id: number | null
     zone_Id: number | null
   }
 
   export type Parks_zones_job_historySumAggregateOutputType = {
     Id: number | null
     camera_Id: number | null
+    park_Id: number | null
     zone_Id: number | null
   }
 
   export type Parks_zones_job_historyMinAggregateOutputType = {
     Id: number | null
     camera_Id: number | null
+    park_Id: number | null
     zone_Id: number | null
     job_Id: string | null
     image: string | null
@@ -15033,6 +15045,7 @@ export namespace Prisma {
   export type Parks_zones_job_historyMaxAggregateOutputType = {
     Id: number | null
     camera_Id: number | null
+    park_Id: number | null
     zone_Id: number | null
     job_Id: string | null
     image: string | null
@@ -15045,6 +15058,7 @@ export namespace Prisma {
   export type Parks_zones_job_historyCountAggregateOutputType = {
     Id: number
     camera_Id: number
+    park_Id: number
     zone_Id: number
     job_Id: number
     image: number
@@ -15059,18 +15073,21 @@ export namespace Prisma {
   export type Parks_zones_job_historyAvgAggregateInputType = {
     Id?: true
     camera_Id?: true
+    park_Id?: true
     zone_Id?: true
   }
 
   export type Parks_zones_job_historySumAggregateInputType = {
     Id?: true
     camera_Id?: true
+    park_Id?: true
     zone_Id?: true
   }
 
   export type Parks_zones_job_historyMinAggregateInputType = {
     Id?: true
     camera_Id?: true
+    park_Id?: true
     zone_Id?: true
     job_Id?: true
     image?: true
@@ -15083,6 +15100,7 @@ export namespace Prisma {
   export type Parks_zones_job_historyMaxAggregateInputType = {
     Id?: true
     camera_Id?: true
+    park_Id?: true
     zone_Id?: true
     job_Id?: true
     image?: true
@@ -15095,6 +15113,7 @@ export namespace Prisma {
   export type Parks_zones_job_historyCountAggregateInputType = {
     Id?: true
     camera_Id?: true
+    park_Id?: true
     zone_Id?: true
     job_Id?: true
     image?: true
@@ -15194,6 +15213,7 @@ export namespace Prisma {
   export type Parks_zones_job_historyGroupByOutputType = {
     Id: number
     camera_Id: number | null
+    park_Id: number | null
     zone_Id: number | null
     job_Id: string | null
     image: string | null
@@ -15225,6 +15245,7 @@ export namespace Prisma {
   export type parks_zones_job_historySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     Id?: boolean
     camera_Id?: boolean
+    park_Id?: boolean
     zone_Id?: boolean
     job_Id?: boolean
     image?: boolean
@@ -15233,6 +15254,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     park_cameras?: boolean | parks_zones_job_history$park_camerasArgs<ExtArgs>
+    parks?: boolean | parks_zones_job_history$parksArgs<ExtArgs>
   }, ExtArgs["result"]["parks_zones_job_history"]>
 
 
@@ -15240,6 +15262,7 @@ export namespace Prisma {
   export type parks_zones_job_historySelectScalar = {
     Id?: boolean
     camera_Id?: boolean
+    park_Id?: boolean
     zone_Id?: boolean
     job_Id?: boolean
     image?: boolean
@@ -15249,19 +15272,22 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type parks_zones_job_historyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "camera_Id" | "zone_Id" | "job_Id" | "image" | "started_at" | "start_for_time" | "createdAt" | "updatedAt", ExtArgs["result"]["parks_zones_job_history"]>
+  export type parks_zones_job_historyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "camera_Id" | "park_Id" | "zone_Id" | "job_Id" | "image" | "started_at" | "start_for_time" | "createdAt" | "updatedAt", ExtArgs["result"]["parks_zones_job_history"]>
   export type parks_zones_job_historyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     park_cameras?: boolean | parks_zones_job_history$park_camerasArgs<ExtArgs>
+    parks?: boolean | parks_zones_job_history$parksArgs<ExtArgs>
   }
 
   export type $parks_zones_job_historyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "parks_zones_job_history"
     objects: {
       park_cameras: Prisma.$park_camerasPayload<ExtArgs> | null
+      parks: Prisma.$parksPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       Id: number
       camera_Id: number | null
+      park_Id: number | null
       zone_Id: number | null
       job_Id: string | null
       image: string | null
@@ -15610,6 +15636,7 @@ export namespace Prisma {
   export interface Prisma__parks_zones_job_historyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     park_cameras<T extends parks_zones_job_history$park_camerasArgs<ExtArgs> = {}>(args?: Subset<T, parks_zones_job_history$park_camerasArgs<ExtArgs>>): Prisma__park_camerasClient<$Result.GetResult<Prisma.$park_camerasPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    parks<T extends parks_zones_job_history$parksArgs<ExtArgs> = {}>(args?: Subset<T, parks_zones_job_history$parksArgs<ExtArgs>>): Prisma__parksClient<$Result.GetResult<Prisma.$parksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15641,6 +15668,7 @@ export namespace Prisma {
   interface parks_zones_job_historyFieldRefs {
     readonly Id: FieldRef<"parks_zones_job_history", 'Int'>
     readonly camera_Id: FieldRef<"parks_zones_job_history", 'Int'>
+    readonly park_Id: FieldRef<"parks_zones_job_history", 'Int'>
     readonly zone_Id: FieldRef<"parks_zones_job_history", 'Int'>
     readonly job_Id: FieldRef<"parks_zones_job_history", 'String'>
     readonly image: FieldRef<"parks_zones_job_history", 'String'>
@@ -16010,6 +16038,25 @@ export namespace Prisma {
   }
 
   /**
+   * parks_zones_job_history.parks
+   */
+  export type parks_zones_job_history$parksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the parks
+     */
+    select?: parksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the parks
+     */
+    omit?: parksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: parksInclude<ExtArgs> | null
+    where?: parksWhereInput
+  }
+
+  /**
    * parks_zones_job_history without action
    */
   export type parks_zones_job_historyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16286,6 +16333,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: boolean | parks$parks_sentiment_analysisArgs<ExtArgs>
     parks_smoking_detection?: boolean | parks$parks_smoking_detectionArgs<ExtArgs>
     landscaping?: boolean | parks$landscapingArgs<ExtArgs>
+    parks_zones_job_history?: boolean | parks$parks_zones_job_historyArgs<ExtArgs>
     _count?: boolean | ParksCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["parks"]>
 
@@ -16318,6 +16366,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: boolean | parks$parks_sentiment_analysisArgs<ExtArgs>
     parks_smoking_detection?: boolean | parks$parks_smoking_detectionArgs<ExtArgs>
     landscaping?: boolean | parks$landscapingArgs<ExtArgs>
+    parks_zones_job_history?: boolean | parks$parks_zones_job_historyArgs<ExtArgs>
     _count?: boolean | ParksCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -16336,6 +16385,7 @@ export namespace Prisma {
       parks_sentiment_analysis: Prisma.$parks_sentiment_analysisPayload<ExtArgs>[]
       parks_smoking_detection: Prisma.$parks_smoking_detectionPayload<ExtArgs>[]
       landscaping: Prisma.$landscapingPayload<ExtArgs>[]
+      parks_zones_job_history: Prisma.$parks_zones_job_historyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       Id: number
@@ -16700,6 +16750,7 @@ export namespace Prisma {
     parks_sentiment_analysis<T extends parks$parks_sentiment_analysisArgs<ExtArgs> = {}>(args?: Subset<T, parks$parks_sentiment_analysisArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_sentiment_analysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     parks_smoking_detection<T extends parks$parks_smoking_detectionArgs<ExtArgs> = {}>(args?: Subset<T, parks$parks_smoking_detectionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_smoking_detectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     landscaping<T extends parks$landscapingArgs<ExtArgs> = {}>(args?: Subset<T, parks$landscapingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$landscapingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    parks_zones_job_history<T extends parks$parks_zones_job_historyArgs<ExtArgs> = {}>(args?: Subset<T, parks$parks_zones_job_historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_zones_job_historyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17367,6 +17418,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: LandscapingScalarFieldEnum | LandscapingScalarFieldEnum[]
+  }
+
+  /**
+   * parks.parks_zones_job_history
+   */
+  export type parks$parks_zones_job_historyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the parks_zones_job_history
+     */
+    select?: parks_zones_job_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the parks_zones_job_history
+     */
+    omit?: parks_zones_job_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: parks_zones_job_historyInclude<ExtArgs> | null
+    where?: parks_zones_job_historyWhereInput
+    orderBy?: parks_zones_job_historyOrderByWithRelationInput | parks_zones_job_historyOrderByWithRelationInput[]
+    cursor?: parks_zones_job_historyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Parks_zones_job_historyScalarFieldEnum | Parks_zones_job_historyScalarFieldEnum[]
   }
 
   /**
@@ -39160,6 +39235,7 @@ export namespace Prisma {
   export const Parks_zones_job_historyScalarFieldEnum: {
     Id: 'Id',
     camera_Id: 'camera_Id',
+    park_Id: 'park_Id',
     zone_Id: 'zone_Id',
     job_Id: 'job_Id',
     image: 'image',
@@ -40918,6 +40994,7 @@ export namespace Prisma {
     NOT?: parks_zones_job_historyWhereInput | parks_zones_job_historyWhereInput[]
     Id?: IntFilter<"parks_zones_job_history"> | number
     camera_Id?: IntNullableFilter<"parks_zones_job_history"> | number | null
+    park_Id?: IntNullableFilter<"parks_zones_job_history"> | number | null
     zone_Id?: IntNullableFilter<"parks_zones_job_history"> | number | null
     job_Id?: StringNullableFilter<"parks_zones_job_history"> | string | null
     image?: StringNullableFilter<"parks_zones_job_history"> | string | null
@@ -40926,11 +41003,13 @@ export namespace Prisma {
     createdAt?: DateTimeNullableFilter<"parks_zones_job_history"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks_zones_job_history"> | Date | string
     park_cameras?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
+    parks?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
   }
 
   export type parks_zones_job_historyOrderByWithRelationInput = {
     Id?: SortOrder
     camera_Id?: SortOrderInput | SortOrder
+    park_Id?: SortOrderInput | SortOrder
     zone_Id?: SortOrderInput | SortOrder
     job_Id?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
@@ -40939,6 +41018,7 @@ export namespace Prisma {
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     park_cameras?: park_camerasOrderByWithRelationInput
+    parks?: parksOrderByWithRelationInput
     _relevance?: parks_zones_job_historyOrderByRelevanceInput
   }
 
@@ -40948,6 +41028,7 @@ export namespace Prisma {
     OR?: parks_zones_job_historyWhereInput[]
     NOT?: parks_zones_job_historyWhereInput | parks_zones_job_historyWhereInput[]
     camera_Id?: IntNullableFilter<"parks_zones_job_history"> | number | null
+    park_Id?: IntNullableFilter<"parks_zones_job_history"> | number | null
     zone_Id?: IntNullableFilter<"parks_zones_job_history"> | number | null
     job_Id?: StringNullableFilter<"parks_zones_job_history"> | string | null
     image?: StringNullableFilter<"parks_zones_job_history"> | string | null
@@ -40956,11 +41037,13 @@ export namespace Prisma {
     createdAt?: DateTimeNullableFilter<"parks_zones_job_history"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks_zones_job_history"> | Date | string
     park_cameras?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
+    parks?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
   }, "Id">
 
   export type parks_zones_job_historyOrderByWithAggregationInput = {
     Id?: SortOrder
     camera_Id?: SortOrderInput | SortOrder
+    park_Id?: SortOrderInput | SortOrder
     zone_Id?: SortOrderInput | SortOrder
     job_Id?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
@@ -40981,6 +41064,7 @@ export namespace Prisma {
     NOT?: parks_zones_job_historyScalarWhereWithAggregatesInput | parks_zones_job_historyScalarWhereWithAggregatesInput[]
     Id?: IntWithAggregatesFilter<"parks_zones_job_history"> | number
     camera_Id?: IntNullableWithAggregatesFilter<"parks_zones_job_history"> | number | null
+    park_Id?: IntNullableWithAggregatesFilter<"parks_zones_job_history"> | number | null
     zone_Id?: IntNullableWithAggregatesFilter<"parks_zones_job_history"> | number | null
     job_Id?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
     image?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
@@ -41016,6 +41100,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: Parks_sentiment_analysisListRelationFilter
     parks_smoking_detection?: Parks_smoking_detectionListRelationFilter
     landscaping?: LandscapingListRelationFilter
+    parks_zones_job_history?: Parks_zones_job_historyListRelationFilter
   }
 
   export type parksOrderByWithRelationInput = {
@@ -41041,6 +41126,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisOrderByRelationAggregateInput
     parks_smoking_detection?: parks_smoking_detectionOrderByRelationAggregateInput
     landscaping?: landscapingOrderByRelationAggregateInput
+    parks_zones_job_history?: parks_zones_job_historyOrderByRelationAggregateInput
     _relevance?: parksOrderByRelevanceInput
   }
 
@@ -41070,6 +41156,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: Parks_sentiment_analysisListRelationFilter
     parks_smoking_detection?: Parks_smoking_detectionListRelationFilter
     landscaping?: LandscapingListRelationFilter
+    parks_zones_job_history?: Parks_zones_job_historyListRelationFilter
   }, "Id" | "park_Id">
 
   export type parksOrderByWithAggregationInput = {
@@ -44267,11 +44354,13 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string
     park_cameras?: park_camerasCreateNestedOneWithoutParks_zones_job_historyInput
+    parks?: parksCreateNestedOneWithoutParks_zones_job_historyInput
   }
 
   export type parks_zones_job_historyUncheckedCreateInput = {
     Id?: number
     camera_Id?: number | null
+    park_Id?: number | null
     zone_Id?: number | null
     job_Id?: string | null
     image?: string | null
@@ -44290,11 +44379,13 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     park_cameras?: park_camerasUpdateOneWithoutParks_zones_job_historyNestedInput
+    parks?: parksUpdateOneWithoutParks_zones_job_historyNestedInput
   }
 
   export type parks_zones_job_historyUncheckedUpdateInput = {
     Id?: IntFieldUpdateOperationsInput | number
     camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
     zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
     job_Id?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44307,6 +44398,7 @@ export namespace Prisma {
   export type parks_zones_job_historyCreateManyInput = {
     Id?: number
     camera_Id?: number | null
+    park_Id?: number | null
     zone_Id?: number | null
     job_Id?: string | null
     image?: string | null
@@ -44329,6 +44421,7 @@ export namespace Prisma {
   export type parks_zones_job_historyUncheckedUpdateManyInput = {
     Id?: IntFieldUpdateOperationsInput | number
     camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
     zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
     job_Id?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44360,6 +44453,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateInput = {
@@ -44385,6 +44479,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksUpdateInput = {
@@ -44409,6 +44504,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateInput = {
@@ -44434,6 +44530,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type parksCreateManyInput = {
@@ -47875,6 +47972,7 @@ export namespace Prisma {
   export type parks_zones_job_historyCountOrderByAggregateInput = {
     Id?: SortOrder
     camera_Id?: SortOrder
+    park_Id?: SortOrder
     zone_Id?: SortOrder
     job_Id?: SortOrder
     image?: SortOrder
@@ -47887,12 +47985,14 @@ export namespace Prisma {
   export type parks_zones_job_historyAvgOrderByAggregateInput = {
     Id?: SortOrder
     camera_Id?: SortOrder
+    park_Id?: SortOrder
     zone_Id?: SortOrder
   }
 
   export type parks_zones_job_historyMaxOrderByAggregateInput = {
     Id?: SortOrder
     camera_Id?: SortOrder
+    park_Id?: SortOrder
     zone_Id?: SortOrder
     job_Id?: SortOrder
     image?: SortOrder
@@ -47905,6 +48005,7 @@ export namespace Prisma {
   export type parks_zones_job_historyMinOrderByAggregateInput = {
     Id?: SortOrder
     camera_Id?: SortOrder
+    park_Id?: SortOrder
     zone_Id?: SortOrder
     job_Id?: SortOrder
     image?: SortOrder
@@ -47917,6 +48018,7 @@ export namespace Prisma {
   export type parks_zones_job_historySumOrderByAggregateInput = {
     Id?: SortOrder
     camera_Id?: SortOrder
+    park_Id?: SortOrder
     zone_Id?: SortOrder
   }
 
@@ -50539,6 +50641,12 @@ export namespace Prisma {
     connect?: park_camerasWhereUniqueInput
   }
 
+  export type parksCreateNestedOneWithoutParks_zones_job_historyInput = {
+    create?: XOR<parksCreateWithoutParks_zones_job_historyInput, parksUncheckedCreateWithoutParks_zones_job_historyInput>
+    connectOrCreate?: parksCreateOrConnectWithoutParks_zones_job_historyInput
+    connect?: parksWhereUniqueInput
+  }
+
   export type park_camerasUpdateOneWithoutParks_zones_job_historyNestedInput = {
     create?: XOR<park_camerasCreateWithoutParks_zones_job_historyInput, park_camerasUncheckedCreateWithoutParks_zones_job_historyInput>
     connectOrCreate?: park_camerasCreateOrConnectWithoutParks_zones_job_historyInput
@@ -50547,6 +50655,16 @@ export namespace Prisma {
     delete?: park_camerasWhereInput | boolean
     connect?: park_camerasWhereUniqueInput
     update?: XOR<XOR<park_camerasUpdateToOneWithWhereWithoutParks_zones_job_historyInput, park_camerasUpdateWithoutParks_zones_job_historyInput>, park_camerasUncheckedUpdateWithoutParks_zones_job_historyInput>
+  }
+
+  export type parksUpdateOneWithoutParks_zones_job_historyNestedInput = {
+    create?: XOR<parksCreateWithoutParks_zones_job_historyInput, parksUncheckedCreateWithoutParks_zones_job_historyInput>
+    connectOrCreate?: parksCreateOrConnectWithoutParks_zones_job_historyInput
+    upsert?: parksUpsertWithoutParks_zones_job_historyInput
+    disconnect?: parksWhereInput | boolean
+    delete?: parksWhereInput | boolean
+    connect?: parksWhereUniqueInput
+    update?: XOR<XOR<parksUpdateToOneWithWhereWithoutParks_zones_job_historyInput, parksUpdateWithoutParks_zones_job_historyInput>, parksUncheckedUpdateWithoutParks_zones_job_historyInput>
   }
 
   export type park_camerasCreateNestedManyWithoutParksInput = {
@@ -50633,6 +50751,13 @@ export namespace Prisma {
     connect?: landscapingWhereUniqueInput | landscapingWhereUniqueInput[]
   }
 
+  export type parks_zones_job_historyCreateNestedManyWithoutParksInput = {
+    create?: XOR<parks_zones_job_historyCreateWithoutParksInput, parks_zones_job_historyUncheckedCreateWithoutParksInput> | parks_zones_job_historyCreateWithoutParksInput[] | parks_zones_job_historyUncheckedCreateWithoutParksInput[]
+    connectOrCreate?: parks_zones_job_historyCreateOrConnectWithoutParksInput | parks_zones_job_historyCreateOrConnectWithoutParksInput[]
+    createMany?: parks_zones_job_historyCreateManyParksInputEnvelope
+    connect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+  }
+
   export type park_camerasUncheckedCreateNestedManyWithoutParksInput = {
     create?: XOR<park_camerasCreateWithoutParksInput, park_camerasUncheckedCreateWithoutParksInput> | park_camerasCreateWithoutParksInput[] | park_camerasUncheckedCreateWithoutParksInput[]
     connectOrCreate?: park_camerasCreateOrConnectWithoutParksInput | park_camerasCreateOrConnectWithoutParksInput[]
@@ -50715,6 +50840,13 @@ export namespace Prisma {
     connectOrCreate?: landscapingCreateOrConnectWithoutParksInput | landscapingCreateOrConnectWithoutParksInput[]
     createMany?: landscapingCreateManyParksInputEnvelope
     connect?: landscapingWhereUniqueInput | landscapingWhereUniqueInput[]
+  }
+
+  export type parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput = {
+    create?: XOR<parks_zones_job_historyCreateWithoutParksInput, parks_zones_job_historyUncheckedCreateWithoutParksInput> | parks_zones_job_historyCreateWithoutParksInput[] | parks_zones_job_historyUncheckedCreateWithoutParksInput[]
+    connectOrCreate?: parks_zones_job_historyCreateOrConnectWithoutParksInput | parks_zones_job_historyCreateOrConnectWithoutParksInput[]
+    createMany?: parks_zones_job_historyCreateManyParksInputEnvelope
+    connect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
   }
 
   export type park_camerasUpdateManyWithoutParksNestedInput = {
@@ -50885,6 +51017,20 @@ export namespace Prisma {
     deleteMany?: landscapingScalarWhereInput | landscapingScalarWhereInput[]
   }
 
+  export type parks_zones_job_historyUpdateManyWithoutParksNestedInput = {
+    create?: XOR<parks_zones_job_historyCreateWithoutParksInput, parks_zones_job_historyUncheckedCreateWithoutParksInput> | parks_zones_job_historyCreateWithoutParksInput[] | parks_zones_job_historyUncheckedCreateWithoutParksInput[]
+    connectOrCreate?: parks_zones_job_historyCreateOrConnectWithoutParksInput | parks_zones_job_historyCreateOrConnectWithoutParksInput[]
+    upsert?: parks_zones_job_historyUpsertWithWhereUniqueWithoutParksInput | parks_zones_job_historyUpsertWithWhereUniqueWithoutParksInput[]
+    createMany?: parks_zones_job_historyCreateManyParksInputEnvelope
+    set?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+    disconnect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+    delete?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+    connect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+    update?: parks_zones_job_historyUpdateWithWhereUniqueWithoutParksInput | parks_zones_job_historyUpdateWithWhereUniqueWithoutParksInput[]
+    updateMany?: parks_zones_job_historyUpdateManyWithWhereWithoutParksInput | parks_zones_job_historyUpdateManyWithWhereWithoutParksInput[]
+    deleteMany?: parks_zones_job_historyScalarWhereInput | parks_zones_job_historyScalarWhereInput[]
+  }
+
   export type park_camerasUncheckedUpdateManyWithoutParksNestedInput = {
     create?: XOR<park_camerasCreateWithoutParksInput, park_camerasUncheckedCreateWithoutParksInput> | park_camerasCreateWithoutParksInput[] | park_camerasUncheckedCreateWithoutParksInput[]
     connectOrCreate?: park_camerasCreateOrConnectWithoutParksInput | park_camerasCreateOrConnectWithoutParksInput[]
@@ -51051,6 +51197,20 @@ export namespace Prisma {
     update?: landscapingUpdateWithWhereUniqueWithoutParksInput | landscapingUpdateWithWhereUniqueWithoutParksInput[]
     updateMany?: landscapingUpdateManyWithWhereWithoutParksInput | landscapingUpdateManyWithWhereWithoutParksInput[]
     deleteMany?: landscapingScalarWhereInput | landscapingScalarWhereInput[]
+  }
+
+  export type parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput = {
+    create?: XOR<parks_zones_job_historyCreateWithoutParksInput, parks_zones_job_historyUncheckedCreateWithoutParksInput> | parks_zones_job_historyCreateWithoutParksInput[] | parks_zones_job_historyUncheckedCreateWithoutParksInput[]
+    connectOrCreate?: parks_zones_job_historyCreateOrConnectWithoutParksInput | parks_zones_job_historyCreateOrConnectWithoutParksInput[]
+    upsert?: parks_zones_job_historyUpsertWithWhereUniqueWithoutParksInput | parks_zones_job_historyUpsertWithWhereUniqueWithoutParksInput[]
+    createMany?: parks_zones_job_historyCreateManyParksInputEnvelope
+    set?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+    disconnect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+    delete?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+    connect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+    update?: parks_zones_job_historyUpdateWithWhereUniqueWithoutParksInput | parks_zones_job_historyUpdateWithWhereUniqueWithoutParksInput[]
+    updateMany?: parks_zones_job_historyUpdateManyWithWhereWithoutParksInput | parks_zones_job_historyUpdateManyWithWhereWithoutParksInput[]
+    deleteMany?: parks_zones_job_historyScalarWhereInput | parks_zones_job_historyScalarWhereInput[]
   }
 
   export type parksCreateNestedOneWithoutParks_attendanceInput = {
@@ -54183,6 +54343,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutPark_camerasInput = {
@@ -54207,6 +54368,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutPark_camerasInput = {
@@ -54518,10 +54680,12 @@ export namespace Prisma {
     start_for_time?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
+    parks?: parksCreateNestedOneWithoutParks_zones_job_historyInput
   }
 
   export type parks_zones_job_historyUncheckedCreateWithoutPark_camerasInput = {
     Id?: number
+    park_Id?: number | null
     zone_Id?: number | null
     job_Id?: string | null
     image?: string | null
@@ -54589,6 +54753,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutPark_camerasInput = {
@@ -54613,6 +54778,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type parks_behaviour_alertsUpsertWithWhereUniqueWithoutPark_camerasInput = {
@@ -54849,6 +55015,7 @@ export namespace Prisma {
     NOT?: parks_zones_job_historyScalarWhereInput | parks_zones_job_historyScalarWhereInput[]
     Id?: IntFilter<"parks_zones_job_history"> | number
     camera_Id?: IntNullableFilter<"parks_zones_job_history"> | number | null
+    park_Id?: IntNullableFilter<"parks_zones_job_history"> | number | null
     zone_Id?: IntNullableFilter<"parks_zones_job_history"> | number | null
     job_Id?: StringNullableFilter<"parks_zones_job_history"> | string | null
     image?: StringNullableFilter<"parks_zones_job_history"> | string | null
@@ -54879,6 +55046,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutPark_streamsInput = {
@@ -54903,6 +55071,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutPark_streamsInput = {
@@ -54942,6 +55111,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutPark_streamsInput = {
@@ -54966,6 +55136,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type parksCreateWithoutPark_zonesInput = {
@@ -54989,6 +55160,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutPark_zonesInput = {
@@ -55013,6 +55185,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutPark_zonesInput = {
@@ -55083,6 +55256,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutPark_zonesInput = {
@@ -55107,6 +55281,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type parks_irrigation_job_historyUpsertWithWhereUniqueWithoutPark_zonesInput = {
@@ -55192,6 +55367,60 @@ export namespace Prisma {
     create: XOR<park_camerasCreateWithoutParks_zones_job_historyInput, park_camerasUncheckedCreateWithoutParks_zones_job_historyInput>
   }
 
+  export type parksCreateWithoutParks_zones_job_historyInput = {
+    park_Id?: string | null
+    park_english_name?: string | null
+    park_arabic_name?: string | null
+    image?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    location?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    park_cameras?: park_camerasCreateNestedManyWithoutParksInput
+    park_streams?: park_streamsCreateNestedManyWithoutParksInput
+    park_zones?: park_zonesCreateNestedManyWithoutParksInput
+    parks_attendance?: parks_attendanceCreateNestedManyWithoutParkInput
+    parks_behaviour_alerts?: parks_behaviour_alertsCreateNestedManyWithoutParksInput
+    parks_footfall_analysis?: parks_footfall_analysisCreateNestedManyWithoutParkInput
+    parks_intrusion_detection?: parks_intrusion_detectionCreateNestedManyWithoutParksInput
+    parks_irrigation_job_history?: parks_irrigation_job_historyCreateNestedManyWithoutParksInput
+    parks_litter_detection?: parks_litter_detectionCreateNestedManyWithoutParksInput
+    parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
+    parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
+    landscaping?: landscapingCreateNestedManyWithoutParksInput
+  }
+
+  export type parksUncheckedCreateWithoutParks_zones_job_historyInput = {
+    Id?: number
+    park_Id?: string | null
+    park_english_name?: string | null
+    park_arabic_name?: string | null
+    image?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    location?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    park_cameras?: park_camerasUncheckedCreateNestedManyWithoutParksInput
+    park_streams?: park_streamsUncheckedCreateNestedManyWithoutParksInput
+    park_zones?: park_zonesUncheckedCreateNestedManyWithoutParksInput
+    parks_attendance?: parks_attendanceUncheckedCreateNestedManyWithoutParkInput
+    parks_behaviour_alerts?: parks_behaviour_alertsUncheckedCreateNestedManyWithoutParksInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedCreateNestedManyWithoutParkInput
+    parks_intrusion_detection?: parks_intrusion_detectionUncheckedCreateNestedManyWithoutParksInput
+    parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedCreateNestedManyWithoutParksInput
+    parks_litter_detection?: parks_litter_detectionUncheckedCreateNestedManyWithoutParksInput
+    parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
+    parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
+    landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+  }
+
+  export type parksCreateOrConnectWithoutParks_zones_job_historyInput = {
+    where: parksWhereUniqueInput
+    create: XOR<parksCreateWithoutParks_zones_job_historyInput, parksUncheckedCreateWithoutParks_zones_job_historyInput>
+  }
+
   export type park_camerasUpsertWithoutParks_zones_job_historyInput = {
     update: XOR<park_camerasUpdateWithoutParks_zones_job_historyInput, park_camerasUncheckedUpdateWithoutParks_zones_job_historyInput>
     create: XOR<park_camerasCreateWithoutParks_zones_job_historyInput, park_camerasUncheckedCreateWithoutParks_zones_job_historyInput>
@@ -55248,6 +55477,66 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+  }
+
+  export type parksUpsertWithoutParks_zones_job_historyInput = {
+    update: XOR<parksUpdateWithoutParks_zones_job_historyInput, parksUncheckedUpdateWithoutParks_zones_job_historyInput>
+    create: XOR<parksCreateWithoutParks_zones_job_historyInput, parksUncheckedCreateWithoutParks_zones_job_historyInput>
+    where?: parksWhereInput
+  }
+
+  export type parksUpdateToOneWithWhereWithoutParks_zones_job_historyInput = {
+    where?: parksWhereInput
+    data: XOR<parksUpdateWithoutParks_zones_job_historyInput, parksUncheckedUpdateWithoutParks_zones_job_historyInput>
+  }
+
+  export type parksUpdateWithoutParks_zones_job_historyInput = {
+    park_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    park_cameras?: park_camerasUpdateManyWithoutParksNestedInput
+    park_streams?: park_streamsUpdateManyWithoutParksNestedInput
+    park_zones?: park_zonesUpdateManyWithoutParksNestedInput
+    parks_attendance?: parks_attendanceUpdateManyWithoutParkNestedInput
+    parks_behaviour_alerts?: parks_behaviour_alertsUpdateManyWithoutParksNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUpdateManyWithoutParkNestedInput
+    parks_intrusion_detection?: parks_intrusion_detectionUpdateManyWithoutParksNestedInput
+    parks_irrigation_job_history?: parks_irrigation_job_historyUpdateManyWithoutParksNestedInput
+    parks_litter_detection?: parks_litter_detectionUpdateManyWithoutParksNestedInput
+    parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
+    parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
+    landscaping?: landscapingUpdateManyWithoutParksNestedInput
+  }
+
+  export type parksUncheckedUpdateWithoutParks_zones_job_historyInput = {
+    Id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    park_cameras?: park_camerasUncheckedUpdateManyWithoutParksNestedInput
+    park_streams?: park_streamsUncheckedUpdateManyWithoutParksNestedInput
+    park_zones?: park_zonesUncheckedUpdateManyWithoutParksNestedInput
+    parks_attendance?: parks_attendanceUncheckedUpdateManyWithoutParkNestedInput
+    parks_behaviour_alerts?: parks_behaviour_alertsUncheckedUpdateManyWithoutParksNestedInput
+    parks_footfall_analysis?: parks_footfall_analysisUncheckedUpdateManyWithoutParkNestedInput
+    parks_intrusion_detection?: parks_intrusion_detectionUncheckedUpdateManyWithoutParksNestedInput
+    parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedUpdateManyWithoutParksNestedInput
+    parks_litter_detection?: parks_litter_detectionUncheckedUpdateManyWithoutParksNestedInput
+    parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
+    parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
+    landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type park_camerasCreateWithoutParksInput = {
@@ -55752,6 +56041,39 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type parks_zones_job_historyCreateWithoutParksInput = {
+    zone_Id?: number | null
+    job_Id?: string | null
+    image?: string | null
+    started_at?: Date | string | null
+    start_for_time?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    park_cameras?: park_camerasCreateNestedOneWithoutParks_zones_job_historyInput
+  }
+
+  export type parks_zones_job_historyUncheckedCreateWithoutParksInput = {
+    Id?: number
+    camera_Id?: number | null
+    zone_Id?: number | null
+    job_Id?: string | null
+    image?: string | null
+    started_at?: Date | string | null
+    start_for_time?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type parks_zones_job_historyCreateOrConnectWithoutParksInput = {
+    where: parks_zones_job_historyWhereUniqueInput
+    create: XOR<parks_zones_job_historyCreateWithoutParksInput, parks_zones_job_historyUncheckedCreateWithoutParksInput>
+  }
+
+  export type parks_zones_job_historyCreateManyParksInputEnvelope = {
+    data: parks_zones_job_historyCreateManyParksInput | parks_zones_job_historyCreateManyParksInput[]
+    skipDuplicates?: boolean
+  }
+
   export type park_camerasUpsertWithWhereUniqueWithoutParksInput = {
     where: park_camerasWhereUniqueInput
     update: XOR<park_camerasUpdateWithoutParksInput, park_camerasUncheckedUpdateWithoutParksInput>
@@ -56045,6 +56367,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"landscaping"> | Date | string
   }
 
+  export type parks_zones_job_historyUpsertWithWhereUniqueWithoutParksInput = {
+    where: parks_zones_job_historyWhereUniqueInput
+    update: XOR<parks_zones_job_historyUpdateWithoutParksInput, parks_zones_job_historyUncheckedUpdateWithoutParksInput>
+    create: XOR<parks_zones_job_historyCreateWithoutParksInput, parks_zones_job_historyUncheckedCreateWithoutParksInput>
+  }
+
+  export type parks_zones_job_historyUpdateWithWhereUniqueWithoutParksInput = {
+    where: parks_zones_job_historyWhereUniqueInput
+    data: XOR<parks_zones_job_historyUpdateWithoutParksInput, parks_zones_job_historyUncheckedUpdateWithoutParksInput>
+  }
+
+  export type parks_zones_job_historyUpdateManyWithWhereWithoutParksInput = {
+    where: parks_zones_job_historyScalarWhereInput
+    data: XOR<parks_zones_job_historyUpdateManyMutationInput, parks_zones_job_historyUncheckedUpdateManyWithoutParksInput>
+  }
+
   export type parksCreateWithoutParks_attendanceInput = {
     park_Id?: string | null
     park_english_name?: string | null
@@ -56066,6 +56404,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutParks_attendanceInput = {
@@ -56090,6 +56429,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutParks_attendanceInput = {
@@ -56227,6 +56567,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutParks_attendanceInput = {
@@ -56251,6 +56592,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type usersUpsertWithoutParks_attendanceInput = {
@@ -56378,6 +56720,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutParks_behaviour_alertsInput = {
@@ -56402,6 +56745,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutParks_behaviour_alertsInput = {
@@ -56493,6 +56837,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutParks_behaviour_alertsInput = {
@@ -56517,6 +56862,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type park_camerasUpsertWithoutParks_behaviour_alertsInput = {
@@ -56633,6 +56979,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutParks_intrusion_detectionInput = {
@@ -56657,6 +57004,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutParks_intrusion_detectionInput = {
@@ -56781,6 +57129,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutParks_intrusion_detectionInput = {
@@ -56805,6 +57154,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type park_camerasUpsertWithoutParks_intrusion_detectionInput = {
@@ -56886,6 +57236,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutParks_irrigation_job_historyInput = {
@@ -56910,6 +57261,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutParks_irrigation_job_historyInput = {
@@ -56983,6 +57335,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutParks_irrigation_job_historyInput = {
@@ -57007,6 +57360,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type park_zonesUpsertWithoutParks_irrigation_job_historyInput = {
@@ -57070,6 +57424,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutParks_litter_detectionInput = {
@@ -57094,6 +57449,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutParks_litter_detectionInput = {
@@ -57324,6 +57680,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutParks_litter_detectionInput = {
@@ -57348,6 +57705,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type park_camerasUpsertWithoutParks_litter_detectionInput = {
@@ -57869,6 +58227,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutParks_sentiment_analysisInput = {
@@ -57893,6 +58252,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutParks_sentiment_analysisInput = {
@@ -58036,6 +58396,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutParks_sentiment_analysisInput = {
@@ -58060,6 +58421,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type park_camerasUpsertWithoutParks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput = {
@@ -58234,6 +58596,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionCreateNestedManyWithoutParksInput
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutParks_smoking_detectionInput = {
@@ -58258,6 +58621,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUncheckedCreateNestedManyWithoutParksInput
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutParks_smoking_detectionInput = {
@@ -58365,6 +58729,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUpdateManyWithoutParksNestedInput
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutParks_smoking_detectionInput = {
@@ -58389,6 +58754,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUncheckedUpdateManyWithoutParksNestedInput
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type park_camerasUpsertWithoutParks_smoking_detectionInput = {
@@ -59570,6 +59936,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
     landscaping?: landscapingCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutParks_footfall_analysisInput = {
@@ -59594,6 +59961,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
     landscaping?: landscapingUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutParks_footfall_analysisInput = {
@@ -59731,6 +60099,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutParks_footfall_analysisInput = {
@@ -59755,6 +60124,7 @@ export namespace Prisma {
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
     landscaping?: landscapingUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type usersUpsertWithoutParks_footfall_analysisInput = {
@@ -60297,6 +60667,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionCreateNestedManyWithoutParksInput
     parks_sentiment_analysis?: parks_sentiment_analysisCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutParksInput
   }
 
   export type parksUncheckedCreateWithoutLandscapingInput = {
@@ -60321,6 +60692,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUncheckedCreateNestedManyWithoutParksInput
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutParksInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutParksInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutParksInput
   }
 
   export type parksCreateOrConnectWithoutLandscapingInput = {
@@ -60480,6 +60852,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUpdateManyWithoutParksNestedInput
     parks_sentiment_analysis?: parks_sentiment_analysisUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutParksNestedInput
   }
 
   export type parksUncheckedUpdateWithoutLandscapingInput = {
@@ -60504,6 +60877,7 @@ export namespace Prisma {
     parks_litter_detection?: parks_litter_detectionUncheckedUpdateManyWithoutParksNestedInput
     parks_sentiment_analysis?: parks_sentiment_analysisUncheckedUpdateManyWithoutParksNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutParksNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutParksNestedInput
   }
 
   export type landscapingCreateWithoutLandscaping_historyInput = {
@@ -61400,6 +61774,7 @@ export namespace Prisma {
 
   export type parks_zones_job_historyCreateManyPark_camerasInput = {
     Id?: number
+    park_Id?: number | null
     zone_Id?: number | null
     job_Id?: string | null
     image?: string | null
@@ -61794,10 +62169,12 @@ export namespace Prisma {
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parks?: parksUpdateOneWithoutParks_zones_job_historyNestedInput
   }
 
   export type parks_zones_job_historyUncheckedUpdateWithoutPark_camerasInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
     zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
     job_Id?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61809,6 +62186,7 @@ export namespace Prisma {
 
   export type parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasInput = {
     Id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
     zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
     job_Id?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -62042,6 +62420,18 @@ export namespace Prisma {
     current_status?: string | null
     suggestion?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type parks_zones_job_historyCreateManyParksInput = {
+    Id?: number
+    camera_Id?: number | null
+    zone_Id?: number | null
+    job_Id?: string | null
+    image?: string | null
+    started_at?: Date | string | null
+    start_for_time?: string | null
+    createdAt?: Date | string | null
     updatedAt?: Date | string
   }
 
@@ -62608,6 +62998,41 @@ export namespace Prisma {
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type parks_zones_job_historyUpdateWithoutParksInput = {
+    zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    job_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    park_cameras?: park_camerasUpdateOneWithoutParks_zones_job_historyNestedInput
+  }
+
+  export type parks_zones_job_historyUncheckedUpdateWithoutParksInput = {
+    Id?: IntFieldUpdateOperationsInput | number
+    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    job_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type parks_zones_job_historyUncheckedUpdateManyWithoutParksInput = {
+    Id?: IntFieldUpdateOperationsInput | number
+    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    job_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

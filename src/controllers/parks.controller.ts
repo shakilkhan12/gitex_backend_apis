@@ -304,5 +304,28 @@ const { camera_Id, ...fields } = req.body;
     }
   };
 
+  // Get park zones job history
+  public static getParkZonesJobHistory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { parkId } = req.params;
+      const { zoneId, status, search } = req.query;
+
+      const filters = {
+        zoneId: zoneId ? parseInt(zoneId as string) : undefined,
+        status: status as string,
+        search: search as string
+      };
+
+      const result = await ParksService.getParkZonesJobHistoryService(
+        parseInt(parkId),
+        filters
+      );
+
+      return res.status(STATUS.SUCCESS).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
 }
 export default ParksController;

@@ -2,6 +2,7 @@ import { ParkType, ParkZone, ParkCamera, SettingInputTypes, ParkFootfallAnalysis
 import { STATUS, } from "@/typescript"
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
+import DatabaseUtils from "@/utils/database.utils";
 
 class ParkService {
   private static isEmployee = (item: any): boolean => {
@@ -24,19 +25,24 @@ class ParkService {
    }
    // get parks service
    protected static getParksService = async () => {
-      return await db.parks.findMany({
-         include: {
-         _count: {
-         select: {
-          park_zones: true,
-          park_cameras: true,
+      return await DatabaseUtils.executeWithRetry(
+         async () => {
+            return await db.parks.findMany({
+               include: {
+               _count: {
+               select: {
+                park_zones: true,
+                park_cameras: true,
+              },
+            },
+          },
+          orderBy: {
+          Id: "desc",
         },
-      },
-    },
-    orderBy: {
-    Id: "desc",
-  },
-      });
+            });
+         },
+         'getParksService'
+      );
    }
    // get park service
    protected static getParkService = async (park_Id: number) => {
@@ -264,7 +270,8 @@ class ParkService {
       throw new HttpException(STATUS.BAD_REQUEST, 'park_Id is required');
     }
 
-    try {
+    return await DatabaseUtils.executeWithRetry(
+      async () => {
       // Build where clause for date filtering and exclude exit cameras
       const whereClause: any = {
         park_Id: Array.isArray(parkIds) ? { in: parkIds } : Number(parkIds),
@@ -471,9 +478,9 @@ class ParkService {
         dailyDistribution,
         rawData: footfallData
       };
-    } catch (error: any) {
-      throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch footfall analysis data');
-    }
+      },
+      'getParkFootfallAnalysisService'
+    );
   };
 
   // Add park footfall analysis service
@@ -502,6 +509,117 @@ class ParkService {
         throw error;
       }
       throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to add footfall analysis entry');
+    }
+  };
+
+    // Get park zones job history service
+    protected static getParkZonesJobHistoryService = async (parkId: number, filters?: {
+      zoneId?: number;
+      status?: string;
+      search?: string;
+    }) => {
+      try {
+        console.log('[ParkService] Getting zones job history for parkId:', parkId);
+        console.log('[ParkService] Filters:', filters);
+        
+        const whereClause: any = {
+          park_Id: parkId
+        };
+
+      // Add filters if provided
+      if (filters?.zoneId) {
+        whereClause.zone_Id = filters.zoneId;
+      }
+
+      // Note: Status filtering is now handled on frontend since it's calculated dynamically
+      // if (filters?.status) {
+      //   whereClause.start_for_time = filters.status;
+      // }
+
+      if (filters?.search) {
+        whereClause.job_Id = {
+          contains: filters.search,
+          mode: 'insensitive'
+        };
+      }
+
+        
+        const jobHistory = await db.parks_zones_job_history.findMany({
+          where: whereClause,
+          include: {
+            parks: {
+              select: {
+                Id: true,
+                park_english_name: true,
+                park_arabic_name: true
+              }
+            }
+          },
+          orderBy: {
+            started_at: 'desc'
+          }
+        });
+        
+      // Helper function to parse duration text to minutes
+      const parseDurationToMinutes = (durationText: string | null): number => {
+        if (!durationText) return 0;
+        
+        const text = durationText.toLowerCase().trim();
+        
+        // Handle seconds
+        if (text.includes('second')) {
+          const seconds = parseInt(text.replace(/[^\d]/g, '')) || 0;
+          return seconds / 60; // Convert seconds to minutes
+        }
+        
+        // Handle minutes
+        if (text.includes('minute')) {
+          return parseInt(text.replace(/[^\d]/g, '')) || 0;
+        }
+        
+        // Handle hours
+        if (text.includes('hour')) {
+          const hours = parseInt(text.replace(/[^\d]/g, '')) || 0;
+          return hours * 60; // Convert hours to minutes
+        }
+        
+        // If it's just a number, assume minutes
+        const number = parseInt(text.replace(/[^\d]/g, ''));
+        return isNaN(number) ? 0 : number;
+      };
+
+      // Format the response to match the frontend requirements
+      const formattedHistory = jobHistory.map(job => {
+        const jobInitiated = job.started_at;
+        const durationInMinutes = parseDurationToMinutes(job.start_for_time);
+        
+        // Calculate job completion time (initiated + duration)
+        const jobCompletion = jobInitiated ? new Date(new Date(jobInitiated).getTime() + (durationInMinutes * 60 * 1000)) : null;
+        
+        // Calculate status based on current time vs completion time
+        const currentTime = new Date();
+        const status = jobCompletion && currentTime > jobCompletion ? 'Completed' : 'Pending';
+        
+        return {
+          id: job.Id,
+          zoneId: job.zone_Id,
+          jobId: job.job_Id,
+          jobInitiated: jobInitiated,
+          jobCompletion: jobCompletion,
+          status: status,
+          parkName: job.parks?.park_english_name,
+          parkArabicName: job.parks?.park_arabic_name
+        };
+      });
+
+      return {
+        success: true,
+        data: formattedHistory,
+        total: formattedHistory.length
+      };
+    } catch (error: any) {
+      console.error('[ParkService] Error fetching zones job history:', error);
+        throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch zones job history');
     }
   };
 

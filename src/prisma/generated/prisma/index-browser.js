@@ -255,6 +255,7 @@ exports.Prisma.Park_zonesScalarFieldEnum = {
 exports.Prisma.Parks_zones_job_historyScalarFieldEnum = {
   Id: 'Id',
   camera_Id: 'camera_Id',
+  park_Id: 'park_Id',
   zone_Id: 'zone_Id',
   job_Id: 'job_Id',
   image: 'image',

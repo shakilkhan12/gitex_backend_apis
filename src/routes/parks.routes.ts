@@ -20,5 +20,6 @@ parkRouter.get('/get-park-setting/:parkId', ParksController.getParkSetting)
 parkRouter.get('/get-park-cameras-functionalities/:parkId', ParksController.getParkCamerasFunctionalities)
 parkRouter.get('/get-park-footfall-analysis/:park_Id', ParksController.getParkFootfallAnalysis)
 parkRouter.post('/add-park-footfall-analysis', ParksController.addParkFootfallAnalysis)
+parkRouter.get('/get-park-zones-job-history/:parkId', ParksController.getParkZonesJobHistory)
 
 export default parkRouter;

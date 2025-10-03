@@ -203,6 +203,7 @@ model park_zones {
 model parks_zones_job_history {
   Id             Int           @id @default(autoincrement())
   camera_Id      Int?
+  park_Id        Int?
   zone_Id        Int?
   job_Id         String?       @db.VarChar(255)
   image          String?       @db.VarChar(255)
@@ -211,6 +212,11 @@ model parks_zones_job_history {
   createdAt      DateTime?     @db.Timestamp(0)
   updatedAt      DateTime      @default(now()) @db.Timestamp(0)
   park_cameras   park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_1")
+  parks          parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_2")
+
+  @@index([park_Id], map: "park_Id")
+  @@index([camera_Id], map: "camera_Id")
+  @@map("parks_zones_job_history")
 }
 
 model parks {
@@ -236,6 +242,7 @@ model parks {
   parks_sentiment_analysis     parks_sentiment_analysis[]
   parks_smoking_detection      parks_smoking_detection[]
   landscaping                  landscaping[]
+  parks_zones_job_history      parks_zones_job_history[]
 
   @@map("parks")
 }

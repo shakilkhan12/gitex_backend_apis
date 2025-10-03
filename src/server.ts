@@ -120,7 +120,7 @@ const startServer = async () => {
       console.log(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
       console.log(`🌐 Server URL: http://localhost:${PORT}`);
       console.log(`🔌 WebSocket server initialized`);
-      console.log(`⏰ Cron jobs initialized - Morning grass monitoring at 7:00 AM daily`);
+      console.log(`⏰ Cron jobs initialized - Grass monitoring at 07:30AM, Irrigation at 08:00AM daily`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

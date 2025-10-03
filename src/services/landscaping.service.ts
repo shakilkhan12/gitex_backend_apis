@@ -560,7 +560,7 @@ The response must be a single JSON object structured exactly as follows. The cal
                temperature: 0.1,
                topK: 32,
                topP: 1,
-               maxOutputTokens: 1024,
+               maxOutputTokens: 4096,
             }
          };
 
@@ -570,8 +570,10 @@ The response must be a single JSON object structured exactly as follows. The cal
             },
             timeout: 30000
          });
+         console.log('response',response)
+         console.log('[LandscapingService] Gemini API response structure:', JSON.stringify(response.data, null, 2));
 
-         if (response.data && response.data.candidates && response.data.candidates[0] && response.data.candidates[0].content) {
+         if (response.data && response.data.candidates && response.data.candidates[0] && response.data.candidates[0].content && response.data.candidates[0].content.parts && response.data.candidates[0].content.parts[0]) {
             const geminiResponse = response.data.candidates[0].content.parts[0].text;
             
             try {

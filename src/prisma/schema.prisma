@@ -203,6 +203,7 @@ model park_zones {
 model parks_zones_job_history {
   Id             Int           @id @default(autoincrement())
   camera_Id      Int?
+  park_Id        Int?
   zone_Id        Int?
   job_Id         String?       @db.VarChar(255)
   image          String?       @db.VarChar(255)
@@ -211,6 +212,11 @@ model parks_zones_job_history {
   createdAt      DateTime?     @db.Timestamp(0)
   updatedAt      DateTime      @default(now()) @db.Timestamp(0)
   park_cameras   park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_1")
+  parks          parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_2")
+
+  @@index([park_Id], map: "park_Id")
+  @@index([camera_Id], map: "camera_Id")
+  @@map("parks_zones_job_history")
 }
 
 model parks {
@@ -236,6 +242,7 @@ model parks {
   parks_sentiment_analysis     parks_sentiment_analysis[]
   parks_smoking_detection      parks_smoking_detection[]
   landscaping                  landscaping[]
+  parks_zones_job_history      parks_zones_job_history[]
 
   @@map("parks")
 }
@@ -676,34 +683,34 @@ enum parks_sentiment_analysis_sentiment_of {
 }
 
 model qms_history {
-  visit_id              Int       @id @default(autoincrement())
+  visit_id              Int      @id @default(autoincrement())
   visitor_id            Int?
-  gender                String?   @db.VarChar(50)
-  age_group             String?   @db.VarChar(50)
-  ticket_number         String?   @db.VarChar(100)
-  service_english_name  String?   @db.VarChar(255)
-  service_arabic_name   String?   @db.VarChar(255)
-  agent_english_name    String?   @db.VarChar(255)
-  agent_arabic_name     String?   @db.VarChar(255)
-  ticket_date           String?   @db.VarChar(10)
-  issue_time            String?   @db.VarChar(8)
-  processing_start_time String?   @db.VarChar(8)
-  processing_end_time   String?   @db.VarChar(8)
-  waiting_time          String?   @db.VarChar(8)
-  total_processing_time String?   @db.VarChar(8)
-  entry_image           String?   @db.VarChar(500)
-  entry_camera          String?   @db.VarChar(100)
-  entry_mode            String?   @db.VarChar(50)
-  entry_date            String?   @db.VarChar(10)
-  entry_time            String?   @db.VarChar(8)
-  exit_image            String?   @db.VarChar(500)
-  exit_camera           String?   @db.VarChar(100)
-  exit_mode             String?   @db.VarChar(50)
-  exit_date             String?   @db.VarChar(10)
-  exit_time             String?   @db.VarChar(8)
-  status                String?   @db.VarChar(50)
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  gender                String?  @db.VarChar(50)
+  age_group             String?  @db.VarChar(50)
+  ticket_number         String?  @db.VarChar(100)
+  service_english_name  String?  @db.VarChar(255)
+  service_arabic_name   String?  @db.VarChar(255)
+  agent_english_name    String?  @db.VarChar(255)
+  agent_arabic_name     String?  @db.VarChar(255)
+  ticket_date           String?  @db.VarChar(10)
+  issue_time            String?  @db.VarChar(8)
+  processing_start_time String?  @db.VarChar(8)
+  processing_end_time   String?  @db.VarChar(8)
+  waiting_time          String?  @db.VarChar(8)
+  total_processing_time String?  @db.VarChar(8)
+  entry_image           String?  @db.VarChar(500)
+  entry_camera          String?  @db.VarChar(100)
+  entry_mode            String?  @db.VarChar(50)
+  entry_date            String?  @db.VarChar(10)
+  entry_time            String?  @db.VarChar(8)
+  exit_image            String?  @db.VarChar(500)
+  exit_camera           String?  @db.VarChar(100)
+  exit_mode             String?  @db.VarChar(50)
+  exit_date             String?  @db.VarChar(10)
+  exit_time             String?  @db.VarChar(8)
+  status                String?  @db.VarChar(50)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
   @@map("qms_history")
 }
