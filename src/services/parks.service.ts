@@ -553,6 +553,14 @@ class ParkService {
                 park_english_name: true,
                 park_arabic_name: true
               }
+            },
+            park_zones: {
+              select: {
+                Id: true,
+                zone_Id: true,
+                zone_english_name: true,
+                zone_arabic_name: true
+              }
             }
           },
           orderBy: {
@@ -600,16 +608,30 @@ class ParkService {
         const currentTime = new Date();
         const status = jobCompletion && currentTime > jobCompletion ? 'Completed' : 'Pending';
         
+        // Get zone details from included relation
+        const zoneDetails = job.park_zones;
+        
         return {
           id: job.Id,
           zoneId: job.zone_Id,
+          zoneDetails: zoneDetails ? {
+            zoneId: zoneDetails.zone_Id,
+            zoneEnglishName: zoneDetails.zone_english_name,
+            zoneArabicName: zoneDetails.zone_arabic_name
+          } : null,
           jobId: job.job_Id,
           jobInitiated: jobInitiated,
           jobCompletion: jobCompletion,
           image: job.image,
-          status: status,
+          status: status, // Add the calculated status (Completed/Pending)
+          grassStatus: job.status,
           parkName: job.parks?.park_english_name,
-          parkArabicName: job.parks?.park_arabic_name
+          parkArabicName: job.parks?.park_arabic_name,
+          suggestion: job.suggestion,
+          confidenceScore: job.confidence_score,
+          rationale: job.rationale,
+          gallonsRequiredEstimate: job.gallons_required_estimate,
+          calculationNote: job.calculation_note
         };
       });
 

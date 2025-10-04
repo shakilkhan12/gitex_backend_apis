@@ -166,36 +166,6 @@ class OfficeAttendanceService {
         }
       };
 
-      const calculateTimeDifference = (
-        startTime: string,
-        endTime: string
-      ): number => {
-        if (!startTime || !endTime || startTime === "--" || endTime === "--")
-          return 0;
-
-        try {
-          if (startTime.includes(":") && endTime.includes(":")) {
-            const [startHours, startMinutes, startSeconds] = startTime
-              .split(":")
-              .map(Number);
-            const [endHours, endMinutes, endSeconds] = endTime
-              .split(":")
-              .map(Number);
-
-            const startTotalMinutes =
-              startHours * 60 + startMinutes + startSeconds / 60;
-            const endTotalMinutes =
-              endHours * 60 + endMinutes + endSeconds / 60;
-
-            return Math.max(0, endTotalMinutes - startTotalMinutes);
-          }
-
-          return 0;
-        } catch (error) {
-          return 0;
-        }
-      };
-
       const grouped: Record<string, any[]> = {};
       results.forEach((att) => {
         const uniqueId =
@@ -207,125 +177,6 @@ class OfficeAttendanceService {
         if (!grouped[key]) grouped[key] = [];
         grouped[key].push(att);
       });
-
-      // const summaries = Object.values(grouped).map((records: any[]) => {
-      //   const uniqueId = records[0].user?.unique_id;
-      //   const user = records[0].user;
-
-      //   records.sort(
-      //     (a, b) =>
-      //       new Date(a.entry_time || a.createdAt).getTime() -
-      //       new Date(b.entry_time || b.createdAt).getTime()
-      //   );
-
-      //   const attendanceTimes: Array<{
-      //     type: string;
-      //     time: string;
-      //     datetime: any;
-      //   }> = [];
-      //   let inCount = 0;
-      //   let outCount = 0;
-
-      //   const allEvents: Array<{ type: string; time: string; datetime: any }> =
-      //     [];
-
-      //   records.forEach((record) => {
-      //     if (record.entry_time) {
-      //       inCount++;
-      //       allEvents.push({
-      //         type: "IN",
-      //         time: convertTimeToString(record.entry_time),
-      //         datetime: record.entry_time,
-      //       });
-      //     }
-      //     if (record.exit_time) {
-      //       outCount++;
-      //       allEvents.push({
-      //         type: "OUT",
-      //         time: convertTimeToString(record.exit_time),
-      //         datetime: record.exit_time,
-      //       });
-      //     }
-      //   });
-
-      //   allEvents.sort(
-      //     (a, b) =>
-      //       new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
-      //   );
-      //   attendanceTimes.push(...allEvents);
-
-      //   const firstEntry = convertTimeToString(records[0]?.entry_time);
-      //   const finalExit = convertTimeToString(
-      //     records[records.length - 1]?.exit_time
-      //   );
-
-      //   const rawDate = convertDateToString(
-      //     records[0]?.entry_time || records[0]?.createdAt
-      //   );
-      //   const formattedDate = formatDateForDisplay(rawDate);
-
-      //   let totalWorkingMinutes = 0;
-
-      //   records.forEach((record) => {
-      //     if (record.entry_time && record.exit_time) {
-      //       const entryTime = convertTimeToString(record.entry_time);
-      //       const exitTime = convertTimeToString(record.exit_time);
-      //       totalWorkingMinutes += calculateTimeDifference(entryTime, exitTime);
-      //     }
-      //   });
-
-      //   const workingHours = Math.floor(totalWorkingMinutes / 60);
-      //   const workingMinutes = totalWorkingMinutes % 60;
-      //   const totalWorkingHours = workingHours + workingMinutes / 60;
-
-      //   const standardWorkDayHours = 8;
-      //   const workingPercent = Math.min(
-      //     100,
-      //     Math.round((totalWorkingHours / standardWorkDayHours) * 100)
-      //   );
-
-      //   const breakMinutes = Math.round(totalWorkingMinutes * 0.1);
-      //   const breakPercent = 10;
-
-      //   const currentTime = new Date();
-      //   const lastRecord = records[records.length - 1];
-      //   const isCurrentlyInside = lastRecord.exit_time === null;
-      //   const status = isCurrentlyInside ? "Inside" : "Outside";
-
-      //   const isEmployee = user?.emp_Id?.startsWith("EMP") || false;
-      //   const displayName =
-      //     user?.emp__eng_name ||
-      //     user?.emp__arabic_name ||
-      //     (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
-
-      //   const result = {
-      //     id: user?.emp_Id,
-      //     name: displayName,
-      //     status: status,
-      //     avatarUrl: user?.image,
-      //     department:
-      //       user?.dep_eng_name ||
-      //       user?.dep_arabic_name ||
-      //       (isEmployee ? "Unknown Department" : "Visitor"),
-      //     office_Id: records[0].office_Id,
-      //     date: formattedDate,
-      //     firstEntry: firstEntry,
-      //     entryCount: inCount,
-      //     finalExit: finalExit,
-      //     exitCount: outCount,
-      //     attendanceTimes: attendanceTimes,
-      //     summary: {
-      //       workingPercent: workingPercent,
-      //       workingHours: parseFloat(totalWorkingHours.toFixed(1)),
-      //       breakPercent: breakPercent,
-      //       breakMinutes: breakMinutes,
-      //       status: status,
-      //       breakStatus: breakMinutes > 0 ? "On Break" : "No Break",
-      //     },
-      //   };
-
-      //   return result;
-      // });
 
       const summaries = Object.values(grouped).map((records: any[]) => {
         const uniqueId = records[0].user?.unique_id;
@@ -388,26 +239,86 @@ class OfficeAttendanceService {
         const now = new Date();
 
         // calculate working/breaks
+        // Apply 3:30pm (15:30) cutoff logic for working/breaks, similar to park-attendance.service.ts
+
+        // Find the date of the first event (assume all events are for the same day)
+        let attendanceDay: Date | null = null;
+        if (allEvents.length > 0) {
+          const firstEventDate = new Date(allEvents[0].datetime);
+          attendanceDay = new Date(
+            firstEventDate.getFullYear(),
+            firstEventDate.getMonth(),
+            firstEventDate.getDate()
+          );
+        }
+
+        // Set the default OUT time as 15:30 (3:30pm) on the attendance day
+        let defaultOutDate: Date | null = null;
+        if (attendanceDay) {
+          defaultOutDate = new Date(attendanceDay);
+          defaultOutDate.setHours(15, 30, 0, 0); // 15:30:00.000
+        }
+
         for (let i = 0; i < allEvents.length; i++) {
           const curr = allEvents[i];
           const next = allEvents[i + 1];
 
           if (curr.type === "IN") {
+            // Calculate the 15:30 (3:30pm) cutoff for this day
+            let cutoffTime: Date | null = null;
+            if (curr.datetime) {
+              const currDate = new Date(curr.datetime);
+              cutoffTime = new Date(
+                currDate.getFullYear(),
+                currDate.getMonth(),
+                currDate.getDate(),
+                15, 30, 0, 0
+              );
+            }
+
+            // If IN is after 15:30, skip this IN event for working minutes
+            if (cutoffTime && new Date(curr.datetime) >= cutoffTime) {
+              continue;
+            }
+
             if (next && next.type === "OUT") {
-              // normal IN → OUT
+              // If OUT is after 15:30, cap at 15:30
+              let outTime = new Date(next.datetime);
+              if (cutoffTime && outTime > cutoffTime) {
+                outTime = cutoffTime;
+              }
               totalWorkingMinutes +=
-                (new Date(next.datetime).getTime() -
-                  new Date(curr.datetime).getTime()) /
-                60000;
+                (outTime.getTime() - new Date(curr.datetime).getTime()) / 60000;
             } else if (!next) {
-              // last IN with no OUT → count till now
+              // No OUT after this IN, cap at 15:30 or now, whichever is earlier
+              let outTime = now;
+              if (defaultOutDate) {
+                outTime = now > defaultOutDate ? defaultOutDate : now;
+              }
+              // Also cap at 15:30 if needed
+              if (cutoffTime && outTime > cutoffTime) {
+                outTime = cutoffTime;
+              }
               totalWorkingMinutes +=
-                (now.getTime() - new Date(curr.datetime).getTime()) / 60000;
+                (outTime.getTime() - new Date(curr.datetime).getTime()) / 60000;
             }
           }
 
           if (curr.type === "OUT" && next && next.type === "IN") {
-            // OUT → next IN = break
+            // For break calculation, only count if next IN is before 15:30
+            let cutoffTime: Date | null = null;
+            if (next.datetime) {
+              const nextDate = new Date(next.datetime);
+              cutoffTime = new Date(
+                nextDate.getFullYear(),
+                nextDate.getMonth(),
+                nextDate.getDate(),
+                15, 30, 0, 0
+              );
+            }
+            if (cutoffTime && new Date(next.datetime) >= cutoffTime) {
+              continue;
+            }
             totalBreakMinutes +=
               (new Date(next.datetime).getTime() -
                 new Date(curr.datetime).getTime()) /

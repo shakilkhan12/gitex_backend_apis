@@ -11,42 +11,54 @@ type SentimentCounts = {
 
 class DashboardService {
   public static getDashboardData = async () => {
-    const now = new Date();
-    const todayStart = startOfDay(now);
-    const todayEnd = endOfDay(now);
+    try {
+      const now = new Date();
+      const todayStart = startOfDay(now);
+      const todayEnd = endOfDay(now);
 
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(now.getDate() - 6);
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(now.getDate() - 6);
 
-    // Parallelize independent queries for performance
-    const [
-      officeCheckins,
-      parkCheckins,
-      officeAttendance,
-      parkAttendance,
-      parksSmokingDetectionToday,
-      parksIntrusionDetectionToday,
-      parkFootfallMale,
-      parkFootfallFemale,
-      officeFootfallMale,
-      officeFootfallFemale,
-      footfallSummary,
-      litterDetectionSummary,
-      parksSentimentAnalysisToday,
-      officesSentimentAnalysisToday,
-    ] = await Promise.all([
+    // Execute queries in batches to avoid connection pool exhaustion
+    console.log('🔄 Starting dashboard data fetch...');
+    
+    // Batch 1: Basic check-ins and attendance
+    const [officeCheckins, parkCheckins, officeAttendance, parkAttendance] = await Promise.all([
       getOfficeCheckins(todayStart, todayEnd),
       getParkCheckins(todayStart, todayEnd),
       getOfficeAttendance(todayStart, todayEnd),
       getParkAttendance(todayStart, todayEnd),
+    ]);
+    console.log('✅ Batch 1 completed: check-ins and attendance');
+
+    // Batch 2: Detection data
+    const [parksSmokingDetectionToday, parksIntrusionDetectionToday] = await Promise.all([
       getParksSmokingDetection(todayStart, todayEnd),
       getParksIntrusionDetection(todayStart, todayEnd),
+    ]);
+    console.log('✅ Batch 2 completed: detection data');
+
+    // Batch 3: Footfall data
+    const [parkFootfallMale, parkFootfallFemale, officeFootfallMale, officeFootfallFemale] = await Promise.all([
       getFootfall("parks", "Male.", sevenDaysAgo, now),
       getFootfall("parks", "Female.", sevenDaysAgo, now),
       getFootfall("offices", "Male.", sevenDaysAgo, now),
       getFootfall("offices", "Female.", sevenDaysAgo, now),
-      getFootfallSummary(now),
+    ]);
+    console.log('✅ Batch 3 completed: footfall data');
+
+    // Batch 4: Summary data
+    const [footfallSummary, zoneUsageSummary, litterDetectionSummary, violationSummary] = await Promise.all([
+      getFootfallSummary(sevenDaysAgo, now),
+      getZoneUsage(sevenDaysAgo, now),
       getLitterDetection(now),
+      getViolationSummary(sevenDaysAgo, now),
+    ]);
+    console.log('✅ Batch 4 completed: summary data');
+
+    // Batch 5: Final data
+    const [landscapingData, parksSentimentAnalysisToday, officesSentimentAnalysisToday] = await Promise.all([
+      getLandscaping(sevenDaysAgo, now),
       getSentimentAnalysis("parks", {
         where: {
           check_in_date: {
@@ -64,6 +76,7 @@ class DashboardService {
         },
       }),
     ]);
+    console.log('✅ Batch 5 completed: landscaping and sentiment data');
     // Sentiment percentages
     const allCheckins = [
       ...officeCheckins.map((item) => ({ ...item, type: "office" })),
@@ -132,16 +145,100 @@ class DashboardService {
         footfallFemaleVisitorPercentage,
       },
       footfallSummary,
+      zoneUsageSummary,
       litterDetectionSummary,
       sentimentAnalysisToday,
+      violationSummary,
+      landscapingData,
     };
+    } catch (error:any) {
+      console.error('❌ Dashboard service error:', error);
+      throw new Error(`Dashboard data fetch failed: ${error.message || 'Unknown error'}`);
+    }
   };
 }
 
-// --- Helper Functions ---
-
 function percent(count: number, total: number) {
   return total > 0 ? Math.round((count / total) * 100) : 0;
+}
+
+async function getLandscaping(sevenDaysAgo: Date, now: Date) {
+  const landscapingRecords = await db.landscaping.findMany({
+    where: {
+      createdAt: { gte: sevenDaysAgo, lte: now },
+      assinged_to: {
+        not: null,
+      },
+    },
+    include: {
+      assignedUser: {
+        select: {
+          emp__eng_name: true,
+          dep_eng_name: true,
+        },
+      },
+      parks: {
+        select: {
+          park_english_name: true,
+        },
+      },
+    },
+  });
+
+  return landscapingRecords.map((record) => ({
+    id: record.id,
+    name: record.name || null,
+    avatar: record.image || null,
+    location: record.parks?.park_english_name || null,
+    plantType: record.plant_type || null,
+    status: record.current_status || null,
+    incharge: record.assinged_to
+      ? record.assignedUser?.emp__eng_name || null
+      : null,
+    createdAt: record.createdAt || null,
+  }));
+}
+
+async function getViolationSummary(sevenDaysAgo: Date, now: Date) {
+  // Execute queries sequentially to avoid connection pool exhaustion
+  const smokingDetections = await db.parks_smoking_detection.findMany({
+    where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+  });
+  
+  const litterDetections = await db.parks_litter_detection.findMany({
+    where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+  });
+  
+  const intrusionDetections = await db.parks_intrusion_detection.findMany({
+    where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+  });
+  
+  const behaviourDetections = await db.parks_behaviour_alerts.findMany({
+    where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+  });
+
+  const counts = {
+    smoking: smokingDetections.length,
+    litter: litterDetections.length,
+    intrusion: intrusionDetections.length,
+    behavior: behaviourDetections.length,
+  };
+
+  const total =
+    counts.smoking + counts.litter + counts.intrusion + counts.behavior;
+
+  const percentages = {
+    smoking: total > 0 ? Math.round((counts.smoking / total) * 100) : 0,
+    litter: total > 0 ? Math.round((counts.litter / total) * 100) : 0,
+    intrusion: total > 0 ? Math.round((counts.intrusion / total) * 100) : 0,
+    behavior: total > 0 ? Math.round((counts.behavior / total) * 100) : 0,
+  };
+
+  return {
+    counts,
+    percentages,
+    total,
+  };
 }
 
 function countSentiments(checkins: any[]): SentimentCounts {
@@ -157,6 +254,84 @@ function countSentiments(checkins: any[]): SentimentCounts {
     },
     { happy: 0, neutral: 0, sad: 0, angry: 0, total: 0 }
   );
+}
+
+async function getZoneUsage(sevenDaysAgo: Date, now: Date) {
+  const results = await db.landscaping.findMany({
+    where: {
+      createdAt: { gte: sevenDaysAgo, lte: now },
+    },
+    select: {
+      plant_type: true,
+      createdAt: true,
+    },
+  });
+
+  const plantDaily: Array<{ date: string; count: number }> = [];
+  const grossDaily: Array<{ date: string; count: number }> = [];
+
+  function formatDate(d: Date) {
+    return (
+      d.getFullYear() +
+      "-" +
+      String(d.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(d.getDate()).padStart(2, "0")
+    );
+  }
+
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(sevenDaysAgo);
+    day.setDate(sevenDaysAgo.getDate() + i);
+
+    const dayStart = new Date(day);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(day);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const plantCount = results.filter(
+      (row) =>
+        row.createdAt &&
+        new Date(row.createdAt) >= dayStart &&
+        new Date(row.createdAt) <= dayEnd &&
+        row.plant_type === "Plant"
+    ).length;
+
+    const grossCount = results.filter(
+      (row) =>
+        row.createdAt &&
+        new Date(row.createdAt) >= dayStart &&
+        new Date(row.createdAt) <= dayEnd &&
+        row.plant_type !== "Plant"
+    ).length;
+
+    plantDaily.push({
+      date: formatDate(dayStart),
+      count: plantCount,
+    });
+
+    grossDaily.push({
+      date: formatDate(dayStart),
+      count: grossCount,
+    });
+  }
+
+  const totalPlant = results.filter((row) => row.plant_type === "Plant").length;
+  const totalGross = results.filter((row) => row.plant_type !== "Plant").length;
+  const total = totalPlant + totalGross;
+
+  return {
+    total: {
+      plant: totalPlant,
+      gross: totalGross,
+      total: total,
+    },
+    daily: {
+      plant: plantDaily,
+      gross: grossDaily,
+    },
+    totalPercentage: percent(total, total),
+  };
 }
 
 function getSentimentPercentages(sentimentCounts: SentimentCounts) {
@@ -238,10 +413,7 @@ async function getLitterDetection(now: Date) {
   return { total, daily };
 }
 
-async function getFootfallSummary(now: Date) {
-  const sevenDaysAgo = new Date(now);
-  sevenDaysAgo.setDate(now.getDate() - 6);
-
+async function getFootfallSummary(sevenDaysAgo: Date, now: Date) {
   const localStart = new Date(
     sevenDaysAgo.getFullYear(),
     sevenDaysAgo.getMonth(),
@@ -316,6 +488,7 @@ async function getParkCheckins(todayStart: Date, todayEnd: Date) {
       person_Id: true,
       check_in_sentiment: true,
       check_out_sentiment: true,
+      check_in_date: true,
     },
   });
 }
@@ -438,6 +611,7 @@ async function mapSentimentWithEmpId(sentiments: any[]) {
       person_image: sentiment.person_image,
       sentiment_of: sentiment.sentiment_of,
       check_in_time: sentiment.check_in_time,
+      check_in_date: sentiment.check_in_date,
     };
   });
 }

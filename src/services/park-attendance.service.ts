@@ -272,26 +272,88 @@ class ParkAttendanceService {
         let totalBreakMinutes = 0;
         const now = new Date();
 
+        // If user never checked OUT, cap the last working period at 15:30 (3:30pm) of the same day
+        // This prevents working hours from running until "now" if OUT is missing
+
+        // Find the date of the first event (assume all events are for the same day)
+        let attendanceDay: Date | null = null;
+        if (allEvents.length > 0) {
+          // Use the date part of the first IN or OUT event
+          const firstEventDate = new Date(allEvents[0].datetime);
+          attendanceDay = new Date(
+            firstEventDate.getFullYear(),
+            firstEventDate.getMonth(),
+            firstEventDate.getDate()
+          );
+        }
+
+        // Set the default OUT time as 15:30 (3:30pm) on the attendance day
+        let defaultOutDate: Date | null = null;
+        if (attendanceDay) {
+          defaultOutDate = new Date(attendanceDay);
+          defaultOutDate.setHours(15, 30, 0, 0); // 15:30:00.000
+        }
+
         for (let i = 0; i < allEvents.length; i++) {
           const curr = allEvents[i];
           const next = allEvents[i + 1];
 
           if (curr.type === "IN") {
+            // Calculate the 15:30 (3:30pm) cutoff for this day
+            let cutoffTime: Date | null = null;
+            if (curr.datetime) {
+              const currDate = new Date(curr.datetime);
+              cutoffTime = new Date(
+                currDate.getFullYear(),
+                currDate.getMonth(),
+                currDate.getDate(),
+                15, 30, 0, 0
+              );
+            }
+
+            // If IN is after 15:30, skip this IN event for working minutes
+            if (cutoffTime && new Date(curr.datetime) >= cutoffTime) {
+              continue;
+            }
+
             if (next && next.type === "OUT") {
-              // IN → OUT = working
+              // If OUT is after 15:30, cap at 15:30
+              let outTime = new Date(next.datetime);
+              if (cutoffTime && outTime > cutoffTime) {
+                outTime = cutoffTime;
+              }
               totalWorkingMinutes +=
-                (new Date(next.datetime).getTime() -
-                  new Date(curr.datetime).getTime()) /
-                60000;
+                (outTime.getTime() - new Date(curr.datetime).getTime()) / 60000;
             } else if (!next) {
-              // last IN without OUT → till now
+              // No OUT after this IN, cap at 15:30 or now, whichever is earlier
+              let outTime = now;
+              if (defaultOutDate) {
+                outTime = now > defaultOutDate ? defaultOutDate : now;
+              }
+              // Also cap at 15:30 if needed
+              if (cutoffTime && outTime > cutoffTime) {
+                outTime = cutoffTime;
+              }
               totalWorkingMinutes +=
-                (now.getTime() - new Date(curr.datetime).getTime()) / 60000;
+                (outTime.getTime() - new Date(curr.datetime).getTime()) / 60000;
             }
           }
 
           if (curr.type === "OUT" && next && next.type === "IN") {
-            // OUT → next IN = break
+            // For break calculation, only count if next IN is before 15:30
+            let cutoffTime: Date | null = null;
+            if (next.datetime) {
+              const nextDate = new Date(next.datetime);
+              cutoffTime = new Date(
+                nextDate.getFullYear(),
+                nextDate.getMonth(),
+                nextDate.getDate(),
+                15, 30, 0, 0
+              );
+            }
+            if (cutoffTime && new Date(next.datetime) >= cutoffTime) {
+              continue;
+            }
             totalBreakMinutes +=
               (new Date(next.datetime).getTime() -
                 new Date(curr.datetime).getTime()) /
