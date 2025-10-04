@@ -138,8 +138,6 @@ class QMSService {
           processing_end_time: updateData.processing_end_time,
           waiting_time: updateData.waiting_time,
           total_processing_time: updateData.total_processing_time,
-          exit_date: "2025-09-17",
-          exit_time: "09:00:00",
           exit_date: updateData.exit_date || '',
           exit_time: updateData.exit_time || '',
           status: "Completed",
