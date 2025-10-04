@@ -32,6 +32,7 @@ class DashboardService {
       officeFootfallFemale,
       footfallSummary,
       litterDetectionSummary,
+      violationSummary,
       parksSentimentAnalysisToday,
       officesSentimentAnalysisToday,
     ] = await Promise.all([
@@ -45,8 +46,9 @@ class DashboardService {
       getFootfall("parks", "Female.", sevenDaysAgo, now),
       getFootfall("offices", "Male.", sevenDaysAgo, now),
       getFootfall("offices", "Female.", sevenDaysAgo, now),
-      getFootfallSummary(now),
+      getFootfallSummary(sevenDaysAgo, now),
       getLitterDetection(now),
+      getViolationSummary(sevenDaysAgo, now),
       getSentimentAnalysis("parks", {
         where: {
           check_in_date: {
@@ -134,6 +136,7 @@ class DashboardService {
       footfallSummary,
       litterDetectionSummary,
       sentimentAnalysisToday,
+      violationSummary,
     };
   };
 }
@@ -142,6 +145,52 @@ class DashboardService {
 
 function percent(count: number, total: number) {
   return total > 0 ? Math.round((count / total) * 100) : 0;
+}
+
+// get violation summary last 7 days from intrusion, behavior, litter and smoking detection park and office
+async function getViolationSummary(sevenDaysAgo: Date, now: Date) {
+  const [
+    smokingDetections,
+    litterDetections,
+    intrusionDetections,
+    behaviourDetections,
+  ] = await Promise.all([
+    db.parks_smoking_detection.findMany({
+      where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+    }),
+    db.parks_litter_detection.findMany({
+      where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+    }),
+    db.parks_intrusion_detection.findMany({
+      where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+    }),
+    db.parks_behaviour_alerts.findMany({
+      where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+    }),
+  ]);
+
+  const counts = {
+    smoking: smokingDetections.length,
+    litter: litterDetections.length,
+    intrusion: intrusionDetections.length,
+    behavior: behaviourDetections.length,
+  };
+
+  const total =
+    counts.smoking + counts.litter + counts.intrusion + counts.behavior;
+
+  const percentages = {
+    smoking: total > 0 ? Math.round((counts.smoking / total) * 100) : 0,
+    litter: total > 0 ? Math.round((counts.litter / total) * 100) : 0,
+    intrusion: total > 0 ? Math.round((counts.intrusion / total) * 100) : 0,
+    behavior: total > 0 ? Math.round((counts.behavior / total) * 100) : 0,
+  };
+
+  return {
+    counts,
+    percentages,
+    total,
+  };
 }
 
 function countSentiments(checkins: any[]): SentimentCounts {
@@ -238,10 +287,7 @@ async function getLitterDetection(now: Date) {
   return { total, daily };
 }
 
-async function getFootfallSummary(now: Date) {
-  const sevenDaysAgo = new Date(now);
-  sevenDaysAgo.setDate(now.getDate() - 6);
-
+async function getFootfallSummary(sevenDaysAgo: Date, now: Date) {
   const localStart = new Date(
     sevenDaysAgo.getFullYear(),
     sevenDaysAgo.getMonth(),
