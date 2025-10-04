@@ -119,6 +119,28 @@ class LandscapingController extends LandscapingService {
          next(error)
       }
    }
+
+   public static testingLandscaping = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const { images } = req.body;
+         
+         if (!images || !Array.isArray(images) || images.length === 0) {
+            return res.status(STATUS.BAD_REQUEST).json({
+               success: false,
+               message: "Images array is required and must not be empty"
+            });
+         }
+
+         const result = await LandscapingService.testingLandscapingService(images);
+         return res.status(STATUS.SUCCESS).json({
+            success: true,
+            message: "Testing landscaping completed successfully",
+            data: result
+         });
+      } catch (error) {
+         next(error)
+      }
+   }
 }
 
 export default LandscapingController; 

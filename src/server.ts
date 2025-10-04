@@ -28,18 +28,19 @@ const allowedOrigins = process.env.NODE_ENV === 'production'?[
   
 ]:['http://localhost:3000','http://localhost:5000','http://localhost:4000','https://10.70.90.183:443','https://10.70.90.183', 'http://10.70.90.9:3000','https://10.70.90.9:3000', 'http://83.111.75.163:3000', 'https://83.111.75.163:3000']
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+// app.use(cors({
+//   origin: allowedOrigins,
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+// }));
+app.use(cors());
 
 app.options('*', cors());
 
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 // Apply CSP to all routes except Swagger UI
 app.use((req, res, next) => {
   if (req.path.startsWith('/api-docs')) {

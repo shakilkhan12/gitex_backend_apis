@@ -168,6 +168,11 @@ export type landscaping_history = $Result.DefaultSelection<Prisma.$landscaping_h
  * 
  */
 export type qms_history = $Result.DefaultSelection<Prisma.$qms_historyPayload>
+/**
+ * Model testing_modules
+ * 
+ */
+export type testing_modules = $Result.DefaultSelection<Prisma.$testing_modulesPayload>
 
 /**
  * Enums
@@ -625,6 +630,16 @@ export class PrismaClient<
     * ```
     */
   get qms_history(): Prisma.qms_historyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.testing_modules`: Exposes CRUD operations for the **testing_modules** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Testing_modules
+    * const testing_modules = await prisma.testing_modules.findMany()
+    * ```
+    */
+  get testing_modules(): Prisma.testing_modulesDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1095,7 +1110,8 @@ export namespace Prisma {
     FAQ: 'FAQ',
     landscaping: 'landscaping',
     landscaping_history: 'landscaping_history',
-    qms_history: 'qms_history'
+    qms_history: 'qms_history',
+    testing_modules: 'testing_modules'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1114,7 +1130,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "access_secret" | "live_stream_favourites" | "office_streams" | "offices" | "offices_attendance" | "offices_cameras" | "offices_sentiment_analysis" | "park_cameras" | "park_streams" | "park_zones" | "parks_zones_job_history" | "parks" | "parks_attendance" | "parks_behaviour_alerts" | "parks_intrusion_detection" | "parks_irrigation_job_history" | "parks_litter_detection" | "ticket_details_table" | "parks_sentiment_analysis" | "parks_smoking_detection" | "intranet_posting_history" | "users" | "users_permissions" | "users_roles" | "parks_footfall_analysis" | "offices_footfall_analysis" | "termsPrivacy" | "fAQ" | "landscaping" | "landscaping_history" | "qms_history"
+      modelProps: "access_secret" | "live_stream_favourites" | "office_streams" | "offices" | "offices_attendance" | "offices_cameras" | "offices_sentiment_analysis" | "park_cameras" | "park_streams" | "park_zones" | "parks_zones_job_history" | "parks" | "parks_attendance" | "parks_behaviour_alerts" | "parks_intrusion_detection" | "parks_irrigation_job_history" | "parks_litter_detection" | "ticket_details_table" | "parks_sentiment_analysis" | "parks_smoking_detection" | "intranet_posting_history" | "users" | "users_permissions" | "users_roles" | "parks_footfall_analysis" | "offices_footfall_analysis" | "termsPrivacy" | "fAQ" | "landscaping" | "landscaping_history" | "qms_history" | "testing_modules"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3164,6 +3180,72 @@ export namespace Prisma {
           }
         }
       }
+      testing_modules: {
+        payload: Prisma.$testing_modulesPayload<ExtArgs>
+        fields: Prisma.testing_modulesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.testing_modulesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$testing_modulesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.testing_modulesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$testing_modulesPayload>
+          }
+          findFirst: {
+            args: Prisma.testing_modulesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$testing_modulesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.testing_modulesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$testing_modulesPayload>
+          }
+          findMany: {
+            args: Prisma.testing_modulesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$testing_modulesPayload>[]
+          }
+          create: {
+            args: Prisma.testing_modulesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$testing_modulesPayload>
+          }
+          createMany: {
+            args: Prisma.testing_modulesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.testing_modulesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$testing_modulesPayload>
+          }
+          update: {
+            args: Prisma.testing_modulesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$testing_modulesPayload>
+          }
+          deleteMany: {
+            args: Prisma.testing_modulesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.testing_modulesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.testing_modulesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$testing_modulesPayload>
+          }
+          aggregate: {
+            args: Prisma.Testing_modulesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTesting_modules>
+          }
+          groupBy: {
+            args: Prisma.testing_modulesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Testing_modulesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.testing_modulesCountArgs<ExtArgs>
+            result: $Utils.Optional<Testing_modulesCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3291,6 +3373,7 @@ export namespace Prisma {
     landscaping?: landscapingOmit
     landscaping_history?: landscaping_historyOmit
     qms_history?: qms_historyOmit
+    testing_modules?: testing_modulesOmit
   }
 
   /* Types for Logging */
@@ -39238,6 +39321,1043 @@ export namespace Prisma {
 
 
   /**
+   * Model testing_modules
+   */
+
+  export type AggregateTesting_modules = {
+    _count: Testing_modulesCountAggregateOutputType | null
+    _avg: Testing_modulesAvgAggregateOutputType | null
+    _sum: Testing_modulesSumAggregateOutputType | null
+    _min: Testing_modulesMinAggregateOutputType | null
+    _max: Testing_modulesMaxAggregateOutputType | null
+  }
+
+  export type Testing_modulesAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Testing_modulesSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Testing_modulesMinAggregateOutputType = {
+    id: number | null
+    image: string | null
+    name: string | null
+    case_type: string | null
+    estimated_height: string | null
+    needs_cutting: boolean | null
+    recommendation_note: string | null
+    gallons_required_estimate: string | null
+    calculation_note: string | null
+    health: string | null
+    suggestion: string | null
+    status: string | null
+    confidence_score: string | null
+    rationale: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Testing_modulesMaxAggregateOutputType = {
+    id: number | null
+    image: string | null
+    name: string | null
+    case_type: string | null
+    estimated_height: string | null
+    needs_cutting: boolean | null
+    recommendation_note: string | null
+    gallons_required_estimate: string | null
+    calculation_note: string | null
+    health: string | null
+    suggestion: string | null
+    status: string | null
+    confidence_score: string | null
+    rationale: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Testing_modulesCountAggregateOutputType = {
+    id: number
+    image: number
+    name: number
+    case_type: number
+    estimated_height: number
+    needs_cutting: number
+    recommendation_note: number
+    gallons_required_estimate: number
+    calculation_note: number
+    health: number
+    suggestion: number
+    status: number
+    confidence_score: number
+    rationale: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type Testing_modulesAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type Testing_modulesSumAggregateInputType = {
+    id?: true
+  }
+
+  export type Testing_modulesMinAggregateInputType = {
+    id?: true
+    image?: true
+    name?: true
+    case_type?: true
+    estimated_height?: true
+    needs_cutting?: true
+    recommendation_note?: true
+    gallons_required_estimate?: true
+    calculation_note?: true
+    health?: true
+    suggestion?: true
+    status?: true
+    confidence_score?: true
+    rationale?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Testing_modulesMaxAggregateInputType = {
+    id?: true
+    image?: true
+    name?: true
+    case_type?: true
+    estimated_height?: true
+    needs_cutting?: true
+    recommendation_note?: true
+    gallons_required_estimate?: true
+    calculation_note?: true
+    health?: true
+    suggestion?: true
+    status?: true
+    confidence_score?: true
+    rationale?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Testing_modulesCountAggregateInputType = {
+    id?: true
+    image?: true
+    name?: true
+    case_type?: true
+    estimated_height?: true
+    needs_cutting?: true
+    recommendation_note?: true
+    gallons_required_estimate?: true
+    calculation_note?: true
+    health?: true
+    suggestion?: true
+    status?: true
+    confidence_score?: true
+    rationale?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type Testing_modulesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which testing_modules to aggregate.
+     */
+    where?: testing_modulesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of testing_modules to fetch.
+     */
+    orderBy?: testing_modulesOrderByWithRelationInput | testing_modulesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: testing_modulesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` testing_modules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` testing_modules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned testing_modules
+    **/
+    _count?: true | Testing_modulesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Testing_modulesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Testing_modulesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Testing_modulesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Testing_modulesMaxAggregateInputType
+  }
+
+  export type GetTesting_modulesAggregateType<T extends Testing_modulesAggregateArgs> = {
+        [P in keyof T & keyof AggregateTesting_modules]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTesting_modules[P]>
+      : GetScalarType<T[P], AggregateTesting_modules[P]>
+  }
+
+
+
+
+  export type testing_modulesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: testing_modulesWhereInput
+    orderBy?: testing_modulesOrderByWithAggregationInput | testing_modulesOrderByWithAggregationInput[]
+    by: Testing_modulesScalarFieldEnum[] | Testing_modulesScalarFieldEnum
+    having?: testing_modulesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Testing_modulesCountAggregateInputType | true
+    _avg?: Testing_modulesAvgAggregateInputType
+    _sum?: Testing_modulesSumAggregateInputType
+    _min?: Testing_modulesMinAggregateInputType
+    _max?: Testing_modulesMaxAggregateInputType
+  }
+
+  export type Testing_modulesGroupByOutputType = {
+    id: number
+    image: string | null
+    name: string | null
+    case_type: string | null
+    estimated_height: string | null
+    needs_cutting: boolean | null
+    recommendation_note: string | null
+    gallons_required_estimate: string | null
+    calculation_note: string | null
+    health: string | null
+    suggestion: string | null
+    status: string | null
+    confidence_score: string | null
+    rationale: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: Testing_modulesCountAggregateOutputType | null
+    _avg: Testing_modulesAvgAggregateOutputType | null
+    _sum: Testing_modulesSumAggregateOutputType | null
+    _min: Testing_modulesMinAggregateOutputType | null
+    _max: Testing_modulesMaxAggregateOutputType | null
+  }
+
+  type GetTesting_modulesGroupByPayload<T extends testing_modulesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Testing_modulesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Testing_modulesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Testing_modulesGroupByOutputType[P]>
+            : GetScalarType<T[P], Testing_modulesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type testing_modulesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    image?: boolean
+    name?: boolean
+    case_type?: boolean
+    estimated_height?: boolean
+    needs_cutting?: boolean
+    recommendation_note?: boolean
+    gallons_required_estimate?: boolean
+    calculation_note?: boolean
+    health?: boolean
+    suggestion?: boolean
+    status?: boolean
+    confidence_score?: boolean
+    rationale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["testing_modules"]>
+
+
+
+  export type testing_modulesSelectScalar = {
+    id?: boolean
+    image?: boolean
+    name?: boolean
+    case_type?: boolean
+    estimated_height?: boolean
+    needs_cutting?: boolean
+    recommendation_note?: boolean
+    gallons_required_estimate?: boolean
+    calculation_note?: boolean
+    health?: boolean
+    suggestion?: boolean
+    status?: boolean
+    confidence_score?: boolean
+    rationale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type testing_modulesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "image" | "name" | "case_type" | "estimated_height" | "needs_cutting" | "recommendation_note" | "gallons_required_estimate" | "calculation_note" | "health" | "suggestion" | "status" | "confidence_score" | "rationale" | "createdAt" | "updatedAt", ExtArgs["result"]["testing_modules"]>
+
+  export type $testing_modulesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "testing_modules"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      image: string | null
+      name: string | null
+      case_type: string | null
+      estimated_height: string | null
+      needs_cutting: boolean | null
+      recommendation_note: string | null
+      gallons_required_estimate: string | null
+      calculation_note: string | null
+      health: string | null
+      suggestion: string | null
+      status: string | null
+      confidence_score: string | null
+      rationale: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["testing_modules"]>
+    composites: {}
+  }
+
+  type testing_modulesGetPayload<S extends boolean | null | undefined | testing_modulesDefaultArgs> = $Result.GetResult<Prisma.$testing_modulesPayload, S>
+
+  type testing_modulesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<testing_modulesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Testing_modulesCountAggregateInputType | true
+    }
+
+  export interface testing_modulesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['testing_modules'], meta: { name: 'testing_modules' } }
+    /**
+     * Find zero or one Testing_modules that matches the filter.
+     * @param {testing_modulesFindUniqueArgs} args - Arguments to find a Testing_modules
+     * @example
+     * // Get one Testing_modules
+     * const testing_modules = await prisma.testing_modules.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends testing_modulesFindUniqueArgs>(args: SelectSubset<T, testing_modulesFindUniqueArgs<ExtArgs>>): Prisma__testing_modulesClient<$Result.GetResult<Prisma.$testing_modulesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Testing_modules that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {testing_modulesFindUniqueOrThrowArgs} args - Arguments to find a Testing_modules
+     * @example
+     * // Get one Testing_modules
+     * const testing_modules = await prisma.testing_modules.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends testing_modulesFindUniqueOrThrowArgs>(args: SelectSubset<T, testing_modulesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__testing_modulesClient<$Result.GetResult<Prisma.$testing_modulesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Testing_modules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {testing_modulesFindFirstArgs} args - Arguments to find a Testing_modules
+     * @example
+     * // Get one Testing_modules
+     * const testing_modules = await prisma.testing_modules.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends testing_modulesFindFirstArgs>(args?: SelectSubset<T, testing_modulesFindFirstArgs<ExtArgs>>): Prisma__testing_modulesClient<$Result.GetResult<Prisma.$testing_modulesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Testing_modules that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {testing_modulesFindFirstOrThrowArgs} args - Arguments to find a Testing_modules
+     * @example
+     * // Get one Testing_modules
+     * const testing_modules = await prisma.testing_modules.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends testing_modulesFindFirstOrThrowArgs>(args?: SelectSubset<T, testing_modulesFindFirstOrThrowArgs<ExtArgs>>): Prisma__testing_modulesClient<$Result.GetResult<Prisma.$testing_modulesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Testing_modules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {testing_modulesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Testing_modules
+     * const testing_modules = await prisma.testing_modules.findMany()
+     * 
+     * // Get first 10 Testing_modules
+     * const testing_modules = await prisma.testing_modules.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const testing_modulesWithIdOnly = await prisma.testing_modules.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends testing_modulesFindManyArgs>(args?: SelectSubset<T, testing_modulesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$testing_modulesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Testing_modules.
+     * @param {testing_modulesCreateArgs} args - Arguments to create a Testing_modules.
+     * @example
+     * // Create one Testing_modules
+     * const Testing_modules = await prisma.testing_modules.create({
+     *   data: {
+     *     // ... data to create a Testing_modules
+     *   }
+     * })
+     * 
+     */
+    create<T extends testing_modulesCreateArgs>(args: SelectSubset<T, testing_modulesCreateArgs<ExtArgs>>): Prisma__testing_modulesClient<$Result.GetResult<Prisma.$testing_modulesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Testing_modules.
+     * @param {testing_modulesCreateManyArgs} args - Arguments to create many Testing_modules.
+     * @example
+     * // Create many Testing_modules
+     * const testing_modules = await prisma.testing_modules.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends testing_modulesCreateManyArgs>(args?: SelectSubset<T, testing_modulesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Testing_modules.
+     * @param {testing_modulesDeleteArgs} args - Arguments to delete one Testing_modules.
+     * @example
+     * // Delete one Testing_modules
+     * const Testing_modules = await prisma.testing_modules.delete({
+     *   where: {
+     *     // ... filter to delete one Testing_modules
+     *   }
+     * })
+     * 
+     */
+    delete<T extends testing_modulesDeleteArgs>(args: SelectSubset<T, testing_modulesDeleteArgs<ExtArgs>>): Prisma__testing_modulesClient<$Result.GetResult<Prisma.$testing_modulesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Testing_modules.
+     * @param {testing_modulesUpdateArgs} args - Arguments to update one Testing_modules.
+     * @example
+     * // Update one Testing_modules
+     * const testing_modules = await prisma.testing_modules.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends testing_modulesUpdateArgs>(args: SelectSubset<T, testing_modulesUpdateArgs<ExtArgs>>): Prisma__testing_modulesClient<$Result.GetResult<Prisma.$testing_modulesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Testing_modules.
+     * @param {testing_modulesDeleteManyArgs} args - Arguments to filter Testing_modules to delete.
+     * @example
+     * // Delete a few Testing_modules
+     * const { count } = await prisma.testing_modules.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends testing_modulesDeleteManyArgs>(args?: SelectSubset<T, testing_modulesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Testing_modules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {testing_modulesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Testing_modules
+     * const testing_modules = await prisma.testing_modules.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends testing_modulesUpdateManyArgs>(args: SelectSubset<T, testing_modulesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Testing_modules.
+     * @param {testing_modulesUpsertArgs} args - Arguments to update or create a Testing_modules.
+     * @example
+     * // Update or create a Testing_modules
+     * const testing_modules = await prisma.testing_modules.upsert({
+     *   create: {
+     *     // ... data to create a Testing_modules
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Testing_modules we want to update
+     *   }
+     * })
+     */
+    upsert<T extends testing_modulesUpsertArgs>(args: SelectSubset<T, testing_modulesUpsertArgs<ExtArgs>>): Prisma__testing_modulesClient<$Result.GetResult<Prisma.$testing_modulesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Testing_modules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {testing_modulesCountArgs} args - Arguments to filter Testing_modules to count.
+     * @example
+     * // Count the number of Testing_modules
+     * const count = await prisma.testing_modules.count({
+     *   where: {
+     *     // ... the filter for the Testing_modules we want to count
+     *   }
+     * })
+    **/
+    count<T extends testing_modulesCountArgs>(
+      args?: Subset<T, testing_modulesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Testing_modulesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Testing_modules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Testing_modulesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Testing_modulesAggregateArgs>(args: Subset<T, Testing_modulesAggregateArgs>): Prisma.PrismaPromise<GetTesting_modulesAggregateType<T>>
+
+    /**
+     * Group by Testing_modules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {testing_modulesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends testing_modulesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: testing_modulesGroupByArgs['orderBy'] }
+        : { orderBy?: testing_modulesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, testing_modulesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTesting_modulesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the testing_modules model
+   */
+  readonly fields: testing_modulesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for testing_modules.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__testing_modulesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the testing_modules model
+   */
+  interface testing_modulesFieldRefs {
+    readonly id: FieldRef<"testing_modules", 'Int'>
+    readonly image: FieldRef<"testing_modules", 'String'>
+    readonly name: FieldRef<"testing_modules", 'String'>
+    readonly case_type: FieldRef<"testing_modules", 'String'>
+    readonly estimated_height: FieldRef<"testing_modules", 'String'>
+    readonly needs_cutting: FieldRef<"testing_modules", 'Boolean'>
+    readonly recommendation_note: FieldRef<"testing_modules", 'String'>
+    readonly gallons_required_estimate: FieldRef<"testing_modules", 'String'>
+    readonly calculation_note: FieldRef<"testing_modules", 'String'>
+    readonly health: FieldRef<"testing_modules", 'String'>
+    readonly suggestion: FieldRef<"testing_modules", 'String'>
+    readonly status: FieldRef<"testing_modules", 'String'>
+    readonly confidence_score: FieldRef<"testing_modules", 'String'>
+    readonly rationale: FieldRef<"testing_modules", 'String'>
+    readonly createdAt: FieldRef<"testing_modules", 'DateTime'>
+    readonly updatedAt: FieldRef<"testing_modules", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * testing_modules findUnique
+   */
+  export type testing_modulesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+    /**
+     * Filter, which testing_modules to fetch.
+     */
+    where: testing_modulesWhereUniqueInput
+  }
+
+  /**
+   * testing_modules findUniqueOrThrow
+   */
+  export type testing_modulesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+    /**
+     * Filter, which testing_modules to fetch.
+     */
+    where: testing_modulesWhereUniqueInput
+  }
+
+  /**
+   * testing_modules findFirst
+   */
+  export type testing_modulesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+    /**
+     * Filter, which testing_modules to fetch.
+     */
+    where?: testing_modulesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of testing_modules to fetch.
+     */
+    orderBy?: testing_modulesOrderByWithRelationInput | testing_modulesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for testing_modules.
+     */
+    cursor?: testing_modulesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` testing_modules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` testing_modules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of testing_modules.
+     */
+    distinct?: Testing_modulesScalarFieldEnum | Testing_modulesScalarFieldEnum[]
+  }
+
+  /**
+   * testing_modules findFirstOrThrow
+   */
+  export type testing_modulesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+    /**
+     * Filter, which testing_modules to fetch.
+     */
+    where?: testing_modulesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of testing_modules to fetch.
+     */
+    orderBy?: testing_modulesOrderByWithRelationInput | testing_modulesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for testing_modules.
+     */
+    cursor?: testing_modulesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` testing_modules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` testing_modules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of testing_modules.
+     */
+    distinct?: Testing_modulesScalarFieldEnum | Testing_modulesScalarFieldEnum[]
+  }
+
+  /**
+   * testing_modules findMany
+   */
+  export type testing_modulesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+    /**
+     * Filter, which testing_modules to fetch.
+     */
+    where?: testing_modulesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of testing_modules to fetch.
+     */
+    orderBy?: testing_modulesOrderByWithRelationInput | testing_modulesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing testing_modules.
+     */
+    cursor?: testing_modulesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` testing_modules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` testing_modules.
+     */
+    skip?: number
+    distinct?: Testing_modulesScalarFieldEnum | Testing_modulesScalarFieldEnum[]
+  }
+
+  /**
+   * testing_modules create
+   */
+  export type testing_modulesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+    /**
+     * The data needed to create a testing_modules.
+     */
+    data: XOR<testing_modulesCreateInput, testing_modulesUncheckedCreateInput>
+  }
+
+  /**
+   * testing_modules createMany
+   */
+  export type testing_modulesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many testing_modules.
+     */
+    data: testing_modulesCreateManyInput | testing_modulesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * testing_modules update
+   */
+  export type testing_modulesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+    /**
+     * The data needed to update a testing_modules.
+     */
+    data: XOR<testing_modulesUpdateInput, testing_modulesUncheckedUpdateInput>
+    /**
+     * Choose, which testing_modules to update.
+     */
+    where: testing_modulesWhereUniqueInput
+  }
+
+  /**
+   * testing_modules updateMany
+   */
+  export type testing_modulesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update testing_modules.
+     */
+    data: XOR<testing_modulesUpdateManyMutationInput, testing_modulesUncheckedUpdateManyInput>
+    /**
+     * Filter which testing_modules to update
+     */
+    where?: testing_modulesWhereInput
+    /**
+     * Limit how many testing_modules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * testing_modules upsert
+   */
+  export type testing_modulesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+    /**
+     * The filter to search for the testing_modules to update in case it exists.
+     */
+    where: testing_modulesWhereUniqueInput
+    /**
+     * In case the testing_modules found by the `where` argument doesn't exist, create a new testing_modules with this data.
+     */
+    create: XOR<testing_modulesCreateInput, testing_modulesUncheckedCreateInput>
+    /**
+     * In case the testing_modules was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<testing_modulesUpdateInput, testing_modulesUncheckedUpdateInput>
+  }
+
+  /**
+   * testing_modules delete
+   */
+  export type testing_modulesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+    /**
+     * Filter which testing_modules to delete.
+     */
+    where: testing_modulesWhereUniqueInput
+  }
+
+  /**
+   * testing_modules deleteMany
+   */
+  export type testing_modulesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which testing_modules to delete
+     */
+    where?: testing_modulesWhereInput
+    /**
+     * Limit how many testing_modules to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * testing_modules without action
+   */
+  export type testing_modulesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the testing_modules
+     */
+    select?: testing_modulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the testing_modules
+     */
+    omit?: testing_modulesOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -39870,6 +40990,28 @@ export namespace Prisma {
   export type Qms_historyScalarFieldEnum = (typeof Qms_historyScalarFieldEnum)[keyof typeof Qms_historyScalarFieldEnum]
 
 
+  export const Testing_modulesScalarFieldEnum: {
+    id: 'id',
+    image: 'image',
+    name: 'name',
+    case_type: 'case_type',
+    estimated_height: 'estimated_height',
+    needs_cutting: 'needs_cutting',
+    recommendation_note: 'recommendation_note',
+    gallons_required_estimate: 'gallons_required_estimate',
+    calculation_note: 'calculation_note',
+    health: 'health',
+    suggestion: 'suggestion',
+    status: 'status',
+    confidence_score: 'confidence_score',
+    rationale: 'rationale',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type Testing_modulesScalarFieldEnum = (typeof Testing_modulesScalarFieldEnum)[keyof typeof Testing_modulesScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -40226,6 +41368,24 @@ export namespace Prisma {
   };
 
   export type qms_historyOrderByRelevanceFieldEnum = (typeof qms_historyOrderByRelevanceFieldEnum)[keyof typeof qms_historyOrderByRelevanceFieldEnum]
+
+
+  export const testing_modulesOrderByRelevanceFieldEnum: {
+    image: 'image',
+    name: 'name',
+    case_type: 'case_type',
+    estimated_height: 'estimated_height',
+    recommendation_note: 'recommendation_note',
+    gallons_required_estimate: 'gallons_required_estimate',
+    calculation_note: 'calculation_note',
+    health: 'health',
+    suggestion: 'suggestion',
+    status: 'status',
+    confidence_score: 'confidence_score',
+    rationale: 'rationale'
+  };
+
+  export type testing_modulesOrderByRelevanceFieldEnum = (typeof testing_modulesOrderByRelevanceFieldEnum)[keyof typeof testing_modulesOrderByRelevanceFieldEnum]
 
 
   /**
@@ -43657,6 +44817,116 @@ export namespace Prisma {
     status?: StringNullableWithAggregatesFilter<"qms_history"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"qms_history"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"qms_history"> | Date | string
+  }
+
+  export type testing_modulesWhereInput = {
+    AND?: testing_modulesWhereInput | testing_modulesWhereInput[]
+    OR?: testing_modulesWhereInput[]
+    NOT?: testing_modulesWhereInput | testing_modulesWhereInput[]
+    id?: IntFilter<"testing_modules"> | number
+    image?: StringNullableFilter<"testing_modules"> | string | null
+    name?: StringNullableFilter<"testing_modules"> | string | null
+    case_type?: StringNullableFilter<"testing_modules"> | string | null
+    estimated_height?: StringNullableFilter<"testing_modules"> | string | null
+    needs_cutting?: BoolNullableFilter<"testing_modules"> | boolean | null
+    recommendation_note?: StringNullableFilter<"testing_modules"> | string | null
+    gallons_required_estimate?: StringNullableFilter<"testing_modules"> | string | null
+    calculation_note?: StringNullableFilter<"testing_modules"> | string | null
+    health?: StringNullableFilter<"testing_modules"> | string | null
+    suggestion?: StringNullableFilter<"testing_modules"> | string | null
+    status?: StringNullableFilter<"testing_modules"> | string | null
+    confidence_score?: StringNullableFilter<"testing_modules"> | string | null
+    rationale?: StringNullableFilter<"testing_modules"> | string | null
+    createdAt?: DateTimeFilter<"testing_modules"> | Date | string
+    updatedAt?: DateTimeFilter<"testing_modules"> | Date | string
+  }
+
+  export type testing_modulesOrderByWithRelationInput = {
+    id?: SortOrder
+    image?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
+    case_type?: SortOrderInput | SortOrder
+    estimated_height?: SortOrderInput | SortOrder
+    needs_cutting?: SortOrderInput | SortOrder
+    recommendation_note?: SortOrderInput | SortOrder
+    gallons_required_estimate?: SortOrderInput | SortOrder
+    calculation_note?: SortOrderInput | SortOrder
+    health?: SortOrderInput | SortOrder
+    suggestion?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    confidence_score?: SortOrderInput | SortOrder
+    rationale?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _relevance?: testing_modulesOrderByRelevanceInput
+  }
+
+  export type testing_modulesWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: testing_modulesWhereInput | testing_modulesWhereInput[]
+    OR?: testing_modulesWhereInput[]
+    NOT?: testing_modulesWhereInput | testing_modulesWhereInput[]
+    image?: StringNullableFilter<"testing_modules"> | string | null
+    name?: StringNullableFilter<"testing_modules"> | string | null
+    case_type?: StringNullableFilter<"testing_modules"> | string | null
+    estimated_height?: StringNullableFilter<"testing_modules"> | string | null
+    needs_cutting?: BoolNullableFilter<"testing_modules"> | boolean | null
+    recommendation_note?: StringNullableFilter<"testing_modules"> | string | null
+    gallons_required_estimate?: StringNullableFilter<"testing_modules"> | string | null
+    calculation_note?: StringNullableFilter<"testing_modules"> | string | null
+    health?: StringNullableFilter<"testing_modules"> | string | null
+    suggestion?: StringNullableFilter<"testing_modules"> | string | null
+    status?: StringNullableFilter<"testing_modules"> | string | null
+    confidence_score?: StringNullableFilter<"testing_modules"> | string | null
+    rationale?: StringNullableFilter<"testing_modules"> | string | null
+    createdAt?: DateTimeFilter<"testing_modules"> | Date | string
+    updatedAt?: DateTimeFilter<"testing_modules"> | Date | string
+  }, "id">
+
+  export type testing_modulesOrderByWithAggregationInput = {
+    id?: SortOrder
+    image?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
+    case_type?: SortOrderInput | SortOrder
+    estimated_height?: SortOrderInput | SortOrder
+    needs_cutting?: SortOrderInput | SortOrder
+    recommendation_note?: SortOrderInput | SortOrder
+    gallons_required_estimate?: SortOrderInput | SortOrder
+    calculation_note?: SortOrderInput | SortOrder
+    health?: SortOrderInput | SortOrder
+    suggestion?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    confidence_score?: SortOrderInput | SortOrder
+    rationale?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: testing_modulesCountOrderByAggregateInput
+    _avg?: testing_modulesAvgOrderByAggregateInput
+    _max?: testing_modulesMaxOrderByAggregateInput
+    _min?: testing_modulesMinOrderByAggregateInput
+    _sum?: testing_modulesSumOrderByAggregateInput
+  }
+
+  export type testing_modulesScalarWhereWithAggregatesInput = {
+    AND?: testing_modulesScalarWhereWithAggregatesInput | testing_modulesScalarWhereWithAggregatesInput[]
+    OR?: testing_modulesScalarWhereWithAggregatesInput[]
+    NOT?: testing_modulesScalarWhereWithAggregatesInput | testing_modulesScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"testing_modules"> | number
+    image?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    name?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    case_type?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    estimated_height?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    needs_cutting?: BoolNullableWithAggregatesFilter<"testing_modules"> | boolean | null
+    recommendation_note?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    gallons_required_estimate?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    calculation_note?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    health?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    suggestion?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    status?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    confidence_score?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    rationale?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"testing_modules"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"testing_modules"> | Date | string
   }
 
   export type access_secretCreateInput = {
@@ -47386,6 +48656,136 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type testing_modulesCreateInput = {
+    image?: string | null
+    name?: string | null
+    case_type?: string | null
+    estimated_height?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
+    health?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type testing_modulesUncheckedCreateInput = {
+    id?: number
+    image?: string | null
+    name?: string | null
+    case_type?: string | null
+    estimated_height?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
+    health?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type testing_modulesUpdateInput = {
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    case_type?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
+    health?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type testing_modulesUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    case_type?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
+    health?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type testing_modulesCreateManyInput = {
+    id?: number
+    image?: string | null
+    name?: string | null
+    case_type?: string | null
+    estimated_height?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
+    health?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type testing_modulesUpdateManyMutationInput = {
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    case_type?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
+    health?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type testing_modulesUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    case_type?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
+    health?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -50043,6 +51443,77 @@ export namespace Prisma {
   export type qms_historySumOrderByAggregateInput = {
     visit_id?: SortOrder
     visitor_id?: SortOrder
+  }
+
+  export type testing_modulesOrderByRelevanceInput = {
+    fields: testing_modulesOrderByRelevanceFieldEnum | testing_modulesOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type testing_modulesCountOrderByAggregateInput = {
+    id?: SortOrder
+    image?: SortOrder
+    name?: SortOrder
+    case_type?: SortOrder
+    estimated_height?: SortOrder
+    needs_cutting?: SortOrder
+    recommendation_note?: SortOrder
+    gallons_required_estimate?: SortOrder
+    calculation_note?: SortOrder
+    health?: SortOrder
+    suggestion?: SortOrder
+    status?: SortOrder
+    confidence_score?: SortOrder
+    rationale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type testing_modulesAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type testing_modulesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    image?: SortOrder
+    name?: SortOrder
+    case_type?: SortOrder
+    estimated_height?: SortOrder
+    needs_cutting?: SortOrder
+    recommendation_note?: SortOrder
+    gallons_required_estimate?: SortOrder
+    calculation_note?: SortOrder
+    health?: SortOrder
+    suggestion?: SortOrder
+    status?: SortOrder
+    confidence_score?: SortOrder
+    rationale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type testing_modulesMinOrderByAggregateInput = {
+    id?: SortOrder
+    image?: SortOrder
+    name?: SortOrder
+    case_type?: SortOrder
+    estimated_height?: SortOrder
+    needs_cutting?: SortOrder
+    recommendation_note?: SortOrder
+    gallons_required_estimate?: SortOrder
+    calculation_note?: SortOrder
+    health?: SortOrder
+    suggestion?: SortOrder
+    status?: SortOrder
+    confidence_score?: SortOrder
+    rationale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type testing_modulesSumOrderByAggregateInput = {
+    id?: SortOrder
   }
 
   export type NullableStringFieldUpdateOperationsInput = {

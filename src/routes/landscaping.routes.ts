@@ -472,4 +472,81 @@ landscapingRouter.post('/monitor-cameras', LandscapingController.monitorParkCame
  */
 landscapingRouter.get('/cron-status', LandscapingController.getCronStatus)
 
+/**
+ * @swagger
+ * /landscaping/testing:
+ *   post:
+ *     summary: Test landscaping with provided images
+ *     tags: [Landscaping]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: base64
+ *                 description: Array of base64 encoded images
+ *                 example: ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."]
+ *     responses:
+ *       200:
+ *         description: Testing completed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Testing landscaping completed successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                     message:
+ *                       type: string
+ *                     results:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           imageIndex:
+ *                             type: number
+ *                             example: 1
+ *                           success:
+ *                             type: boolean
+ *                           cloudinaryUrl:
+ *                             type: string
+ *                           testingRecordId:
+ *                             type: number
+ *                           geminiResponse:
+ *                             type: object
+ *                           error:
+ *                             type: string
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Images array is required and must not be empty"
+ *       500:
+ *         description: Internal server error
+ */
+landscapingRouter.post('/testing', LandscapingController.testingLandscaping)
+
 export default landscapingRouter; 

@@ -727,3 +727,34 @@ model qms_history {
 
   @@map("qms_history")
 }
+
+model testing_modules {
+  id Int @id @default(autoincrement())
+
+  // Basic fields
+  image     String? @db.VarChar(500)
+  name      String? @db.VarChar(255)
+  case_type String? @db.VarChar(255)
+
+  // Landscaping specific fields (from Gemini response)
+  estimated_height    String?  @db.VarChar(100)
+  needs_cutting       Boolean?
+  recommendation_note String?  @db.Text
+
+  // Irrigation specific fields (from Gemini response)
+  gallons_required_estimate String? @db.VarChar(50)
+  calculation_note          String? @db.Text
+
+  // Common fields from both services
+  health           String? @db.VarChar(100)
+  suggestion       String? @db.Text
+  status           String? @db.VarChar(50)
+  confidence_score String? @db.VarChar(50)
+  rationale        String? @db.Text
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testing_modules")
+}
