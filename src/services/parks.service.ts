@@ -623,9 +623,15 @@ class ParkService {
           jobInitiated: jobInitiated,
           jobCompletion: jobCompletion,
           image: job.image,
-          status: status,
+          status: status, // Add the calculated status (Completed/Pending)
+          grassStatus: job.status,
           parkName: job.parks?.park_english_name,
-          parkArabicName: job.parks?.park_arabic_name
+          parkArabicName: job.parks?.park_arabic_name,
+          suggestion: job.suggestion,
+          confidenceScore: job.confidence_score,
+          rationale: job.rationale,
+          gallonsRequiredEstimate: job.gallons_required_estimate,
+          calculationNote: job.calculation_note
         };
       });
 

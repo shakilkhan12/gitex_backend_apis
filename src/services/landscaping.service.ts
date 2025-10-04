@@ -511,42 +511,38 @@ class LandscapingService {
          const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
          
          
-         const prompt = `*GRASS STATUS ANALYSIS REQUEST (JSON OUTPUT)*
+         const prompt = `Objective:
+Analyze the provided visual and contextual data to determine the current grass height in inches/centimeters and whether the grass needs cutting.
+The final output MUST be a JSON object containing the measured/estimated grass height, confidence score, rationale, and a cutting recommendation.
 
-*Objective:* Analyze the provided visual and contextual data to determine the current status of the park grass (Green, Dry, or Dead). The final output MUST be a JSON object containing the status, confidence score, rationale, and an estimated water requirement. *DO NOT* attempt to play or analyze a video file directly; rely exclusively on the text description and the still image link provided.
+1. VISUAL DESCRIPTION (From Observation):
+Blade Height: [Estimate the average visible grass height: e.g., 1.5 inches, 4 inches, 7 cm, etc.]
 
-*1. VISUAL DESCRIPTION (From Observation):*
-* *Dominant Color:* [Describe the main color: e.g., vibrant emerald green, dull olive green, straw yellow, tan/brown, gray.]
-* *Texture/Appearance:* [Describe how the blades look: e.g., stand upright, look limp and folded, appear brittle and crunchy, are matted down.]
-* *Uniformity:* [Is the color consistent? e.g., 90% uniform brown, patchier with 50% green near the edges, only brown under direct sun.]
-* *Any Remaining Green:* [Estimate the percentage or note where green is visible: e.g., Less than 5% green, mostly in the lower crown; Bright green streaks only visible after watering.]
+Uniformity: [Describe if the grass is evenly grown or patchy.]
 
-*2. CONTEXTUAL INFORMATION (Current Conditions):*
-* *Recent Water/Rainfall:* [How long since the last significant watering or rain? e.g., 2 days ago, 3 weeks ago, never this season.]
-* *Weather/Temperature:* [What is the current or recent weather trend? e.g., Daily temperatures over 95°F, mild and cloudy, just experienced a heavy frost.]
-* *Soil Observation:* [Is the soil visible and does it look dry, cracked, or damp?]
-* *REQUIRED AREA INPUT:* [Estimate the size of the area in *square feet (sq ft)* for water calculation: e.g., 5000 sq ft.]
+Appearance: [Note if it looks neat, overgrown, or uneven.]
 
-*3. TESTING RESULTS (If Performed):*
-* *Tug Test:* [Describe the result of pulling a tuft: e.g., Pulls up easily with no roots (suggests dead), firmly rooted (suggests dry or green), snaps off at the soil line (suggests dead).]
-* *Water Test (If performed):* [Did a small patch show any color change after 24 hours of watering? e.g., No change after a day, turned a slightly darker green.]
+Surrounding Reference: [If visible, compare grass height relative to sidewalks, curbs, shoes, or other objects in the image.]
 
-*4. VISUAL SUPPORT (REQUIRED):*
-* *Still Image Link:* ${cloudinaryUrl}
+2. CONTEXTUAL INFORMATION (Cutting Standards):
+Preferred Cutting Range: [e.g., Recommended optimal range is 2.5–3.5 inches for healthy turfgrass.]
 
-*OUTPUT FORMAT:*
-The response must be a single JSON object structured exactly as follows. The calculated gallons_required should be based on the analysis (assuming 1 inch of water for recovery, or 0 if Green/Dead), and the *REQUIRED AREA INPUT* from Section 2.
+Seasonal Context: [Grass growth speed may depend on the season; e.g., fast growth in spring, slower in winter.]
+Maintenance Frequency: [Optional: how often the area is usually cut, if available.]
+
+3. VISUAL SUPPORT (REQUIRED):
+Still Image Link: ${cloudinaryUrl}
+
+OUTPUT FORMAT:
+[remove pre and post text]. The response must be a single JSON object only, structured as follows:
 
 {
-  "name": "Grass Health Analysis",
-  "health": "[Percentage 0-100]",
-  "suggestions": "[Detailed recommendations based on analysis]",
-  "status": "[Green, Dry, or Dead]",
+  "estimated_height": "[Numeric value with unit, e.g., '4 inches' or '10 cm']",
   "confidence_score": "[0-100]",
-  "rationale": "[Detailed justification based on the 4 sections of input data.]",
-  "watering_recommendation": {
-    "gallons_required_estimate": "[Calculated volume in US gallons, or 0 if Green/Dead]",
-    "calculation_note": "[State the basis for the calculation, e.g., 'Calculated for 1 inch of water over [AREA] sq ft.']"
+  "rationale": "[Detailed justification using visual and contextual inputs]",
+  "cutting_recommendation": {
+    "needs_cutting": "[true or false]",
+    "recommendation_note": "[Explain why cutting is or is not needed, e.g., 'Height exceeds 3.5 inches optimal range']"
   }
 }`;
 
@@ -615,21 +611,47 @@ The response must be a single JSON object structured exactly as follows. The cal
       try {
          const caseId = await this.generateUniqueCaseId();
 
-         const status = data.geminiResponse?.status || "Unknown";
-         const suggestions = data.geminiResponse?.suggestions || "No suggestions available";
-         const confidenceScore = data.geminiResponse?.confidence_score || "0";
-         const health = data.geminiResponse?.health || "0";
+         const estimatedHeight = data.geminiResponse?.estimated_height || "Unknown";
+         const confidenceScore = String(data.geminiResponse?.confidence_score || "0");
+         const rationale = data.geminiResponse?.rationale || "No analysis available";
+         const needsCutting = data.geminiResponse?.cutting_recommendation?.needs_cutting || false;
+         const recommendationNote = data.geminiResponse?.cutting_recommendation?.recommendation_note || "No recommendation available";
+
+         // Calculate grass health percentage based on height and cutting needs
+         let grassHealthPercentage = "100%";
+         if (needsCutting) {
+            // If grass needs cutting, health is reduced based on how overgrown it is
+            const heightValue = parseFloat(estimatedHeight.replace(/[^\d.]/g, ''));
+            if (heightValue > 4.5) {
+               grassHealthPercentage = "60%"; // Severely overgrown
+            } else if (heightValue > 3.5) {
+               grassHealthPercentage = "75%"; // Moderately overgrown
+            } else {
+               grassHealthPercentage = "85%"; // Slightly overgrown
+            }
+         } else {
+            // If grass doesn't need cutting, it's in good health
+            grassHealthPercentage = "95%";
+         }
+
+         // Create comprehensive suggestion text
+         const suggestions = `Height: ${estimatedHeight}\nConfidence: ${confidenceScore}%\nNeeds Cutting: ${needsCutting ? 'Yes' : 'No'}\nRecommendation: ${recommendationNote}\n\nAnalysis: ${rationale}`;
 
          const result = await db.landscaping.create({
             data: {
                case_Id: caseId,
                image: data.imageUrl,
-               name: "Grass",
+               name: "Grass Height Analysis",
                park_Id: data.parkId,
-               plant_type: "Grass Check",
-               status: `${health}%`,
-               current_status: "Pending",
+               plant_type: "Grass Height Check",
+               status: grassHealthPercentage,
+               current_status:"Pending",
                suggestion: suggestions,
+               estimated_height: estimatedHeight,
+               confidence_score: confidenceScore,
+               rationale: rationale,
+               needs_cutting: needsCutting,
+               recommendation_note: recommendationNote,
                createdAt: new Date(),
                updatedAt: new Date()
             },

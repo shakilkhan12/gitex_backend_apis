@@ -15075,6 +15075,12 @@ export namespace Prisma {
     image: string | null
     started_at: Date | null
     start_for_time: string | null
+    suggestion: string | null
+    status: string | null
+    confidence_score: string | null
+    rationale: string | null
+    gallons_required_estimate: string | null
+    calculation_note: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15088,6 +15094,12 @@ export namespace Prisma {
     image: string | null
     started_at: Date | null
     start_for_time: string | null
+    suggestion: string | null
+    status: string | null
+    confidence_score: string | null
+    rationale: string | null
+    gallons_required_estimate: string | null
+    calculation_note: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15101,6 +15113,12 @@ export namespace Prisma {
     image: number
     started_at: number
     start_for_time: number
+    suggestion: number
+    status: number
+    confidence_score: number
+    rationale: number
+    gallons_required_estimate: number
+    calculation_note: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -15130,6 +15148,12 @@ export namespace Prisma {
     image?: true
     started_at?: true
     start_for_time?: true
+    suggestion?: true
+    status?: true
+    confidence_score?: true
+    rationale?: true
+    gallons_required_estimate?: true
+    calculation_note?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -15143,6 +15167,12 @@ export namespace Prisma {
     image?: true
     started_at?: true
     start_for_time?: true
+    suggestion?: true
+    status?: true
+    confidence_score?: true
+    rationale?: true
+    gallons_required_estimate?: true
+    calculation_note?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -15156,6 +15186,12 @@ export namespace Prisma {
     image?: true
     started_at?: true
     start_for_time?: true
+    suggestion?: true
+    status?: true
+    confidence_score?: true
+    rationale?: true
+    gallons_required_estimate?: true
+    calculation_note?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -15256,6 +15292,12 @@ export namespace Prisma {
     image: string | null
     started_at: Date | null
     start_for_time: string | null
+    suggestion: string | null
+    status: string | null
+    confidence_score: string | null
+    rationale: string | null
+    gallons_required_estimate: string | null
+    calculation_note: string | null
     createdAt: Date | null
     updatedAt: Date
     _count: Parks_zones_job_historyCountAggregateOutputType | null
@@ -15288,6 +15330,12 @@ export namespace Prisma {
     image?: boolean
     started_at?: boolean
     start_for_time?: boolean
+    suggestion?: boolean
+    status?: boolean
+    confidence_score?: boolean
+    rationale?: boolean
+    gallons_required_estimate?: boolean
+    calculation_note?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     park_cameras?: boolean | parks_zones_job_history$park_camerasArgs<ExtArgs>
@@ -15306,11 +15354,17 @@ export namespace Prisma {
     image?: boolean
     started_at?: boolean
     start_for_time?: boolean
+    suggestion?: boolean
+    status?: boolean
+    confidence_score?: boolean
+    rationale?: boolean
+    gallons_required_estimate?: boolean
+    calculation_note?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type parks_zones_job_historyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "camera_Id" | "park_Id" | "zone_Id" | "job_Id" | "image" | "started_at" | "start_for_time" | "createdAt" | "updatedAt", ExtArgs["result"]["parks_zones_job_history"]>
+  export type parks_zones_job_historyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "camera_Id" | "park_Id" | "zone_Id" | "job_Id" | "image" | "started_at" | "start_for_time" | "suggestion" | "status" | "confidence_score" | "rationale" | "gallons_required_estimate" | "calculation_note" | "createdAt" | "updatedAt", ExtArgs["result"]["parks_zones_job_history"]>
   export type parks_zones_job_historyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     park_cameras?: boolean | parks_zones_job_history$park_camerasArgs<ExtArgs>
     parks?: boolean | parks_zones_job_history$parksArgs<ExtArgs>
@@ -15333,6 +15387,12 @@ export namespace Prisma {
       image: string | null
       started_at: Date | null
       start_for_time: string | null
+      suggestion: string | null
+      status: string | null
+      confidence_score: string | null
+      rationale: string | null
+      gallons_required_estimate: string | null
+      calculation_note: string | null
       createdAt: Date | null
       updatedAt: Date
     }, ExtArgs["result"]["parks_zones_job_history"]>
@@ -15715,6 +15775,12 @@ export namespace Prisma {
     readonly image: FieldRef<"parks_zones_job_history", 'String'>
     readonly started_at: FieldRef<"parks_zones_job_history", 'DateTime'>
     readonly start_for_time: FieldRef<"parks_zones_job_history", 'String'>
+    readonly suggestion: FieldRef<"parks_zones_job_history", 'String'>
+    readonly status: FieldRef<"parks_zones_job_history", 'String'>
+    readonly confidence_score: FieldRef<"parks_zones_job_history", 'String'>
+    readonly rationale: FieldRef<"parks_zones_job_history", 'String'>
+    readonly gallons_required_estimate: FieldRef<"parks_zones_job_history", 'String'>
+    readonly calculation_note: FieldRef<"parks_zones_job_history", 'String'>
     readonly createdAt: FieldRef<"parks_zones_job_history", 'DateTime'>
     readonly updatedAt: FieldRef<"parks_zones_job_history", 'DateTime'>
   }
@@ -35812,6 +35878,11 @@ export namespace Prisma {
     status: string | null
     current_status: string | null
     suggestion: string | null
+    estimated_height: string | null
+    confidence_score: string | null
+    rationale: string | null
+    needs_cutting: boolean | null
+    recommendation_note: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -35827,6 +35898,11 @@ export namespace Prisma {
     status: string | null
     current_status: string | null
     suggestion: string | null
+    estimated_height: string | null
+    confidence_score: string | null
+    rationale: string | null
+    needs_cutting: boolean | null
+    recommendation_note: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -35842,6 +35918,11 @@ export namespace Prisma {
     status: number
     current_status: number
     suggestion: number
+    estimated_height: number
+    confidence_score: number
+    rationale: number
+    needs_cutting: number
+    recommendation_note: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -35871,6 +35952,11 @@ export namespace Prisma {
     status?: true
     current_status?: true
     suggestion?: true
+    estimated_height?: true
+    confidence_score?: true
+    rationale?: true
+    needs_cutting?: true
+    recommendation_note?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -35886,6 +35972,11 @@ export namespace Prisma {
     status?: true
     current_status?: true
     suggestion?: true
+    estimated_height?: true
+    confidence_score?: true
+    rationale?: true
+    needs_cutting?: true
+    recommendation_note?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -35901,6 +35992,11 @@ export namespace Prisma {
     status?: true
     current_status?: true
     suggestion?: true
+    estimated_height?: true
+    confidence_score?: true
+    rationale?: true
+    needs_cutting?: true
+    recommendation_note?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -36003,6 +36099,11 @@ export namespace Prisma {
     status: string | null
     current_status: string | null
     suggestion: string | null
+    estimated_height: string | null
+    confidence_score: string | null
+    rationale: string | null
+    needs_cutting: boolean | null
+    recommendation_note: string | null
     createdAt: Date
     updatedAt: Date
     _count: LandscapingCountAggregateOutputType | null
@@ -36037,6 +36138,11 @@ export namespace Prisma {
     status?: boolean
     current_status?: boolean
     suggestion?: boolean
+    estimated_height?: boolean
+    confidence_score?: boolean
+    rationale?: boolean
+    needs_cutting?: boolean
+    recommendation_note?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     landscaping_history?: boolean | landscaping$landscaping_historyArgs<ExtArgs>
@@ -36058,11 +36164,16 @@ export namespace Prisma {
     status?: boolean
     current_status?: boolean
     suggestion?: boolean
+    estimated_height?: boolean
+    confidence_score?: boolean
+    rationale?: boolean
+    needs_cutting?: boolean
+    recommendation_note?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type landscapingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "case_Id" | "park_Id" | "assinged_to" | "image" | "name" | "plant_type" | "status" | "current_status" | "suggestion" | "createdAt" | "updatedAt", ExtArgs["result"]["landscaping"]>
+  export type landscapingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "case_Id" | "park_Id" | "assinged_to" | "image" | "name" | "plant_type" | "status" | "current_status" | "suggestion" | "estimated_height" | "confidence_score" | "rationale" | "needs_cutting" | "recommendation_note" | "createdAt" | "updatedAt", ExtArgs["result"]["landscaping"]>
   export type landscapingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     landscaping_history?: boolean | landscaping$landscaping_historyArgs<ExtArgs>
     assignedUser?: boolean | landscaping$assignedUserArgs<ExtArgs>
@@ -36088,6 +36199,11 @@ export namespace Prisma {
       status: string | null
       current_status: string | null
       suggestion: string | null
+      estimated_height: string | null
+      confidence_score: string | null
+      rationale: string | null
+      needs_cutting: boolean | null
+      recommendation_note: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["landscaping"]>
@@ -36472,6 +36588,11 @@ export namespace Prisma {
     readonly status: FieldRef<"landscaping", 'String'>
     readonly current_status: FieldRef<"landscaping", 'String'>
     readonly suggestion: FieldRef<"landscaping", 'String'>
+    readonly estimated_height: FieldRef<"landscaping", 'String'>
+    readonly confidence_score: FieldRef<"landscaping", 'String'>
+    readonly rationale: FieldRef<"landscaping", 'String'>
+    readonly needs_cutting: FieldRef<"landscaping", 'Boolean'>
+    readonly recommendation_note: FieldRef<"landscaping", 'String'>
     readonly createdAt: FieldRef<"landscaping", 'DateTime'>
     readonly updatedAt: FieldRef<"landscaping", 'DateTime'>
   }
@@ -39301,6 +39422,12 @@ export namespace Prisma {
     image: 'image',
     started_at: 'started_at',
     start_for_time: 'start_for_time',
+    suggestion: 'suggestion',
+    status: 'status',
+    confidence_score: 'confidence_score',
+    rationale: 'rationale',
+    gallons_required_estimate: 'gallons_required_estimate',
+    calculation_note: 'calculation_note',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -39683,6 +39810,11 @@ export namespace Prisma {
     status: 'status',
     current_status: 'current_status',
     suggestion: 'suggestion',
+    estimated_height: 'estimated_height',
+    confidence_score: 'confidence_score',
+    rationale: 'rationale',
+    needs_cutting: 'needs_cutting',
+    recommendation_note: 'recommendation_note',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -39843,7 +39975,13 @@ export namespace Prisma {
   export const parks_zones_job_historyOrderByRelevanceFieldEnum: {
     job_Id: 'job_Id',
     image: 'image',
-    start_for_time: 'start_for_time'
+    start_for_time: 'start_for_time',
+    suggestion: 'suggestion',
+    status: 'status',
+    confidence_score: 'confidence_score',
+    rationale: 'rationale',
+    gallons_required_estimate: 'gallons_required_estimate',
+    calculation_note: 'calculation_note'
   };
 
   export type parks_zones_job_historyOrderByRelevanceFieldEnum = (typeof parks_zones_job_historyOrderByRelevanceFieldEnum)[keyof typeof parks_zones_job_historyOrderByRelevanceFieldEnum]
@@ -40041,7 +40179,11 @@ export namespace Prisma {
     plant_type: 'plant_type',
     status: 'status',
     current_status: 'current_status',
-    suggestion: 'suggestion'
+    suggestion: 'suggestion',
+    estimated_height: 'estimated_height',
+    confidence_score: 'confidence_score',
+    rationale: 'rationale',
+    recommendation_note: 'recommendation_note'
   };
 
   export type landscapingOrderByRelevanceFieldEnum = (typeof landscapingOrderByRelevanceFieldEnum)[keyof typeof landscapingOrderByRelevanceFieldEnum]
@@ -41063,6 +41205,12 @@ export namespace Prisma {
     image?: StringNullableFilter<"parks_zones_job_history"> | string | null
     started_at?: DateTimeNullableFilter<"parks_zones_job_history"> | Date | string | null
     start_for_time?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    suggestion?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    status?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    confidence_score?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    rationale?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    gallons_required_estimate?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    calculation_note?: StringNullableFilter<"parks_zones_job_history"> | string | null
     createdAt?: DateTimeNullableFilter<"parks_zones_job_history"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks_zones_job_history"> | Date | string
     park_cameras?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
@@ -41079,6 +41227,12 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     started_at?: SortOrderInput | SortOrder
     start_for_time?: SortOrderInput | SortOrder
+    suggestion?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    confidence_score?: SortOrderInput | SortOrder
+    rationale?: SortOrderInput | SortOrder
+    gallons_required_estimate?: SortOrderInput | SortOrder
+    calculation_note?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     park_cameras?: park_camerasOrderByWithRelationInput
@@ -41099,6 +41253,12 @@ export namespace Prisma {
     image?: StringNullableFilter<"parks_zones_job_history"> | string | null
     started_at?: DateTimeNullableFilter<"parks_zones_job_history"> | Date | string | null
     start_for_time?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    suggestion?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    status?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    confidence_score?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    rationale?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    gallons_required_estimate?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    calculation_note?: StringNullableFilter<"parks_zones_job_history"> | string | null
     createdAt?: DateTimeNullableFilter<"parks_zones_job_history"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks_zones_job_history"> | Date | string
     park_cameras?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
@@ -41115,6 +41275,12 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     started_at?: SortOrderInput | SortOrder
     start_for_time?: SortOrderInput | SortOrder
+    suggestion?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    confidence_score?: SortOrderInput | SortOrder
+    rationale?: SortOrderInput | SortOrder
+    gallons_required_estimate?: SortOrderInput | SortOrder
+    calculation_note?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: parks_zones_job_historyCountOrderByAggregateInput
@@ -41136,6 +41302,12 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
     started_at?: DateTimeNullableWithAggregatesFilter<"parks_zones_job_history"> | Date | string | null
     start_for_time?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
+    suggestion?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
+    status?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
+    confidence_score?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
+    rationale?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
+    gallons_required_estimate?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
+    calculation_note?: StringNullableWithAggregatesFilter<"parks_zones_job_history"> | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"parks_zones_job_history"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"parks_zones_job_history"> | Date | string
   }
@@ -43131,6 +43303,11 @@ export namespace Prisma {
     status?: StringNullableFilter<"landscaping"> | string | null
     current_status?: StringNullableFilter<"landscaping"> | string | null
     suggestion?: StringNullableFilter<"landscaping"> | string | null
+    estimated_height?: StringNullableFilter<"landscaping"> | string | null
+    confidence_score?: StringNullableFilter<"landscaping"> | string | null
+    rationale?: StringNullableFilter<"landscaping"> | string | null
+    needs_cutting?: BoolNullableFilter<"landscaping"> | boolean | null
+    recommendation_note?: StringNullableFilter<"landscaping"> | string | null
     createdAt?: DateTimeFilter<"landscaping"> | Date | string
     updatedAt?: DateTimeFilter<"landscaping"> | Date | string
     landscaping_history?: Landscaping_historyListRelationFilter
@@ -43149,6 +43326,11 @@ export namespace Prisma {
     status?: SortOrderInput | SortOrder
     current_status?: SortOrderInput | SortOrder
     suggestion?: SortOrderInput | SortOrder
+    estimated_height?: SortOrderInput | SortOrder
+    confidence_score?: SortOrderInput | SortOrder
+    rationale?: SortOrderInput | SortOrder
+    needs_cutting?: SortOrderInput | SortOrder
+    recommendation_note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     landscaping_history?: landscaping_historyOrderByRelationAggregateInput
@@ -43171,6 +43353,11 @@ export namespace Prisma {
     status?: StringNullableFilter<"landscaping"> | string | null
     current_status?: StringNullableFilter<"landscaping"> | string | null
     suggestion?: StringNullableFilter<"landscaping"> | string | null
+    estimated_height?: StringNullableFilter<"landscaping"> | string | null
+    confidence_score?: StringNullableFilter<"landscaping"> | string | null
+    rationale?: StringNullableFilter<"landscaping"> | string | null
+    needs_cutting?: BoolNullableFilter<"landscaping"> | boolean | null
+    recommendation_note?: StringNullableFilter<"landscaping"> | string | null
     createdAt?: DateTimeFilter<"landscaping"> | Date | string
     updatedAt?: DateTimeFilter<"landscaping"> | Date | string
     landscaping_history?: Landscaping_historyListRelationFilter
@@ -43189,6 +43376,11 @@ export namespace Prisma {
     status?: SortOrderInput | SortOrder
     current_status?: SortOrderInput | SortOrder
     suggestion?: SortOrderInput | SortOrder
+    estimated_height?: SortOrderInput | SortOrder
+    confidence_score?: SortOrderInput | SortOrder
+    rationale?: SortOrderInput | SortOrder
+    needs_cutting?: SortOrderInput | SortOrder
+    recommendation_note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: landscapingCountOrderByAggregateInput
@@ -43212,6 +43404,11 @@ export namespace Prisma {
     status?: StringNullableWithAggregatesFilter<"landscaping"> | string | null
     current_status?: StringNullableWithAggregatesFilter<"landscaping"> | string | null
     suggestion?: StringNullableWithAggregatesFilter<"landscaping"> | string | null
+    estimated_height?: StringNullableWithAggregatesFilter<"landscaping"> | string | null
+    confidence_score?: StringNullableWithAggregatesFilter<"landscaping"> | string | null
+    rationale?: StringNullableWithAggregatesFilter<"landscaping"> | string | null
+    needs_cutting?: BoolNullableWithAggregatesFilter<"landscaping"> | boolean | null
+    recommendation_note?: StringNullableWithAggregatesFilter<"landscaping"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"landscaping"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"landscaping"> | Date | string
   }
@@ -44420,6 +44617,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     park_cameras?: park_camerasCreateNestedOneWithoutParks_zones_job_historyInput
@@ -44436,6 +44639,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -44445,6 +44654,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     park_cameras?: park_camerasUpdateOneWithoutParks_zones_job_historyNestedInput
@@ -44461,6 +44676,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -44474,6 +44695,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -44483,6 +44710,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -44496,6 +44729,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46730,6 +46969,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     landscaping_history?: landscaping_historyCreateNestedManyWithoutLandscapingInput
@@ -46748,6 +46992,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     landscaping_history?: landscaping_historyUncheckedCreateNestedManyWithoutLandscapingInput
@@ -46761,6 +47010,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     landscaping_history?: landscaping_historyUpdateManyWithoutLandscapingNestedInput
@@ -46779,6 +47033,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     landscaping_history?: landscaping_historyUncheckedUpdateManyWithoutLandscapingNestedInput
@@ -46795,6 +47054,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -46807,6 +47071,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46822,6 +47091,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -48052,6 +48326,12 @@ export namespace Prisma {
     image?: SortOrder
     started_at?: SortOrder
     start_for_time?: SortOrder
+    suggestion?: SortOrder
+    status?: SortOrder
+    confidence_score?: SortOrder
+    rationale?: SortOrder
+    gallons_required_estimate?: SortOrder
+    calculation_note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -48072,6 +48352,12 @@ export namespace Prisma {
     image?: SortOrder
     started_at?: SortOrder
     start_for_time?: SortOrder
+    suggestion?: SortOrder
+    status?: SortOrder
+    confidence_score?: SortOrder
+    rationale?: SortOrder
+    gallons_required_estimate?: SortOrder
+    calculation_note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -48085,6 +48371,12 @@ export namespace Prisma {
     image?: SortOrder
     started_at?: SortOrder
     start_for_time?: SortOrder
+    suggestion?: SortOrder
+    status?: SortOrder
+    confidence_score?: SortOrder
+    rationale?: SortOrder
+    gallons_required_estimate?: SortOrder
+    calculation_note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -49527,6 +49819,11 @@ export namespace Prisma {
     status?: SortOrder
     current_status?: SortOrder
     suggestion?: SortOrder
+    estimated_height?: SortOrder
+    confidence_score?: SortOrder
+    rationale?: SortOrder
+    needs_cutting?: SortOrder
+    recommendation_note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -49548,6 +49845,11 @@ export namespace Prisma {
     status?: SortOrder
     current_status?: SortOrder
     suggestion?: SortOrder
+    estimated_height?: SortOrder
+    confidence_score?: SortOrder
+    rationale?: SortOrder
+    needs_cutting?: SortOrder
+    recommendation_note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -49563,6 +49865,11 @@ export namespace Prisma {
     status?: SortOrder
     current_status?: SortOrder
     suggestion?: SortOrder
+    estimated_height?: SortOrder
+    confidence_score?: SortOrder
+    rationale?: SortOrder
+    needs_cutting?: SortOrder
+    recommendation_note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -54804,6 +55111,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     parks?: parksCreateNestedOneWithoutParks_zones_job_historyInput
@@ -54818,6 +55131,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -55148,6 +55467,12 @@ export namespace Prisma {
     image?: StringNullableFilter<"parks_zones_job_history"> | string | null
     started_at?: DateTimeNullableFilter<"parks_zones_job_history"> | Date | string | null
     start_for_time?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    suggestion?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    status?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    confidence_score?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    rationale?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    gallons_required_estimate?: StringNullableFilter<"parks_zones_job_history"> | string | null
+    calculation_note?: StringNullableFilter<"parks_zones_job_history"> | string | null
     createdAt?: DateTimeNullableFilter<"parks_zones_job_history"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks_zones_job_history"> | Date | string
   }
@@ -55356,6 +55681,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     park_cameras?: park_camerasCreateNestedOneWithoutParks_zones_job_historyInput
@@ -55370,6 +55701,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -56266,6 +56603,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     landscaping_history?: landscaping_historyCreateNestedManyWithoutLandscapingInput
@@ -56282,6 +56624,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     landscaping_history?: landscaping_historyUncheckedCreateNestedManyWithoutLandscapingInput
@@ -56302,6 +56649,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     park_cameras?: park_camerasCreateNestedOneWithoutParks_zones_job_historyInput
@@ -56316,6 +56669,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -56619,6 +56978,11 @@ export namespace Prisma {
     status?: StringNullableFilter<"landscaping"> | string | null
     current_status?: StringNullableFilter<"landscaping"> | string | null
     suggestion?: StringNullableFilter<"landscaping"> | string | null
+    estimated_height?: StringNullableFilter<"landscaping"> | string | null
+    confidence_score?: StringNullableFilter<"landscaping"> | string | null
+    rationale?: StringNullableFilter<"landscaping"> | string | null
+    needs_cutting?: BoolNullableFilter<"landscaping"> | boolean | null
+    recommendation_note?: StringNullableFilter<"landscaping"> | string | null
     createdAt?: DateTimeFilter<"landscaping"> | Date | string
     updatedAt?: DateTimeFilter<"landscaping"> | Date | string
   }
@@ -59514,6 +59878,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     landscaping_history?: landscaping_historyCreateNestedManyWithoutLandscapingInput
@@ -59530,6 +59899,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     landscaping_history?: landscaping_historyUncheckedCreateNestedManyWithoutLandscapingInput
@@ -61148,6 +61522,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedUser?: usersCreateNestedOneWithoutAssigned_landscapingInput
@@ -61165,6 +61544,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -61291,6 +61675,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedUser?: usersUpdateOneWithoutAssigned_landscapingNestedInput
@@ -61308,6 +61697,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -62040,6 +62434,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -62426,6 +62826,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks?: parksUpdateOneWithoutParks_zones_job_historyNestedInput
@@ -62440,6 +62846,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -62452,6 +62864,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -62475,6 +62893,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -62516,6 +62940,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     park_cameras?: park_camerasUpdateOneWithoutParks_zones_job_historyNestedInput
@@ -62530,6 +62960,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -62542,6 +62978,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -62726,6 +63168,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -62738,6 +63185,12 @@ export namespace Prisma {
     image?: string | null
     started_at?: Date | string | null
     start_for_time?: string | null
+    suggestion?: string | null
+    status?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    gallons_required_estimate?: string | null
+    calculation_note?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -63275,6 +63728,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     landscaping_history?: landscaping_historyUpdateManyWithoutLandscapingNestedInput
@@ -63291,6 +63749,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     landscaping_history?: landscaping_historyUncheckedUpdateManyWithoutLandscapingNestedInput
@@ -63306,6 +63769,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -63315,6 +63783,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     park_cameras?: park_camerasUpdateOneWithoutParks_zones_job_historyNestedInput
@@ -63329,6 +63803,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -63341,6 +63821,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     start_for_time?: NullableStringFieldUpdateOperationsInput | string | null
+    suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    gallons_required_estimate?: NullableStringFieldUpdateOperationsInput | string | null
+    calculation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -63600,6 +64086,11 @@ export namespace Prisma {
     status?: string | null
     current_status?: string | null
     suggestion?: string | null
+    estimated_height?: string | null
+    confidence_score?: string | null
+    rationale?: string | null
+    needs_cutting?: boolean | null
+    recommendation_note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -63865,6 +64356,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     landscaping_history?: landscaping_historyUpdateManyWithoutLandscapingNestedInput
@@ -63881,6 +64377,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     landscaping_history?: landscaping_historyUncheckedUpdateManyWithoutLandscapingNestedInput
@@ -63896,6 +64397,11 @@ export namespace Prisma {
     status?: NullableStringFieldUpdateOperationsInput | string | null
     current_status?: NullableStringFieldUpdateOperationsInput | string | null
     suggestion?: NullableStringFieldUpdateOperationsInput | string | null
+    estimated_height?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence_score?: NullableStringFieldUpdateOperationsInput | string | null
+    rationale?: NullableStringFieldUpdateOperationsInput | string | null
+    needs_cutting?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    recommendation_note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
