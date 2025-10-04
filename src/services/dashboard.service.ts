@@ -31,6 +31,7 @@ class DashboardService {
       officeFootfallMale,
       officeFootfallFemale,
       footfallSummary,
+      zoneUsageSummary,
       litterDetectionSummary,
       violationSummary,
       parksSentimentAnalysisToday,
@@ -47,6 +48,7 @@ class DashboardService {
       getFootfall("offices", "Male.", sevenDaysAgo, now),
       getFootfall("offices", "Female.", sevenDaysAgo, now),
       getFootfallSummary(sevenDaysAgo, now),
+      getZoneUsage(sevenDaysAgo, now),
       getLitterDetection(now),
       getViolationSummary(sevenDaysAgo, now),
       getSentimentAnalysis("parks", {
@@ -134,6 +136,7 @@ class DashboardService {
         footfallFemaleVisitorPercentage,
       },
       footfallSummary,
+      zoneUsageSummary,
       litterDetectionSummary,
       sentimentAnalysisToday,
       violationSummary,
@@ -206,6 +209,84 @@ function countSentiments(checkins: any[]): SentimentCounts {
     },
     { happy: 0, neutral: 0, sad: 0, angry: 0, total: 0 }
   );
+}
+
+async function getZoneUsage(sevenDaysAgo: Date, now: Date) {
+  const results = await db.landscaping.findMany({
+    where: {
+      createdAt: { gte: sevenDaysAgo, lte: now },
+    },
+    select: {
+      plant_type: true,
+      createdAt: true,
+    },
+  });
+
+  const plantDaily: Array<{ date: string; count: number }> = [];
+  const grossDaily: Array<{ date: string; count: number }> = [];
+
+  function formatDate(d: Date) {
+    return (
+      d.getFullYear() +
+      "-" +
+      String(d.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(d.getDate()).padStart(2, "0")
+    );
+  }
+
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(sevenDaysAgo);
+    day.setDate(sevenDaysAgo.getDate() + i);
+
+    const dayStart = new Date(day);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(day);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const plantCount = results.filter(
+      (row) =>
+        row.createdAt &&
+        new Date(row.createdAt) >= dayStart &&
+        new Date(row.createdAt) <= dayEnd &&
+        row.plant_type === "Plant"
+    ).length;
+
+    const grossCount = results.filter(
+      (row) =>
+        row.createdAt &&
+        new Date(row.createdAt) >= dayStart &&
+        new Date(row.createdAt) <= dayEnd &&
+        row.plant_type !== "Plant"
+    ).length;
+
+    plantDaily.push({
+      date: formatDate(dayStart),
+      count: plantCount,
+    });
+
+    grossDaily.push({
+      date: formatDate(dayStart),
+      count: grossCount,
+    });
+  }
+
+  const totalPlant = results.filter((row) => row.plant_type === "Plant").length;
+  const totalGross = results.filter((row) => row.plant_type !== "Plant").length;
+  const total = totalPlant + totalGross;
+
+  return {
+    total: {
+      plant: totalPlant,
+      gross: totalGross,
+      total: total,
+    },
+    daily: {
+      plant: plantDaily,
+      gross: grossDaily,
+    },
+    totalPercentage: percent(total, total),
+  };
 }
 
 function getSentimentPercentages(sentimentCounts: SentimentCounts) {
