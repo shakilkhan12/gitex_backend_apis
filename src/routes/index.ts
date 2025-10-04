@@ -22,8 +22,10 @@ import handlingImagesRouter from "./handling-images.routes";
 import intranetPostingHistoryRouter from "./intranet-posting-history.routes";
 import camerasRouter from "./cameras.routes";
 import dashboardRouter from "./dashboard.routes";
+import alertRouter from "./alert.routes";
 const mainRouter = Router();
 
+mainRouter.use('/alert', alertRouter)
 mainRouter.use('/dashboard', dashboardRouter)
 mainRouter.use('/smoking-detection', smokingDetectionRouter)
 mainRouter.use('/intrusion-detection', intrusionDetectionRouter)
