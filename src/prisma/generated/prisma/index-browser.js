@@ -261,6 +261,12 @@ exports.Prisma.Parks_zones_job_historyScalarFieldEnum = {
   image: 'image',
   started_at: 'started_at',
   start_for_time: 'start_for_time',
+  suggestion: 'suggestion',
+  status: 'status',
+  confidence_score: 'confidence_score',
+  rationale: 'rationale',
+  gallons_required_estimate: 'gallons_required_estimate',
+  calculation_note: 'calculation_note',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -589,6 +595,11 @@ exports.Prisma.LandscapingScalarFieldEnum = {
   status: 'status',
   current_status: 'current_status',
   suggestion: 'suggestion',
+  estimated_height: 'estimated_height',
+  confidence_score: 'confidence_score',
+  rationale: 'rationale',
+  needs_cutting: 'needs_cutting',
+  recommendation_note: 'recommendation_note',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -710,7 +721,13 @@ exports.Prisma.park_zonesOrderByRelevanceFieldEnum = {
 exports.Prisma.parks_zones_job_historyOrderByRelevanceFieldEnum = {
   job_Id: 'job_Id',
   image: 'image',
-  start_for_time: 'start_for_time'
+  start_for_time: 'start_for_time',
+  suggestion: 'suggestion',
+  status: 'status',
+  confidence_score: 'confidence_score',
+  rationale: 'rationale',
+  gallons_required_estimate: 'gallons_required_estimate',
+  calculation_note: 'calculation_note'
 };
 
 exports.Prisma.parksOrderByRelevanceFieldEnum = {
@@ -860,7 +877,11 @@ exports.Prisma.landscapingOrderByRelevanceFieldEnum = {
   plant_type: 'plant_type',
   status: 'status',
   current_status: 'current_status',
-  suggestion: 'suggestion'
+  suggestion: 'suggestion',
+  estimated_height: 'estimated_height',
+  confidence_score: 'confidence_score',
+  rationale: 'rationale',
+  recommendation_note: 'recommendation_note'
 };
 
 exports.Prisma.landscaping_historyOrderByRelevanceFieldEnum = {

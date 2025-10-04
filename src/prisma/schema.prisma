@@ -195,24 +195,32 @@ model park_zones {
   updatedAt                    DateTime                       @default(now()) @db.Timestamp(0)
   parks                        parks?                         @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "park_zones_ibfk_1")
   parks_irrigation_job_history parks_irrigation_job_history[]
+  parks_zones_job_history      parks_zones_job_history[]
 
   @@index([park_Id], map: "park_Id")
   @@map("park_zones")
 }
 
 model parks_zones_job_history {
-  Id             Int           @id @default(autoincrement())
-  camera_Id      Int?
-  park_Id        Int?
-  zone_Id        Int?
-  job_Id         String?       @db.VarChar(255)
-  image          String?       @db.VarChar(255)
-  started_at     DateTime?     @db.Timestamp(0)
-  start_for_time String?       @db.VarChar(255)
-  createdAt      DateTime?     @db.Timestamp(0)
-  updatedAt      DateTime      @default(now()) @db.Timestamp(0)
-  park_cameras   park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_1")
-  parks          parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_2")
+  Id                        Int           @id @default(autoincrement())
+  camera_Id                 Int?
+  park_Id                   Int?
+  zone_Id                   Int?
+  job_Id                    String?       @db.VarChar(255)
+  image                     String?       @db.VarChar(255)
+  started_at                DateTime?     @db.Timestamp(0)
+  start_for_time            String?       @db.VarChar(255)
+  suggestion                String?       @db.VarChar(255)
+  status                    String?       @db.VarChar(50)
+  confidence_score          String?       @db.VarChar(50)
+  rationale                 String?       @db.VarChar(255)
+  gallons_required_estimate String?       @db.VarChar(50)
+  calculation_note          String?       @db.VarChar(255)
+  createdAt                 DateTime?     @db.Timestamp(0)
+  updatedAt                 DateTime      @default(now()) @db.Timestamp(0)
+  park_cameras              park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_1")
+  parks                     parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_2")
+  park_zones                park_zones?   @relation(fields: [zone_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_3")
 
   @@index([park_Id], map: "park_Id")
   @@index([camera_Id], map: "camera_Id")
@@ -650,6 +658,11 @@ model landscaping {
   status              String?               @db.VarChar(100)
   current_status      String?               @db.VarChar(100)
   suggestion          String?               @db.Text
+  estimated_height    String?               @db.VarChar(50)
+  confidence_score    String?               @db.VarChar(50)
+  rationale           String?               @db.Text
+  needs_cutting       Boolean?              @default(false)
+  recommendation_note String?               @db.Text
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   landscaping_history landscaping_history[]
