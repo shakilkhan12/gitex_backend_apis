@@ -606,6 +606,7 @@ class ParkService {
           jobId: job.job_Id,
           jobInitiated: jobInitiated,
           jobCompletion: jobCompletion,
+          image: job.image,
           status: status,
           parkName: job.parks?.park_english_name,
           parkArabicName: job.parks?.park_arabic_name
