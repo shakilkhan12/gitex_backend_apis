@@ -140,6 +140,8 @@ class QMSService {
           total_processing_time: updateData.total_processing_time,
           exit_date: "2025-09-17",
           exit_time: "09:00:00",
+          exit_date: updateData.exit_date || '',
+          exit_time: updateData.exit_time || '',
           status: "Completed",
           updatedAt: new Date(),
         },
@@ -253,13 +255,65 @@ class QMSService {
         }),
       ]);
 
+      // Fetch camera details for each result
+      const resultsWithCameraDetails = await Promise.all(
+        results.map(async (record) => {
+          let entryCamera = {
+            camera_Id: record?.entry_camera || null,
+            camera_english_name: null as string | null,
+            camera_arabic_name: null as string | null
+          };
+          let exitCamera = {
+            camera_Id: record?.exit_camera || null,
+            camera_english_name: null as string | null,
+            camera_arabic_name: null as string | null
+          };
+
+          // Fetch entry camera details if entry_camera exists
+          if (record.entry_camera) {
+            const entryCam = await db.offices_cameras.findFirst({
+              where: { camera_Id: record.entry_camera },
+              select: {
+                camera_Id: true,
+                camera_english_name: true,
+                camera_arabic_name: true
+              }
+            });
+            if (entryCam) {
+              entryCamera = entryCam;
+            }
+          }
+
+          // Fetch exit camera details if exit_camera exists
+          if (record.exit_camera) {
+            const exitCam = await db.offices_cameras.findFirst({
+              where: { camera_Id: record.exit_camera },
+              select: {
+                camera_Id: true,
+                camera_english_name: true,
+                camera_arabic_name: true
+              }
+            });
+            if (exitCam) {
+              exitCamera = exitCam;
+            }
+          }
+
+          return {
+            ...record,
+            entryCamera,
+            exitCamera
+          };
+        })
+      );
+
       const totalPages = Math.ceil(totalCount / limit);
       const totalServices = uniqueServices.length;
       const mostHighlightedService =
         serviceCounts.length > 0 ? serviceCounts[0] : null;
 
       return {
-        data: results,
+        data: resultsWithCameraDetails,
         pagination: {
           currentPage: page,
           totalPages,

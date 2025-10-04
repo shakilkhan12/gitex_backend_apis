@@ -380,6 +380,8 @@ export interface QMSUpdateType {
   processing_end_time: string;
   waiting_time: string;
   total_processing_time: string;
+  exit_date: string;
+  exit_time: string;
 }
 
 export interface QMSHistoryType {
