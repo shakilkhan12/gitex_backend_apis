@@ -78,7 +78,7 @@ class QMSService {
         data: {
           visitor_id: eventData?.person_id || 123,
           gender: eventData?.gender,
-          age_group: eventData?.age_group || "Unknown",
+          age_group: eventData?.age_group || "7",
           entry_image: cloudinaryUrl,
           entry_camera: this.CAMERA_ID,
           entry_mode: eventData?.mood || "neutral",
