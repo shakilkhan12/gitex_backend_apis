@@ -34,6 +34,7 @@ class DashboardService {
       zoneUsageSummary,
       litterDetectionSummary,
       violationSummary,
+      landscapingData,
       parksSentimentAnalysisToday,
       officesSentimentAnalysisToday,
     ] = await Promise.all([
@@ -51,6 +52,7 @@ class DashboardService {
       getZoneUsage(sevenDaysAgo, now),
       getLitterDetection(now),
       getViolationSummary(sevenDaysAgo, now),
+      getLandscaping(sevenDaysAgo, now),
       getSentimentAnalysis("parks", {
         where: {
           check_in_date: {
@@ -140,17 +142,52 @@ class DashboardService {
       litterDetectionSummary,
       sentimentAnalysisToday,
       violationSummary,
+      landscapingData,
     };
   };
 }
-
-// --- Helper Functions ---
 
 function percent(count: number, total: number) {
   return total > 0 ? Math.round((count / total) * 100) : 0;
 }
 
-// get violation summary last 7 days from intrusion, behavior, litter and smoking detection park and office
+async function getLandscaping(sevenDaysAgo: Date, now: Date) {
+  const landscapingRecords = await db.landscaping.findMany({
+    where: {
+      createdAt: { gte: sevenDaysAgo, lte: now },
+      assinged_to: {
+        not: null,
+      },
+    },
+    include: {
+      assignedUser: {
+        select: {
+          emp__eng_name: true,
+          dep_eng_name: true,
+        },
+      },
+      parks: {
+        select: {
+          park_english_name: true,
+        },
+      },
+    },
+  });
+
+  return landscapingRecords.map((record) => ({
+    id: record.id,
+    name: record.name || null,
+    avatar: record.image || null,
+    location: record.parks?.park_english_name || null,
+    plantType: record.plant_type || null,
+    status: record.current_status || null,
+    incharge: record.assinged_to
+      ? record.assignedUser?.emp__eng_name || null
+      : null,
+    createdAt: record.createdAt || null,
+  }));
+}
+
 async function getViolationSummary(sevenDaysAgo: Date, now: Date) {
   const [
     smokingDetections,
@@ -443,6 +480,7 @@ async function getParkCheckins(todayStart: Date, todayEnd: Date) {
       person_Id: true,
       check_in_sentiment: true,
       check_out_sentiment: true,
+      check_in_date: true,
     },
   });
 }
@@ -565,6 +603,7 @@ async function mapSentimentWithEmpId(sentiments: any[]) {
       person_image: sentiment.person_image,
       sentiment_of: sentiment.sentiment_of,
       check_in_time: sentiment.check_in_time,
+      check_in_date: sentiment.check_in_date,
     };
   });
 }
