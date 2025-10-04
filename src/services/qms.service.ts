@@ -22,8 +22,9 @@ class QMSService {
     baseURL: "https://10.70.90.183:443",
     appKey: "59315117",
     appSecret: "YuWS8qCb61xbD8fEbwFJ",
-    cameraId: "218",
   };
+
+  private static readonly CAMERA_ID = "360";
 
   protected static triggerQMSVisitService = async (): Promise<{
     visit_id: number;
@@ -32,53 +33,60 @@ class QMSService {
     age_group: string | null;
   }> => {
     try {
-      // Step 1: Capture image from camera
-      // const base64Image = await this.captureCameraImage();
+      // Step 1: Get recent events from sentiment analysis
+      let eventData: any | null = null;
+      try {
+        const qmsEvents = await this.getQMSEvents(this.CAMERA_ID);
+        if (qmsEvents) {
+          eventData = qmsEvents;
+        } else {
+          return {
+            visit_id: 0,
+            visitor_id: null,
+            gender: null,
+            age_group: null,
+          };
+        }
+      } catch (eventError: any) {
+        console.error(
+          `[QMSService] Error checking qms events:`,
+          eventError.message
+        );
+        return {
+          visit_id: 0,
+          visitor_id: null,
+          gender: null,
+          age_group: null,
+        };
+      }
 
-      // if (!base64Image) {
-      //    throw new HttpException(STATUS.BAD_REQUEST, "Failed to capture image from camera");
-      // }
+      // Step 2: Capture image from camera
+      const base64Image = await this.captureCameraImage();
+      let cloudinaryUrl = null;
 
-      // // Step 2: Upload image to Cloudinary
-      // const cloudinaryUrl = await this.uploadImageToCloudinary(base64Image);
+      if (base64Image) {
+        cloudinaryUrl = await this.uploadImageToCloudinary(base64Image);
+        if (!cloudinaryUrl) {
+          cloudinaryUrl = eventData?.check_in_image || null;
+        }
+      } else {
+        cloudinaryUrl = eventData?.check_in_image || null;
+      }
 
-      // if (!cloudinaryUrl) {
-      //    throw new HttpException(STATUS.BAD_REQUEST, "Failed to upload image to Cloudinary");
-      // }
-
-      // Step 3: Analyze image with AI to get gender and age group
-      // const aiAnalysis = await this.analyzeImageWithAI(cloudinaryUrl);
-
-      // Step 4: Check if visitor exists in system (simplified logic)
-      // const visitor_id = await this.findOrCreateVisitor(aiAnalysis);
-
-      // Step 5: Create initial visit record
-      // const visitRecord = await db.qms_history.create({
-      //    data: {
-      //       visitor_id: visitor_id,
-      //       gender: aiAnalysis.gender,
-      //       age_group: aiAnalysis.age_group,
-      //       entry_image: cloudinaryUrl,
-      //       entry_camera: this.HIK_CONFIG.cameraId,
-      //       entry_mode: "AI_Detection",
-      //       entry_date: new Date(),
-      //       entry_time: new Date(),
-      //       status: "Active",
-      //       createdAt: new Date(),
-      //       updatedAt: new Date()
-      //    }
-      // });
-
+      // Step 3: Create visit record using event data or defaults
       const visitRecord = await db.qms_history.create({
         data: {
-          visitor_id: 123,
-          gender: '1',
-          age_group: '3',
-          entry_image: null,
-          entry_camera: '218',
-          entry_mode: 'happy',
-          entry_date: "2025-09-17",
-          entry_time: "09:00:00",
+          visitor_id: eventData?.person_id || 123,
+          gender: eventData?.gender,
+          age_group: eventData?.age_group || "Unknown",
+          entry_image: cloudinaryUrl,
+          entry_camera: this.CAMERA_ID,
+          entry_mode: eventData?.mood || "neutral",
+          entry_date:
+            eventData?.entry_date || new Date().toISOString().split("T")[0],
+          entry_time:
+            eventData?.entry_time ||
+            new Date().toISOString().split("T")[1].split(".")[0],
           status: "Active",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -130,8 +138,8 @@ class QMSService {
           processing_end_time: updateData.processing_end_time,
           waiting_time: updateData.waiting_time,
           total_processing_time: updateData.total_processing_time,
-          exit_date: '2025-09-17',
-          exit_time: '09:00:00',
+          exit_date: updateData.exit_date || '',
+          exit_time: updateData.exit_time || '',
           status: "Completed",
           updatedAt: new Date(),
         },
@@ -140,7 +148,7 @@ class QMSService {
       return updatedVisit;
     } catch (error: any) {
       console.log(error);
-      
+
       if (error instanceof HttpException) {
         throw error;
       }
@@ -158,20 +166,28 @@ class QMSService {
       const skip = (page - 1) * limit;
 
       const whereClause: any = {};
-      
+
       if (fromDateTime || toDateTime) {
         whereClause.createdAt = {};
-        
+
         if (fromDateTime) {
           whereClause.createdAt.gte = new Date(fromDateTime);
         }
-        
+
         if (toDateTime) {
           whereClause.createdAt.lte = new Date(toDateTime);
         }
       }
 
-      const [results, totalCount, totalCustomers, inCustomers, outCustomers, uniqueServices, serviceCounts] = await Promise.all([
+      const [
+        results,
+        totalCount,
+        totalCustomers,
+        inCustomers,
+        outCustomers,
+        uniqueServices,
+        serviceCounts,
+      ] = await Promise.all([
         db.qms_history.findMany({
           where: whereClause,
           orderBy: {
@@ -184,10 +200,12 @@ class QMSService {
           where: whereClause,
         }),
         // Total customers (unique visit_id count)
-        db.qms_history.groupBy({
-          by: ['visit_id'],
-          where: whereClause,
-        }).then(groups => groups.length),
+        db.qms_history
+          .groupBy({
+            by: ["visit_id"],
+            where: whereClause,
+          })
+          .then((groups) => groups.length),
         // In customers (Active status)
         db.qms_history.count({
           where: {
@@ -213,11 +231,11 @@ class QMSService {
           select: {
             service_english_name: true,
           },
-          distinct: ['service_english_name'],
+          distinct: ["service_english_name"],
         }),
         // Service counts for most highlighted service
         db.qms_history.groupBy({
-          by: ['service_english_name'],
+          by: ["service_english_name"],
           where: {
             ...whereClause,
             service_english_name: {
@@ -229,18 +247,71 @@ class QMSService {
           },
           orderBy: {
             _count: {
-              service_english_name: 'desc',
+              service_english_name: "desc",
             },
           },
         }),
       ]);
 
+      // Fetch camera details for each result
+      const resultsWithCameraDetails = await Promise.all(
+        results.map(async (record) => {
+          let entryCamera = {
+            camera_Id: record?.entry_camera || null,
+            camera_english_name: null as string | null,
+            camera_arabic_name: null as string | null
+          };
+          let exitCamera = {
+            camera_Id: record?.exit_camera || null,
+            camera_english_name: null as string | null,
+            camera_arabic_name: null as string | null
+          };
+
+          // Fetch entry camera details if entry_camera exists
+          if (record.entry_camera) {
+            const entryCam = await db.offices_cameras.findFirst({
+              where: { camera_Id: record.entry_camera },
+              select: {
+                camera_Id: true,
+                camera_english_name: true,
+                camera_arabic_name: true
+              }
+            });
+            if (entryCam) {
+              entryCamera = entryCam;
+            }
+          }
+
+          // Fetch exit camera details if exit_camera exists
+          if (record.exit_camera) {
+            const exitCam = await db.offices_cameras.findFirst({
+              where: { camera_Id: record.exit_camera },
+              select: {
+                camera_Id: true,
+                camera_english_name: true,
+                camera_arabic_name: true
+              }
+            });
+            if (exitCam) {
+              exitCamera = exitCam;
+            }
+          }
+
+          return {
+            ...record,
+            entryCamera,
+            exitCamera
+          };
+        })
+      );
+
       const totalPages = Math.ceil(totalCount / limit);
       const totalServices = uniqueServices.length;
-      const mostHighlightedService = serviceCounts.length > 0 ? serviceCounts[0] : null;
+      const mostHighlightedService =
+        serviceCounts.length > 0 ? serviceCounts[0] : null;
 
       return {
-        data: results,
+        data: resultsWithCameraDetails,
         pagination: {
           currentPage: page,
           totalPages,
@@ -254,10 +325,12 @@ class QMSService {
           inCustomer: inCustomers,
           outCustomer: outCustomers,
           totalServices,
-          mostHighlightedService: mostHighlightedService ? {
-            serviceName: mostHighlightedService.service_english_name,
-            count: mostHighlightedService._count.service_english_name,
-          } : null,
+          mostHighlightedService: mostHighlightedService
+            ? {
+                serviceName: mostHighlightedService.service_english_name,
+                count: mostHighlightedService._count.service_english_name,
+              }
+            : null,
         },
       };
     } catch (error: any) {
@@ -275,7 +348,7 @@ class QMSService {
         "/artemis/api/video/v1/camera/capture",
         this.HIK_CONFIG.appKey,
         this.HIK_CONFIG.appSecret,
-        { cameraIndexCode: this.HIK_CONFIG.cameraId }
+        { cameraIndexCode: this.CAMERA_ID }
       );
 
       if (
@@ -287,13 +360,13 @@ class QMSService {
         return response.data;
       } else {
         console.warn(
-          `[QMSService] HIK Vision API returned unsuccessful response for camera: ${this.HIK_CONFIG.cameraId}`
+          `[QMSService] HIK Vision API returned unsuccessful response for camera: ${this.CAMERA_ID}`
         );
         return null;
       }
     } catch (error: any) {
       console.error(
-        `[QMSService] Failed to get camera image for camera: ${this.HIK_CONFIG.cameraId}`,
+        `[QMSService] Failed to get camera image for camera: ${this.CAMERA_ID}`,
         error.message
       );
       throw error;
@@ -372,9 +445,7 @@ class QMSService {
     base64Image: string
   ): Promise<string | null> {
     try {
-      const publicId = `qms/visitor-entry/${
-        this.HIK_CONFIG.cameraId
-      }_${Date.now()}`;
+      const publicId = `qms/visitor-entry/${this.CAMERA_ID}_${Date.now()}`;
 
       const result = await cloudinary.uploader.upload(base64Image, {
         public_id: publicId,
@@ -395,128 +466,51 @@ class QMSService {
     }
   }
 
-  private static async analyzeImageWithAI(cloudinaryUrl: string): Promise<{
-    gender: string | null;
-    age_group: string | null;
-  }> {
+  private static async getQMSEvents(cameraId: string): Promise<any | null> {
     try {
-      const GEMINI_API_KEY = "AIzaSyAc6TkgL2AfKiPqcsVYf2JJC5VhF5vuNjM";
-      const MODEL = "gemini-2.5-flash";
-      const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-
-      const prompt = `*VISITOR DEMOGRAPHIC ANALYSIS REQUEST (JSON OUTPUT)*
-
-*Objective:* Analyze the provided image to determine the visitor's gender and age group. The final output MUST be a JSON object containing the gender and age group.
-
-*Image Link:* ${cloudinaryUrl}
-
-*OUTPUT FORMAT:*
-The response must be a single JSON object structured exactly as follows:
-
-{
-  "gender": "[Male, Female, or Unknown]",
-  "age_group": "[Child (0-12), Teenager (13-17), Young Adult (18-30), Middle Age (31-50), Senior (51-65), Elderly (65+), or Unknown]",
-  "confidence_score": "[0-100]",
-  "rationale": "[Brief explanation of the analysis]"
-}`;
-
-      const requestBody = {
-        contents: [
-          {
-            parts: [
-              {
-                text: prompt,
-              },
-            ],
+      const now = new Date();
+      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+      const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
+      const cameraEvents = await db.offices_sentiment_analysis.findFirst({
+        where: {
+          entry_camera_Id: parseInt(cameraId),
+          createdAt: {
+            lte: now,
+            gte: fifteenMinutesAgo,
           },
-        ],
-        generationConfig: {
-          temperature: 0.1,
-          topK: 32,
-          topP: 1,
-          maxOutputTokens: 2048,
         },
-      };
-
-      const response = await axios.post(geminiApiUrl, requestBody, {
-        headers: {
-          "Content-Type": "application/json",
+        orderBy: {
+          createdAt: "asc",
         },
-        timeout: 30000,
+        take: 1,
       });
 
-      if (
-        response.data &&
-        response.data.candidates &&
-        response.data.candidates[0] &&
-        response.data.candidates[0].content
-      ) {
-        const geminiResponse =
-          response.data.candidates[0].content.parts[0].text;
-
-        try {
-          let cleanResponse = geminiResponse;
-          if (cleanResponse.includes("```json")) {
-            cleanResponse = cleanResponse
-              .split("```json")[1]
-              .split("```")[0]
-              .trim();
-          } else if (cleanResponse.includes("```")) {
-            cleanResponse = cleanResponse
-              .split("```")[1]
-              .split("```")[0]
-              .trim();
-          }
-
-          const parsedResponse = JSON.parse(cleanResponse);
-          return {
-            gender: parsedResponse.gender || "Unknown",
-            age_group: parsedResponse.age_group || "Unknown",
-          };
-        } catch (parseError) {
-          console.warn(
-            "[QMSService] Failed to parse Gemini response as JSON, using defaults"
-          );
-          return {
-            gender: "Unknown",
-            age_group: "Unknown",
-          };
-        }
+      if (cameraEvents) {
+        return {
+          gender: cameraEvents.gender || "Unknown",
+          cameraId: cameraEvents.entry_camera_Id,
+          check_in_image: cameraEvents.check_in_image || null,
+          person_id: cameraEvents.person_Id,
+          age_group: null,
+          mood: cameraEvents.check_in_sentiment || "neutral",
+          entry_date: cameraEvents.check_in_date
+            ? new Date(cameraEvents.check_in_date).toISOString().split("T")[0]
+            : null,
+          entry_time: cameraEvents.check_in_time
+            ? new Date(cameraEvents.check_in_time)
+                .toISOString()
+                .split("T")[1]
+                .split(".")[0]
+            : null,
+          event_type: "sentiment",
+        };
       }
 
-      return {
-        gender: "Unknown",
-        age_group: "Unknown",
-      };
-    } catch (error: any) {
-      console.error(
-        "[QMSService] Error analyzing image with AI:",
-        error.message
-      );
-      return {
-        gender: "Unknown",
-        age_group: "Unknown",
-      };
-    }
-  }
-
-  private static async findOrCreateVisitor(aiAnalysis: {
-    gender: string | null;
-    age_group: string | null;
-  }): Promise<number | null> {
-    try {
-      // For now, we'll return null as visitor_id since we don't have a visitor management system
-      // In a real implementation, you would:
-      // 1. Check if a visitor with similar demographics exists
-      // 2. Create a new visitor record if not found
-      // 3. Return the visitor ID
-
-      // This is a placeholder implementation
       return null;
     } catch (error: any) {
       console.error(
-        "[QMSService] Error finding or creating visitor:",
-        error.message
+        `[QMSService] Error fetching sentiment analysis events:`,
+        error
       );
       return null;
     }
