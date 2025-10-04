@@ -646,6 +646,25 @@ exports.Prisma.Qms_historyScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.Testing_modulesScalarFieldEnum = {
+  id: 'id',
+  image: 'image',
+  name: 'name',
+  case_type: 'case_type',
+  estimated_height: 'estimated_height',
+  needs_cutting: 'needs_cutting',
+  recommendation_note: 'recommendation_note',
+  gallons_required_estimate: 'gallons_required_estimate',
+  calculation_note: 'calculation_note',
+  health: 'health',
+  suggestion: 'suggestion',
+  status: 'status',
+  confidence_score: 'confidence_score',
+  rationale: 'rationale',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -916,6 +935,21 @@ exports.Prisma.qms_historyOrderByRelevanceFieldEnum = {
   exit_time: 'exit_time',
   status: 'status'
 };
+
+exports.Prisma.testing_modulesOrderByRelevanceFieldEnum = {
+  image: 'image',
+  name: 'name',
+  case_type: 'case_type',
+  estimated_height: 'estimated_height',
+  recommendation_note: 'recommendation_note',
+  gallons_required_estimate: 'gallons_required_estimate',
+  calculation_note: 'calculation_note',
+  health: 'health',
+  suggestion: 'suggestion',
+  status: 'status',
+  confidence_score: 'confidence_score',
+  rationale: 'rationale'
+};
 exports.offices_sentiment_analysis_sentiment_of = exports.$Enums.offices_sentiment_analysis_sentiment_of = {
   employee: 'employee',
   visitor: 'visitor'
@@ -957,7 +991,8 @@ exports.Prisma.ModelName = {
   FAQ: 'FAQ',
   landscaping: 'landscaping',
   landscaping_history: 'landscaping_history',
-  qms_history: 'qms_history'
+  qms_history: 'qms_history',
+  testing_modules: 'testing_modules'
 };
 
 /**

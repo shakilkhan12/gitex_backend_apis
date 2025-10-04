@@ -42,6 +42,105 @@ export class IrrigationsService {
       }
    ];
 
+   public static testingIrrigationZones = async (images: string[]) => {
+      try {
+         const results = [];
+
+         for (let i = 0; i < images.length; i++) {
+            const imageBase64 = images[i];
+            
+            try {
+               // Upload image to Cloudinary
+               const cloudinaryUrl = await this.uploadImageToCloudinary(imageBase64, `testing_${i + 1}`);
+               
+               if (!cloudinaryUrl) {
+                  results.push({
+                     imageIndex: i + 1,
+                     success: false,
+                     error: "Failed to upload image to Cloudinary"
+                  });
+                  continue;
+               }
+
+               // Analyze image with Gemini
+               const geminiResponse = await this.analyzeImageWithGemini(cloudinaryUrl);
+               
+               if (!geminiResponse) {
+                  results.push({
+                     imageIndex: i + 1,
+                     success: false,
+                     error: "Failed to analyze image with Gemini"
+                  });
+                  continue;
+               }
+
+               // Extract Gemini response data (same as monitorIrrigationZones)
+               const geminiData = geminiResponse || {};
+               const wateringRecommendation = geminiData.watering_recommendation || {};
+
+               // Save to testing_modules table
+               const testingRecord = await this.createTestingModuleRecord({
+                  image: cloudinaryUrl,
+                  name: `Irrigation Testing`,
+                  case_type: "Irrigation Testing",
+                  estimated_height: null, // Not applicable for irrigation
+                  needs_cutting: null, // Not applicable for irrigation
+                  recommendation_note: null, // Not applicable for irrigation
+                  health: geminiData.status || "Unknown",
+                  suggestion: geminiData.suggestions || null,
+                  status: geminiData.status || null,
+                  confidence_score: String(geminiData.confidence_score || "0"),
+                  rationale: geminiData.rationale || null,
+                  gallons_required_estimate: wateringRecommendation.gallons_required_estimate || null,
+                  calculation_note: wateringRecommendation.calculation_note || null
+               });
+
+               results.push({
+                  imageIndex: i + 1,
+                  success: true,
+                  cloudinaryUrl: cloudinaryUrl,
+                  testingRecordId: testingRecord.id,
+                  geminiResponse: geminiResponse
+               });
+
+               console.log(`[IrrigationsService] Testing record created for image ${i + 1}:`, testingRecord.id);
+
+            } catch (error: any) {
+               results.push({
+                  imageIndex: i + 1,
+                  success: false,
+                  error: error.message
+               });
+            }
+         }
+
+         // Get all created records for this batch
+         const createdRecords = results
+            .filter(result => result.success && result.testingRecordId)
+            .map(result => result.testingRecordId);
+
+         let records: any[] = [];
+         if (createdRecords.length > 0) {
+            records = await db.testing_modules.findMany({
+               where: {
+                  id: { in: createdRecords }
+               },
+               orderBy: { createdAt: 'desc' }
+            });
+         }
+
+         return {
+            success: true,
+            message: `Processed ${images.length} testing images`,
+            results: results,
+            createdRecords: records
+         };
+
+      } catch (error: any) {
+         throw new HttpException(STATUS.BAD_REQUEST, "Failed to process testing images");
+      }
+   }
+
    public static monitorIrrigationZones = async () => {
       try {
          const appKey = this.HIK_CONFIG.appKey;
@@ -559,6 +658,49 @@ The response must be a single JSON object structured exactly as follows. The cal
          return result;
       } catch (error: any) {
          console.error('[IrrigationsService] Error creating job history record:', error.message);
+         throw error;
+      }
+   }
+
+   private static async createTestingModuleRecord(data: {
+      image: string;
+      name: string;
+      case_type: string;
+      estimated_height: string | null;
+      needs_cutting: boolean | null;
+      recommendation_note: string | null;
+      health: string;
+      suggestion: string | null;
+      status: string | null;
+      confidence_score: string | null;
+      rationale: string | null;
+      gallons_required_estimate: string | null;
+      calculation_note: string | null;
+   }): Promise<any> {
+      try {
+         const result = await db.testing_modules.create({
+            data: {
+               image: data.image,
+               name: data.name,
+               case_type: data.case_type,
+               estimated_height: data.estimated_height,
+               needs_cutting: data.needs_cutting,
+               recommendation_note: data.recommendation_note,
+               health: data.health,
+               suggestion: data.suggestion,
+               status: data.status,
+               confidence_score: data.confidence_score,
+               rationale: data.rationale,
+               gallons_required_estimate: data.gallons_required_estimate,
+               calculation_note: data.calculation_note,
+               createdAt: new Date(),
+               updatedAt: new Date()
+            },
+         });
+
+         return result;
+      } catch (error: any) {
+         console.error('[IrrigationsService] Error creating testing module record:', error.message);
          throw error;
       }
    }

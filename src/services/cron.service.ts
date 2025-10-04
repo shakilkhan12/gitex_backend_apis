@@ -7,11 +7,6 @@ class CronService {
    private static irrigationRunning = false;
 
    public static initializeCronJobs() {
-      console.log('[CronService] Initializing cron jobs...');
-      console.log('[CronService] Current server time (Local):', new Date().toLocaleString());
-      console.log('[CronService] Current UTC time:', new Date().toISOString());
-   
-
       // Morning grass monitoring at 07:30 AM every day
       const grassCron = cron.schedule('30 7 * * *', async () => {
          console.log('[CronService] 🕐 Grass monitoring cron triggered at 07:30 AM');

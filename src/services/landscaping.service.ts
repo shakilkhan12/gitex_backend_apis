@@ -663,6 +663,148 @@ OUTPUT FORMAT:
          throw error;
       }
    }
+
+   public static testingLandscapingService = async (images: string[]) => {
+      try {
+         const results = [];
+
+         for (let i = 0; i < images.length; i++) {
+            const imageBase64 = images[i];
+            
+            try {
+               // Upload image to Cloudinary
+               const cloudinaryUrl = await this.uploadImageToCloudinary(imageBase64, `landscaping_testing_${i + 1}`);
+               
+               if (!cloudinaryUrl) {
+                  results.push({
+                     imageIndex: i + 1,
+                     success: false,
+                     error: "Failed to upload image to Cloudinary"
+                  });
+                  continue;
+               }
+
+               // Analyze image with Gemini
+               const geminiResponse = await this.analyzeImageWithGemini(cloudinaryUrl);
+               
+               if (!geminiResponse) {
+                  results.push({
+                     imageIndex: i + 1,
+                     success: false,
+                     error: "Failed to analyze image with Gemini"
+                  });
+                  continue;
+               }
+
+               // Extract Gemini response data (same as monitorParkCamerasService)
+               const geminiData = geminiResponse || {};
+               const cuttingRecommendation = (geminiData as any).cutting_recommendation || {};
+
+               // Save to testing_modules table
+               const testingRecord = await this.createTestingModuleRecord({
+                  image: cloudinaryUrl,
+                  name: `Landscaping Testing`,
+                  case_type: "Landscaping Testing",
+                  estimated_height: (geminiData as any).estimated_height || null,
+                  needs_cutting: (cuttingRecommendation as any).needs_cutting || false,
+                  recommendation_note: (cuttingRecommendation as any).recommendation_note || null,
+                  health: (geminiData as any).status || "Unknown",
+                  suggestion: (geminiData as any).suggestions || null,
+                  status: (geminiData as any).status || null,
+                  confidence_score: String((geminiData as any).confidence_score || "0"),
+                  rationale: (geminiData as any).rationale || null,
+                  gallons_required_estimate: null, // Not applicable for landscaping
+                  calculation_note: null // Not applicable for landscaping
+               });
+
+               results.push({
+                  imageIndex: i + 1,
+                  success: true,
+                  cloudinaryUrl: cloudinaryUrl,
+                  testingRecordId: testingRecord.id,
+                  geminiResponse: geminiResponse
+               });
+
+               console.log(`[LandscapingService] Testing record created for image ${i + 1}:`, testingRecord.id);
+
+            } catch (error: any) {
+               results.push({
+                  imageIndex: i + 1,
+                  success: false,
+                  error: error.message
+               });
+            }
+         }
+
+         // Get all created records for this batch
+         const createdRecords = results
+            .filter(result => result.success && result.testingRecordId)
+            .map(result => result.testingRecordId);
+
+         let records: any[] = [];
+         if (createdRecords.length > 0) {
+            records = await db.testing_modules.findMany({
+               where: {
+                  id: { in: createdRecords }
+               },
+               orderBy: { createdAt: 'desc' }
+            });
+         }
+
+         return {
+            success: true,
+            message: `Processed ${images.length} testing images`,
+            results: results,
+            createdRecords: records
+         };
+
+      } catch (error: any) {
+         throw new HttpException(STATUS.BAD_REQUEST, "Failed to process testing images");
+      }
+   }
+
+   private static async createTestingModuleRecord(data: {
+      image: string;
+      name: string;
+      case_type: string;
+      estimated_height: string | null;
+      needs_cutting: boolean | null;
+      recommendation_note: string | null;
+      health: string;
+      suggestion: string | null;
+      status: string | null;
+      confidence_score: string | null;
+      rationale: string | null;
+      gallons_required_estimate: string | null;
+      calculation_note: string | null;
+   }): Promise<any> {
+      try {
+         const result = await db.testing_modules.create({
+            data: {
+               image: data.image,
+               name: data.name,
+               case_type: data.case_type,
+               estimated_height: data.estimated_height,
+               needs_cutting: data.needs_cutting,
+               recommendation_note: data.recommendation_note,
+               health: data.health,
+               suggestion: data.suggestion,
+               status: data.status,
+               confidence_score: data.confidence_score,
+               rationale: data.rationale,
+               gallons_required_estimate: data.gallons_required_estimate,
+               calculation_note: data.calculation_note,
+               createdAt: new Date(),
+               updatedAt: new Date()
+            },
+         });
+
+         return result;
+      } catch (error: any) {
+         console.error('[LandscapingService] Error creating testing module record:', error.message);
+         throw error;
+      }
+   }
 }
 
 export default LandscapingService; 
