@@ -553,6 +553,14 @@ class ParkService {
                 park_english_name: true,
                 park_arabic_name: true
               }
+            },
+            park_zones: {
+              select: {
+                Id: true,
+                zone_Id: true,
+                zone_english_name: true,
+                zone_arabic_name: true
+              }
             }
           },
           orderBy: {
@@ -600,9 +608,17 @@ class ParkService {
         const currentTime = new Date();
         const status = jobCompletion && currentTime > jobCompletion ? 'Completed' : 'Pending';
         
+        // Get zone details from included relation
+        const zoneDetails = job.park_zones;
+        
         return {
           id: job.Id,
           zoneId: job.zone_Id,
+          zoneDetails: zoneDetails ? {
+            zoneId: zoneDetails.zone_Id,
+            zoneEnglishName: zoneDetails.zone_english_name,
+            zoneArabicName: zoneDetails.zone_arabic_name
+          } : null,
           jobId: job.job_Id,
           jobInitiated: jobInitiated,
           jobCompletion: jobCompletion,

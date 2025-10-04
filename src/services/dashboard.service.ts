@@ -11,47 +11,53 @@ type SentimentCounts = {
 
 class DashboardService {
   public static getDashboardData = async () => {
-    const now = new Date();
-    const todayStart = startOfDay(now);
-    const todayEnd = endOfDay(now);
+    try {
+      const now = new Date();
+      const todayStart = startOfDay(now);
+      const todayEnd = endOfDay(now);
 
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(now.getDate() - 6);
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(now.getDate() - 6);
 
-    // Parallelize independent queries for performance
-    const [
-      officeCheckins,
-      parkCheckins,
-      officeAttendance,
-      parkAttendance,
-      parksSmokingDetectionToday,
-      parksIntrusionDetectionToday,
-      parkFootfallMale,
-      parkFootfallFemale,
-      officeFootfallMale,
-      officeFootfallFemale,
-      footfallSummary,
-      zoneUsageSummary,
-      litterDetectionSummary,
-      violationSummary,
-      landscapingData,
-      parksSentimentAnalysisToday,
-      officesSentimentAnalysisToday,
-    ] = await Promise.all([
+    // Execute queries in batches to avoid connection pool exhaustion
+    console.log('🔄 Starting dashboard data fetch...');
+    
+    // Batch 1: Basic check-ins and attendance
+    const [officeCheckins, parkCheckins, officeAttendance, parkAttendance] = await Promise.all([
       getOfficeCheckins(todayStart, todayEnd),
       getParkCheckins(todayStart, todayEnd),
       getOfficeAttendance(todayStart, todayEnd),
       getParkAttendance(todayStart, todayEnd),
+    ]);
+    console.log('✅ Batch 1 completed: check-ins and attendance');
+
+    // Batch 2: Detection data
+    const [parksSmokingDetectionToday, parksIntrusionDetectionToday] = await Promise.all([
       getParksSmokingDetection(todayStart, todayEnd),
       getParksIntrusionDetection(todayStart, todayEnd),
+    ]);
+    console.log('✅ Batch 2 completed: detection data');
+
+    // Batch 3: Footfall data
+    const [parkFootfallMale, parkFootfallFemale, officeFootfallMale, officeFootfallFemale] = await Promise.all([
       getFootfall("parks", "Male.", sevenDaysAgo, now),
       getFootfall("parks", "Female.", sevenDaysAgo, now),
       getFootfall("offices", "Male.", sevenDaysAgo, now),
       getFootfall("offices", "Female.", sevenDaysAgo, now),
+    ]);
+    console.log('✅ Batch 3 completed: footfall data');
+
+    // Batch 4: Summary data
+    const [footfallSummary, zoneUsageSummary, litterDetectionSummary, violationSummary] = await Promise.all([
       getFootfallSummary(sevenDaysAgo, now),
       getZoneUsage(sevenDaysAgo, now),
       getLitterDetection(now),
       getViolationSummary(sevenDaysAgo, now),
+    ]);
+    console.log('✅ Batch 4 completed: summary data');
+
+    // Batch 5: Final data
+    const [landscapingData, parksSentimentAnalysisToday, officesSentimentAnalysisToday] = await Promise.all([
       getLandscaping(sevenDaysAgo, now),
       getSentimentAnalysis("parks", {
         where: {
@@ -70,6 +76,7 @@ class DashboardService {
         },
       }),
     ]);
+    console.log('✅ Batch 5 completed: landscaping and sentiment data');
     // Sentiment percentages
     const allCheckins = [
       ...officeCheckins.map((item) => ({ ...item, type: "office" })),
@@ -144,6 +151,10 @@ class DashboardService {
       violationSummary,
       landscapingData,
     };
+    } catch (error:any) {
+      console.error('❌ Dashboard service error:', error);
+      throw new Error(`Dashboard data fetch failed: ${error.message || 'Unknown error'}`);
+    }
   };
 }
 
@@ -189,25 +200,22 @@ async function getLandscaping(sevenDaysAgo: Date, now: Date) {
 }
 
 async function getViolationSummary(sevenDaysAgo: Date, now: Date) {
-  const [
-    smokingDetections,
-    litterDetections,
-    intrusionDetections,
-    behaviourDetections,
-  ] = await Promise.all([
-    db.parks_smoking_detection.findMany({
-      where: { detection_date: { gte: sevenDaysAgo, lte: now } },
-    }),
-    db.parks_litter_detection.findMany({
-      where: { detection_date: { gte: sevenDaysAgo, lte: now } },
-    }),
-    db.parks_intrusion_detection.findMany({
-      where: { detection_date: { gte: sevenDaysAgo, lte: now } },
-    }),
-    db.parks_behaviour_alerts.findMany({
-      where: { detection_date: { gte: sevenDaysAgo, lte: now } },
-    }),
-  ]);
+  // Execute queries sequentially to avoid connection pool exhaustion
+  const smokingDetections = await db.parks_smoking_detection.findMany({
+    where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+  });
+  
+  const litterDetections = await db.parks_litter_detection.findMany({
+    where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+  });
+  
+  const intrusionDetections = await db.parks_intrusion_detection.findMany({
+    where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+  });
+  
+  const behaviourDetections = await db.parks_behaviour_alerts.findMany({
+    where: { detection_date: { gte: sevenDaysAgo, lte: now } },
+  });
 
   const counts = {
     smoking: smokingDetections.length,

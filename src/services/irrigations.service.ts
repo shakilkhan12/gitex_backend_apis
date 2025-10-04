@@ -507,11 +507,35 @@ The response must be a single JSON object structured exactly as follows. The cal
             console.warn(`[IrrigationsService] Could not find camera database ID for index ${data.cameraIndex}:`, dbError.message);
          }
 
+         let zoneDbId = null;
+         try {
+            // Get all zones for the park and find the one that matches by comparing Number(zone_Id) with zoneId
+            const zones = await db.park_zones.findMany({
+               where: {
+                  park_Id: parkDbId
+               },
+               select: {
+                  Id: true,
+                  zone_Id: true
+               }
+            });
+            
+            // Find the zone where Number(zone_Id) matches the zoneId
+            const matchingZone = zones.find(zone => Number(zone.zone_Id) === data.zoneId);
+            zoneDbId = matchingZone?.Id || null;
+            
+            if (!zoneDbId) {
+               console.warn(`[IrrigationsService] No matching zone found for zoneId ${data.zoneId} in park ${parkDbId}`);
+            }
+         } catch (dbError: any) {
+            console.warn(`[IrrigationsService] Could not find zone database ID for zoneId ${data.zoneId}:`, dbError.message);
+         }
+
          const result = await db.parks_zones_job_history.create({
             data: {
                camera_Id: cameraDbId,
                park_Id: parkDbId,
-               zone_Id: data.zoneId,
+               zone_Id: zoneDbId,
                job_Id: `IRRIGATION_${data.cameraIndex}_${data.zoneId}_${Date.now()}`,
                image: data.image,
                started_at: new Date(),

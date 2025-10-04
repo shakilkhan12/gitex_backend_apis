@@ -195,6 +195,7 @@ model park_zones {
   updatedAt                    DateTime                       @default(now()) @db.Timestamp(0)
   parks                        parks?                         @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "park_zones_ibfk_1")
   parks_irrigation_job_history parks_irrigation_job_history[]
+  parks_zones_job_history      parks_zones_job_history[]
 
   @@index([park_Id], map: "park_Id")
   @@map("park_zones")
@@ -213,6 +214,7 @@ model parks_zones_job_history {
   updatedAt      DateTime      @default(now()) @db.Timestamp(0)
   park_cameras   park_cameras? @relation(fields: [camera_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_1")
   parks          parks?        @relation(fields: [park_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_2")
+  park_zones     park_zones?   @relation(fields: [zone_Id], references: [Id], onDelete: Restrict, onUpdate: Restrict, map: "parks_zones_job_history_ibfk_3")
 
   @@index([park_Id], map: "park_Id")
   @@index([camera_Id], map: "camera_Id")

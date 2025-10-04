@@ -7,6 +7,28 @@ if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL_PROD) {
   process.env.DATABASE_URL = process.env.DATABASE_URL_PROD;
 }
 
+// Connection pool configuration
+const connectionPoolConfig = {
+  connectionLimit: 25, // Increased from default 9
+  poolTimeout: 60000, // 60 seconds instead of 10
+  acquireTimeout: 60000, // 60 seconds
+  timeout: 60000, // 60 seconds
+};
+
+// Add connection pool parameters to DATABASE_URL if not already present
+if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('connection_limit')) {
+  const url = new URL(process.env.DATABASE_URL);
+  url.searchParams.set('connection_limit', connectionPoolConfig.connectionLimit.toString());
+  url.searchParams.set('pool_timeout', connectionPoolConfig.poolTimeout.toString());
+  url.searchParams.set('acquire_timeout', connectionPoolConfig.acquireTimeout.toString());
+  url.searchParams.set('timeout', connectionPoolConfig.timeout.toString());
+  // Add additional MySQL-specific parameters
+  url.searchParams.set('max_connections', '25');
+  url.searchParams.set('connect_timeout', '60');
+  process.env.DATABASE_URL = url.toString();
+  console.log('🔧 Updated DATABASE_URL with connection pool parameters');
+}
+
 // Enhanced Prisma client configuration with connection pool management
 const db = new PrismaClient({
   datasources: {
@@ -18,30 +40,17 @@ const db = new PrismaClient({
   errorFormat: 'pretty',
 });
 
-// Connection pool configuration
-const connectionPoolConfig = {
-  connectionLimit: 20, // Increased from default 9
-  poolTimeout: 30000, // 30 seconds instead of 10
-  acquireTimeout: 30000, // 30 seconds
-  timeout: 30000, // 30 seconds
-};
-
-// Add connection pool parameters to DATABASE_URL if not already present
-if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('connection_limit')) {
-  const url = new URL(process.env.DATABASE_URL);
-  url.searchParams.set('connection_limit', connectionPoolConfig.connectionLimit.toString());
-  url.searchParams.set('pool_timeout', connectionPoolConfig.poolTimeout.toString());
-  url.searchParams.set('acquire_timeout', connectionPoolConfig.acquireTimeout.toString());
-  url.searchParams.set('timeout', connectionPoolConfig.timeout.toString());
-  process.env.DATABASE_URL = url.toString();
-}
-
 // Connection retry logic
 const connectWithRetry = async (retries = 3, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
       await db.$connect();
       console.log('✅ Database connected successfully');
+      
+      // Test the connection with a simple query
+      await db.$queryRaw`SELECT 1 as test`;
+      console.log('✅ Database connection test successful');
+      
       return;
     } catch (error) {
       console.error(`❌ Database connection attempt ${i + 1} failed:`, error);
@@ -55,6 +64,16 @@ const connectWithRetry = async (retries = 3, delay = 1000) => {
     }
   }
 };
+
+// Add connection pool monitoring
+setInterval(async () => {
+  try {
+    const result = await db.$queryRaw`SHOW STATUS LIKE 'Threads_connected'`;
+    console.log('📊 Database connection status:', result);
+  } catch (error) {
+    console.error('❌ Failed to check database connection status:', error);
+  }
+}, 30000); // Check every 30 seconds
 
 // Initialize connection
 connectWithRetry().catch(error => {
