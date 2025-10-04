@@ -50,7 +50,18 @@ class QMSController extends QMSService {
 
    public static viewQMSHistory = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const history = await QMSService.viewQMSHistoryService();
+         const { page, limit, fromDateTime, toDateTime } = req.query;
+         
+         const pageNum = page ? Number(page) : 1;
+         const limitNum = limit ? Number(limit) : 200;
+         
+         let history;
+         if (fromDateTime && toDateTime) {
+            history = await QMSService.viewQMSHistoryService(pageNum, limitNum, String(fromDateTime), String(toDateTime));
+         } else {
+            history = await QMSService.viewQMSHistoryService(pageNum, limitNum);
+         }
+         
          return res.status(STATUS.SUCCESS).json({
             success: true,
             message: "QMS history retrieved successfully",

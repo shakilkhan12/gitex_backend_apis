@@ -148,15 +148,118 @@ class QMSService {
     }
   };
 
-  protected static viewQMSHistoryService = async () => {
+  protected static viewQMSHistoryService = async (
+    page: number = 1,
+    limit: number = 200,
+    fromDateTime?: string,
+    toDateTime?: string
+  ) => {
     try {
-      const results = await db.qms_history.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+      const skip = (page - 1) * limit;
 
-      return results;
+      const whereClause: any = {};
+      
+      if (fromDateTime || toDateTime) {
+        whereClause.createdAt = {};
+        
+        if (fromDateTime) {
+          whereClause.createdAt.gte = new Date(fromDateTime);
+        }
+        
+        if (toDateTime) {
+          whereClause.createdAt.lte = new Date(toDateTime);
+        }
+      }
+
+      const [results, totalCount, totalCustomers, inCustomers, outCustomers, uniqueServices, serviceCounts] = await Promise.all([
+        db.qms_history.findMany({
+          where: whereClause,
+          orderBy: {
+            createdAt: "desc",
+          },
+          skip,
+          take: limit,
+        }),
+        db.qms_history.count({
+          where: whereClause,
+        }),
+        // Total customers (unique visit_id count)
+        db.qms_history.groupBy({
+          by: ['visit_id'],
+          where: whereClause,
+        }).then(groups => groups.length),
+        // In customers (Active status)
+        db.qms_history.count({
+          where: {
+            ...whereClause,
+            status: "Active",
+          },
+        }),
+        // Out customers (Completed status)
+        db.qms_history.count({
+          where: {
+            ...whereClause,
+            status: "Completed",
+          },
+        }),
+        // Unique services
+        db.qms_history.findMany({
+          where: {
+            ...whereClause,
+            service_english_name: {
+              not: null,
+            },
+          },
+          select: {
+            service_english_name: true,
+          },
+          distinct: ['service_english_name'],
+        }),
+        // Service counts for most highlighted service
+        db.qms_history.groupBy({
+          by: ['service_english_name'],
+          where: {
+            ...whereClause,
+            service_english_name: {
+              not: null,
+            },
+          },
+          _count: {
+            service_english_name: true,
+          },
+          orderBy: {
+            _count: {
+              service_english_name: 'desc',
+            },
+          },
+        }),
+      ]);
+
+      const totalPages = Math.ceil(totalCount / limit);
+      const totalServices = uniqueServices.length;
+      const mostHighlightedService = serviceCounts.length > 0 ? serviceCounts[0] : null;
+
+      return {
+        data: results,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalCount,
+          limit,
+          hasNextPage: page < totalPages,
+          hasPreviousPage: page > 1,
+        },
+        stats: {
+          totalCustomer: totalCustomers,
+          inCustomer: inCustomers,
+          outCustomer: outCustomers,
+          totalServices,
+          mostHighlightedService: mostHighlightedService ? {
+            serviceName: mostHighlightedService.service_english_name,
+            count: mostHighlightedService._count.service_english_name,
+          } : null,
+        },
+      };
     } catch (error: any) {
       throw new HttpException(
         STATUS.BAD_REQUEST,
