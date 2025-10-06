@@ -2694,7 +2694,7 @@ class EventHandlerService {
          // Remove base64 prefix from image data before sending to HikVision API
          const cleanFaceData = base64ImageData ? base64ImageData.replace(/^data:image\/[a-z]+;base64,/, '') : null;
          const hikVisionPayload = {
-            personCode: `G-${guestUser.Id.toString()}`,
+            personCode: `${guestUser.Id.toString()}`,
             personFamilyName: guestNumber.toString(),
             personGivenName: "Guest",
             gender: gender === "Male" ? 1 : 2,
