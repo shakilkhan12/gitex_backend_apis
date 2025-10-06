@@ -14,7 +14,7 @@ class ParkService {
   };
 
   private static isGuest = (item: any): boolean => {
-    return !this.isEmployee(item);
+    return !ParkService.isEmployee(item);
   };
    // add park service
    protected static addParkService = async (park: ParkType) => {
@@ -266,12 +266,11 @@ class ParkService {
 
   // Get park footfall analysis service
   protected static getParkFootfallAnalysisService = async (parkIds: number | number[], fromDate?: string, toDate?: string) => {
-    if (!parkIds) {
+    if (!parkIds || (Array.isArray(parkIds) && parkIds.length === 0)) {
       throw new HttpException(STATUS.BAD_REQUEST, 'park_Id is required');
     }
 
-    return await DatabaseUtils.executeWithRetry(
-      async () => {
+    try {
       // Build where clause for date filtering and exclude exit cameras
       const whereClause: any = {
         park_Id: Array.isArray(parkIds) ? { in: parkIds } : Number(parkIds),
@@ -343,10 +342,9 @@ class ParkService {
       }
       
       // Separate data for employees and guests based on user_Id
-      const employeeData = footfallData.filter(item => this.isEmployee(item));
-      const guestData = footfallData.filter(item => this.isGuest(item));
+      const employeeData = footfallData.filter(item => ParkService.isEmployee(item));
+      const guestData = footfallData.filter(item => ParkService.isGuest(item));
       
-     
       // Employee counts
       const employeeCount = employeeData.length;
       const employeeMaleCount = employeeData.filter(item => {
@@ -381,7 +379,7 @@ class ParkService {
       
       // Get unique employees (those with valid user_Id)
       const uniqueEmployees = footfallData
-        .filter(item => this.isEmployee(item))
+        .filter(item => ParkService.isEmployee(item))
         .reduce((acc: any[], item) => {
           if (item.person && !acc.find(emp => emp.Id === item.person?.Id)) {
             acc.push({
@@ -416,22 +414,26 @@ class ParkService {
 
       // Enhanced hourly distribution with employee and guest breakdown
       const hourlyDistribution = footfallData.reduce((acc, item) => {
-        const hour = new Date(item.time).getHours();
-        const isEmployee = this.isEmployee(item);
-        
-        if (!acc[hour]) {
-          acc[hour] = {
-            total: 0,
-            employees: 0,
-            guests: 0
-          };
-        }
-        
-        acc[hour].total += 1;
-        if (isEmployee) {
-          acc[hour].employees += 1;
-        } else {
-          acc[hour].guests += 1;
+        try {
+          const hour = new Date(item.time).getHours();
+          const isEmployee = ParkService.isEmployee(item);
+          
+          if (!acc[hour]) {
+            acc[hour] = {
+              total: 0,
+              employees: 0,
+              guests: 0
+            };
+          }
+          
+          acc[hour].total += 1;
+          if (isEmployee) {
+            acc[hour].employees += 1;
+          } else {
+            acc[hour].guests += 1;
+          }
+        } catch (error) {
+          // Skip invalid time entries
         }
         
         return acc;
@@ -439,22 +441,26 @@ class ParkService {
 
       // Enhanced daily distribution with employee and guest breakdown
       const dailyDistribution = footfallData.reduce((acc, item) => {
-        const date = new Date(item.time).toISOString().split('T')[0];
-        const isEmployee = this.isEmployee(item);
-        
-        if (!acc[date]) {
-          acc[date] = {
-            total: 0,
-            employees: 0,
-            guests: 0
-          };
-        }
-        
-        acc[date].total += 1;
-        if (isEmployee) {
-          acc[date].employees += 1;
-        } else {
-          acc[date].guests += 1;
+        try {
+          const date = new Date(item.time).toISOString().split('T')[0];
+          const isEmployee = ParkService.isEmployee(item);
+          
+          if (!acc[date]) {
+            acc[date] = {
+              total: 0,
+              employees: 0,
+              guests: 0
+            };
+          }
+          
+          acc[date].total += 1;
+          if (isEmployee) {
+            acc[date].employees += 1;
+          } else {
+            acc[date].guests += 1;
+          }
+        } catch (error) {
+          // Skip invalid time entries
         }
         
         return acc;
@@ -478,9 +484,12 @@ class ParkService {
         dailyDistribution,
         rawData: footfallData
       };
-      },
-      'getParkFootfallAnalysisService'
-    );
+    } catch (error: any) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch footfall analysis data');
+    }
   };
 
   // Add park footfall analysis service
@@ -498,9 +507,9 @@ class ParkService {
           detected_camera_Id: footfallData.detected_camera_Id,
           detected_camera_name: footfallData.detected_camera_name || undefined,
           time: footfallData.time || new Date(),
-          image: footfallData.image,
-          abc2: footfallData.abc2,
-          abc3: footfallData.abc3
+          image: footfallData.image || undefined,
+          abc2: footfallData.abc2 || undefined,
+          abc3: footfallData.abc3 || undefined
         }
       });
       return result;

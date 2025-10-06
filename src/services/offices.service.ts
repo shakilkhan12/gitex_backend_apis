@@ -13,7 +13,7 @@ class OfficesService {
   };
 
   private static isGuest = (item: any): boolean => {
-    return !this.isEmployee(item);
+    return !OfficesService.isEmployee(item);
   };
    // add park service
    protected static addOfficeService = async (office: OfficeType) => {
@@ -209,7 +209,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
 
    // Get office footfall analysis data
    protected static getOfficeFootfallAnalysisService = async (officeIds: number | number[], fromDate?: string, toDate?: string) => {
-      if (!officeIds) {
+      if (!officeIds || (Array.isArray(officeIds) && officeIds.length === 0)) {
          throw new HttpException(STATUS.BAD_REQUEST, 'office_Id is required');
       }
 
@@ -285,8 +285,8 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          }
          
          // Separate data for employees and guests based on user_Id
-         const employeeData = footfallData.filter(item => this.isEmployee(item));
-         const guestData = footfallData.filter(item => this.isGuest(item));
+         const employeeData = footfallData.filter(item => OfficesService.isEmployee(item));
+         const guestData = footfallData.filter(item => OfficesService.isGuest(item));
          
          // Employee counts
          const employeeCount = employeeData.length;
@@ -323,7 +323,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       
          // Get unique employees (those with valid user_Id)
          const uniqueEmployees = footfallData
-            .filter(item => this.isEmployee(item))
+            .filter(item => OfficesService.isEmployee(item))
             .reduce((acc: any[], item) => {
                if (item.person && !acc.find(emp => emp.Id === item.person?.Id)) {
                   acc.push({
@@ -360,7 +360,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          const hourlyDistribution = footfallData.reduce((acc, item) => {
             try {
                const hour = new Date(item.time).getHours();
-               const isEmployee = this.isEmployee(item);
+               const isEmployee = OfficesService.isEmployee(item);
                
                if (!acc[hour]) {
                   acc[hour] = {
@@ -387,7 +387,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          const dailyDistribution = footfallData.reduce((acc, item) => {
             try {
                const date = new Date(item.time).toISOString().split('T')[0];
-               const isEmployee = this.isEmployee(item);
+               const isEmployee = OfficesService.isEmployee(item);
                
                if (!acc[date]) {
                   acc[date] = {

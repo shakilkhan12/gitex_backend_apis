@@ -222,59 +222,59 @@ class UserService {
                where: {
                   Id: user.role_Id
                },
-               select: {
-                  role_name: true,
-                  users_permissions: {
-                     select: {
-                        dashboard_view: true,
-                        role_permission_view: true,
-                        role_permission_add: true,
-                        role_permission_update: true,
-                        offices_view: true,
-                        offices_add: true,
-                        offices_update: true,
-                        parks_view: true,
-                        parks_add: true,
-                        parks_update: true,
-                        system_report_view: true,
-                        alerts_view: true,
-                        office_attendance_view: true,
-                        office_attendance_add: true,
-                        office_attendance_update: true,
-                        office_footfall_view: true,
-                        office_footfall_add: true,
-                        office_footfall_update: true,
-                        office_sentimental_view: true,
-                        office_sentimental_add: true,
-                        office_sentimental_update: true,
-                        park_attendance_view: true,
-                        park_attendance_add: true,
-                        park_attendance_update: true,
-                        park_footfall_view: true,
-                        park_footfall_add: true,
-                        park_footfall_update: true,
-                        park_sentimental_view: true,
-                        park_sentimental_add: true,
-                        park_sentimental_update: true,
-                        park_irrigation_view: true,
-                        park_irrigation_add: true,
-                        park_irrigation_update: true,
-                        park_landscaping_view: true,
-                        park_landscaping_add: true,
-                        park_landscaping_update: true,
-                        park_litter_detection_view: true,
-                        park_litter_detection_add: true,
-                        park_litter_detection_update: true,
-                        park_intrusion_detection_view: true,
-                        park_intrusion_detection_add: true,
-                        park_intrusion_detection_update: true,
-                        park_smoking_detection_view: true,
-                        park_smoking_detection_add: true,
-                        park_smoking_detection_update: true,
-                        my_account_view: true,
-                        settings_view: true
+                  select: {
+                     role_name: true,
+                     users_permissions: {
+                        select: {
+                           dashboard_view: true,
+                           role_permission_view: true,
+                           role_permission_add: true,
+                           role_permission_update: true,
+                           offices_view: true,
+                           offices_add: true,
+                           offices_update: true,
+                           parks_view: true,
+                           parks_add: true,
+                           parks_update: true,
+                           system_report_view: true,
+                           alerts_view: true,
+                           office_attendance_view: true,
+                           office_attendance_add: true,
+                           office_attendance_update: true,
+                           office_footfall_view: true,
+                           office_footfall_add: true,
+                           office_footfall_update: true,
+                           office_sentimental_view: true,
+                           office_sentimental_add: true,
+                           office_sentimental_update: true,
+                           park_attendance_view: true,
+                           park_attendance_add: true,
+                           park_attendance_update: true,
+                           park_footfall_view: true,
+                           park_footfall_add: true,
+                           park_footfall_update: true,
+                           park_sentimental_view: true,
+                           park_sentimental_add: true,
+                           park_sentimental_update: true,
+                           park_irrigation_view: true,
+                           park_irrigation_add: true,
+                           park_irrigation_update: true,
+                           park_landscaping_view: true,
+                           park_landscaping_add: true,
+                           park_landscaping_update: true,
+                           park_litter_detection_view: true,
+                           park_litter_detection_add: true,
+                           park_litter_detection_update: true,
+                           park_intrusion_detection_view: true,
+                           park_intrusion_detection_add: true,
+                           park_intrusion_detection_update: true,
+                           park_smoking_detection_view: true,
+                           park_smoking_detection_add: true,
+                           park_smoking_detection_update: true,
+                           my_account_view: true,
+                           settings_view: true
+                        }
                      }
-                  }
                }
             });
             
@@ -330,8 +330,8 @@ class UserService {
 
          // Prepare update data
          const updateData: any = {
-            role_Id: roleId,
-            updatedAt: new Date()
+               role_Id: roleId,
+               updatedAt: new Date()
          };
 
          // Add supervisor access fields if provided

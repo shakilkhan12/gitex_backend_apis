@@ -250,55 +250,78 @@ const { camera_Id, ...fields } = req.body;
 
   public static getParkFootfallAnalysis = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log('🚀 [ParkController] getParkFootfallAnalysis called');
+      console.log('📥 [ParkController] Request params:', req.params);
+      console.log('📥 [ParkController] Request query:', req.query);
+      
       const { park_Id } = req.params;
-      const { parkIds, fromDate, toDate } = req.query;
+      const { fromDate, toDate, parkIds } = req.query;
 
-      let parkIdsToUse: number | number[];
+      console.log('🔍 [ParkController] Extracted values:');
+      console.log('  - park_Id:', park_Id, typeof park_Id);
+      console.log('  - parkIds:', parkIds, typeof parkIds);
+      console.log('  - fromDate:', fromDate, typeof fromDate);
+      console.log('  - toDate:', toDate, typeof toDate);
+
+      let parkIdsToUse;
       
       if (parkIds) {
-        if (typeof parkIds === 'string') {
-          parkIdsToUse = parkIds.split(',').map(id => parseInt(id.trim()));
+        console.log('📋 [ParkController] Processing parkIds parameter');
+        if (typeof parkIds === 'string' && parkIds.includes(',')) {
+          parkIdsToUse = parkIds.split(',').map(id => Number(id.trim()));
+          console.log('  - Split comma-separated string:', parkIdsToUse);
         } else if (Array.isArray(parkIds)) {
-          parkIdsToUse = parkIds.map(id => parseInt(id.toString()));
+          parkIdsToUse = parkIds.map(id => Number(id));
+          console.log('  - Processed array:', parkIdsToUse);
         } else {
-          parkIdsToUse = [parseInt(parkIds.toString())];
+          parkIdsToUse = [Number(parkIds)];
+          console.log('  - Single value converted to array:', parkIdsToUse);
         }
       } else if (park_Id) {
-        parkIdsToUse = parseInt(park_Id);
+        parkIdsToUse = Number(park_Id);
+        console.log('📋 [ParkController] Using park_Id from params:', parkIdsToUse);
       } else {
-        throw new HttpException(STATUS.BAD_REQUEST, 'Park ID is required');
+        console.log('❌ [ParkController] No park IDs provided');
+        return res.status(STATUS.BAD_REQUEST).json({ message: 'park_Id or parkIds is required' });
       }
 
-      const result = await ParksService.getParkFootfallAnalysisService(
+      console.log('✅ [ParkController] Final parkIdsToUse:', parkIdsToUse, typeof parkIdsToUse);
+      console.log('🔄 [ParkController] Calling ParksService.getParkFootfallAnalysisService...');
+
+      const footfallData = await ParksService.getParkFootfallAnalysisService(
         parkIdsToUse,
         fromDate as string,
         toDate as string
       );
 
-      res.status(STATUS.SUCCESS).json(result);
+      console.log('✅ [ParkController] Service returned data:', {
+        summary: footfallData?.summary,
+        employeesCount: footfallData?.employees?.length,
+        guestsCount: footfallData?.guests?.length,
+        rawDataCount: footfallData?.rawData?.length
+      });
+
+      return res.status(STATUS.SUCCESS).json(footfallData);
     } catch (error) {
+      console.log('❌ [ParkController] Error occurred:', error);
+      console.log('❌ [ParkController] Error message:', error);
+      console.log('❌ [ParkController] Error stack:', error);
       next(error);
     }
   };
 
   public static addParkFootfallAnalysis = async (req: Request<{}, {}, ParkFootfallAnalysisType>, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
     try {
-      if (errors.isEmpty()) {
-        const requiredFields = ['park_Id', 'detection_Id', 'person_Id', 'detected_camera_Id'];
-        const missingFields = requiredFields.filter(field => !req.body[field as keyof ParkFootfallAnalysisType]);
-        
-        if (missingFields.length > 0) {
-          return res.status(STATUS.BAD_REQUEST).json({
-            message: `Missing required fields: ${missingFields.join(', ')}`
-          });
-        }
+      const footfallData = req.body;
 
-        const result = await ParksService.addParkFootfallAnalysisService(req.body);
-        res.status(STATUS.CREATED).json(result);
-      } else {
-        return res.status(STATUS.BAD_REQUEST).json({ errors: errors.array() });
+      if (!footfallData.park_Id || !footfallData.detection_Id || !footfallData.detected_camera_Id) {
+        return res.status(STATUS.BAD_REQUEST).json({ 
+          message: 'park_Id, detection_Id, and detected_camera_Id are required' 
+        });
       }
+
+      const result = await ParksService.addParkFootfallAnalysisService(footfallData);
+      return res.status(STATUS.CREATED).json(result);
     } catch (error) {
       next(error);
     }

@@ -536,14 +536,16 @@ class EventHandlerService {
                       });
                       
                       let genderName = 'Unknown';
+                      let genderValue = 0;
                       let isChild = false;
                       let person_Id = null;
                       let faceData = null;
+                     let ageGroup = null;
                       
                       if (eventInfo.data?.alarmResult?.faces) {
                          Logger.debug(`[EventHandlerService] Processing face recognition data for office attendance`);
-                         const genderValue = eventInfo.data.alarmResult.faces.gender.value
-                         const ageGroup = eventInfo.data.alarmResult.faces.age.ageGroup
+                         genderValue = eventInfo.data.alarmResult.faces.gender.value
+                         ageGroup = eventInfo.data.alarmResult.faces.age.ageGroup
                          genderName = gender_types.find(gt => gt.code === genderValue)?.name || 'Unknown'
                          isChild = ageGroup <= 2 // INFANT, KID, CHILD
                          
@@ -666,7 +668,8 @@ class EventHandlerService {
                          time: eventInfo.happenTime,
                          detected_camera_Id: eventInfo.srcIndex,
                          detected_camera_name: eventInfo.srcName,
-                         image: image
+                         image: image,
+                         age_group: ageGroup,
                       }
                       
                       // Only create footfall records for entry events, not exit events
@@ -685,7 +688,8 @@ class EventHandlerService {
                          isChild: officeFootfallData.is_child,
                          detectionId: officeFootfallData.detection_Id,
                          image: officeFootfallData.image,
-                         srcName: eventInfo.srcName
+                         age_group: officeFootfallData.age_group,
+                         srcName: eventInfo.srcName,
                       });
                       
                         const officeFootfallRecord = await db.offices_footfall_analysis.create({
@@ -887,7 +891,8 @@ class EventHandlerService {
                          check_out_time: isExit ? eventInfo.happenTime : null,
                          check_out_capture: isExit ? sentimentImageUrl : null,
                          check_out_sentiment: isExit ? detectedSentiment : null,
-                         exit_camera_Id: isExit ? officeCamera.Id : null
+                         exit_camera_Id: isExit ? officeCamera.Id : null,
+                         age_group: ageGroup,
                       }
                     
                       if(isEntry){
@@ -897,7 +902,8 @@ class EventHandlerService {
                             personId: officeSentimentData.person_Id,
                             personName: officeSentimentData.person_name,
                             sentimentOf: officeSentimentData.sentiment_of,
-                            hasImage: !!sentimentImageUrl
+                            hasImage: !!sentimentImageUrl,
+                            age_group: officeSentimentData.age_group
                          });
                          
                          const officeSentimentRecord = await db.offices_sentiment_analysis.create({
@@ -1130,7 +1136,9 @@ class EventHandlerService {
                          const officeAttendanceData = {
                             office_Id: office_Id,
                             person_Id: person_Id,
-                            entry_time: eventInfo.happenTime
+                            entry_time: eventInfo.happenTime,
+                            age_group: ageGroup,
+                            gender: genderValue,
                          }
                          
                          const officeAttendanceRecord = await db.offices_attendance.create({
@@ -1596,7 +1604,7 @@ class EventHandlerService {
                       });
                       
                       const genderValue = eventInfo.data.alarmResult.faces.gender.value
-                      const ageGroup = eventInfo.data.alarmResult.faces.age.ageGroup
+                      let ageGroup = eventInfo.data.alarmResult.faces.age.ageGroup
                       const genderName = gender_types.find(gt => gt.code === genderValue)?.name || 'Unknown'
                       const isChild = ageGroup <= 2 // INFANT, KID, CHILD
                       
@@ -1919,7 +1927,8 @@ class EventHandlerService {
                          detection_Id: eventInfo.eventId,
                          person_name: personName,
                          person_image: personImage,
-                         gender: genderName,
+                         gender: genderName, 
+                         age_group: ageGroup,
                          check_in_image: isEntry ? sentimentImageUrl : null,
                          sentiment_of: sentimentOf as 'employee' | 'visitor',
                          check_in_date: isEntry ? eventInfo.happenTime: null,
@@ -1930,7 +1939,8 @@ class EventHandlerService {
                          check_out_time: isExit ? eventInfo.happenTime : null,
                          check_out_capture: isExit ? sentimentImageUrl : null,
                          check_out_sentiment: isExit ? detectedSentiment : null,
-                         exit_camera_Id: isExit ? parkCamera.Id : null
+                         exit_camera_Id: isExit ? parkCamera.Id : null,
+                       
                       }
                    
                       if(isEntry){
@@ -1940,7 +1950,8 @@ class EventHandlerService {
                             personId: parkSentimentData.person_Id,
                             personName: parkSentimentData.person_name,
                             sentimentOf: parkSentimentData.sentiment_of,
-                            hasImage: !!sentimentImageUrl
+                            hasImage: !!sentimentImageUrl,
+                            age_group: parkSentimentData.age_group,
                          });
                          
                          const parkSentimentRecord = await db.parks_sentiment_analysis.create({
@@ -2175,7 +2186,9 @@ class EventHandlerService {
                          const parkAttendanceData = {
                             park_Id: park_Id,
                             person_Id: person_Id,
-                            entry_time: eventInfo.happenTime
+                            entry_time: eventInfo.happenTime,
+                            age_group: ageGroup,
+                            gender: genderValue,
                          }
                          
                          const parkAttendanceRecord = await db.parks_attendance.create({

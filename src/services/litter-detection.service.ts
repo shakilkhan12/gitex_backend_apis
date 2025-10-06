@@ -335,33 +335,33 @@ class LitterDetectionService {
             if (verificationResult.status === "True") {
                console.log('✅ Cleanup verification successful, marking as completed');
                
-               const updatedLitterDetection = await db.parks_litter_detection.update({
-                  where: { Id: litterDetection.Id },
-                  data: {
-                     status: "complete",
-                     current_status: "complete",
+         const updatedLitterDetection = await db.parks_litter_detection.update({
+            where: { Id: litterDetection.Id },
+            data: {
+               status: "complete",
+               current_status: "complete",
                      after_image: verificationResult.frame_url,
-                     updatedAt: new Date()
-                  },
-                  include: {
-                     parks: {
-                        select: {
-                           park_english_name: true,
-                           park_arabic_name: true,
-                           latitude: true,
-                           longitude: true
-                        }
-                     },
-                     park_cameras: {
-                        select: {
-                           camera_Id: true,
-                           camera_english_name: true,
-                           camera_arabic_name: true,
-                           ip_address: true
-                        }
-                     }
+               updatedAt: new Date()
+            },
+            include: {
+               parks: {
+                  select: {
+                     park_english_name: true,
+                     park_arabic_name: true,
+                     latitude: true,
+                     longitude: true
                   }
-               });
+               },
+               park_cameras: {
+                  select: {
+                           camera_Id: true,
+                     camera_english_name: true,
+                     camera_arabic_name: true,
+                     ip_address: true
+                  }
+               }
+            }
+         });
 
                const ticketDetails = await db.ticket_details_table.create({
                   data: {
@@ -377,8 +377,8 @@ class LitterDetectionService {
                   }
                });
 
-               return {
-                  litterDetection: updatedLitterDetection,
+         return {
+            litterDetection: updatedLitterDetection,
                   ticketDetails,
                   verificationResult
                };

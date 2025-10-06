@@ -69,6 +69,8 @@ model offices_attendance {
   Id         Int       @id @default(autoincrement())
   office_Id  Int?
   person_Id  Int?
+  age_group  Int?
+  gender     Int?
   entry_time DateTime? @db.Timestamp(0)
   exit_time  DateTime? @db.Timestamp(0)
   createdAt  DateTime? @db.Timestamp(0)
@@ -89,7 +91,7 @@ model offices_cameras {
   camera_arabic_name                                                                     String?                      @db.VarChar(255)
   latitude                                                                               Decimal?                     @db.Decimal(10, 8)
   longitude                                                                              Decimal?                     @db.Decimal(11, 8)
-  ip_address                                                                             String?
+  ip_address                                                                             String?                      @db.VarChar(1000)
   is_favorite                                                                            Boolean?                     @default(false)
   last_active_date                                                                       DateTime?                    @db.Date
   last_active_time                                                                       DateTime?                    @db.Time(0)
@@ -112,7 +114,8 @@ model offices_sentiment_analysis {
   detection_Id                                                                String?                                  @db.VarChar(100)
   person_name                                                                 String?                                  @db.VarChar(255)
   person_image                                                                String?                                  @db.VarChar(255)
-  gender                                                                      String?                                  @db.VarChar(50)
+  gender                                                                      String?
+  age_group                                                                   Int?
   check_in_image                                                              String?                                  @db.VarChar(255)
   sentiment_of                                                                offices_sentiment_analysis_sentiment_of?
   check_in_date                                                               DateTime?                                @db.Date
@@ -144,7 +147,7 @@ model park_cameras {
   camera_arabic_name                                                              String?                     @db.VarChar(255)
   latitude                                                                        Decimal?                    @db.Decimal(10, 8)
   longitude                                                                       Decimal?                    @db.Decimal(11, 8)
-  ip_address                                                                      String?
+  ip_address                                                                      String?                     @db.VarChar(1000)
   is_favorite                                                                     Boolean?                    @default(false)
   last_active_date                                                                DateTime?                   @db.Date
   last_active_time                                                                DateTime?                   @db.Time(0)
@@ -259,6 +262,8 @@ model parks_attendance {
   Id         Int       @id @default(autoincrement())
   park_Id    Int?
   person_Id  Int?
+  age_group  Int?
+  gender     Int?
   entry_time DateTime? @db.Timestamp(0)
   exit_time  DateTime? @db.Timestamp(0)
   createdAt  DateTime? @db.Timestamp(0)
@@ -399,6 +404,7 @@ model parks_sentiment_analysis {
   person_name                                                         String?                                @db.VarChar(255)
   person_image                                                        String?                                @db.VarChar(255)
   gender                                                              String?                                @db.VarChar(50)
+  age_group                                                           Int?
   check_in_image                                                      String?                                @db.VarChar(255)
   sentiment_of                                                        parks_sentiment_analysis_sentiment_of?
   check_in_date                                                       DateTime?                              @db.Date
@@ -596,6 +602,7 @@ model parks_footfall_analysis {
   detection_Id         String
   person_Id            Int?
   gender               String?
+  age_group            Int?
   is_child             Boolean  @default(false)
   time                 DateTime @default(now())
   detected_camera_Id   String
@@ -616,6 +623,7 @@ model offices_footfall_analysis {
   detection_Id         String
   person_Id            Int?
   gender               String?
+  age_group            Int?
   is_child             Boolean  @default(false)
   time                 DateTime @default(now())
   detected_camera_Id   String
