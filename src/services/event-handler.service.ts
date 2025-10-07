@@ -779,7 +779,7 @@ class EventHandlerService {
                                if (sentimentImageUrl) {
                                   try {
                                      Logger.info(`[EventHandlerService] Calling emotion detection API for office sentiment`);
-                                     const emotionResponse = await axios.post('http://127.0.0.1:8000/api/emotion-detection', {
+                                     const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
                                         image_url: sentimentImageUrl
                                      }, {
                                         timeout: 10000,
@@ -979,7 +979,7 @@ class EventHandlerService {
                                   if (exitSentimentImageUrl) {
                                      try {
                                         Logger.info(`[EventHandlerService] Calling emotion detection API for office exit sentiment`);
-                                        const emotionResponse = await axios.post('http://127.0.0.1:8000/api/emotion-detection', {
+                                        const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
                                            image_url: exitSentimentImageUrl
                                         }, {
                                            timeout: 10000,
@@ -1133,10 +1133,30 @@ class EventHandlerService {
                             });
                          } else {
                          Logger.info(`[EventHandlerService] Processing office entry attendance`);
+                         
+                         // Process and upload entry image
+                         let entryImageUrl = null;
+                         if (eventInfo.data?.alarmResult?.faces?.URL) {
+                            try {
+                               Logger.info(`[EventHandlerService] Processing entry image for office attendance`);
+                               const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                               const imageDataResponse = await this.getImageData(faceDataUrl);
+                               
+                               if (imageDataResponse) {
+                                  const base64Image = imageDataResponse;
+                                  entryImageUrl = await this.uploadImageToCloudinary(base64Image, 'attendance', eventInfo.eventId);
+                                  Logger.info(`[EventHandlerService] Successfully uploaded entry image to Cloudinary for office attendance`);
+                               }
+                            } catch (imageError: any) {
+                               Logger.error(`[EventHandlerService] Failed to process entry image for office attendance:`, imageError.message);
+                            }
+                         }
+                         
                          const officeAttendanceData = {
                             office_Id: office_Id,
                             person_Id: person_Id,
                             entry_time: eventInfo.happenTime,
+                            entry_image: entryImageUrl,
                             age_group: ageGroup,
                             gender: genderValue,
                          }
@@ -1272,6 +1292,9 @@ class EventHandlerService {
                                   formattedEntryTime: formatTimeToString(officeAttendanceRecord.entry_time),
                                   formattedDate: formatDateForDisplay(formatDateToString(officeAttendanceRecord.entry_time || officeAttendanceRecord.createdAt)),
                                   rawDate: formatDateToString(officeAttendanceRecord.entry_time || officeAttendanceRecord.createdAt),
+                                  // Include processed images
+                                  entry_image: officeAttendanceRecord.entry_image,
+                                  exit_image: officeAttendanceRecord.exit_image,
                                   createdAt: new Date(),
                                   updatedAt: new Date()
                                }
@@ -1379,10 +1402,30 @@ class EventHandlerService {
                                });
                             } else {
                             Logger.info(`[EventHandlerService] Updating office exit attendance for record ID: ${latestAttendance.Id}`);
+                            
+                            // Process and upload exit image
+                            let exitImageUrl = null;
+                            if (eventInfo.data?.alarmResult?.faces?.URL) {
+                               try {
+                                  Logger.info(`[EventHandlerService] Processing exit image for office attendance`);
+                                  const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                                  const imageDataResponse = await this.getImageData(faceDataUrl);
+                                  
+                                  if (imageDataResponse) {
+                                     const base64Image = imageDataResponse;
+                                     exitImageUrl = await this.uploadImageToCloudinary(base64Image, 'attendance', eventInfo.eventId);
+                                     Logger.info(`[EventHandlerService] Successfully uploaded exit image to Cloudinary for office attendance`);
+                                  }
+                               } catch (imageError: any) {
+                                  Logger.error(`[EventHandlerService] Failed to process exit image for office attendance:`, imageError.message);
+                               }
+                            }
+                            
                             const updatedAttendanceRecord = await db.offices_attendance.update({
                                where: { Id: latestAttendance.Id },
                                data: {
-                                  exit_time: eventInfo.happenTime
+                                  exit_time: eventInfo.happenTime,
+                                  exit_image: exitImageUrl
                                }
                             })
                             Logger.info(`[EventHandlerService] Successfully updated office exit attendance`);
@@ -1513,6 +1556,9 @@ class EventHandlerService {
                                      formattedExitTime: formatTimeToString(updatedAttendanceRecord.exit_time),
                                      formattedDate: formatDateForDisplay(formatDateToString(updatedAttendanceRecord.entry_time || updatedAttendanceRecord.createdAt)),
                                      rawDate: formatDateToString(updatedAttendanceRecord.entry_time || updatedAttendanceRecord.createdAt),
+                                     // Include processed images
+                                     entry_image: updatedAttendanceRecord.entry_image,
+                                     exit_image: updatedAttendanceRecord.exit_image,
                                      createdAt: new Date(),
                                      updatedAt: new Date()
                                   }
@@ -1826,7 +1872,7 @@ class EventHandlerService {
                                if (sentimentImageUrl) {
                                   try {
                                      Logger.info(`[EventHandlerService] Calling emotion detection API for park sentiment`);
-                                     const emotionResponse = await axios.post('http://127.0.0.1:8000/api/emotion-detection', {
+                                     const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
                                         image_url: sentimentImageUrl
                                      }, {
                                         timeout: 10000,
@@ -2028,7 +2074,7 @@ class EventHandlerService {
                                   if (exitSentimentImageUrl) {
                                      try {
                                         Logger.info(`[EventHandlerService] Calling emotion detection API for park exit sentiment`);
-                                        const emotionResponse = await axios.post('http://127.0.0.1:8000/api/emotion-detection', {
+                                        const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
                                            image_url: exitSentimentImageUrl
                                         }, {
                                            timeout: 10000,
@@ -2183,10 +2229,30 @@ class EventHandlerService {
                             });
                          } else {
                          Logger.info(`[EventHandlerService] Processing park entry attendance`);
+                         
+                         // Process and upload entry image
+                         let entryImageUrl = null;
+                         if (eventInfo.data?.alarmResult?.faces?.URL) {
+                            try {
+                               Logger.info(`[EventHandlerService] Processing entry image for park attendance`);
+                               const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                               const imageDataResponse = await this.getImageData(faceDataUrl);
+                               
+                               if (imageDataResponse) {
+                                  const base64Image = imageDataResponse;
+                                  entryImageUrl = await this.uploadImageToCloudinary(base64Image, 'attendance', eventInfo.eventId);
+                                  Logger.info(`[EventHandlerService] Successfully uploaded entry image to Cloudinary for park attendance`);
+                               }
+                            } catch (imageError: any) {
+                               Logger.error(`[EventHandlerService] Failed to process entry image for park attendance:`, imageError.message);
+                            }
+                         }
+                         
                          const parkAttendanceData = {
                             park_Id: park_Id,
                             person_Id: person_Id,
                             entry_time: eventInfo.happenTime,
+                            entry_image: entryImageUrl,
                             age_group: ageGroup,
                             gender: genderValue,
                          }
@@ -2293,10 +2359,30 @@ class EventHandlerService {
                                });
                             } else {
                             Logger.info(`[EventHandlerService] Updating park exit attendance for record ID: ${latestAttendance.Id}`);
+                            
+                            // Process and upload exit image
+                            let exitImageUrl = null;
+                            if (eventInfo.data?.alarmResult?.faces?.URL) {
+                               try {
+                                  Logger.info(`[EventHandlerService] Processing exit image for park attendance`);
+                                  const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                                  const imageDataResponse = await this.getImageData(faceDataUrl);
+                                  
+                                  if (imageDataResponse) {
+                                     const base64Image = imageDataResponse;
+                                     exitImageUrl = await this.uploadImageToCloudinary(base64Image, 'attendance', eventInfo.eventId);
+                                     Logger.info(`[EventHandlerService] Successfully uploaded exit image to Cloudinary for park attendance`);
+                                  }
+                               } catch (imageError: any) {
+                                  Logger.error(`[EventHandlerService] Failed to process exit image for park attendance:`, imageError.message);
+                               }
+                            }
+                            
                             await db.parks_attendance.update({
                                where: { Id: latestAttendance.Id },
                                data: {
-                                  exit_time: eventInfo.happenTime
+                                  exit_time: eventInfo.happenTime,
+                                  exit_image: exitImageUrl
                                }
                             })
                             Logger.info(`[EventHandlerService] Successfully updated park exit attendance`);

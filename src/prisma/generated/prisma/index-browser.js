@@ -166,7 +166,9 @@ exports.Prisma.Offices_attendanceScalarFieldEnum = {
   age_group: 'age_group',
   gender: 'gender',
   entry_time: 'entry_time',
+  entry_image: 'entry_image',
   exit_time: 'exit_time',
+  exit_image: 'exit_image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -294,7 +296,9 @@ exports.Prisma.Parks_attendanceScalarFieldEnum = {
   age_group: 'age_group',
   gender: 'gender',
   entry_time: 'entry_time',
+  entry_image: 'entry_image',
   exit_time: 'exit_time',
+  exit_image: 'exit_image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -703,6 +707,11 @@ exports.Prisma.officesOrderByRelevanceFieldEnum = {
   status: 'status'
 };
 
+exports.Prisma.offices_attendanceOrderByRelevanceFieldEnum = {
+  entry_image: 'entry_image',
+  exit_image: 'exit_image'
+};
+
 exports.Prisma.offices_camerasOrderByRelevanceFieldEnum = {
   camera_Id: 'camera_Id',
   camera_english_name: 'camera_english_name',
@@ -763,6 +772,11 @@ exports.Prisma.parksOrderByRelevanceFieldEnum = {
   park_arabic_name: 'park_arabic_name',
   image: 'image',
   location: 'location'
+};
+
+exports.Prisma.parks_attendanceOrderByRelevanceFieldEnum = {
+  entry_image: 'entry_image',
+  exit_image: 'exit_image'
 };
 
 exports.Prisma.parks_behaviour_alertsOrderByRelevanceFieldEnum = {

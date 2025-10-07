@@ -11,18 +11,15 @@ class SmokingDetectionService {
          const parkExists = await db.parks.findFirst({
             where: { park_Id: smokingDetection.park_Id },
          });
-         console.log('🏞️ Park found:', parkExists ? 'YES' : 'NO', parkExists);
          if (!parkExists) {
             throw new HttpException(STATUS.BAD_REQUEST, "Park does not exist");
          }
 
          let cameraDatabaseId = null;
          if (smokingDetection.camera_Id) {
-            console.log('🔍 Looking for camera with camera_Id:', smokingDetection.camera_Id);
             const cameraExists = await db.park_cameras.findFirst({
                where: { camera_Id: smokingDetection.camera_Id },
             });
-            console.log('📹 Camera found:', cameraExists ? 'YES' : 'NO', cameraExists);
             if (!cameraExists) {
                throw new HttpException(STATUS.BAD_REQUEST, "Camera does not exist");
             }

@@ -8272,7 +8272,9 @@ export namespace Prisma {
     age_group: number | null
     gender: number | null
     entry_time: Date | null
+    entry_image: string | null
     exit_time: Date | null
+    exit_image: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8284,7 +8286,9 @@ export namespace Prisma {
     age_group: number | null
     gender: number | null
     entry_time: Date | null
+    entry_image: string | null
     exit_time: Date | null
+    exit_image: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8296,7 +8300,9 @@ export namespace Prisma {
     age_group: number
     gender: number
     entry_time: number
+    entry_image: number
     exit_time: number
+    exit_image: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -8326,7 +8332,9 @@ export namespace Prisma {
     age_group?: true
     gender?: true
     entry_time?: true
+    entry_image?: true
     exit_time?: true
+    exit_image?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8338,7 +8346,9 @@ export namespace Prisma {
     age_group?: true
     gender?: true
     entry_time?: true
+    entry_image?: true
     exit_time?: true
+    exit_image?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8350,7 +8360,9 @@ export namespace Prisma {
     age_group?: true
     gender?: true
     entry_time?: true
+    entry_image?: true
     exit_time?: true
+    exit_image?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -8449,7 +8461,9 @@ export namespace Prisma {
     age_group: number | null
     gender: number | null
     entry_time: Date | null
+    entry_image: string | null
     exit_time: Date | null
+    exit_image: string | null
     createdAt: Date | null
     updatedAt: Date
     _count: Offices_attendanceCountAggregateOutputType | null
@@ -8480,7 +8494,9 @@ export namespace Prisma {
     age_group?: boolean
     gender?: boolean
     entry_time?: boolean
+    entry_image?: boolean
     exit_time?: boolean
+    exit_image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     office?: boolean | offices_attendance$officeArgs<ExtArgs>
@@ -8496,12 +8512,14 @@ export namespace Prisma {
     age_group?: boolean
     gender?: boolean
     entry_time?: boolean
+    entry_image?: boolean
     exit_time?: boolean
+    exit_image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type offices_attendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "office_Id" | "person_Id" | "age_group" | "gender" | "entry_time" | "exit_time" | "createdAt" | "updatedAt", ExtArgs["result"]["offices_attendance"]>
+  export type offices_attendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "office_Id" | "person_Id" | "age_group" | "gender" | "entry_time" | "entry_image" | "exit_time" | "exit_image" | "createdAt" | "updatedAt", ExtArgs["result"]["offices_attendance"]>
   export type offices_attendanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     office?: boolean | offices_attendance$officeArgs<ExtArgs>
     user?: boolean | offices_attendance$userArgs<ExtArgs>
@@ -8520,7 +8538,9 @@ export namespace Prisma {
       age_group: number | null
       gender: number | null
       entry_time: Date | null
+      entry_image: string | null
       exit_time: Date | null
+      exit_image: string | null
       createdAt: Date | null
       updatedAt: Date
     }, ExtArgs["result"]["offices_attendance"]>
@@ -8900,7 +8920,9 @@ export namespace Prisma {
     readonly age_group: FieldRef<"offices_attendance", 'Int'>
     readonly gender: FieldRef<"offices_attendance", 'Int'>
     readonly entry_time: FieldRef<"offices_attendance", 'DateTime'>
+    readonly entry_image: FieldRef<"offices_attendance", 'String'>
     readonly exit_time: FieldRef<"offices_attendance", 'DateTime'>
+    readonly exit_image: FieldRef<"offices_attendance", 'String'>
     readonly createdAt: FieldRef<"offices_attendance", 'DateTime'>
     readonly updatedAt: FieldRef<"offices_attendance", 'DateTime'>
   }
@@ -17752,7 +17774,9 @@ export namespace Prisma {
     age_group: number | null
     gender: number | null
     entry_time: Date | null
+    entry_image: string | null
     exit_time: Date | null
+    exit_image: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -17764,7 +17788,9 @@ export namespace Prisma {
     age_group: number | null
     gender: number | null
     entry_time: Date | null
+    entry_image: string | null
     exit_time: Date | null
+    exit_image: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -17776,7 +17802,9 @@ export namespace Prisma {
     age_group: number
     gender: number
     entry_time: number
+    entry_image: number
     exit_time: number
+    exit_image: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -17806,7 +17834,9 @@ export namespace Prisma {
     age_group?: true
     gender?: true
     entry_time?: true
+    entry_image?: true
     exit_time?: true
+    exit_image?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -17818,7 +17848,9 @@ export namespace Prisma {
     age_group?: true
     gender?: true
     entry_time?: true
+    entry_image?: true
     exit_time?: true
+    exit_image?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -17830,7 +17862,9 @@ export namespace Prisma {
     age_group?: true
     gender?: true
     entry_time?: true
+    entry_image?: true
     exit_time?: true
+    exit_image?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -17929,7 +17963,9 @@ export namespace Prisma {
     age_group: number | null
     gender: number | null
     entry_time: Date | null
+    entry_image: string | null
     exit_time: Date | null
+    exit_image: string | null
     createdAt: Date | null
     updatedAt: Date
     _count: Parks_attendanceCountAggregateOutputType | null
@@ -17960,7 +17996,9 @@ export namespace Prisma {
     age_group?: boolean
     gender?: boolean
     entry_time?: boolean
+    entry_image?: boolean
     exit_time?: boolean
+    exit_image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     park?: boolean | parks_attendance$parkArgs<ExtArgs>
@@ -17976,12 +18014,14 @@ export namespace Prisma {
     age_group?: boolean
     gender?: boolean
     entry_time?: boolean
+    entry_image?: boolean
     exit_time?: boolean
+    exit_image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type parks_attendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "person_Id" | "age_group" | "gender" | "entry_time" | "exit_time" | "createdAt" | "updatedAt", ExtArgs["result"]["parks_attendance"]>
+  export type parks_attendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "person_Id" | "age_group" | "gender" | "entry_time" | "entry_image" | "exit_time" | "exit_image" | "createdAt" | "updatedAt", ExtArgs["result"]["parks_attendance"]>
   export type parks_attendanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     park?: boolean | parks_attendance$parkArgs<ExtArgs>
     user?: boolean | parks_attendance$userArgs<ExtArgs>
@@ -18000,7 +18040,9 @@ export namespace Prisma {
       age_group: number | null
       gender: number | null
       entry_time: Date | null
+      entry_image: string | null
       exit_time: Date | null
+      exit_image: string | null
       createdAt: Date | null
       updatedAt: Date
     }, ExtArgs["result"]["parks_attendance"]>
@@ -18380,7 +18422,9 @@ export namespace Prisma {
     readonly age_group: FieldRef<"parks_attendance", 'Int'>
     readonly gender: FieldRef<"parks_attendance", 'Int'>
     readonly entry_time: FieldRef<"parks_attendance", 'DateTime'>
+    readonly entry_image: FieldRef<"parks_attendance", 'String'>
     readonly exit_time: FieldRef<"parks_attendance", 'DateTime'>
+    readonly exit_image: FieldRef<"parks_attendance", 'String'>
     readonly createdAt: FieldRef<"parks_attendance", 'DateTime'>
     readonly updatedAt: FieldRef<"parks_attendance", 'DateTime'>
   }
@@ -40549,7 +40593,9 @@ export namespace Prisma {
     age_group: 'age_group',
     gender: 'gender',
     entry_time: 'entry_time',
+    entry_image: 'entry_image',
     exit_time: 'exit_time',
+    exit_image: 'exit_image',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -40701,7 +40747,9 @@ export namespace Prisma {
     age_group: 'age_group',
     gender: 'gender',
     entry_time: 'entry_time',
+    entry_image: 'entry_image',
     exit_time: 'exit_time',
+    exit_image: 'exit_image',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -41185,6 +41233,14 @@ export namespace Prisma {
   export type officesOrderByRelevanceFieldEnum = (typeof officesOrderByRelevanceFieldEnum)[keyof typeof officesOrderByRelevanceFieldEnum]
 
 
+  export const offices_attendanceOrderByRelevanceFieldEnum: {
+    entry_image: 'entry_image',
+    exit_image: 'exit_image'
+  };
+
+  export type offices_attendanceOrderByRelevanceFieldEnum = (typeof offices_attendanceOrderByRelevanceFieldEnum)[keyof typeof offices_attendanceOrderByRelevanceFieldEnum]
+
+
   export const offices_camerasOrderByRelevanceFieldEnum: {
     camera_Id: 'camera_Id',
     camera_english_name: 'camera_english_name',
@@ -41266,6 +41322,14 @@ export namespace Prisma {
   };
 
   export type parksOrderByRelevanceFieldEnum = (typeof parksOrderByRelevanceFieldEnum)[keyof typeof parksOrderByRelevanceFieldEnum]
+
+
+  export const parks_attendanceOrderByRelevanceFieldEnum: {
+    entry_image: 'entry_image',
+    exit_image: 'exit_image'
+  };
+
+  export type parks_attendanceOrderByRelevanceFieldEnum = (typeof parks_attendanceOrderByRelevanceFieldEnum)[keyof typeof parks_attendanceOrderByRelevanceFieldEnum]
 
 
   export const parks_behaviour_alertsOrderByRelevanceFieldEnum: {
@@ -41871,7 +41935,9 @@ export namespace Prisma {
     age_group?: IntNullableFilter<"offices_attendance"> | number | null
     gender?: IntNullableFilter<"offices_attendance"> | number | null
     entry_time?: DateTimeNullableFilter<"offices_attendance"> | Date | string | null
+    entry_image?: StringNullableFilter<"offices_attendance"> | string | null
     exit_time?: DateTimeNullableFilter<"offices_attendance"> | Date | string | null
+    exit_image?: StringNullableFilter<"offices_attendance"> | string | null
     createdAt?: DateTimeNullableFilter<"offices_attendance"> | Date | string | null
     updatedAt?: DateTimeFilter<"offices_attendance"> | Date | string
     office?: XOR<OfficesNullableScalarRelationFilter, officesWhereInput> | null
@@ -41885,11 +41951,14 @@ export namespace Prisma {
     age_group?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     entry_time?: SortOrderInput | SortOrder
+    entry_image?: SortOrderInput | SortOrder
     exit_time?: SortOrderInput | SortOrder
+    exit_image?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     office?: officesOrderByWithRelationInput
     user?: usersOrderByWithRelationInput
+    _relevance?: offices_attendanceOrderByRelevanceInput
   }
 
   export type offices_attendanceWhereUniqueInput = Prisma.AtLeast<{
@@ -41902,7 +41971,9 @@ export namespace Prisma {
     age_group?: IntNullableFilter<"offices_attendance"> | number | null
     gender?: IntNullableFilter<"offices_attendance"> | number | null
     entry_time?: DateTimeNullableFilter<"offices_attendance"> | Date | string | null
+    entry_image?: StringNullableFilter<"offices_attendance"> | string | null
     exit_time?: DateTimeNullableFilter<"offices_attendance"> | Date | string | null
+    exit_image?: StringNullableFilter<"offices_attendance"> | string | null
     createdAt?: DateTimeNullableFilter<"offices_attendance"> | Date | string | null
     updatedAt?: DateTimeFilter<"offices_attendance"> | Date | string
     office?: XOR<OfficesNullableScalarRelationFilter, officesWhereInput> | null
@@ -41916,7 +41987,9 @@ export namespace Prisma {
     age_group?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     entry_time?: SortOrderInput | SortOrder
+    entry_image?: SortOrderInput | SortOrder
     exit_time?: SortOrderInput | SortOrder
+    exit_image?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: offices_attendanceCountOrderByAggregateInput
@@ -41936,7 +42009,9 @@ export namespace Prisma {
     age_group?: IntNullableWithAggregatesFilter<"offices_attendance"> | number | null
     gender?: IntNullableWithAggregatesFilter<"offices_attendance"> | number | null
     entry_time?: DateTimeNullableWithAggregatesFilter<"offices_attendance"> | Date | string | null
+    entry_image?: StringNullableWithAggregatesFilter<"offices_attendance"> | string | null
     exit_time?: DateTimeNullableWithAggregatesFilter<"offices_attendance"> | Date | string | null
+    exit_image?: StringNullableWithAggregatesFilter<"offices_attendance"> | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"offices_attendance"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"offices_attendance"> | Date | string
   }
@@ -42744,7 +42819,9 @@ export namespace Prisma {
     age_group?: IntNullableFilter<"parks_attendance"> | number | null
     gender?: IntNullableFilter<"parks_attendance"> | number | null
     entry_time?: DateTimeNullableFilter<"parks_attendance"> | Date | string | null
+    entry_image?: StringNullableFilter<"parks_attendance"> | string | null
     exit_time?: DateTimeNullableFilter<"parks_attendance"> | Date | string | null
+    exit_image?: StringNullableFilter<"parks_attendance"> | string | null
     createdAt?: DateTimeNullableFilter<"parks_attendance"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks_attendance"> | Date | string
     park?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
@@ -42758,11 +42835,14 @@ export namespace Prisma {
     age_group?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     entry_time?: SortOrderInput | SortOrder
+    entry_image?: SortOrderInput | SortOrder
     exit_time?: SortOrderInput | SortOrder
+    exit_image?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     park?: parksOrderByWithRelationInput
     user?: usersOrderByWithRelationInput
+    _relevance?: parks_attendanceOrderByRelevanceInput
   }
 
   export type parks_attendanceWhereUniqueInput = Prisma.AtLeast<{
@@ -42775,7 +42855,9 @@ export namespace Prisma {
     age_group?: IntNullableFilter<"parks_attendance"> | number | null
     gender?: IntNullableFilter<"parks_attendance"> | number | null
     entry_time?: DateTimeNullableFilter<"parks_attendance"> | Date | string | null
+    entry_image?: StringNullableFilter<"parks_attendance"> | string | null
     exit_time?: DateTimeNullableFilter<"parks_attendance"> | Date | string | null
+    exit_image?: StringNullableFilter<"parks_attendance"> | string | null
     createdAt?: DateTimeNullableFilter<"parks_attendance"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks_attendance"> | Date | string
     park?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
@@ -42789,7 +42871,9 @@ export namespace Prisma {
     age_group?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     entry_time?: SortOrderInput | SortOrder
+    entry_image?: SortOrderInput | SortOrder
     exit_time?: SortOrderInput | SortOrder
+    exit_image?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: parks_attendanceCountOrderByAggregateInput
@@ -42809,7 +42893,9 @@ export namespace Prisma {
     age_group?: IntNullableWithAggregatesFilter<"parks_attendance"> | number | null
     gender?: IntNullableWithAggregatesFilter<"parks_attendance"> | number | null
     entry_time?: DateTimeNullableWithAggregatesFilter<"parks_attendance"> | Date | string | null
+    entry_image?: StringNullableWithAggregatesFilter<"parks_attendance"> | string | null
     exit_time?: DateTimeNullableWithAggregatesFilter<"parks_attendance"> | Date | string | null
+    exit_image?: StringNullableWithAggregatesFilter<"parks_attendance"> | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"parks_attendance"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"parks_attendance"> | Date | string
   }
@@ -45378,7 +45464,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     office?: officesCreateNestedOneWithoutOffices_attendanceInput
@@ -45392,7 +45480,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -45401,7 +45491,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     office?: officesUpdateOneWithoutOffices_attendanceNestedInput
@@ -45415,7 +45507,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -45427,7 +45521,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -45436,7 +45532,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -45448,7 +45546,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46342,7 +46442,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     park?: parksCreateNestedOneWithoutParks_attendanceInput
@@ -46356,7 +46458,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -46365,7 +46469,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     park?: parksUpdateOneWithoutParks_attendanceNestedInput
@@ -46379,7 +46485,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46391,7 +46499,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -46400,7 +46510,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46412,7 +46524,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -49428,6 +49542,12 @@ export namespace Prisma {
     _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
+  export type offices_attendanceOrderByRelevanceInput = {
+    fields: offices_attendanceOrderByRelevanceFieldEnum | offices_attendanceOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type offices_attendanceCountOrderByAggregateInput = {
     Id?: SortOrder
     office_Id?: SortOrder
@@ -49435,7 +49555,9 @@ export namespace Prisma {
     age_group?: SortOrder
     gender?: SortOrder
     entry_time?: SortOrder
+    entry_image?: SortOrder
     exit_time?: SortOrder
+    exit_image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -49455,7 +49577,9 @@ export namespace Prisma {
     age_group?: SortOrder
     gender?: SortOrder
     entry_time?: SortOrder
+    entry_image?: SortOrder
     exit_time?: SortOrder
+    exit_image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -49467,7 +49591,9 @@ export namespace Prisma {
     age_group?: SortOrder
     gender?: SortOrder
     entry_time?: SortOrder
+    entry_image?: SortOrder
     exit_time?: SortOrder
+    exit_image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -50144,6 +50270,12 @@ export namespace Prisma {
     longitude?: SortOrder
   }
 
+  export type parks_attendanceOrderByRelevanceInput = {
+    fields: parks_attendanceOrderByRelevanceFieldEnum | parks_attendanceOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type parks_attendanceCountOrderByAggregateInput = {
     Id?: SortOrder
     park_Id?: SortOrder
@@ -50151,7 +50283,9 @@ export namespace Prisma {
     age_group?: SortOrder
     gender?: SortOrder
     entry_time?: SortOrder
+    entry_image?: SortOrder
     exit_time?: SortOrder
+    exit_image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -50171,7 +50305,9 @@ export namespace Prisma {
     age_group?: SortOrder
     gender?: SortOrder
     entry_time?: SortOrder
+    entry_image?: SortOrder
     exit_time?: SortOrder
+    exit_image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -50183,7 +50319,9 @@ export namespace Prisma {
     age_group?: SortOrder
     gender?: SortOrder
     entry_time?: SortOrder
+    entry_image?: SortOrder
     exit_time?: SortOrder
+    exit_image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -55304,7 +55442,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     user?: usersCreateNestedOneWithoutOffices_attendanceInput
@@ -55316,7 +55456,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -55528,7 +55670,9 @@ export namespace Prisma {
     age_group?: IntNullableFilter<"offices_attendance"> | number | null
     gender?: IntNullableFilter<"offices_attendance"> | number | null
     entry_time?: DateTimeNullableFilter<"offices_attendance"> | Date | string | null
+    entry_image?: StringNullableFilter<"offices_attendance"> | string | null
     exit_time?: DateTimeNullableFilter<"offices_attendance"> | Date | string | null
+    exit_image?: StringNullableFilter<"offices_attendance"> | string | null
     createdAt?: DateTimeNullableFilter<"offices_attendance"> | Date | string | null
     updatedAt?: DateTimeFilter<"offices_attendance"> | Date | string
   }
@@ -58017,7 +58161,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     user?: usersCreateNestedOneWithoutParks_attendanceInput
@@ -58029,7 +58175,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -58579,7 +58727,9 @@ export namespace Prisma {
     age_group?: IntNullableFilter<"parks_attendance"> | number | null
     gender?: IntNullableFilter<"parks_attendance"> | number | null
     entry_time?: DateTimeNullableFilter<"parks_attendance"> | Date | string | null
+    entry_image?: StringNullableFilter<"parks_attendance"> | string | null
     exit_time?: DateTimeNullableFilter<"parks_attendance"> | Date | string | null
+    exit_image?: StringNullableFilter<"parks_attendance"> | string | null
     createdAt?: DateTimeNullableFilter<"parks_attendance"> | Date | string | null
     updatedAt?: DateTimeFilter<"parks_attendance"> | Date | string
   }
@@ -61423,7 +61573,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     office?: officesCreateNestedOneWithoutOffices_attendanceInput
@@ -61435,7 +61587,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -61532,7 +61686,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     park?: parksCreateNestedOneWithoutParks_attendanceInput
@@ -61544,7 +61700,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -63605,7 +63763,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -63697,7 +63857,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: usersUpdateOneWithoutOffices_attendanceNestedInput
@@ -63709,7 +63871,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -63720,7 +63884,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -64845,7 +65011,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -65151,7 +65319,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: usersUpdateOneWithoutParks_attendanceNestedInput
@@ -65163,7 +65333,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -65174,7 +65346,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -65837,7 +66011,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -65878,7 +66054,9 @@ export namespace Prisma {
     age_group?: number | null
     gender?: number | null
     entry_time?: Date | string | null
+    entry_image?: string | null
     exit_time?: Date | string | null
+    exit_image?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -65975,7 +66153,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     office?: officesUpdateOneWithoutOffices_attendanceNestedInput
@@ -65987,7 +66167,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -65998,7 +66180,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66095,7 +66279,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     park?: parksUpdateOneWithoutParks_attendanceNestedInput
@@ -66107,7 +66293,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66118,7 +66306,9 @@ export namespace Prisma {
     age_group?: NullableIntFieldUpdateOperationsInput | number | null
     gender?: NullableIntFieldUpdateOperationsInput | number | null
     entry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    entry_image?: NullableStringFieldUpdateOperationsInput | string | null
     exit_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exit_image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -66,17 +66,19 @@ model offices {
 }
 
 model offices_attendance {
-  Id         Int       @id @default(autoincrement())
-  office_Id  Int?
-  person_Id  Int?
-  age_group  Int?
-  gender     Int?
-  entry_time DateTime? @db.Timestamp(0)
-  exit_time  DateTime? @db.Timestamp(0)
-  createdAt  DateTime? @db.Timestamp(0)
-  updatedAt  DateTime  @default(now()) @db.Timestamp(0)
-  office     offices?  @relation("offices_attendance_to_office", fields: [office_Id], references: [Id], map: "offices_attendance_ibfk_1")
-  user       users?    @relation("offices_attendance_to_user", fields: [person_Id], references: [Id], map: "offices_attendance_ibfk_2")
+  Id          Int       @id @default(autoincrement())
+  office_Id   Int?
+  person_Id   Int?
+  age_group   Int?
+  gender      Int?
+  entry_time  DateTime? @db.Timestamp(0)
+  entry_image String?   @db.VarChar(255)
+  exit_time   DateTime? @db.Timestamp(0)
+  exit_image  String?   @db.VarChar(255)
+  createdAt   DateTime? @db.Timestamp(0)
+  updatedAt   DateTime  @default(now()) @db.Timestamp(0)
+  office      offices?  @relation("offices_attendance_to_office", fields: [office_Id], references: [Id], map: "offices_attendance_ibfk_1")
+  user        users?    @relation("offices_attendance_to_user", fields: [person_Id], references: [Id], map: "offices_attendance_ibfk_2")
 
   @@index([office_Id], map: "office_Id")
   @@index([person_Id], map: "person_Id")
@@ -259,17 +261,19 @@ model parks {
 }
 
 model parks_attendance {
-  Id         Int       @id @default(autoincrement())
-  park_Id    Int?
-  person_Id  Int?
-  age_group  Int?
-  gender     Int?
-  entry_time DateTime? @db.Timestamp(0)
-  exit_time  DateTime? @db.Timestamp(0)
-  createdAt  DateTime? @db.Timestamp(0)
-  updatedAt  DateTime  @default(now()) @db.Timestamp(0)
-  park       parks?    @relation("parks_attendance_to_park", fields: [park_Id], references: [Id], map: "parks_attendance_ibfk_1")
-  user       users?    @relation("parks_attendance_to_user", fields: [person_Id], references: [Id], map: "parks_attendance_ibfk_2")
+  Id          Int       @id @default(autoincrement())
+  park_Id     Int?
+  person_Id   Int?
+  age_group   Int?
+  gender      Int?
+  entry_time  DateTime? @db.Timestamp(0)
+  entry_image String?   @db.VarChar(255)
+  exit_time   DateTime? @db.Timestamp(0)
+  exit_image  String?   @db.VarChar(255)
+  createdAt   DateTime? @db.Timestamp(0)
+  updatedAt   DateTime  @default(now()) @db.Timestamp(0)
+  park        parks?    @relation("parks_attendance_to_park", fields: [park_Id], references: [Id], map: "parks_attendance_ibfk_1")
+  user        users?    @relation("parks_attendance_to_user", fields: [person_Id], references: [Id], map: "parks_attendance_ibfk_2")
 
   @@index([park_Id], map: "park_Id")
   @@index([person_Id], map: "person_Id")
