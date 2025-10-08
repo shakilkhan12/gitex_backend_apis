@@ -324,13 +324,29 @@ class EventHandlerService {
                 throw new HttpException(STATUS.BAD_REQUEST, "Invalid event data structure");
              }
              
+             // Extract sendTime from the correct location (params level, not event level)
+             let sendTime = null;
+             if (eventData.event?.params?.sendTime) {
+                sendTime = eventData.event.params.sendTime;
+             } else if (eventData.logData?.event?.params?.sendTime) {
+                sendTime = eventData.logData.event.params.sendTime;
+             } else {
+                // Fallback to happenTime if sendTime is not available
+                sendTime = eventInfo.happenTime;
+                Logger.warn(`[EventHandlerService] sendTime not found, using happenTime as fallback: ${sendTime}`);
+             }
+             
+             // Add sendTime to eventInfo for consistent access
+             eventInfo.sendTime = sendTime;
+             
              let eventType = eventInfo.eventType
              Logger.info(`[EventHandlerService] Extracted event info:`, {
                 eventType,
                 eventId: eventInfo.eventId,
                 srcIndex: eventInfo.srcIndex,
                 srcName: eventInfo.srcName,
-                happenTime: eventInfo.happenTime
+                happenTime: eventInfo.happenTime,
+                sendTime: eventInfo.sendTime
              });
              
              if (eventType === intrusion_detection_code) {
@@ -398,12 +414,12 @@ class EventHandlerService {
                    const intrusionData = {
                       park_Id:park_Id,
                       camera_Id:parkcamera.Id,
-                      occurrence_date:eventInfo.happenTime,
-                      occurrence_time:eventInfo.happenTime,
+                      occurrence_date:eventInfo.sendTime,
+                      occurrence_time:eventInfo.sendTime,
                       snap_shot:imageUrl,
                       detection_Id:eventInfo.eventId,
-                      detection_date:eventInfo.happenTime,
-                      detection_time:eventInfo.happenTime,
+                      detection_date:eventInfo.sendTime,
+                      detection_time:eventInfo.sendTime,
                       is_employee:false,
                       description: `Intrusion detected at ${eventInfo.srcName} camera`
                    }
@@ -665,7 +681,7 @@ class EventHandlerService {
                          person_Id: person_Id,
                          gender: genderName,
                          is_child: isChild,
-                         time: eventInfo.happenTime,
+                         time: eventInfo.sendTime,
                          detected_camera_Id: eventInfo.srcIndex,
                          detected_camera_name: eventInfo.srcName,
                          image: image,
@@ -883,12 +899,12 @@ class EventHandlerService {
                          gender: genderName,
                          check_in_image: isEntry ? sentimentImageUrl : null,
                          sentiment_of: sentimentOf as 'employee' | 'visitor',
-                         check_in_date: isEntry ? eventInfo.happenTime: null,
-                         check_in_time: isEntry ?eventInfo.happenTime : null,
+                         check_in_date: isEntry ? eventInfo.sendTime: null,
+                         check_in_time: isEntry ?eventInfo.sendTime : null,
                          check_in_sentiment: isEntry ? detectedSentiment : null,
                          entry_camera_Id: isEntry ? officeCamera.Id : null,
-                         check_out_date: isExit ? eventInfo.happenTime : null,
-                         check_out_time: isExit ? eventInfo.happenTime : null,
+                         check_out_date: isExit ? eventInfo.sendTime : null,
+                         check_out_time: isExit ? eventInfo.sendTime : null,
                          check_out_capture: isExit ? sentimentImageUrl : null,
                          check_out_sentiment: isExit ? detectedSentiment : null,
                          exit_camera_Id: isExit ? officeCamera.Id : null,
@@ -1155,7 +1171,7 @@ class EventHandlerService {
                          const officeAttendanceData = {
                             office_Id: office_Id,
                             person_Id: person_Id,
-                            entry_time: eventInfo.happenTime,
+                            entry_time: eventInfo.sendTime,
                             entry_image: entryImageUrl,
                             age_group: ageGroup,
                             gender: genderValue,
@@ -1354,7 +1370,7 @@ class EventHandlerService {
                             office_Id,
                             person_Id,
                             srcName: eventInfo.srcName,
-                            happenTime: eventInfo.happenTime,
+                            happenTime: eventInfo.sendTime,
                             humanId: eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id
                          });
                          
@@ -1424,7 +1440,7 @@ class EventHandlerService {
                             const updatedAttendanceRecord = await db.offices_attendance.update({
                                where: { Id: latestAttendance.Id },
                                data: {
-                                  exit_time: eventInfo.happenTime,
+                                  exit_time: eventInfo.sendTime,
                                   exit_image: exitImageUrl
                                }
                             })
@@ -1768,7 +1784,7 @@ class EventHandlerService {
                          person_Id: person_Id,
                          gender: genderName,
                          is_child: isChild,
-                         time: eventInfo.happenTime,
+                         time: eventInfo.sendTime,
                          detected_camera_Id: eventInfo.srcIndex,
                          detected_camera_name: eventInfo.srcName,
                          image: image
@@ -1977,12 +1993,12 @@ class EventHandlerService {
                          age_group: ageGroup,
                          check_in_image: isEntry ? sentimentImageUrl : null,
                          sentiment_of: sentimentOf as 'employee' | 'visitor',
-                         check_in_date: isEntry ? eventInfo.happenTime: null,
-                         check_in_time: isEntry ? eventInfo.happenTime: null,
+                         check_in_date: isEntry ? eventInfo.sendTime: null,
+                         check_in_time: isEntry ? eventInfo.sendTime: null,
                          check_in_sentiment: isEntry ? detectedSentiment : null,
                          entry_camera_Id: isEntry ? parkCamera.Id : null,
-                         check_out_date: isExit ? eventInfo.happenTime: null,
-                         check_out_time: isExit ? eventInfo.happenTime : null,
+                         check_out_date: isExit ? eventInfo.sendTime: null,
+                         check_out_time: isExit ? eventInfo.sendTime : null,
                          check_out_capture: isExit ? sentimentImageUrl : null,
                          check_out_sentiment: isExit ? detectedSentiment : null,
                          exit_camera_Id: isExit ? parkCamera.Id : null,
@@ -2251,7 +2267,7 @@ class EventHandlerService {
                          const parkAttendanceData = {
                             park_Id: park_Id,
                             person_Id: person_Id,
-                            entry_time: eventInfo.happenTime,
+                            entry_time: eventInfo.sendTime,
                             entry_image: entryImageUrl,
                             age_group: ageGroup,
                             gender: genderValue,
@@ -2311,7 +2327,7 @@ class EventHandlerService {
                             park_Id,
                             person_Id,
                             srcName: eventInfo.srcName,
-                            happenTime: eventInfo.happenTime,
+                            happenTime: eventInfo.sendTime,
                             humanId: eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id
                          });
                          
@@ -2381,7 +2397,7 @@ class EventHandlerService {
                             await db.parks_attendance.update({
                                where: { Id: latestAttendance.Id },
                                data: {
-                                  exit_time: eventInfo.happenTime,
+                                  exit_time: eventInfo.sendTime,
                                   exit_image: exitImageUrl
                                }
                             })
@@ -2576,8 +2592,8 @@ class EventHandlerService {
                         camera_Id: parkCamera?.Id,
                         detection_Id: eventInfo.eventId,
                         detection_code: eventType?.toString(),
-                        detection_date: eventInfo.happenTime,
-                        detection_time: eventInfo.happenTime,
+                        detection_date: eventInfo.sendTime,
+                        detection_time: eventInfo.sendTime,
                         person_Id: person_Id,
                         detected_behaviour: detectedBehaviour,
                         snap_shot: imageUrl,
@@ -3018,7 +3034,7 @@ class EventHandlerService {
             select: { 
                emp_Id: true,
                emp_code: true,
-               is_attendance_user: true
+               user_Id: true
             }
          });
          
@@ -3028,16 +3044,19 @@ class EventHandlerService {
          }
          
          // A user is considered a guest if:
-         // 1. emp_Id is null or empty
-         // 2. emp_code is null or empty  
+         // 1. emp_Id is null or empty AND
+         // 2. emp_code is null or empty AND  
          // 3. is_attendance_user is false
-         const isGuest = !user.emp_Id || !user.emp_code || !user.is_attendance_user;
+         // Only if ALL three conditions are true, then they are a guest
+         const isGuest = (!user.emp_Id || user.emp_Id.trim() === '') && 
+                        (!user.emp_code || user.emp_code.trim() === '') && 
+                        !user.user_Id;
          
          Logger.debug(`[EventHandlerService] User type check:`, {
             personId,
             emp_Id: user.emp_Id,
             emp_code: user.emp_code,
-            is_attendance_user: user.is_attendance_user,
+            user_Id: user.user_Id,
             isGuest
          });
          
