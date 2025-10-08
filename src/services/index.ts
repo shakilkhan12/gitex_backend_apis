@@ -21,3 +21,4 @@ export { default as EventHandlerService } from "@/services/event-handler.service
 export { default as HandlingImagesService } from "@/services/handling-images.service"
 export { default as IntranetPostingHistoryService } from "@/services/intranet-posting-history.service"
 export { default as CamerasService } from "@/services/cameras.service"
+export { default as EventBufferService } from "@/services/event-buffer.service"
