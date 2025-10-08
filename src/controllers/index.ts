@@ -20,3 +20,4 @@ export { default as EventHandlerController } from "@/controllers/event-handler.c
 export { default as HandlingImagesController } from "@/controllers/handling-images.controller"
 export { default as IntranetPostingHistoryController } from "@/controllers/intranet-posting-history.controller"
 export { default as CamerasController } from "@/controllers/cameras.controller"
+export { default as EventBufferController } from "@/controllers/event-buffer.controller"

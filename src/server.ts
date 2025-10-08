@@ -13,6 +13,7 @@ import mainRouter from "@/routes";
 import { errorHandler } from "@/middlewares";
 import SocketService from "@/services/socket.service";
 import CronService from "@/services/cron.service";
+import EventBufferService from "@/services/event-buffer.service";
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: '.env' });
@@ -116,12 +117,16 @@ const startServer = async () => {
     // Initialize Cron Jobs
     CronService.initializeCronJobs();
     
+    // Initialize Event Buffer Service (for stream data bridge)
+    EventBufferService.initialize();
+    
     server.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
       console.log(`🌐 Server URL: http://localhost:${PORT}`);
       console.log(`🔌 WebSocket server initialized`);
       console.log(`⏰ Cron jobs initialized - Grass monitoring at 07:30AM, Irrigation at 08:00AM daily`);
+      console.log(`🔄 QMS Stream Bridge initialized`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

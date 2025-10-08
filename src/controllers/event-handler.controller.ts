@@ -1,6 +1,7 @@
 import { EventHandlerService } from "@/services";
 import { STATUS } from "@/typescript";
 import { NextFunction, Request, Response } from "express";
+import EventBufferService from "@/services/event-buffer.service";
 
 class EventHandlerController extends EventHandlerService {
    
@@ -13,6 +14,9 @@ class EventHandlerController extends EventHandlerService {
                error: "Event data is required" 
             });
          }
+
+         // Store event in buffer for bridge access
+         EventBufferService.storeEvent(eventData);
 
          const result = await EventHandlerService.handleEventService(eventData);
          return res.status(STATUS.SUCCESS).json(result);

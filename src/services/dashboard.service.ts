@@ -10,11 +10,11 @@ type SentimentCounts = {
 };
 
 class DashboardService {
-  public static getDashboardData = async () => {
+  public static getDashboardData = async (startDate?: string, endDate?: string) => {
     try {
       const now = new Date();
-      const todayStart = startOfDay(now);
-      const todayEnd = endOfDay(now);
+      const todayStart = startOfDay(new Date(startDate || now));
+      const todayEnd = endOfDay(new Date(endDate || now));
 
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(now.getDate() - 6);

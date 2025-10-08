@@ -9,6 +9,15 @@ class QMSController extends QMSService {
       try {
          if (errors.isEmpty()) {
             const result = await QMSService.triggerQMSVisitService()
+            
+            if (!result) {
+               return res.status(STATUS.NOT_FOUND).json({
+                  success: false,
+                  message: "No stream event data available",
+                  data: null
+               })
+            }
+            
             return res.status(STATUS.CREATED).json({
                success: true,
                message: "QMS visit triggered successfully",

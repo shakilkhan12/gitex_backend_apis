@@ -10,6 +10,7 @@ import axios from "axios";
 import { v2 as cloudinary } from "cloudinary";
 import https from "https";
 import * as nodeCrypto from "crypto";
+import EventBufferService from "./event-buffer.service";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -26,41 +27,96 @@ class QMSService {
 
   private static readonly CAMERA_ID = "360";
 
+  private static readonly QMS_SRC_INDEXES = ["360"];
+
+  private static async getEventDataFromStream(): Promise<any | null> {
+    try {
+      const event = EventBufferService.getLatestEventFromMultipleSources(
+        this.QMS_SRC_INDEXES,
+        60
+      );
+
+      if (!event) {
+        return null;
+      }
+
+      // const faceData = event.data?.dataType === 'faceMatch' 
+      //   ? event.data.alarmResult?.faces 
+      //   : null;
+      
+      const faceData = event.data?.alarmResult?.faces 
+
+      if (!faceData) {
+        return null;
+      }
+
+      const candidate = faceData.identify?.candidate;
+      const personName = candidate?.reserve_field?.name || null;
+      const humanId = candidate?.human_id || null;
+      const similarity = candidate?.similarity || 0;
+      const ageGroupCode = faceData.age?.ageGroup;
+      const genderCode = faceData.gender?.value;
+      const gender = genderCode === 1 ? 'Male' : genderCode === 2 ? 'Female' : 'Unknown';
+      const faceImageUrl = faceData.URL || candidate?.human_data?.face_pic_url || null;
+
+      let personId = null;
+
+      if (humanId && humanId !== "-1") {
+        const user = await db.users.findFirst({
+          where: { unique_id: humanId.toString() }
+        });
+
+        if (user) {
+          personId = user.Id;
+        } else {
+          try {
+            const guestUser = await this.createGuestUser(gender, faceImageUrl);
+            personId = guestUser.Id;
+            console.log(`[QMSService] Created guest user: ${guestUser.emp__eng_name} (ID: ${personId})`);
+          } catch (error: any) {
+            console.error('[QMSService] Failed to create guest user:', error.message);
+          }
+        }
+      } else {
+        try {
+          const guestUser = await this.createGuestUser(gender, faceImageUrl);
+          personId = guestUser.Id;
+          console.log(`[QMSService] Created guest user for unknown person: ${guestUser.emp__eng_name} (ID: ${personId})`);
+        } catch (error: any) {
+          console.error('[QMSService] Failed to create guest user for unknown person:', error.message);
+        }
+      }
+
+      return {
+        person_id: personId,
+        person_name: personName,
+        gender: gender,
+        age_group: ageGroupCode ? ageGroupCode.toString() : null,
+        similarity: similarity,
+        check_in_image: faceImageUrl,
+        entry_date: new Date(event.timestamp).toISOString().split('T')[0],
+        entry_time: new Date(event.timestamp).toISOString().split('T')[1].split('.')[0],
+        srcIndex: event.srcIndex,
+        srcName: event.srcName,
+      };
+    } catch (error: any) {
+      return null;
+    }
+  }
+
   protected static triggerQMSVisitService = async (): Promise<{
     visit_id: number;
     visitor_id: number | null;
     gender: string | null;
     age_group: string | null;
-  }> => {
+  } | null> => {
     try {
-      // Step 1: Get recent events from sentiment analysis
-      let eventData: any | null = null;
-      try {
-        const qmsEvents = await this.getQMSEvents(this.CAMERA_ID);
-        if (qmsEvents) {
-          eventData = qmsEvents;
-        } else {
-          return {
-            visit_id: 0,
-            visitor_id: null,
-            gender: null,
-            age_group: null,
-          };
-        }
-      } catch (eventError: any) {
-        console.error(
-          `[QMSService] Error checking qms events:`,
-          eventError.message
-        );
-        return {
-          visit_id: 0,
-          visitor_id: null,
-          gender: null,
-          age_group: null,
-        };
+      const eventData = await this.getEventDataFromStream();
+      
+      if (!eventData) {
+        return null;
       }
 
-      // Step 2: Capture image from camera
       const base64Image = await this.captureCameraImage();
       let cloudinaryUrl = null;
 
@@ -463,6 +519,63 @@ class QMSService {
         error.message
       );
       return null;
+    }
+  }
+
+  private static async createGuestUser(gender: string, faceImageUrl: string | null): Promise<any> {
+    try {
+      const lastGuest = await db.users.findFirst({
+        where: {
+          emp__eng_name: {
+            startsWith: 'Guest'
+          }
+        },
+        orderBy: {
+          Id: 'desc'
+        }
+      });
+
+      let guestNumber = 1;
+      if (lastGuest && lastGuest.emp__eng_name) {
+        const match = lastGuest.emp__eng_name.match(/Guest(\d+)/);
+        if (match) {
+          guestNumber = parseInt(match[1]) + 1;
+        }
+      }
+
+      const guestName = `Guest${guestNumber}`;
+
+      const guestUser = await db.users.create({
+        data: {
+          user_Id: null,
+          emp_Id: null,
+          emp_code: null,
+          image: null,
+          gender: gender,
+          emp__eng_name: guestName,
+          location: null,
+          telephone: null,
+          email: null,
+          office_extension: null,
+          nationality: null,
+          joining_date: null,
+          date_of_birth: null,
+          dep_eng_name: null,
+          desig_eng_name: null,
+          unit_arabic_name: null,
+          is_attendance_user: false,
+          is_ai_login_user: false,
+          ai_engine_access: false,
+          unique_id: null,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      });
+
+      return guestUser;
+    } catch (error: any) {
+      console.error('[QMSService] Error creating guest user:', error.message);
+      throw error;
     }
   }
 

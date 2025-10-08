@@ -23,6 +23,7 @@ import intranetPostingHistoryRouter from "./intranet-posting-history.routes";
 import camerasRouter from "./cameras.routes";
 import dashboardRouter from "./dashboard.routes";
 import alertRouter from "./alert.routes";
+import eventBufferRouter from "./event-buffer.routes";
 const mainRouter = Router();
 
 mainRouter.use('/alert', alertRouter)
@@ -49,5 +50,6 @@ mainRouter.use('/event-handler', eventHandlerRouter)
 mainRouter.use('/handling-images', handlingImagesRouter)
 mainRouter.use('/intranet-posting-history', intranetPostingHistoryRouter)
 mainRouter.use('/cameras', camerasRouter)
+mainRouter.use('/event-buffer', eventBufferRouter)
 
 export default mainRouter;

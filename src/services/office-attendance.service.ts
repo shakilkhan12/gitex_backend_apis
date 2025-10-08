@@ -192,11 +192,12 @@ class OfficeAttendanceService {
           type: string;
           time: string;
           datetime: any;
+          image?: string;
         }> = [];
         let inCount = 0;
         let outCount = 0;
 
-        const allEvents: Array<{ type: string; time: string; datetime: any }> =
+        const allEvents: Array<{ type: string; time: string; datetime: any; image?: string }> =
           [];
 
         records.forEach((record) => {
@@ -206,6 +207,7 @@ class OfficeAttendanceService {
               type: "IN",
               time: convertTimeToString(record.entry_time),
               datetime: new Date(record.entry_time),
+              image: record.entry_image,
             });
           }
           if (record.exit_time) {
@@ -214,6 +216,7 @@ class OfficeAttendanceService {
               type: "OUT",
               time: convertTimeToString(record.exit_time),
               datetime: new Date(record.exit_time),
+              image: record.exit_image,
             });
           }
         });
