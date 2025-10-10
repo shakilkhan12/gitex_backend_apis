@@ -150,7 +150,7 @@ export const validateOfficeCamera = [
   // 🔹 IP Address
   body('ip_address')
     .notEmpty().withMessage('IP address is required')
-    .isIP().withMessage('Invalid IP address format'),
+    .withMessage('Invalid IP address format'),
 
   // 🔹 Status
   body('status')
