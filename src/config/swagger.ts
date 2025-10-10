@@ -273,18 +273,11 @@ const options = {
 let specs: any;
 
 try {
-  console.log('🔍 Scanning for API files with patterns:', options.apis);
   specs = swaggerJsdoc(options);
-  
-  // Debug: Log the generated specs
-  console.log('✅ Swagger specs generated with', Object.keys((specs as any).paths || {}).length, 'API paths');
-  console.log('📋 Available paths:', Object.keys((specs as any).paths || {}));
   
   // If no paths found, log a warning
   if (Object.keys((specs as any).paths || {}).length === 0) {
     console.warn('⚠️  No API paths found in swagger specs. Check if route files have proper @swagger comments.');
-    console.log('🔍 Current working directory:', process.cwd());
-    console.log('🔍 Options used:', JSON.stringify(options, null, 2));
   }
 } catch (error) {
   console.error('❌ Error generating swagger specs:', error);

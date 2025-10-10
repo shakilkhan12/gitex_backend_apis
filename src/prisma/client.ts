@@ -26,7 +26,6 @@ if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('connection_l
   url.searchParams.set('max_connections', '25');
   url.searchParams.set('connect_timeout', '60');
   process.env.DATABASE_URL = url.toString();
-  console.log('🔧 Updated DATABASE_URL with connection pool parameters');
 }
 
 // Enhanced Prisma client configuration with connection pool management
@@ -36,7 +35,7 @@ const db = new PrismaClient({
       url: process.env.DATABASE_URL,
     },
   },
-  log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
+  log: ['error'],
   errorFormat: 'pretty',
 });
 
@@ -65,15 +64,15 @@ const connectWithRetry = async (retries = 3, delay = 1000) => {
   }
 };
 
-// Add connection pool monitoring
-setInterval(async () => {
-  try {
-    const result = await db.$queryRaw`SHOW STATUS LIKE 'Threads_connected'`;
-    console.log('📊 Database connection status:', result);
-  } catch (error) {
-    console.error('❌ Failed to check database connection status:', error);
-  }
-}, 30000); // Check every 30 seconds
+// Add connection pool monitoring (disabled to reduce log noise)
+// setInterval(async () => {
+//   try {
+//     const result = await db.$queryRaw`SHOW STATUS LIKE 'Threads_connected'`;
+//     console.log('📊 Database connection status:', result);
+//   } catch (error) {
+//     console.error('❌ Failed to check database connection status:', error);
+//   }
+// }, 30000); // Check every 30 seconds
 
 // Initialize connection
 connectWithRetry().catch(error => {

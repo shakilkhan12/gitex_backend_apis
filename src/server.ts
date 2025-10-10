@@ -85,9 +85,6 @@ app.use('/api-docs', express.static('node_modules/swagger-ui-dist', {
 
 // Serve the swagger.json file
 app.get('/api-docs/swagger.json', (req, res) => {
-  console.log('Swagger specs generated:', Object.keys((specs as any).paths || {}).length, 'paths found');
-  console.log('Specs object keys:', Object.keys(specs));
-  console.log('Paths found:', Object.keys((specs as any).paths || {}));
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');

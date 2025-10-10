@@ -7,6 +7,7 @@ import * as nodeCrypto from 'crypto';
 import { v2 as cloudinary } from 'cloudinary';
 import { formatDate, formatTime } from "@/utils/dateTime.utils";
 import SocketService from "./socket.service";
+import { createCanvas, loadImage } from 'canvas';
 // Simple logger implementation
 const Logger = {
    info: (message: string, data?: any) => {
@@ -22,6 +23,58 @@ const Logger = {
       console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error);
    }
 };
+
+// Face rectangle interface for cropping
+interface FaceRect {
+  x: number;      // normalized (0–1)
+  y: number;      // normalized (0–1)
+  width: number;  // normalized (0–1)
+  height: number; // normalized (0–1)
+}
+
+// Helper function to crop face with 40% margin
+async function cropFaceWithMargin(base64Image: string, faceRect: FaceRect): Promise<string> {
+  try {
+    const img = await loadImage(base64Image);
+    const canvas = createCanvas(img.width, img.height);
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx) throw new Error("Canvas not supported");
+
+    // Image dimensions
+    const imgWidth = img.width;
+    const imgHeight = img.height;
+
+    // Calculate 40% expansion
+    const expandX = faceRect.width * 0.4;
+    const expandY = faceRect.height * 0.4;
+
+    const newX = Math.max(0, faceRect.x - expandX);
+    const newY = Math.max(0, faceRect.y - expandY);
+    const newWidth = Math.min(1, faceRect.width * 1.8 - Math.max(0, expandX - faceRect.x));
+    const newHeight = Math.min(1, faceRect.height * 1.8 - Math.max(0, expandY - faceRect.y));
+
+    // Convert normalized values to pixel values
+    const cropX = newX * imgWidth;
+    const cropY = newY * imgHeight;
+    const cropW = newWidth * imgWidth;
+    const cropH = newHeight * imgHeight;
+
+    // Set canvas size
+    canvas.width = cropW;
+    canvas.height = cropH;
+
+    // Draw the cropped region
+    ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+
+    // Return new base64
+    return canvas.toDataURL("image/png");
+  } catch (error) {
+    Logger.error(`[EventHandlerService] Error cropping face with margin:`, error);
+    // Return original image if cropping fails
+    return base64Image;
+  }
+}
 
 class EventHandlerService {
 
@@ -599,16 +652,31 @@ class EventHandlerService {
                                try {
                                   // Get faceData URL from event data
                                   let faceData = null;
+                                  if(eventInfo.data?.alarmResult?.faces?.URL){
+                                     faceData = eventInfo.data.alarmResult.faces.URL;
+                                     Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for guest user`, {
+                                        faceDataUrl: faceData
+                                     });
+                                  }
+                                  let faceRect = null;
                                   if (eventInfo.data?.alarmResult?.faces?.URL) {
                                      faceData = eventInfo.data.alarmResult.faces.URL;
                                      Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for guest user`, {
                                         faceDataUrl: faceData
                                      });
-                                     } else {
+                                  } else {
                                      Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for guest user creation`);
                                   }
                                   
-                                  const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
+                                  // Get faceRect from event data for cropping
+                                  if (eventInfo.data?.alarmResult?.faces?.faceRect) {
+                                     faceRect = eventInfo.data.alarmResult.faces.faceRect;
+                                     Logger.debug(`[EventHandlerService] 📐 Extracted face rect for cropping`, {
+                                        faceRect: faceRect
+                                     });
+                                  }
+                                  
+                                  const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect);
                                   person_Id = guestUser.Id;
                                   
                                   Logger.info(`[EventHandlerService] ✅ Successfully created guest user for office attendance`, {
@@ -639,16 +707,25 @@ class EventHandlerService {
                             try {
                                // Get faceData URL from event data
                                let faceData = null;
+                               let faceRect = null;
                                if (eventInfo.data?.alarmResult?.faces?.URL) {
                                   faceData = eventInfo.data.alarmResult.faces.URL;
                                   Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for unknown visitor`, {
                                      faceDataUrl: faceData
                                   });
-                                  } else {
+                               } else {
                                   Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for unknown visitor guest creation`);
                                }
                                
-                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
+                               // Get faceRect from event data for cropping
+                               if (eventInfo.data?.alarmResult?.faces?.faceRect) {
+                                  faceRect = eventInfo.data.alarmResult.faces.faceRect;
+                                  Logger.debug(`[EventHandlerService] 📐 Extracted face rect for unknown visitor cropping`, {
+                                     faceRect: faceRect
+                                  });
+                               }
+                               
+                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect);
                                   person_Id = guestUser.Id;
                                
                                Logger.info(`[EventHandlerService] ✅ Successfully created guest user for unknown office visitor`, {
@@ -1095,7 +1172,6 @@ class EventHandlerService {
                             check_out_capture: latestSentiment?.check_out_capture
                          });
 
-                         // Debug: Check all sentiment records for this office and person
                          if (!latestSentiment) {
                             const allSentimentRecords = await db.offices_sentiment_analysis.findMany({
                                where: {
@@ -1769,16 +1845,25 @@ class EventHandlerService {
                             try {
                                // Get faceData URL from event data
                                let faceData = null;
+                               let faceRect = null;
                                if (eventInfo.data?.alarmResult?.faces?.URL) {
                                   faceData = eventInfo.data.alarmResult.faces.URL;
                                   Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for park guest user`, {
                                      faceDataUrl: faceData
                                   });
-                                  } else {
+                               } else {
                                   Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for park guest user creation`);
                                }
                                
-                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
+                               // Get faceRect from event data for cropping
+                               if (eventInfo.data?.alarmResult?.faces?.faceRect) {
+                                  faceRect = eventInfo.data.alarmResult.faces.faceRect;
+                                  Logger.debug(`[EventHandlerService] 📐 Extracted face rect for park guest cropping`, {
+                                     faceRect: faceRect
+                                  });
+                               }
+                               
+                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect);
                                person_Id = guestUser.Id;
                                
                                Logger.info(`[EventHandlerService] ✅ Successfully created guest user for park attendance`, {
@@ -2771,7 +2856,7 @@ class EventHandlerService {
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
    }
 
-   private static async createGuestUserAndUploadToHikVision(gender: string, faceData: string): Promise<any> {
+   private static async createGuestUserAndUploadToHikVision(gender: string, faceData: string, faceRect?: FaceRect): Promise<any> {
       const startTime = Date.now();
       Logger.info(`[EventHandlerService] 🚀 Starting guest user creation process`, {
          gender,
@@ -2859,6 +2944,29 @@ class EventHandlerService {
                // The response is directly the base64 string, not wrapped in a data object
                   base64ImageData = imageDataResponse;
                   Logger.info(`[EventHandlerService] ✅ Successfully retrieved base64 image data, length: ${base64ImageData.length}`);
+                  
+                  // Apply face cropping if faceRect is provided
+                  if (faceRect && base64ImageData) {
+                     Logger.info(`[EventHandlerService] ✂️ Applying face cropping with 40% margin`, {
+                        faceRect: {
+                           x: faceRect.x,
+                           y: faceRect.y,
+                           width: faceRect.width,
+                           height: faceRect.height
+                        }
+                     });
+                     
+                     try {
+                        const croppedImage = await cropFaceWithMargin(base64ImageData, faceRect);
+                        base64ImageData = croppedImage;
+                        Logger.info(`[EventHandlerService] ✅ Successfully cropped face image, new length: ${base64ImageData.length}`);
+                     } catch (cropError: any) {
+                        Logger.error(`[EventHandlerService] ❌ Failed to crop face image, using original:`, cropError.message);
+                        // Continue with original image if cropping fails
+                     }
+                  } else if (faceRect) {
+                     Logger.warn(`[EventHandlerService] ⚠️ Face rect provided but no base64 image data available for cropping`);
+                  }
             } else {
                   Logger.warn(`[EventHandlerService] ⚠️ No image data received for faceData URL: ${faceData}`);
                }
