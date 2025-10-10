@@ -1030,12 +1030,33 @@ class EventHandlerService {
                          
                          // If person_Id is null, try to find it using human_id from the event
                          let searchPersonId = person_Id;
+                         
+                         Logger.info(`[EventHandlerService] Initial searchPersonId for office sentiment exit:`, {
+                            person_Id,
+                            searchPersonId,
+                            hasHumanId: !!eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id,
+                            humanId: eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id
+                         });
+                         
                          if (!searchPersonId && eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id) {
                             const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
+                            Logger.info(`[EventHandlerService] Attempting to find user by human_id for office sentiment exit:`, {
+                               humanId,
+                               humanIdString: humanId.toString()
+                            });
+                            
                             if (humanId && humanId !== "-1") {
                                const user = await db.users.findFirst({
                                   where: { unique_id: humanId.toString() }
                                });
+                               
+                               Logger.info(`[EventHandlerService] User lookup result for office sentiment exit:`, {
+                                  found: !!user,
+                                  userId: user?.Id,
+                                  userUniqueId: user?.unique_id,
+                                  userName: user?.emp__eng_name
+                               });
+                               
                                if (user) {
                                   searchPersonId = user.Id;
                                   Logger.info(`[EventHandlerService] Found person_Id for exit sentiment using human_id: ${searchPersonId}`);
@@ -1048,16 +1069,58 @@ class EventHandlerService {
                             return;
                          }
                          
+                         Logger.info(`[EventHandlerService] Searching for office sentiment record with criteria:`, {
+                            office_Id,
+                            person_Id: searchPersonId.toString(),
+                            searchPersonId,
+                            check_out_capture: null
+                         });
+
                          const latestSentiment = await db.offices_sentiment_analysis.findFirst({
                             where: {
                                office_Id: office_Id,
                                person_Id: searchPersonId.toString(),
-                               check_out_capture: null // Find record without exit data
+                               check_out_capture: null 
                             },
                             orderBy: {
                                check_in_date: 'desc'
                             }
                          });
+
+                         Logger.info(`[EventHandlerService] Office sentiment search result:`, {
+                            found: !!latestSentiment,
+                            recordId: latestSentiment?.Id,
+                            person_Id: latestSentiment?.person_Id,
+                            check_in_date: latestSentiment?.check_in_date,
+                            check_out_capture: latestSentiment?.check_out_capture
+                         });
+
+                         // Debug: Check all sentiment records for this office and person
+                         if (!latestSentiment) {
+                            const allSentimentRecords = await db.offices_sentiment_analysis.findMany({
+                               where: {
+                                  office_Id: office_Id,
+                                  person_Id: searchPersonId.toString()
+                               },
+                               orderBy: {
+                                  check_in_date: 'desc'
+                               },
+                               take: 5
+                            });
+                            
+                            Logger.info(`[EventHandlerService] All office sentiment records for debugging:`, {
+                               office_Id,
+                               searchPersonId: searchPersonId.toString(),
+                               totalRecords: allSentimentRecords.length,
+                               records: allSentimentRecords.map(record => ({
+                                  id: record.Id,
+                                  person_Id: record.person_Id,
+                                  check_in_date: record.check_in_date,
+                                  check_out_capture: record.check_out_capture,
+                                  sentiment_of: record.sentiment_of
+                               }))
+                            });
+                         }
                          
                          if(latestSentiment){
                             Logger.info(`[EventHandlerService] Updating office exit sentiment analysis for record ID: ${latestSentiment.Id}`);
@@ -3027,8 +3090,14 @@ class EventHandlerService {
     * @param personId The person ID to check
     * @returns Promise<boolean> True if the user is a guest, false if employee
     */
-   private static async isGuestUser(personId: number): Promise<boolean> {
+   private static async isGuestUser(personId: number | null | undefined): Promise<boolean> {
       try {
+         // Handle null or undefined personId
+         if (!personId || personId === null || personId === undefined) {
+            Logger.warn(`[EventHandlerService] personId is null or undefined, treating as guest`);
+            return true; // Treat as guest if no personId provided
+         }
+
          const user = await db.users.findUnique({
             where: { Id: personId },
             select: { 

@@ -51,6 +51,8 @@ class UserService {
             Lang: "en"
          };
    
+         console.log('Login API Payload:', JSON.stringify(payload, null, 2));
+   
          const response = await axios.post(
             "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeLoginService",
             payload,
@@ -61,9 +63,16 @@ class UserService {
             }
          );
    
+         console.log('Login API Response:', JSON.stringify(response.data, null, 2));
    
          if (response.data.status !== 'SUCCESS' || response.data.code !== 200) {
-            throw new HttpException(STATUS.BAD_REQUEST, response.data.error?.msg || "Login failed");
+            console.error('Login failed - API Response:', {
+               status: response.data.status,
+               code: response.data.code,
+               error: response.data.error,
+               fullResponse: response.data
+            });
+            throw new HttpException(STATUS.BAD_REQUEST, response.data.error?.msg || `Login failed: ${response.data.status} - ${response.data.code}`);
          }
    
          const userId = response.data.data.UserID;
