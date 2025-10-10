@@ -309,12 +309,26 @@ class LandscapingService {
                      geminiResponse: geminiResponse!
                   });
 
-                  results.push({
-                     cameraId: camera.camera_Id,
-                     parkId: camera.park_Id,
-                     success: true,
-                     landscapingId: landscapingRecord.id
-                  });
+                  // Check if record was actually stored (needs_cutting was true)
+                  if (landscapingRecord.id) {
+                     results.push({
+                        cameraId: camera.camera_Id,
+                        parkId: camera.park_Id,
+                        success: true,
+                        landscapingId: landscapingRecord.id,
+                        message: "Record stored - grass needs cutting",
+                        needs_cutting: true
+                     });
+                  } else {
+                     results.push({
+                        cameraId: camera.camera_Id,
+                        parkId: camera.park_Id,
+                        success: true,
+                        message: landscapingRecord.message || "Record not stored - grass does not need cutting",
+                        needs_cutting: false,
+                        estimated_height: landscapingRecord.estimated_height
+                     });
+                  }
                } catch (dbError: any) {
                   results.push({
                      cameraId: camera.camera_Id,
@@ -609,13 +623,26 @@ OUTPUT FORMAT:
       geminiResponse: any;
    }): Promise<any> {
       try {
-         const caseId = await this.generateUniqueCaseId();
-
          const estimatedHeight = data.geminiResponse?.estimated_height || "Unknown";
          const confidenceScore = String(data.geminiResponse?.confidence_score || "0");
          const rationale = data.geminiResponse?.rationale || "No analysis available";
          const needsCutting = data.geminiResponse?.cutting_recommendation?.needs_cutting || false;
          const recommendationNote = data.geminiResponse?.cutting_recommendation?.recommendation_note || "No recommendation available";
+
+         // Only store records where needs_cutting is true
+         if (!needsCutting) {
+            console.log(`[LandscapingService] Skipping record creation - grass does not need cutting. Height: ${estimatedHeight}, Camera: ${data.cameraId}`);
+            return {
+               id: null,
+               case_Id: null,
+               message: "Record not stored - grass does not need cutting",
+               needs_cutting: false,
+               estimated_height: estimatedHeight,
+               cameraId: data.cameraId
+            };
+         }
+
+         const caseId = await this.generateUniqueCaseId();
 
          // Calculate grass health percentage based on height and cutting needs
          let grassHealthPercentage = "100%";
@@ -657,6 +684,7 @@ OUTPUT FORMAT:
             },
          });
 
+         console.log(`[LandscapingService] Successfully created landscaping record - grass needs cutting. Height: ${estimatedHeight}, Camera: ${data.cameraId}, Record ID: ${result.id}`);
          return result;
       } catch (error: any) {
          console.error('[LandscapingService] Error creating grass monitoring record:', error.message);
@@ -699,33 +727,48 @@ OUTPUT FORMAT:
                // Extract Gemini response data (same as monitorParkCamerasService)
                const geminiData = geminiResponse || {};
                const cuttingRecommendation = (geminiData as any).cutting_recommendation || {};
+               const needsCutting = (cuttingRecommendation as any).needs_cutting || false;
 
-               // Save to testing_modules table
-               const testingRecord = await this.createTestingModuleRecord({
-                  image: cloudinaryUrl,
-                  name: `Landscaping Testing`,
-                  case_type: "Landscaping Testing",
-                  estimated_height: (geminiData as any).estimated_height || null,
-                  needs_cutting: (cuttingRecommendation as any).needs_cutting || false,
-                  recommendation_note: (cuttingRecommendation as any).recommendation_note || null,
-                  health: (geminiData as any).status || "Unknown",
-                  suggestion: (geminiData as any).suggestions || null,
-                  status: (geminiData as any).status || null,
-                  confidence_score: String((geminiData as any).confidence_score || "0"),
-                  rationale: (geminiData as any).rationale || null,
-                  gallons_required_estimate: null, // Not applicable for landscaping
-                  calculation_note: null // Not applicable for landscaping
-               });
+               // Only save to testing_modules table if needs_cutting is true
+               if (needsCutting) {
+                  const testingRecord = await this.createTestingModuleRecord({
+                     image: cloudinaryUrl,
+                     name: `Landscaping Testing`,
+                     case_type: "Landscaping Testing",
+                     estimated_height: (geminiData as any).estimated_height || null,
+                     needs_cutting: needsCutting,
+                     recommendation_note: (cuttingRecommendation as any).recommendation_note || null,
+                     health: (geminiData as any).status || "Unknown",
+                     suggestion: (geminiData as any).suggestions || null,
+                     status: (geminiData as any).status || null,
+                     confidence_score: String((geminiData as any).confidence_score || "0"),
+                     rationale: (geminiData as any).rationale || null,
+                     gallons_required_estimate: null, // Not applicable for landscaping
+                     calculation_note: null // Not applicable for landscaping
+                  });
 
-               results.push({
-                  imageIndex: i + 1,
-                  success: true,
-                  cloudinaryUrl: cloudinaryUrl,
-                  testingRecordId: testingRecord.id,
-                  geminiResponse: geminiResponse
-               });
+                  results.push({
+                     imageIndex: i + 1,
+                     success: true,
+                     cloudinaryUrl: cloudinaryUrl,
+                     testingRecordId: testingRecord.id,
+                     geminiResponse: geminiResponse,
+                     needs_cutting: true,
+                     message: "Record stored - grass needs cutting"
+                  });
+               } else {
+                  results.push({
+                     imageIndex: i + 1,
+                     success: true,
+                     cloudinaryUrl: cloudinaryUrl,
+                     testingRecordId: null,
+                     geminiResponse: geminiResponse,
+                     needs_cutting: false,
+                     message: "Record not stored - grass does not need cutting",
+                     estimated_height: (geminiData as any).estimated_height || null
+                  });
+               }
 
-               console.log(`[LandscapingService] Testing record created for image ${i + 1}:`, testingRecord.id);
 
             } catch (error: any) {
                results.push({
@@ -736,7 +779,6 @@ OUTPUT FORMAT:
             }
          }
 
-         // Get all created records for this batch
          const createdRecords = results
             .filter(result => result.success && result.testingRecordId)
             .map(result => result.testingRecordId);

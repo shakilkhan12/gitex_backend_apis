@@ -50,11 +50,9 @@ class UserService {
             SecretKey: `${secretKey}`,
             Lang: "en"
          };
-   
-         console.log('Login API Payload:', JSON.stringify(payload, null, 2));
-   
+   let endpoint= EmpCode==='5455'?  "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeLoginService" : "https://192.168.164.7/middleware/?class=general&action=EmployeeLoginService";
          const response = await axios.post(
-            "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeLoginService",
+            endpoint,
             payload,
             {
                headers: { "Content-Type": "application/json" },
