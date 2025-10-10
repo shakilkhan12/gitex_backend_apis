@@ -395,6 +395,8 @@ class ParkAttendanceService {
         return {
           id: user?.emp_Id,
           name: displayName,
+          emp_english_name: user?.emp__eng_name || null,
+          emp_arabic_name: user?.emp__arabic_name || null,
           status,
           avatarUrl: user?.image,
           department:

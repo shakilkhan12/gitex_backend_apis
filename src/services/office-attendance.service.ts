@@ -356,9 +356,20 @@ class OfficeAttendanceService {
           user?.emp__arabic_name ||
           (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
 
+        // Debug logging
+        if (user?.emp_Id && (!user?.emp__arabic_name || !user?.emp__eng_name)) {
+          console.log('Employee data for', user.emp_Id, ':', {
+            emp__eng_name: user?.emp__eng_name,
+            emp__arabic_name: user?.emp__arabic_name,
+            name: displayName
+          })
+        }
+
         return {
           id: user?.emp_Id,
           name: displayName,
+          emp_english_name: user?.emp__eng_name || null,
+          emp_arabic_name: user?.emp__arabic_name || null,
           status,
           avatarUrl: user?.image,
           department:
