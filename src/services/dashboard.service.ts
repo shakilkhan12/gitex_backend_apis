@@ -57,8 +57,9 @@ class DashboardService {
     console.log('✅ Batch 4 completed: summary data');
 
     // Batch 5: Final data
-    const [landscapingData, parksSentimentAnalysisToday, officesSentimentAnalysisToday] = await Promise.all([
+    const [landscapingData, plantDiseaseData, parksSentimentAnalysisToday, officesSentimentAnalysisToday] = await Promise.all([
       getLandscaping(sevenDaysAgo, now),
+      getPlantDiseaseData(),
       getSentimentAnalysis("parks", {
         where: {
           check_in_date: {
@@ -76,7 +77,7 @@ class DashboardService {
         },
       }),
     ]);
-    console.log('✅ Batch 5 completed: landscaping and sentiment data');
+    console.log('✅ Batch 5 completed: landscaping, plant disease, and sentiment data');
     // Sentiment percentages
     const allCheckins = [
       ...officeCheckins.map((item) => ({ ...item, type: "office" })),
@@ -150,6 +151,7 @@ class DashboardService {
       sentimentAnalysisToday,
       violationSummary,
       landscapingData,
+      plantDiseaseData,
     };
     } catch (error:any) {
       console.error('❌ Dashboard service error:', error);
@@ -196,6 +198,35 @@ async function getLandscaping(sevenDaysAgo: Date, now: Date) {
       ? record.assignedUser?.emp__eng_name || null
       : null,
     createdAt: record.createdAt || null,
+  }));
+}
+
+async function getPlantDiseaseData() {
+  // Get last 5 plant disease records (filter by plant_type = 'Plant' and sort by createdAt desc)
+  const plantDiseaseRecords = await db.landscaping.findMany({
+    where: {
+      plant_type: 'Plant',
+    },
+    include: {
+      parks: {
+        select: {
+          park_english_name: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    take: 5,
+  });
+
+  return plantDiseaseRecords.map((record) => ({
+    caseid: record.case_Id || 'N/A',
+    location: record.parks?.park_english_name || 'N/A',
+    disease: record.name || 'N/A',
+    status: record.current_status === 'in_progress' || record.current_status === 'In Progress' 
+      ? 'In Progress' 
+      : record.current_status || 'N/A',
   }));
 }
 
