@@ -86,7 +86,9 @@ class LandscapingService {
                   select: {
                      Id: true,
                      emp__eng_name: true,
-                     dep_eng_name: true
+                     emp__arabic_name: true,
+                     dep_eng_name: true,
+                     dep_arabic_name: true
                   }
                },
                parks: {
@@ -107,7 +109,9 @@ class LandscapingService {
                         select: {
                            Id: true,
                            emp__eng_name: true,
-                           dep_eng_name: true
+                           emp__arabic_name: true,
+                           dep_eng_name: true,
+                           dep_arabic_name: true
                         }
                      }
                   },

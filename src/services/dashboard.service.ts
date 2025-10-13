@@ -57,8 +57,9 @@ class DashboardService {
     console.log('✅ Batch 4 completed: summary data');
 
     // Batch 5: Final data
-    const [landscapingData, parksSentimentAnalysisToday, officesSentimentAnalysisToday] = await Promise.all([
+    const [landscapingData, plantDiseaseData, parksSentimentAnalysisToday, officesSentimentAnalysisToday] = await Promise.all([
       getLandscaping(sevenDaysAgo, now),
+      getPlantDisease(sevenDaysAgo, now),
       getSentimentAnalysis("parks", {
         where: {
           check_in_date: {
@@ -150,6 +151,7 @@ class DashboardService {
       sentimentAnalysisToday,
       violationSummary,
       landscapingData,
+      plantDiseaseData,
     };
     } catch (error:any) {
       console.error('❌ Dashboard service error:', error);
@@ -174,12 +176,15 @@ async function getLandscaping(sevenDaysAgo: Date, now: Date) {
       assignedUser: {
         select: {
           emp__eng_name: true,
+          emp__arabic_name: true,
           dep_eng_name: true,
+          dep_arabic_name: true,
         },
       },
       parks: {
         select: {
           park_english_name: true,
+          park_arabic_name: true,
         },
       },
     },
@@ -190,13 +195,23 @@ async function getLandscaping(sevenDaysAgo: Date, now: Date) {
     name: record.name || null,
     avatar: record.image || null,
     location: record.parks?.park_english_name || null,
+    location_arabic: record.parks?.park_arabic_name || null,
     plantType: record.plant_type || null,
     status: record.current_status || null,
     incharge: record.assinged_to
       ? record.assignedUser?.emp__eng_name || null
       : null,
+    incharge_arabic: record.assinged_to
+      ? record.assignedUser?.emp__arabic_name || null
+      : null,
     createdAt: record.createdAt || null,
   }));
+}
+
+async function getPlantDisease(sevenDaysAgo: Date, now: Date) {
+  // For now, return empty array since plant disease data might not be implemented yet
+  // This can be updated when the plant disease table and data are available
+  return [];
 }
 
 async function getViolationSummary(sevenDaysAgo: Date, now: Date) {
