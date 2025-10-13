@@ -403,6 +403,8 @@ class ParkAttendanceService {
             user?.dep_eng_name ||
             user?.dep_arabic_name ||
             (isEmployee ? "Unknown Department" : "Visitor"),
+          dep_english_name: user?.dep_eng_name || null,
+          dep_arabic_name: user?.dep_arabic_name || null,
           park_Id: records[0].park_Id,
           date: formattedDate,
           firstEntry,

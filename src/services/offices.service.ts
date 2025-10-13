@@ -260,6 +260,31 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             }
          });
 
+         // Get camera information for all unique camera IDs
+         const cameraIds = footfallData.map(item => item.detected_camera_Id);
+         const uniqueCameraIds = cameraIds.filter((id, index) => cameraIds.indexOf(id) === index);
+         const camerasData = await db.offices_cameras.findMany({
+            where: {
+               camera_Id: {
+                  in: uniqueCameraIds
+               }
+            },
+            select: {
+               camera_Id: true,
+               camera_english_name: true,
+               camera_arabic_name: true
+            }
+         });
+
+         // Create a map for quick camera lookup
+         const cameraMap = new Map();
+         camerasData.forEach(camera => {
+            cameraMap.set(camera.camera_Id, {
+               camera_english_name: camera.camera_english_name,
+               camera_arabic_name: camera.camera_arabic_name
+            });
+         });
+
          // Calculate statistics
          const totalFootfall = footfallData.length;
          
@@ -410,6 +435,16 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             return acc;
          }, {} as Record<string, { total: number; employees: number; guests: number }>);
 
+         // Enhance rawData with camera names
+         const enhancedRawData = footfallData.map(item => {
+            const cameraInfo = cameraMap.get(item.detected_camera_Id);
+            return {
+               ...item,
+               camera_english_name: cameraInfo?.camera_english_name || item.detected_camera_name,
+               camera_arabic_name: cameraInfo?.camera_arabic_name || item.detected_camera_name
+            };
+         });
+
          return {
             summary: {
                totalFootfall,
@@ -426,7 +461,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             guests: uniqueGuests,
             hourlyDistribution,
             dailyDistribution,
-            rawData: footfallData
+            rawData: enhancedRawData
          };
       } catch (error: any) {
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch footfall analysis data');
