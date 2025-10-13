@@ -178,7 +178,7 @@ class ParkSentimentAnalysisService {
                }
             },
             orderBy: {
-               createdAt: 'desc'
+               updatedAt: 'desc'
             }
          });
 
