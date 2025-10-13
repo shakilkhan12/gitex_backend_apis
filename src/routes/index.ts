@@ -24,10 +24,13 @@ import camerasRouter from "./cameras.routes";
 import dashboardRouter from "./dashboard.routes";
 import alertRouter from "./alert.routes";
 import eventBufferRouter from "./event-buffer.routes";
+import footfallAnalyticsRouter from "./footfall-analytics.routes";
 const mainRouter = Router();
+
 
 mainRouter.use('/alert', alertRouter)
 mainRouter.use('/dashboard', dashboardRouter)
+// mainRouter.use('/dashboard', footfallAnalyticsRouter)
 mainRouter.use('/smoking-detection', smokingDetectionRouter)
 mainRouter.use('/intrusion-detection', intrusionDetectionRouter)
 mainRouter.use('/litter-detection', litterDetectionRouter)

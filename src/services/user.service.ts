@@ -589,9 +589,10 @@ class UserService {
                   user_Id: userData.UserID,
                   emp_Id: userData.EmpCode,
                   emp_code: userData.EmpCode,
-                  image: userData.EmployeeImage1 ||userData.EmployeeImage2,
+                  image: userData.EmployeeImage1 || userData.EmployeeImage2,
                   gender: userData.Gender,
                   emp__eng_name: userData.Name,
+                  emp__arabic_name: userData.NameAr, // Added Arabic name mapping
                   location: userData.Location,
                   telephone: userData.Telephone,
                   email: userData.Email,
@@ -600,8 +601,11 @@ class UserService {
                   joining_date: parseDate(userData.JoiningDate),
                   date_of_birth: parseDate(userData.DateOfBirth),
                   dep_eng_name: userData.Department,
+                  dep_arabic_name: userData.DepartmentAr, // Added Arabic department mapping
                   desig_eng_name: userData.Designation,
-                  unit_arabic_name: userData.Unit,
+                  desig_arabic_name: userData.DesignationAr, // Added Arabic designation mapping
+                  unit_eng_name: userData.Unit, // Changed from unit_arabic_name to unit_eng_name for English
+                  unit_arabic_name: userData.UnitAr, // Added Arabic unit mapping
                   is_attendance_user: userData.IsAttendenceUser === "Y",
                   is_ai_login_user: userData.IsAILoginUser === "Y",
                   ai_engine_access: existingUser?.ai_engine_access || false, // Keep existing value or default

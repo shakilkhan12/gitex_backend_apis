@@ -22,3 +22,4 @@ export { default as HandlingImagesService } from "@/services/handling-images.ser
 export { default as IntranetPostingHistoryService } from "@/services/intranet-posting-history.service"
 export { default as CamerasService } from "@/services/cameras.service"
 export { default as EventBufferService } from "@/services/event-buffer.service"
+export { default as FootfallAnalyticsService } from "@/services/footfall-analytics.service"
