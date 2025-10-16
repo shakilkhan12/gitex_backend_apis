@@ -750,7 +750,23 @@ class EventHandlerService {
                       
                       let image = null;
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
-                         image = eventInfo.data.alarmResult.faces.URL;
+                         try {
+                            // Fetch image data from the URL
+                            const imageResponse = await fetch(eventInfo.data.alarmResult.faces.URL);
+                            if (imageResponse.ok) {
+                               const imageBuffer = await imageResponse.arrayBuffer();
+                               const base64Image = Buffer.from(imageBuffer).toString('base64');
+                               const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+                               
+                               // Upload to Cloudinary
+                               image = await this.uploadImageToCloudinary(dataUrl, 'office-footfall', eventInfo.eventId);
+                               Logger.info(`[EventHandlerService] ✅ Successfully uploaded office footfall image to Cloudinary: ${image}`);
+                            } else {
+                               Logger.warn(`[EventHandlerService] ⚠️ Failed to fetch image from URL: ${eventInfo.data.alarmResult.faces.URL}`);
+                            }
+                         } catch (imageError: any) {
+                            Logger.error(`[EventHandlerService] ❌ Error processing office footfall image:`, imageError.message);
+                         }
                       }
                       const officeFootfallData = {
                          office_Id: office_Id,
@@ -1273,6 +1289,43 @@ class EventHandlerService {
                                   check_out_capture: null
                                }
                             });
+                         }
+                         
+                         try {
+                            Logger.info(`[EventHandlerService] Checking for QMS record to update for office exit`);
+                            
+                            const latestQMSRecord = await db.qms_history.findFirst({
+                               where: {
+                                  visitor_id: searchPersonId,
+                                  status: 'Active'
+                               },
+                               orderBy: {
+                                  createdAt: 'desc'
+                               }
+                            });
+                            
+                            if (latestQMSRecord) {
+                               Logger.info(`[EventHandlerService] Found QMS record to update: ${latestQMSRecord.visit_id}`);
+                               
+                               await db.qms_history.update({
+                                  where: { visit_id: latestQMSRecord.visit_id },
+                                  data: {
+                                     exit_image: exitSentimentImageUrl,
+                                     exit_camera: officeSentimentData.exit_camera_Id?.toString() || null,
+                                     exit_mode: exitDetectedSentiment,
+                                     exit_date: officeSentimentData.check_out_date,
+                                     exit_time: officeSentimentData.check_out_time,
+                                     status: 'Completed',
+                                     updatedAt: new Date()
+                                  }
+                               });
+                               
+                               Logger.info(`[EventHandlerService] Successfully updated QMS record with exit sentiment: ${exitDetectedSentiment}`);
+                            } else {
+                               Logger.info(`[EventHandlerService] No active QMS record found for visitor_id: ${searchPersonId}`);
+                            }
+                         } catch (qmsError: any) {
+                            Logger.error(`[EventHandlerService] Error updating QMS record for office exit:`, qmsError.message);
                          }
                       }
                       
@@ -1924,7 +1977,20 @@ class EventHandlerService {
                       
                       let image = null;
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
-                         image = eventInfo.data.alarmResult.faces.URL;
+                         try {
+                            const imageResponse = await fetch(eventInfo.data.alarmResult.faces.URL);
+                            if (imageResponse.ok) {
+                               const imageBuffer = await imageResponse.arrayBuffer();
+                               const base64Image = Buffer.from(imageBuffer).toString('base64');
+                               const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+                               
+                               image = await this.uploadImageToCloudinary(dataUrl, 'park-footfall', eventInfo.eventId);
+                            } else {
+                               Logger.warn(`[EventHandlerService] ⚠️ Failed to fetch image from URL: ${eventInfo.data.alarmResult.faces.URL}`);
+                            }
+                         } catch (imageError: any) {
+                            Logger.error(`[EventHandlerService] ❌ Error processing park footfall image:`, imageError.message);
+                         }
                       }
                       const parkFootfallData = {
                          park_Id: park_Id,
@@ -2941,11 +3007,9 @@ class EventHandlerService {
                const imageDataResponse = await this.getImageData(faceData);
             
             if (imageDataResponse) {
-               // The response is directly the base64 string, not wrapped in a data object
                   base64ImageData = imageDataResponse;
                   Logger.info(`[EventHandlerService] ✅ Successfully retrieved base64 image data, length: ${base64ImageData.length}`);
                   
-                  // Apply face cropping if faceRect is provided
                   if (faceRect && base64ImageData) {
                      Logger.info(`[EventHandlerService] ✂️ Applying face cropping with 40% margin`, {
                         faceRect: {
@@ -2962,7 +3026,6 @@ class EventHandlerService {
                         Logger.info(`[EventHandlerService] ✅ Successfully cropped face image, new length: ${base64ImageData.length}`);
                      } catch (cropError: any) {
                         Logger.error(`[EventHandlerService] ❌ Failed to crop face image, using original:`, cropError.message);
-                        // Continue with original image if cropping fails
                      }
                   } else if (faceRect) {
                      Logger.warn(`[EventHandlerService] ⚠️ Face rect provided but no base64 image data available for cropping`);
@@ -3016,17 +3079,33 @@ class EventHandlerService {
 
          if (hikVisionResponse && hikVisionResponse.code === '0' && hikVisionResponse.data) {
             Logger.info(`[EventHandlerService] 🎉 HIK Vision upload successful, updating guest user with unique_id`);
+            
+            let imageUrl = null;
+            if (base64ImageData) {
+               try {
+                  Logger.info(`[EventHandlerService] 📤 Uploading guest user image to Cloudinary`);
+                  const dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
+                  imageUrl = await this.uploadImageToCloudinary(dataUrl, 'guest-users', guestUser.Id.toString());
+                  Logger.info(`[EventHandlerService] ✅ Successfully uploaded guest user image to Cloudinary: ${imageUrl}`);
+               } catch (cloudinaryError: any) {
+                  Logger.error(`[EventHandlerService] ❌ Failed to upload guest user image to Cloudinary:`, cloudinaryError.message);
+               }
+            }
+            
             const updatedGuestUser = await db.users.update({
                where: { Id: guestUser.Id },
-               data: { unique_id: hikVisionResponse.data }
+               data: { 
+                  unique_id: hikVisionResponse.data,
+                  image: imageUrl
+               }
             });
 
             // Add face information to guest group (group 5)
             try {
                Logger.info(`[EventHandlerService] 📸 Adding face information to guest group`);
                const faceAdditionPayload = {
-                  personIndexCode: hikVisionResponse.data, // The unique_id from HikVision
-                  faceGroupIndexCode: "5" // Group 5 for guests
+                  personIndexCode: hikVisionResponse.data, 
+                  faceGroupIndexCode: "5" 
                };
 
                Logger.debug(`[EventHandlerService] Face addition payload:`, faceAdditionPayload);

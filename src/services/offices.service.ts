@@ -493,6 +493,114 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to add footfall analysis entry');
       }
    }
+
+   // Get detailed footfall data for drawer
+   protected static getOfficeFootfallDetailsService = async (
+      officeId: number, 
+      fromDate?: string, 
+      toDate?: string, 
+      filterType?: string, 
+      filterValue?: string
+   ) => {
+      try {
+         // Build where clause for date filtering and exclude exit cameras
+         const whereClause: any = {
+            office_Id: officeId,
+            // Exclude cameras with "exit" in their name to count only entry events
+            detected_camera_name: {
+               not: {
+                  contains: 'exit'
+               }
+            }
+         };
+
+         if (fromDate && toDate) {
+            whereClause.time = {
+               gte: new Date(fromDate),
+               lte: new Date(toDate)
+            };
+         }
+
+         // Get footfall data with person information
+         const footfallData = await db.offices_footfall_analysis.findMany({
+            where: whereClause,
+            include: {
+               person: {
+                  select: {
+                     Id: true,
+                     emp__eng_name: true,
+                     gender: true,
+                     image: true
+                  }
+               }
+            },
+            orderBy: {
+               time: 'desc'
+            }
+         });
+
+         // Apply filters
+         let filteredData = footfallData;
+
+         if (filterType && filterValue) {
+            switch (filterType) {
+               case 'male':
+                  filteredData = footfallData.filter(item => {
+                     const gender = item.person?.gender || item.gender;
+                     if (!gender) return false;
+                     const genderStr = gender.toString().toLowerCase();
+                     return genderStr === 'm' || genderStr === 'male' || genderStr === 'male.' || genderStr === '1';
+                  });
+                  break;
+               case 'female':
+                  filteredData = footfallData.filter(item => {
+                     const gender = item.person?.gender || item.gender;
+                     if (!gender) return false;
+                     const genderStr = gender.toString().toLowerCase();
+                     return genderStr === 'f' || genderStr === 'female' || genderStr === 'female.' || genderStr === '2';
+                  });
+                  break;
+               case 'employee':
+                  filteredData = footfallData.filter(item => OfficesService.isEmployee(item));
+                  break;
+               case 'guest':
+                  filteredData = footfallData.filter(item => OfficesService.isGuest(item));
+                  break;
+               case 'age_group':
+                  filteredData = footfallData.filter(item => {
+                     if (filterValue === 'child') {
+                        return item.is_child === true;
+                     }
+                     // Add more age group logic if needed
+                     return true;
+                  });
+                  break;
+               default:
+                  // No additional filtering
+                  break;
+            }
+         }
+
+         // Transform data for frontend
+         const transformedData = filteredData.map(item => ({
+            person_name: item.person?.emp__eng_name || 'Guest',
+            person_image: item.person?.image || null,
+            gender: item.person?.gender || item.gender || 'Unknown',
+            age_group: item.is_child ? 'Child' : 'Adult',
+            entry_date: item.time ? item.time.toISOString().split('T')[0] : null,
+            entry_time: item.time ? item.time.toISOString().split('T')[1].split('.')[0] : null,
+            entry_image: item.image || null,
+            status: 'Active' // Default status for footfall entries
+         }));
+
+         return {
+            success: true,
+            data: transformedData
+         };
+      } catch (error: any) {
+         throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch footfall details');
+      }
+   }
    
 }
 export default OfficesService;

@@ -129,7 +129,19 @@ class QMSService {
         cloudinaryUrl = eventData?.check_in_image || null;
       }
 
-      // Step 3: Create visit record using event data or defaults
+      let entrySentiment = 'neutral';
+      if (cloudinaryUrl) {
+        try {
+          entrySentiment = await this.analyzeSentimentFromImage(cloudinaryUrl);
+          console.log(`[QMSService] Entry sentiment analyzed: ${entrySentiment}`);
+        } catch (error: any) {
+          console.error(`[QMSService] Error analyzing entry sentiment:`, error.message);
+          entrySentiment = eventData?.mood || 'neutral';
+        }
+      } else {
+        entrySentiment = eventData?.mood || 'neutral';
+      }
+
       const visitRecord = await db.qms_history.create({
         data: {
           visitor_id: eventData?.person_id || 123,
@@ -137,7 +149,7 @@ class QMSService {
           age_group: eventData?.age_group || "7",
           entry_image: cloudinaryUrl,
           entry_camera: this.CAMERA_ID,
-          entry_mode: eventData?.mood || "neutral",
+          entry_mode: entrySentiment,
           entry_date:
             eventData?.entry_date || new Date().toISOString().split("T")[0],
           entry_time:
@@ -519,6 +531,34 @@ class QMSService {
         error.message
       );
       return null;
+    }
+  }
+
+  private static async analyzeSentimentFromImage(imageUrl: string): Promise<string> {
+    try {
+      console.log(`[QMSService] Analyzing sentiment from image: ${imageUrl}`);
+      
+      const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
+        image_url: imageUrl
+      }, {
+        timeout: 10000,
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
+        const detectedSentiment = emotionResponse.data.faces[0].emotion;
+        console.log(`[QMSService] Detected sentiment: ${detectedSentiment}`, {
+          confidence: emotionResponse.data.faces[0].confidence,
+          imageUrl: imageUrl
+        });
+        return detectedSentiment;
+      } else {
+        console.warn(`[QMSService] No sentiment detected from image: ${imageUrl}`);
+        return 'neutral';
+      }
+    } catch (error: any) {
+      console.error(`[QMSService] Error analyzing sentiment from image: ${imageUrl}`, error.message);
+      return 'neutral';
     }
   }
 

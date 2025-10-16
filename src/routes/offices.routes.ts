@@ -15,5 +15,6 @@ officesRouter.get('/get-office-cameras/:officeId', OfficesController.getOfficeCa
 officesRouter.get('/get-office-setting/:officeId', OfficesController.getOfficeSetting)
 officesRouter.get('/get-office-cameras-functionalities/:officeId', OfficesController.getOfficeCamerasFunctionalities)
 officesRouter.get('/get-office-footfall-analysis/:office_Id', OfficesController.getOfficeFootfallAnalysis)
+officesRouter.get('/get-office-footfall-details', OfficesController.getOfficeFootfallDetails)
 officesRouter.post('/add-office-footfall-analysis', OfficesController.addOfficeFootfallAnalysis)
 export default officesRouter;

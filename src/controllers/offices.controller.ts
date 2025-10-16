@@ -210,6 +210,28 @@ class OfficesController extends OfficesService {
     }
   }
 
+  public static getOfficeFootfallDetails = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { officeId, fromDate, toDate, filterType, filterValue } = req.query;
+
+      if (!officeId) {
+        return res.status(STATUS.BAD_REQUEST).json({ message: 'officeId is required' });
+      }
+
+      const footfallDetails = await OfficesService.getOfficeFootfallDetailsService(
+        Number(officeId),
+        fromDate as string,
+        toDate as string,
+        filterType as string,
+        filterValue as string
+      );
+
+      return res.status(STATUS.SUCCESS).json(footfallDetails);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   public static addOfficeFootfallAnalysis = async (req: Request<{}, {}, OfficeFootfallAnalysisType>, res: Response, next: NextFunction) => {
     try {
       const footfallData = req.body;
