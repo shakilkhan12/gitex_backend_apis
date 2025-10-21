@@ -119,9 +119,50 @@ landscapingRouter.post('/add', landscapingValidations, LandscapingController.add
  * @swagger
  * /landscaping/get:
  *   get:
- *     summary: Get all landscaping records
+ *     summary: Get landscaping records with pagination
  *     tags: [Landscaping]
- *     description: Retrieve a list of all landscaping records
+ *     description: Retrieve a paginated list of landscaping records with park details, search, filtering, and sorting capabilities
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of records per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search term to filter by case ID, name, suggestion, or park name
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, in_progress, resolved, closed, complete]
+ *         description: Filter by landscaping status
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, name, current_status, case_Id]
+ *           default: createdAt
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *         description: Sort order
  *     responses:
  *       200:
  *         description: List of landscaping records retrieved successfully
@@ -156,9 +197,24 @@ landscapingRouter.post('/add', landscapingValidations, LandscapingController.add
  *                       status:
  *                         type: string
  *                         example: "pending"
+ *                       current_status:
+ *                         type: string
+ *                         example: "Pending"
  *                       suggestion:
  *                         type: string
  *                         example: "Need to trim the bushes and water the plants"
+ *                       park_Id:
+ *                         type: integer
+ *                         example: 1
+ *                       plant_type:
+ *                         type: string
+ *                         example: "Plant"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
  *                       parks:
  *                         type: object
  *                         nullable: true
@@ -197,15 +253,79 @@ landscapingRouter.post('/add', landscapingValidations, LandscapingController.add
  *                           emp__eng_name:
  *                             type: string
  *                             example: "John Doe"
+ *                           emp__arabic_name:
+ *                             type: string
+ *                             example: "جون دو"
  *                           dep_eng_name:
  *                             type: string
  *                             example: "Maintenance Department"
- *                       createdAt:
- *                         type: string
- *                         format: date-time
- *                       updatedAt:
- *                         type: string
- *                         format: date-time
+ *                           dep_arabic_name:
+ *                             type: string
+ *                             example: "قسم الصيانة"
+ *                       landscaping_history:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               example: 1
+ *                             title:
+ *                               type: string
+ *                               example: "Case Assigned"
+ *                             comments:
+ *                               type: string
+ *                               example: "Landscaping case assigned to user"
+ *                             createdAt:
+ *                               type: string
+ *                               format: date-time
+ *                             users:
+ *                               type: object
+ *                               properties:
+ *                                 Id:
+ *                                   type: integer
+ *                                   example: 123
+ *                                 emp__eng_name:
+ *                                   type: string
+ *                                   example: "John Doe"
+ *                                 emp__arabic_name:
+ *                                   type: string
+ *                                   example: "جون دو"
+ *                                 dep_eng_name:
+ *                                   type: string
+ *                                   example: "Maintenance Department"
+ *                                 dep_arabic_name:
+ *                                   type: string
+ *                                   example: "قسم الصيانة"
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     currentPage:
+ *                       type: integer
+ *                       example: 1
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 5
+ *                     totalCount:
+ *                       type: integer
+ *                       example: 50
+ *                     limit:
+ *                       type: integer
+ *                       example: 10
+ *                     hasNextPage:
+ *                       type: boolean
+ *                       example: true
+ *                     hasPreviousPage:
+ *                       type: boolean
+ *                       example: false
+ *                     nextPage:
+ *                       type: integer
+ *                       nullable: true
+ *                       example: 2
+ *                     previousPage:
+ *                       type: integer
+ *                       nullable: true
+ *                       example: null
  *       500:
  *         description: Internal server error
  *         content:

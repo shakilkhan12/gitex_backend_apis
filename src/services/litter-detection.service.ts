@@ -85,10 +85,165 @@ class LitterDetectionService {
       }
    }
 
-   protected static viewLitterDetectionsService = async () => {
+   protected static viewLitterDetectionsService = async (paginationParams?: {
+      page: number;
+      limit: number;
+      search: string;
+      status: string;
+      sortBy: string;
+      sortOrder: string;
+   }) => {
 
       try {
+         // If no pagination params provided, return all data (backward compatibility)
+         if (!paginationParams) {
+            const results = await db.parks_litter_detection.findMany({
+               include: {
+                  parks: {
+                     select: {
+                        park_english_name: true,
+                        park_arabic_name: true,
+                        latitude: true,
+                        longitude: true
+                     }
+                  },
+                  park_cameras: {
+                     select: {
+                        Id: true,
+                        camera_Id: true,
+                        camera_english_name: true,
+                        camera_arabic_name: true,
+                        ip_address: true,
+                        latitude: true,
+                        longitude: true,
+                        status: true
+                     }
+                  },
+                  assignedUser: {
+                     select: {
+                        Id: true,
+                        emp__eng_name: true,
+                        emp__arabic_name: true,
+                        dep_eng_name: true,
+                        dep_arabic_name: true
+                     }
+                  },
+                  ticket_details: {
+                     select: {
+                        id: true,
+                        status: true,
+                        date: true,
+                        time: true,
+                        comments: true,
+                        image: true,
+                        abc1: true,
+                        abc2: true,
+                        abc3: true,
+                        abc4: true,
+                        litterDetectionId: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        users: {
+                           select: {
+                              Id: true,
+                              emp__eng_name: true,
+                              emp__arabic_name: true,
+                              dep_eng_name: true,
+                              dep_arabic_name: true
+                           }
+                        }
+                     },
+                     orderBy: {
+                        createdAt: 'desc'
+                     }
+                  }
+               },
+               orderBy: {
+                  createdAt: 'desc'
+               }
+            });
+
+            const litterDetectionIds = results.map(ld => ld.Id.toString());
+            
+            const allIntranetHistory = await db.intranet_posting_history.findMany({
+               where: {
+                  OR: [
+                     { abc1: { in: litterDetectionIds } },
+                     { abc2: { in: litterDetectionIds } },
+                     { abc3: { in: litterDetectionIds } }
+                  ]
+               },
+               select: {
+                  id: true,
+                  title: true,
+                  intranet_id: true,
+                  comments: true,
+                  date: true,
+                  time: true,
+                  abc1: true,
+                  abc2: true,
+                  abc3: true
+               }
+            });
+
+            const intranetHistoryMap = new Map();
+            allIntranetHistory.forEach(history => {
+               const litterId = history.abc1 || history.abc2 || history.abc3;
+               if (litterId) {
+                  if (!intranetHistoryMap.has(litterId)) {
+                     intranetHistoryMap.set(litterId, []);
+                  }
+                  intranetHistoryMap.get(litterId).push({
+                     id: history.id,
+                     title: history.title,
+                     intranet_id: history.intranet_id,
+                     comments: history.comments,
+                     date: history.date,
+                     time: history.time
+                  });
+               }
+            });
+
+            const resultsWithIntranetHistory = results.map(litterDetection => ({
+               ...litterDetection,
+               intranet_posting_history: intranetHistoryMap.get(litterDetection.Id.toString()) || []
+            }));
+
+            return resultsWithIntranetHistory;
+         }
+
+         // Build where clause for filtering
+         const whereClause: any = {};
+         
+         // Search functionality
+         if (paginationParams.search) {
+            whereClause.OR = [
+               { case_Id: { contains: paginationParams.search, mode: 'insensitive' } },
+               { location: { contains: paginationParams.search, mode: 'insensitive' } },
+               { description: { contains: paginationParams.search, mode: 'insensitive' } },
+               { parks: { park_english_name: { contains: paginationParams.search, mode: 'insensitive' } } },
+               { parks: { park_arabic_name: { contains: paginationParams.search, mode: 'insensitive' } } }
+            ];
+         }
+
+         // Status filtering
+         if (paginationParams.status) {
+            whereClause.status = paginationParams.status;
+         }
+
+         // Build orderBy clause
+         const orderByClause: any = {};
+         orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
+
+         // Calculate pagination
+         const skip = (paginationParams.page - 1) * paginationParams.limit;
+
+         // Get total count for pagination metadata
+         const totalCount = await db.parks_litter_detection.count({ where: whereClause });
+
+         // Get paginated results
          const results = await db.parks_litter_detection.findMany({
+            where: whereClause,
             include: {
                parks: {
                   select: {
@@ -149,9 +304,9 @@ class LitterDetectionService {
                   }
                }
             },
-            orderBy: {
-               createdAt: 'desc'
-            }
+            orderBy: orderByClause,
+            skip: skip,
+            take: paginationParams.limit
          });
 
          const litterDetectionIds = results.map(ld => ld.Id.toString());
@@ -200,7 +355,24 @@ class LitterDetectionService {
             intranet_posting_history: intranetHistoryMap.get(litterDetection.Id.toString()) || []
          }));
 
-         return resultsWithIntranetHistory;
+         // Calculate pagination metadata
+         const totalPages = Math.ceil(totalCount / paginationParams.limit);
+         const hasNextPage = paginationParams.page < totalPages;
+         const hasPreviousPage = paginationParams.page > 1;
+
+         return {
+            data: resultsWithIntranetHistory,
+            pagination: {
+               currentPage: paginationParams.page,
+               totalPages,
+               totalCount,
+               limit: paginationParams.limit,
+               hasNextPage,
+               hasPreviousPage,
+               nextPage: hasNextPage ? paginationParams.page + 1 : null,
+               previousPage: hasPreviousPage ? paginationParams.page - 1 : null
+            }
+         };
 
       } catch (error: any) {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch litter detections");

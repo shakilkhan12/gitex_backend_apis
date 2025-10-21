@@ -19,10 +19,46 @@ class IntrusionDetectionController extends IntrusionDetectionService {
    }
 
    public static viewIntrusionDetections = async (req: Request, res: Response, next: NextFunction) => {
+      console.log("🟡 [IntrusionDetectionController] viewIntrusionDetections called");
       try {
-         const intrusionDetections = await IntrusionDetectionService.viewIntrusionDetectionsService();
-         return res.status(STATUS.SUCCESS).json(intrusionDetections);
+         // Extract pagination parameters from query
+         const page = parseInt(req.query.page as string) || 1;
+         const limit = parseInt(req.query.limit as string) || 10;
+         const search = req.query.search as string || '';
+         const status = req.query.status as string || '';
+         const sortBy = req.query.sortBy as string || 'createdAt';
+         const sortOrder = req.query.sortOrder as string || 'desc';
+
+         const result = await IntrusionDetectionService.viewIntrusionDetectionsService({
+            page,
+            limit,
+            search,
+            status,
+            sortBy,
+            sortOrder
+         });
+
+         console.log("✅ [IntrusionDetectionController] Successfully retrieved intrusion detections");
+
+         // Handle both paginated and non-paginated responses
+         if (Array.isArray(result)) {
+            // Non-paginated response (backward compatibility)
+            return res.status(STATUS.SUCCESS).json({
+               success: true,
+               message: "Intrusion detection records retrieved successfully",
+               data: result
+            });
+         } else {
+            // Paginated response
+            return res.status(STATUS.SUCCESS).json({
+               success: true,
+               message: "Intrusion detection records retrieved successfully",
+               data: result.data,
+               pagination: result.pagination
+            });
+         }
       } catch (error) {
+         console.error("❌ [IntrusionDetectionController] Error in viewIntrusionDetections:", error);
          next(error)
       }
    }

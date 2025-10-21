@@ -25,6 +25,7 @@ import dashboardRouter from "./dashboard.routes";
 import alertRouter from "./alert.routes";
 import eventBufferRouter from "./event-buffer.routes";
 import footfallAnalyticsRouter from "./footfall-analytics.routes";
+import optimizedComponentApisRouter from "./optimized-component-apis.routes";
 const mainRouter = Router();
 
 
@@ -54,5 +55,6 @@ mainRouter.use('/handling-images', handlingImagesRouter)
 mainRouter.use('/intranet-posting-history', intranetPostingHistoryRouter)
 mainRouter.use('/cameras', camerasRouter)
 mainRouter.use('/event-buffer', eventBufferRouter)
+mainRouter.use('/optimized-component-apis', optimizedComponentApisRouter)
 
 export default mainRouter;

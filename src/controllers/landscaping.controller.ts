@@ -28,14 +28,46 @@ class LandscapingController extends LandscapingService {
    }
 
    public static viewLandscapings = async (req: Request, res: Response, next: NextFunction) => {
+      console.log("🟡 [LandscapingController] viewLandscapings called");
       try {
-         const landscapings = await LandscapingService.viewLandscapingsService();
-         return res.status(STATUS.SUCCESS).json({
-            success: true,
-            message: "Landscaping records retrieved successfully",
-            data: landscapings
+         // Extract pagination parameters from query
+         const page = parseInt(req.query.page as string) || 1;
+         const limit = parseInt(req.query.limit as string) || 10;
+         const search = req.query.search as string || '';
+         const status = req.query.status as string || '';
+         const sortBy = req.query.sortBy as string || 'createdAt';
+         const sortOrder = req.query.sortOrder as string || 'desc';
+
+         const result = await LandscapingService.viewLandscapingsService({
+            page,
+            limit,
+            search,
+            status,
+            sortBy,
+            sortOrder
          });
+
+         console.log("✅ [LandscapingController] Successfully retrieved landscaping records");
+
+         // Handle both paginated and non-paginated responses
+         if (Array.isArray(result)) {
+            // Non-paginated response (backward compatibility)
+            return res.status(STATUS.SUCCESS).json({
+               success: true,
+               message: "Landscaping records retrieved successfully",
+               data: result
+            });
+         } else {
+            // Paginated response
+            return res.status(STATUS.SUCCESS).json({
+               success: true,
+               message: "Landscaping records retrieved successfully",
+               data: result.data,
+               pagination: result.pagination
+            });
+         }
       } catch (error) {
+         console.error("❌ [LandscapingController] Error in viewLandscapings:", error);
          next(error)
       }
    }

@@ -180,103 +180,171 @@ smokingDetectionRouter.post('/add', smokingDetectionValidations, SmokingDetectio
  * @swagger
  * /smoking-detection/get:
  *   get:
- *     summary: Get all smoking detection records
+ *     summary: Get smoking detection records with pagination
  *     tags: [Smoking Detection]
- *     description: Retrieve a list of all smoking detection records with park and camera details
+ *     description: Retrieve a paginated list of smoking detection records with park details, search, filtering, and sorting capabilities
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of records per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search term to filter by location, description, detection ID, or park name
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, in_progress, resolved, closed, complete]
+ *         description: Filter by smoking detection status
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, occurrence_date, current_status, location]
+ *           default: createdAt
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *         description: Sort order
  *     responses:
  *       200:
  *         description: List of smoking detection records retrieved successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   Id:
- *                     type: integer
- *                     example: 1
- *                   park_Id:
- *                     type: integer
- *                     example: 37
- *                   location:
- *                     type: string
- *                     example: "Main Entrance Area"
- *                   camera_Id:
- *                     type: integer
- *                     example: 1
- *                   occurrence_date:
- *                     type: string
- *                     format: date-time
- *                     example: "2024-01-15T00:00:00.000Z"
- *                   occurrence_time:
- *                     type: string
- *                     format: date-time
- *                     example: "2024-01-15T14:30:00.000Z"
- *                   snap_shot:
- *                     type: string
- *                     example: "smoking_detection_20240115_143000.jpg"
- *                   detection_Id:
- *                     type: string
- *                     example: "SMOKE_20240115_001"
- *                   detection_date:
- *                     type: string
- *                     format: date-time
- *                     example: "2024-01-15T14:30:00.000Z"
- *                   detection_time:
- *                     type: string
- *                     format: date-time
- *                     example: "2024-01-15T14:30:00.000Z"
- *                   description:
- *                     type: string
- *                     example: "Smoking detected near main entrance"
- *                   is_employee:
- *                     type: boolean
- *                     example: false
- *                   current_status:
- *                     type: string
- *                     example: "active"
- *                   posted_to_intranet_date:
- *                     type: string
- *                     format: date-time
- *                     example: "2024-01-15T14:35:00.000Z"
- *                   posted_to_intranet_time:
- *                     type: string
- *                     format: date-time
- *                     example: "2024-01-15T14:35:00.000Z"
- *                   createdAt:
- *                     type: string
- *                     format: date-time
- *                   updatedAt:
- *                     type: string
- *                     format: date-time
- *                   parks:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Smoking detection records retrieved successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
  *                     type: object
  *                     properties:
- *                       park_english_name:
+ *                       Id:
+ *                         type: integer
+ *                         example: 1
+ *                       park_Id:
+ *                         type: integer
+ *                         example: 37
+ *                       location:
  *                         type: string
- *                         example: "Central Park"
- *                       park_arabic_name:
+ *                         example: "Main Entrance"
+ *                       occurrence_date:
  *                         type: string
- *                         example: "الحديقة المركزية"
- *                       latitude:
- *                         type: number
- *                         example: 25.3314
- *                       longitude:
- *                         type: number
- *                         example: 56.3419
- *                   park_cameras:
- *                     type: object
- *                     properties:
- *                       camera_english_name:
+ *                         format: date-time
+ *                         example: "2024-01-15T00:00:00.000Z"
+ *                       occurrence_time:
  *                         type: string
- *                         example: "Main Entrance Camera"
- *                       camera_arabic_name:
+ *                         format: date-time
+ *                         example: "2024-01-15T10:30:00.000Z"
+ *                       snap_shot:
  *                         type: string
- *                         example: "كاميرا المدخل الرئيسي"
- *                       ip_address:
+ *                         example: "smoking_detection_20240115_103000.jpg"
+ *                       detection_Id:
  *                         type: string
- *                         example: "192.168.1.100"
+ *                         example: "SMOKING_DETECT_20240115_001"
+ *                       detection_date:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-01-15T10:30:00.000Z"
+ *                       detection_time:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-01-15T10:30:00.000Z"
+ *                       description:
+ *                         type: string
+ *                         example: "Smoking activity detected at main entrance"
+ *                       is_employee:
+ *                         type: boolean
+ *                         example: false
+ *                       current_status:
+ *                         type: string
+ *                         example: "pending"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                       parks:
+ *                         type: object
+ *                         properties:
+ *                           park_english_name:
+ *                             type: string
+ *                             example: "Central Park"
+ *                           park_arabic_name:
+ *                             type: string
+ *                             example: "الحديقة المركزية"
+ *                           latitude:
+ *                             type: number
+ *                             example: 25.3314
+ *                           longitude:
+ *                             type: number
+ *                             example: 56.3419
+ *                       park_cameras:
+ *                         type: object
+ *                         properties:
+ *                           camera_english_name:
+ *                             type: string
+ *                             example: "Main Entrance Camera"
+ *                           camera_arabic_name:
+ *                             type: string
+ *                             example: "كاميرا المدخل الرئيسي"
+ *                           ip_address:
+ *                             type: string
+ *                             example: "192.168.1.105"
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     currentPage:
+ *                       type: integer
+ *                       example: 1
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 5
+ *                     totalCount:
+ *                       type: integer
+ *                       example: 50
+ *                     limit:
+ *                       type: integer
+ *                       example: 10
+ *                     hasNextPage:
+ *                       type: boolean
+ *                       example: true
+ *                     hasPreviousPage:
+ *                       type: boolean
+ *                       example: false
+ *                     nextPage:
+ *                       type: integer
+ *                       nullable: true
+ *                       example: 2
+ *                     previousPage:
+ *                       type: integer
+ *                       nullable: true
+ *                       example: null
  *       500:
  *         description: Internal server error
  *         content:

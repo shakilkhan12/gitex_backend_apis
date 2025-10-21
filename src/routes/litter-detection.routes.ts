@@ -189,19 +189,69 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  * @swagger
  * /litter-detection/get:
  *   get:
- *     summary: Get all litter detection records
+ *     summary: Get litter detection records with pagination
  *     tags: [Litter Detection]
- *     description: Retrieve a list of all litter detection records with park details
+ *     description: Retrieve a paginated list of litter detection records with park details, search, filtering, and sorting capabilities
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of records per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search term to filter by case ID, location, description, or park name
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, in_progress, resolved, closed, complete]
+ *         description: Filter by litter detection status
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, occurrence_date, status, location]
+ *           default: createdAt
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *         description: Sort order
  *     responses:
  *       200:
  *         description: List of litter detection records retrieved successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Litter detection records retrieved successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
  *                   Id:
  *                     type: integer
  *                     example: 1
@@ -285,6 +335,35 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  *                       ip_address:
  *                         type: string
  *                         example: "192.168.1.103"
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     currentPage:
+ *                       type: integer
+ *                       example: 1
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 5
+ *                     totalCount:
+ *                       type: integer
+ *                       example: 50
+ *                     limit:
+ *                       type: integer
+ *                       example: 10
+ *                     hasNextPage:
+ *                       type: boolean
+ *                       example: true
+ *                     hasPreviousPage:
+ *                       type: boolean
+ *                       example: false
+ *                     nextPage:
+ *                       type: integer
+ *                       nullable: true
+ *                       example: 2
+ *                     previousPage:
+ *                       type: integer
+ *                       nullable: true
+ *                       example: null
  *       500:
  *         description: Internal server error
  *         content:

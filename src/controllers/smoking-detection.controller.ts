@@ -19,10 +19,46 @@ class SmokingDetectionController extends SmokingDetectionService {
    }
 
    public static viewSmokingDetections = async (req: Request, res: Response, next: NextFunction) => {
+      console.log("🟡 [SmokingDetectionController] viewSmokingDetections called");
       try {
-         const smokingDetections = await SmokingDetectionService.viewSmokingDetectionsService();
-         return res.status(STATUS.SUCCESS).json(smokingDetections);
+         // Extract pagination parameters from query
+         const page = parseInt(req.query.page as string) || 1;
+         const limit = parseInt(req.query.limit as string) || 10;
+         const search = req.query.search as string || '';
+         const status = req.query.status as string || '';
+         const sortBy = req.query.sortBy as string || 'createdAt';
+         const sortOrder = req.query.sortOrder as string || 'desc';
+
+         const result = await SmokingDetectionService.viewSmokingDetectionsService({
+            page,
+            limit,
+            search,
+            status,
+            sortBy,
+            sortOrder
+         });
+
+         console.log("✅ [SmokingDetectionController] Successfully retrieved smoking detections");
+
+         // Handle both paginated and non-paginated responses
+         if (Array.isArray(result)) {
+            // Non-paginated response (backward compatibility)
+            return res.status(STATUS.SUCCESS).json({
+               success: true,
+               message: "Smoking detection records retrieved successfully",
+               data: result
+            });
+         } else {
+            // Paginated response
+            return res.status(STATUS.SUCCESS).json({
+               success: true,
+               message: "Smoking detection records retrieved successfully",
+               data: result.data,
+               pagination: result.pagination
+            });
+         }
       } catch (error) {
+         console.error("❌ [SmokingDetectionController] Error in viewSmokingDetections:", error);
          next(error)
       }
    }

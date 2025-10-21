@@ -109,10 +109,95 @@ class SmokingDetectionService {
       }
    }
 
-   protected static viewSmokingDetectionsService = async () => {
-
+   protected static viewSmokingDetectionsService = async (paginationParams?: {
+      page: number;
+      limit: number;
+      search: string;
+      status: string;
+      sortBy: string;
+      sortOrder: string;
+   }) => {
       try {
+         // If no pagination params provided, return all data (backward compatibility)
+         if (!paginationParams) {
+            const results = await db.parks_smoking_detection.findMany({
+               include: {
+                  parks: {
+                     select: {
+                        Id: true,
+                        park_Id: true,
+                        park_english_name: true,
+                        park_arabic_name: true,
+                        latitude: true,
+                        longitude: true
+                     }
+                  },
+                  park_cameras: {
+                     select: {
+                        Id: true,
+                        camera_Id: true,
+                        camera_english_name: true,
+                        camera_arabic_name: true,
+                        ip_address: true,
+                        latitude: true,
+                        longitude: true,
+                        status: true
+                     }
+                  },
+                  intranet_posting_history: {
+                     select: {
+                        id: true,
+                        title: true,
+                        intranet_id: true,
+                        comments: true,
+                        date: true,
+                        time: true
+                     },
+                     orderBy: {
+                        id: 'desc'
+                     }
+                  }
+               },
+               orderBy: {
+                  createdAt: 'desc'
+               }
+            });
+
+            return results;
+         }
+
+         // Build where clause for filtering
+         const whereClause: any = {};
+
+         // Search functionality
+         if (paginationParams.search) {
+            whereClause.OR = [
+               { location: { contains: paginationParams.search, mode: 'insensitive' } },
+               { description: { contains: paginationParams.search, mode: 'insensitive' } },
+               { detection_Id: { contains: paginationParams.search, mode: 'insensitive' } },
+               { parks: { park_english_name: { contains: paginationParams.search, mode: 'insensitive' } } },
+               { parks: { park_arabic_name: { contains: paginationParams.search, mode: 'insensitive' } } }
+            ];
+         }
+
+         // Status filtering
+         if (paginationParams.status) {
+            whereClause.current_status = paginationParams.status;
+         }
+
+         // Build orderBy clause
+         const orderByClause: any = {};
+         orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
+
+         // Calculate pagination
+         const skip = (paginationParams.page - 1) * paginationParams.limit;
+
+         // Get total count for pagination metadata
+         const totalCount = await db.parks_smoking_detection.count({ where: whereClause });
+
+         // Get paginated results
          const results = await db.parks_smoking_detection.findMany({
+            where: whereClause,
             include: {
                parks: {
                   select: {
@@ -150,12 +235,29 @@ class SmokingDetectionService {
                   }
                }
             },
-            orderBy: {
-               createdAt: 'desc'
-            }
+            orderBy: orderByClause,
+            skip: skip,
+            take: paginationParams.limit
          });
 
-         return results;
+         // Calculate pagination metadata
+         const totalPages = Math.ceil(totalCount / paginationParams.limit);
+         const hasNextPage = paginationParams.page < totalPages;
+         const hasPreviousPage = paginationParams.page > 1;
+
+         return {
+            data: results,
+            pagination: {
+               currentPage: paginationParams.page,
+               totalPages,
+               totalCount,
+               limit: paginationParams.limit,
+               hasNextPage,
+               hasPreviousPage,
+               nextPage: hasNextPage ? paginationParams.page + 1 : null,
+               previousPage: hasPreviousPage ? paginationParams.page - 1 : null
+            }
+         };
 
       } catch (error: any) {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch smoking detections");

@@ -78,9 +78,97 @@ class LandscapingService {
       }
    }
 
-   protected static viewLandscapingsService = async () => {
+   protected static viewLandscapingsService = async (paginationParams?: {
+      page: number;
+      limit: number;
+      search: string;
+      status: string;
+      sortBy: string;
+      sortOrder: string;
+   }) => {
       try {
+         // If no pagination params provided, return all data (backward compatibility)
+         if (!paginationParams) {
+            const results = await db.landscaping.findMany({
+               include: {
+                  assignedUser: {
+                     select: {
+                        Id: true,
+                        emp__eng_name: true,
+                        emp__arabic_name: true,
+                        dep_eng_name: true,
+                        dep_arabic_name: true
+                     }
+                  },
+                  parks: {
+                     select: {
+                        Id: true,
+                        park_Id: true,
+                        park_english_name: true,
+                        park_arabic_name: true,
+                        image: true,
+                        latitude: true,
+                        longitude: true,
+                        location: true
+                     }
+                  },
+                  landscaping_history: {
+                     include: {
+                        users: {
+                           select: {
+                              Id: true,
+                              emp__eng_name: true,
+                              emp__arabic_name: true,
+                              dep_eng_name: true,
+                              dep_arabic_name: true
+                           }
+                        }
+                     },
+                     orderBy: {
+                        createdAt: 'desc'
+                     }
+                  }
+               },
+               orderBy: {
+                  createdAt: 'desc'
+               }
+            });
+
+            return results;
+         }
+
+         // Build where clause for filtering
+         const whereClause: any = {};
+
+         // Search functionality
+         if (paginationParams.search) {
+            whereClause.OR = [
+               { case_Id: { contains: paginationParams.search, mode: 'insensitive' } },
+               { name: { contains: paginationParams.search, mode: 'insensitive' } },
+               { suggestion: { contains: paginationParams.search, mode: 'insensitive' } },
+               { parks: { park_english_name: { contains: paginationParams.search, mode: 'insensitive' } } },
+               { parks: { park_arabic_name: { contains: paginationParams.search, mode: 'insensitive' } } }
+            ];
+         }
+
+         // Status filtering
+         if (paginationParams.status) {
+            whereClause.current_status = paginationParams.status;
+         }
+
+         // Build orderBy clause
+         const orderByClause: any = {};
+         orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
+
+         // Calculate pagination
+         const skip = (paginationParams.page - 1) * paginationParams.limit;
+
+         // Get total count for pagination metadata
+         const totalCount = await db.landscaping.count({ where: whereClause });
+
+         // Get paginated results
          const results = await db.landscaping.findMany({
+            where: whereClause,
             include: {
                assignedUser: {
                   select: {
@@ -120,12 +208,29 @@ class LandscapingService {
                   }
                }
             },
-            orderBy: {
-               createdAt: 'desc'
-            }
+            orderBy: orderByClause,
+            skip: skip,
+            take: paginationParams.limit
          });
 
-         return results;
+         // Calculate pagination metadata
+         const totalPages = Math.ceil(totalCount / paginationParams.limit);
+         const hasNextPage = paginationParams.page < totalPages;
+         const hasPreviousPage = paginationParams.page > 1;
+
+         return {
+            data: results,
+            pagination: {
+               currentPage: paginationParams.page,
+               totalPages,
+               totalCount,
+               limit: paginationParams.limit,
+               hasNextPage,
+               hasPreviousPage,
+               nextPage: hasNextPage ? paginationParams.page + 1 : null,
+               previousPage: hasPreviousPage ? paginationParams.page - 1 : null
+            }
+         };
 
       } catch (error: any) {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch landscaping records");
