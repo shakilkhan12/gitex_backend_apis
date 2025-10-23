@@ -59,23 +59,44 @@ class QMSController extends QMSService {
 
    public static viewQMSHistory = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const { page, limit, fromDateTime, toDateTime } = req.query;
-         
-         const pageNum = page ? Number(page) : 1;
-         const limitNum = limit ? Number(limit) : 200;
-         
-         let history;
-         if (fromDateTime && toDateTime) {
-            history = await QMSService.viewQMSHistoryService(pageNum, limitNum, String(fromDateTime), String(toDateTime));
+         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMode, exitMode, service, status } = req.query;
+
+         const filters = {
+            page: page ? parseInt(page as string) : undefined,
+            limit: limit ? parseInt(limit as string) : undefined,
+            search: search as string,
+            sortBy: sortBy as string,
+            sortOrder: sortOrder as string,
+            fromDateTime: fromDateTime as string,
+            toDateTime: toDateTime as string,
+            entryMode: entryMode as string,
+            exitMode: exitMode as string,
+            service: service as string,
+            status: status as string
+         };
+
+         const result = await QMSService.viewQMSHistoryService(filters);
+
+         // Handle both paginated and non-paginated responses
+         if (result.pagination) {
+            // Paginated response
+            const response: any = {
+               success: true,
+               message: "QMS history retrieved successfully",
+               data: result.data,
+               pagination: result.pagination
+            };
+            
+            // Include stats if available
+            if (result.stats) {
+               response.stats = result.stats;
+            }
+            
+            return res.status(STATUS.SUCCESS).json(response);
          } else {
-            history = await QMSService.viewQMSHistoryService(pageNum, limitNum);
+            // Non-paginated response (backward compatibility)
+            return res.status(STATUS.SUCCESS).json(result);
          }
-         
-         return res.status(STATUS.SUCCESS).json({
-            success: true,
-            message: "QMS history retrieved successfully",
-            data: history
-         });
       } catch (error) {
          next(error)
       }

@@ -120,55 +120,142 @@ class UserService {
    }
 
 
-   protected static getAllUsersWithRoleNestedService = async () => {
+   protected static getAllUsersWithRoleNestedService = async (filters: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+      department?: string;
+      employeeId?: string;
+      aiEngine?: string;
+   } = {}) => {
 
       try {
-         const users = await db.users.findMany({
-            where:{
-               user_Id: {
-                  not: null
-               }
-            },
-            select: {
-               Id: true,
-               emp_Id: true,
-               gender: true,
-               image:true,
-               emp__eng_name: true,
-               emp__arabic_name: true,
-               country_code: true,
-               phone: true,
-               email: true,
-               dep_eng_name: true,
-               dep_arabic_name: true,
-               desig_eng_name: true,
-               desig_arabic_name: true,
-               unit_eng_name: true,
-               unit_arabic_name: true,
-               committe_eng_name: true,
-               committe_arabic_name: true,
-               ai_engine_access: true,
-               last_login: true,
-               createdAt: true,
-               updatedAt: true,
-               landscaping_access: true,
-               plant_disease_access: true,
-               litter_detection_access: true,
-               users_roles: {
-                  select: {
-                     role_name: true
-                  }
-               },
-               live_stream_favourites: false,
-               parks_attendance: false,
-               offices_attendance: false,
-               offices_footfall_analysis: false
-            },
-            orderBy: {
-               emp__eng_name: 'asc'
+         // Set default values
+         const page = filters?.page || 1;
+         const limit = filters?.limit || 10;
+         const skip = (page - 1) * limit;
+
+         // Build where clause for filtering
+         const whereClause: any = {
+            user_Id: {
+               not: null
             }
-         })
-         return users;
+         };
+
+         // Search filter
+         if (filters?.search) {
+            whereClause.OR = [
+               { emp__eng_name: { contains: filters.search, mode: 'insensitive' } },
+               { emp__arabic_name: { contains: filters.search, mode: 'insensitive' } },
+               { emp_Id: { contains: filters.search, mode: 'insensitive' } },
+               { email: { contains: filters.search, mode: 'insensitive' } }
+            ];
+         }
+
+         // Department filter
+         if (filters?.department) {
+            whereClause.OR = [
+               { dep_eng_name: filters.department },
+               { dep_arabic_name: filters.department }
+            ];
+         }
+
+         // Employee ID filter
+         if (filters?.employeeId) {
+            whereClause.emp_Id = filters.employeeId;
+         }
+
+         // AI Engine filter
+         if (filters?.aiEngine) {
+            const aiEngineValue = filters.aiEngine === 'true';
+            whereClause.ai_engine_access = aiEngineValue;
+         }
+
+         // Build order by clause
+         const orderByClause: any = {};
+         if (filters?.sortBy) {
+            const sortField = filters.sortBy === 'emp__eng_name' ? 'emp__eng_name' :
+                            filters.sortBy === 'emp__arabic_name' ? 'emp__arabic_name' :
+                            filters.sortBy === 'emp_Id' ? 'emp_Id' :
+                            filters.sortBy === 'email' ? 'email' :
+                            filters.sortBy === 'dep_eng_name' ? 'dep_eng_name' :
+                            filters.sortBy === 'ai_engine_access' ? 'ai_engine_access' :
+                            filters.sortBy === 'last_login' ? 'last_login' :
+                            filters.sortBy === 'createdAt' ? 'createdAt' : 'emp__eng_name';
+            orderByClause[sortField] = filters.sortOrder === 'desc' ? 'desc' : 'asc';
+         } else {
+            orderByClause.emp__eng_name = 'asc';
+         }
+
+         const [users, totalCount] = await Promise.all([
+            db.users.findMany({
+               where: whereClause,
+               select: {
+                  Id: true,
+                  emp_Id: true,
+                  gender: true,
+                  image: true,
+                  emp__eng_name: true,
+                  emp__arabic_name: true,
+                  country_code: true,
+                  phone: true,
+                  email: true,
+                  dep_eng_name: true,
+                  dep_arabic_name: true,
+                  desig_eng_name: true,
+                  desig_arabic_name: true,
+                  unit_eng_name: true,
+                  unit_arabic_name: true,
+                  committe_eng_name: true,
+                  committe_arabic_name: true,
+                  ai_engine_access: true,
+                  last_login: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  landscaping_access: true,
+                  plant_disease_access: true,
+                  litter_detection_access: true,
+                  users_roles: {
+                     select: {
+                        role_name: true
+                     }
+                  },
+                  live_stream_favourites: false,
+                  parks_attendance: false,
+                  offices_attendance: false,
+                  offices_footfall_analysis: false
+               },
+               orderBy: orderByClause,
+               skip,
+               take: limit
+            }),
+            db.users.count({
+               where: whereClause
+            })
+         ]);
+
+         const totalPages = Math.ceil(totalCount / limit);
+         const hasNextPage = page < totalPages;
+         const hasPreviousPage = page > 1;
+
+         const paginationData = {
+            currentPage: page,
+            totalPages,
+            totalCount,
+            limit: limit,
+            hasNextPage,
+            hasPreviousPage,
+            nextPage: hasNextPage ? page + 1 : null,
+            previousPage: hasPreviousPage ? page - 1 : null
+         };
+
+         return {
+            success: true,
+            data: users,
+            pagination: paginationData
+         };
 
       } catch (error: any) {
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to fetch users");

@@ -35,8 +35,43 @@ class ParkSentimentAnalysisController extends ParkSentimentAnalysisService {
 
    public static viewParkSentimentAnalyses = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const sentimentAnalyses = await ParkSentimentAnalysisService.viewParkSentimentAnalysesService();
-         return res.status(STATUS.SUCCESS).json(sentimentAnalyses);
+         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMood, exitMood, employee } = req.query;
+
+         const filters = {
+            page: page ? parseInt(page as string) : undefined,
+            limit: limit ? parseInt(limit as string) : undefined,
+            search: search as string,
+            sortBy: sortBy as string,
+            sortOrder: sortOrder as string,
+            fromDateTime: fromDateTime as string,
+            toDateTime: toDateTime as string,
+            entryMood: entryMood as string,
+            exitMood: exitMood as string,
+            employee: employee as string
+         };
+
+         const result = await ParkSentimentAnalysisService.viewParkSentimentAnalysesService(filters);
+
+         // Handle both paginated and non-paginated responses
+         if (result.pagination) {
+            // Paginated response
+            const response: any = {
+               success: true,
+               message: "Park sentiment analyses retrieved successfully",
+               data: result.data,
+               pagination: result.pagination
+            };
+            
+            // Include stats if available
+            if (result.stats) {
+               response.stats = result.stats;
+            }
+            
+            return res.status(STATUS.SUCCESS).json(response);
+         } else {
+            // Non-paginated response (backward compatibility)
+            return res.status(STATUS.SUCCESS).json(result);
+         }
       } catch (error) {
          next(error)
       }

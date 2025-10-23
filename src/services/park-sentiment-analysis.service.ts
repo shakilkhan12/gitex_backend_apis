@@ -148,11 +148,88 @@ class ParkSentimentAnalysisService {
       }
    }
 
-   protected static viewParkSentimentAnalysesService = async () => {
-      console.log("🟡 [ParkSentimentAnalysisService] Fetching all park sentiment analyses...");
+   protected static viewParkSentimentAnalysesService = async (filters?: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      sortBy?: string;
+      sortOrder?: string;
+      fromDateTime?: string;
+      toDateTime?: string;
+      entryMood?: string;
+      exitMood?: string;
+      employee?: string;
+   }) => {
+      console.log("🟡 [ParkSentimentAnalysisService] Fetching park sentiment analyses with filters:", filters);
 
       try {
+         // Build where clause for filtering
+         const whereClause: any = {};
+
+         // Search filter
+         if (filters?.search) {
+            whereClause.OR = [
+               { person_name: { contains: filters.search, mode: 'insensitive' } },
+               { parks: { park_english_name: { contains: filters.search, mode: 'insensitive' } } },
+               { parks: { park_arabic_name: { contains: filters.search, mode: 'insensitive' } } }
+            ];
+         }
+
+         // Date range filter
+         if (filters?.fromDateTime || filters?.toDateTime) {
+            whereClause.check_in_date = {};
+            if (filters.fromDateTime) {
+               whereClause.check_in_date.gte = new Date(filters.fromDateTime);
+            }
+            if (filters.toDateTime) {
+               whereClause.check_in_date.lte = new Date(filters.toDateTime);
+            }
+         }
+
+         // Entry mood filter
+         if (filters?.entryMood && filters.entryMood !== 'All') {
+            whereClause.check_in_sentiment = filters.entryMood;
+         }
+
+         // Exit mood filter
+         if (filters?.exitMood && filters.exitMood !== 'All') {
+            if (filters.exitMood === 'No Exit') {
+               whereClause.check_out_sentiment = null;
+            } else {
+               whereClause.check_out_sentiment = filters.exitMood;
+            }
+         }
+
+         // Employee filter
+         if (filters?.employee && filters.employee !== 'All') {
+            whereClause.person_name = filters.employee;
+         }
+
+         // Build order by clause
+         const orderByClause: any = {};
+         if (filters?.sortBy) {
+            const sortField = filters.sortBy === 'createdAt' ? 'createdAt' : 
+                             filters.sortBy === 'check_in_date' ? 'check_in_date' :
+                             filters.sortBy === 'check_out_date' ? 'check_out_date' :
+                             filters.sortBy === 'person_name' ? 'person_name' :
+                             filters.sortBy === 'check_in_sentiment' ? 'check_in_sentiment' :
+                             filters.sortBy === 'check_out_sentiment' ? 'check_out_sentiment' : 'updatedAt';
+            orderByClause[sortField] = filters.sortOrder === 'asc' ? 'asc' : 'desc';
+         } else {
+            orderByClause.updatedAt = 'desc';
+         }
+
+         // Set default pagination values
+         const page = filters?.page || 1;
+         const limit = filters?.limit || 10;
+         const skip = (page - 1) * limit;
+
+         // Get total count for pagination metadata
+         const totalCount = await db.parks_sentiment_analysis.count({ where: whereClause });
+
+         // Get paginated results
          const results = await db.parks_sentiment_analysis.findMany({
+            where: whereClause,
             include: {
                parks: {
                   select: {
@@ -177,9 +254,9 @@ class ParkSentimentAnalysisService {
                   }
                }
             },
-            orderBy: {
-               updatedAt: 'desc'
-            }
+            orderBy: orderByClause,
+            skip: skip,
+            take: limit
          });
 
          // Get all unique person IDs from results
@@ -247,8 +324,58 @@ class ParkSentimentAnalysisService {
             check_out_time: formatTimeFetchFromFullDate(sentiment.check_out_time)
          }));
 
+         // Calculate pagination metadata
+         const totalPages = Math.ceil(totalCount / limit);
+         const hasNextPage = page < totalPages;
+         const hasPreviousPage = page > 1;
+
+         const paginationData = {
+            currentPage: page,
+            totalPages,
+            totalCount,
+            limit: limit,
+            hasNextPage,
+            hasPreviousPage,
+            nextPage: hasNextPage ? page + 1 : null,
+            previousPage: hasPreviousPage ? page - 1 : null
+         };
+
+         // Calculate stats for cards (get all data for stats calculation)
+         let statsData = null;
+         if (page === 1 || !filters?.page) {
+            // Only calculate stats for first page or when no pagination
+            const allData = await db.parks_sentiment_analysis.findMany({
+               where: whereClause,
+               include: {
+                  parks: {
+                     select: {
+                        park_english_name: true,
+                        park_arabic_name: true,
+                        latitude: true,
+                        longitude: true
+                     }
+                  }
+               }
+            });
+
+            statsData = {
+               totalEvents: allData.length,
+               totalHappy: allData.filter(d => d.check_in_sentiment === 'happy').length,
+               totalNormal: allData.filter(d => d.check_in_sentiment === 'neutral').length,
+               totalSad: allData.filter(d => d.check_in_sentiment === 'sad').length,
+               totalAngry: allData.filter(d => d.check_in_sentiment === 'angry').length
+            };
+         }
+
          console.log(`📦 [ParkSentimentAnalysisService] Retrieved ${formattedResults.length} park sentiment analyses with user details.`);
-         return formattedResults;
+         
+         return {
+            success: true,
+            data: formattedResults,
+            total: totalCount,
+            pagination: paginationData,
+            stats: statsData
+         };
 
       } catch (error: any) {
          console.error("💥 [ParkSentimentAnalysisService] Error fetching park sentiment analyses:", error.message || error);

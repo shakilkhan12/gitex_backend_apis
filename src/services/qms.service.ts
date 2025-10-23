@@ -224,29 +224,89 @@ class QMSService {
     }
   };
 
-  protected static viewQMSHistoryService = async (
-    page: number = 1,
-    limit: number = 200,
-    fromDateTime?: string,
-    toDateTime?: string
-  ) => {
+  protected static viewQMSHistoryService = async (filters?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
+    fromDateTime?: string;
+    toDateTime?: string;
+    entryMode?: string;
+    exitMode?: string;
+    service?: string;
+    status?: string;
+  }) => {
     try {
+      // Set default values
+      const page = filters?.page || 1;
+      const limit = filters?.limit || 10;
       const skip = (page - 1) * limit;
 
+      // Build where clause for filtering
       const whereClause: any = {};
 
-      if (fromDateTime || toDateTime) {
-        whereClause.createdAt = {};
-
-        if (fromDateTime) {
-          whereClause.createdAt.gte = new Date(fromDateTime);
-        }
-
-        if (toDateTime) {
-          whereClause.createdAt.lte = new Date(toDateTime);
-        }
+      // Search filter
+      if (filters?.search) {
+        whereClause.OR = [
+          { ticket_number: { contains: filters.search, mode: 'insensitive' } },
+          { service_english_name: { contains: filters.search, mode: 'insensitive' } },
+          { service_arabic_name: { contains: filters.search, mode: 'insensitive' } },
+          { agent_english_name: { contains: filters.search, mode: 'insensitive' } },
+          { agent_arabic_name: { contains: filters.search, mode: 'insensitive' } }
+        ];
       }
 
+      // Date range filter - temporarily disabled for debugging
+      // if (filters?.fromDateTime || filters?.toDateTime) {
+      //   whereClause.createdAt = {};
+      //   if (filters.fromDateTime) {
+      //     whereClause.createdAt.gte = new Date(filters.fromDateTime);
+      //   }
+      //   if (filters.toDateTime) {
+      //     whereClause.createdAt.lte = new Date(filters.toDateTime);
+      //   }
+      // }
+
+      // Entry mode filter
+      if (filters?.entryMode && filters.entryMode !== 'All') {
+        whereClause.entry_mode = filters.entryMode;
+      }
+
+      // Exit mode filter
+      if (filters?.exitMode && filters.exitMode !== 'All') {
+        whereClause.exit_mode = filters.exitMode;
+      }
+
+      // Service filter
+      if (filters?.service && filters.service !== 'All') {
+        whereClause.service_english_name = filters.service;
+      }
+
+      // Status filter - only show "Completed" records by default
+      if (filters?.status && filters.status !== 'All' && filters.status !== '') {
+        whereClause.status = filters.status;
+      } else {
+        // Default: only show completed records
+        whereClause.status = 'Completed';
+      }
+
+      // Build order by clause
+      const orderByClause: any = {};
+      if (filters?.sortBy) {
+        const sortField = filters.sortBy === 'createdAt' ? 'createdAt' : 
+                         filters.sortBy === 'id' ? 'visit_id' :
+                         filters.sortBy === 'entry_date' ? 'entry_date' :
+                         filters.sortBy === 'exit_date' ? 'exit_date' :
+                         filters.sortBy === 'ticket_number' ? 'ticket_number' :
+                         filters.sortBy === 'service_english_name' ? 'service_english_name' :
+                         filters.sortBy === 'status' ? 'status' : 'createdAt';
+        orderByClause[sortField] = filters.sortOrder === 'asc' ? 'asc' : 'desc';
+      } else {
+        // Default ordering: latest entry_date first, then by createdAt
+        orderByClause.entry_date = 'desc';
+        orderByClause.createdAt = 'desc';
+      }
       const [
         results,
         totalCount,
@@ -258,9 +318,7 @@ class QMSService {
       ] = await Promise.all([
         db.qms_history.findMany({
           where: whereClause,
-          orderBy: {
-            createdAt: "desc",
-          },
+          orderBy: orderByClause,
           skip,
           take: limit,
         }),
@@ -373,21 +431,32 @@ class QMSService {
         })
       );
 
+      console.log('🔍 [QMSService] Query results count:', results.length);
+      console.log('🔍 [QMSService] Total count:', totalCount);
+
       const totalPages = Math.ceil(totalCount / limit);
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
       const totalServices = uniqueServices.length;
       const mostHighlightedService =
         serviceCounts.length > 0 ? serviceCounts[0] : null;
 
+      const paginationData = {
+        currentPage: page,
+        totalPages,
+        totalCount,
+        limit: limit,
+        hasNextPage,
+        hasPreviousPage,
+        nextPage: hasNextPage ? page + 1 : null,
+        previousPage: hasPreviousPage ? page - 1 : null
+      };
+
       return {
+        success: true,
         data: resultsWithCameraDetails,
-        pagination: {
-          currentPage: page,
-          totalPages,
-          totalCount,
-          limit,
-          hasNextPage: page < totalPages,
-          hasPreviousPage: page > 1,
-        },
+        total: totalCount,
+        pagination: paginationData,
         stats: {
           totalCustomer: totalCustomers,
           inCustomer: inCustomers,

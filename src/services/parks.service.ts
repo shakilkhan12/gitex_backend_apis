@@ -561,6 +561,12 @@ class ParkService {
       zoneId?: number;
       status?: string;
       search?: string;
+      page?: number;
+      limit?: number;
+      sortBy?: string;
+      sortOrder?: string;
+      fromDateTime?: string;
+      toDateTime?: string;
     }) => {
       try {
         console.log('[ParkService] Getting zones job history for parkId:', parkId);
@@ -587,7 +593,37 @@ class ParkService {
         };
       }
 
-        
+      // Add date filtering
+      if (filters?.fromDateTime && filters?.toDateTime) {
+        whereClause.started_at = {
+          gte: new Date(filters.fromDateTime),
+          lte: new Date(filters.toDateTime)
+        };
+        console.log('[ParkService] Date filter applied:', {
+          fromDateTime: new Date(filters.fromDateTime),
+          toDateTime: new Date(filters.toDateTime)
+        });
+      } else if (filters?.fromDateTime) {
+        whereClause.started_at = {
+          gte: new Date(filters.fromDateTime)
+        };
+        console.log('[ParkService] From date filter applied:', new Date(filters.fromDateTime));
+      } else if (filters?.toDateTime) {
+        whereClause.started_at = {
+          lte: new Date(filters.toDateTime)
+        };
+        console.log('[ParkService] To date filter applied:', new Date(filters.toDateTime));
+      }
+
+
+      // Build orderBy clause
+      const orderByClause: any = {};
+      const sortBy = filters?.sortBy || 'started_at';
+      const sortOrder = filters?.sortOrder || 'desc';
+      orderByClause[sortBy] = sortOrder;
+
+      // If no pagination params provided, return all data (backward compatibility)
+      if (!filters?.page || !filters?.limit) {
         const jobHistory = await db.parks_zones_job_history.findMany({
           where: whereClause,
           include: {
@@ -607,10 +643,101 @@ class ParkService {
               }
             }
           },
-          orderBy: {
-            started_at: 'desc'
-          }
+          orderBy: orderByClause
         });
+
+        const formattedHistory = jobHistory.map(job => {
+          const jobInitiated = job.started_at;
+          const durationInMinutes = parseDurationToMinutes(job.start_for_time);
+          
+          const jobCompletion = jobInitiated ? new Date(new Date(jobInitiated).getTime() + (durationInMinutes * 60 * 1000)) : null;
+          
+          const currentTime = new Date();
+          const status = jobCompletion && currentTime > jobCompletion ? 'Completed' : 'Pending';
+          
+          // Get zone details from included relation
+          const zoneDetails = job.park_zones;
+          
+          return {
+            id: job.Id,
+            zoneId: job.zone_Id,
+            zoneDetails: zoneDetails ? {
+              zoneId: zoneDetails.zone_Id,
+              zoneEnglishName: zoneDetails.zone_english_name,
+              zoneArabicName: zoneDetails.zone_arabic_name
+            } : null,
+            jobId: job.job_Id,
+            jobInitiated: jobInitiated,
+            jobCompletion: jobCompletion,
+            image: job.image,
+            status: status, // Add the calculated status (Completed/Pending)
+            grassStatus: job.status,
+            parkName: job.parks?.park_english_name,
+            parkArabicName: job.parks?.park_arabic_name,
+            suggestion: job.suggestion,
+            confidenceScore: job.confidence_score,
+            rationale: job.rationale,
+            gallonsRequiredEstimate: job.gallons_required_estimate,
+            calculationNote: job.calculation_note
+          };
+        });
+
+        return {
+          success: true,
+          data: formattedHistory,
+          total: formattedHistory.length
+        };
+      }
+
+      // Calculate pagination
+      const skip = (filters.page - 1) * filters.limit;
+
+      // Get total count for pagination metadata
+      const totalCount = await db.parks_zones_job_history.count({ where: whereClause });
+      console.log('[ParkService] Total count:', totalCount);
+
+      // Get paginated results
+      const jobHistory = await db.parks_zones_job_history.findMany({
+        where: whereClause,
+        include: {
+          parks: {
+            select: {
+              Id: true,
+              park_english_name: true,
+              park_arabic_name: true
+            }
+          },
+          park_zones: {
+            select: {
+              Id: true,
+              zone_Id: true,
+              zone_english_name: true,
+              zone_arabic_name: true
+            }
+          }
+        },
+        orderBy: orderByClause,
+        skip: skip,
+        take: filters.limit
+      });
+      
+      console.log('[ParkService] Raw job history count:', jobHistory.length);
+      console.log('[ParkService] Sample job history record:', jobHistory[0] ? {
+        Id: jobHistory[0].Id,
+        started_at: jobHistory[0].started_at,
+        job_Id: jobHistory[0].job_Id,
+        zone_Id: jobHistory[0].zone_Id
+      } : 'No records found');
+      
+      // Show actual dates in database for debugging
+      if (jobHistory.length > 0) {
+        console.log('[ParkService] Actual dates in database:');
+        jobHistory.slice(0, 3).forEach((record, index) => {
+          console.log(`Record ${index + 1}:`, {
+            started_at: record.started_at,
+          });
+        });
+      }
         
       // Helper function to parse duration text to minutes
       const parseDurationToMinutes = (durationText: string | null): number => {
@@ -679,10 +806,28 @@ class ParkService {
         };
       });
 
+      // Calculate pagination metadata
+      const totalPages = Math.ceil(totalCount / filters.limit);
+      const hasNextPage = filters.page < totalPages;
+      const hasPreviousPage = filters.page > 1;
+
+      const paginationData = {
+        currentPage: filters.page,
+        totalPages,
+        totalCount,
+        limit: filters.limit,
+        hasNextPage,
+        hasPreviousPage,
+        nextPage: hasNextPage ? filters.page + 1 : null,
+        previousPage: hasPreviousPage ? filters.page - 1 : null
+      };
+
+
       return {
         success: true,
         data: formattedHistory,
-        total: formattedHistory.length
+        total: totalCount,
+        pagination: paginationData
       };
     } catch (error: any) {
       console.error('[ParkService] Error fetching zones job history:', error);

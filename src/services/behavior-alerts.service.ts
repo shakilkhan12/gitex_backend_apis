@@ -35,10 +35,79 @@ class BehaviorAlertsService {
       }
    }
 
-   protected static viewBehaviorAlertsService = async () => {
+   protected static viewBehaviorAlertsService = async (filters?: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      sortBy?: string;
+      sortOrder?: string;
+      fromDateTime?: string;
+      toDateTime?: string;
+      behaviour?: string;
+      camera?: string;
+      employee?: string;
+   }) => {
 
       try {
+         // Build where clause for filtering
+         const whereClause: any = {};
+
+         // Search filter
+         if (filters?.search) {
+            whereClause.OR = [
+               { detection_Id: { contains: filters.search, mode: 'insensitive' } },
+               { location: { contains: filters.search, mode: 'insensitive' } },
+               { description: { contains: filters.search, mode: 'insensitive' } },
+               { parks: { park_english_name: { contains: filters.search, mode: 'insensitive' } } },
+               { parks: { park_arabic_name: { contains: filters.search, mode: 'insensitive' } } }
+            ];
+         }
+
+         // Behaviour filter
+         if (filters?.behaviour) {
+            whereClause.behaviour = filters.behaviour;
+         }
+
+         // Camera filter
+         if (filters?.camera) {
+            whereClause.camera_Id = parseInt(filters.camera);
+         }
+
+         // Employee filter
+         if (filters?.employee) {
+            whereClause.person_Id = filters.employee;
+         }
+
+         // Date range filter
+         if (filters?.fromDateTime && filters?.toDateTime) {
+            whereClause.detection_date = {
+               gte: new Date(filters.fromDateTime),
+               lte: new Date(filters.toDateTime)
+            };
+         }
+
+         // Build order by clause
+         const orderByClause: any = {};
+         if (filters?.sortBy) {
+            const sortField = filters.sortBy === 'createdAt' ? 'createdAt' : 
+                             filters.sortBy === 'detection_date' ? 'detection_date' :
+                             filters.sortBy === 'behaviour' ? 'behaviour' :
+                             filters.sortBy === 'location' ? 'location' : 'createdAt';
+            orderByClause[sortField] = filters.sortOrder === 'asc' ? 'asc' : 'desc';
+         } else {
+            orderByClause.createdAt = 'desc';
+         }
+
+         // Calculate pagination
+         const skip = filters?.page && filters?.limit ? (filters.page - 1) * filters.limit : 0;
+         const take = filters?.limit || 10;
+
+         // Get total count for pagination metadata
+         const totalCount = await db.parks_behaviour_alerts.count({ where: whereClause });
+
+         // Get paginated results
          const results = await db.parks_behaviour_alerts.findMany({
+            where: whereClause,
             include: {
                parks: {
                   select: {
@@ -56,9 +125,9 @@ class BehaviorAlertsService {
                   }
                }
             },
-            orderBy: {
-               createdAt: 'desc'
-            }
+            orderBy: orderByClause,
+            skip: skip,
+            take: take
          });
 
          // Enrich results with user information
@@ -95,7 +164,63 @@ class BehaviorAlertsService {
             })
          );
 
-         return enrichedResults;
+         // Calculate pagination metadata
+         const totalPages = Math.ceil(totalCount / take);
+         const hasNextPage = filters?.page ? filters.page < totalPages : false;
+         const hasPreviousPage = filters?.page ? filters.page > 1 : false;
+
+         const paginationData = {
+            currentPage: filters?.page || 1,
+            totalPages,
+            totalCount,
+            limit: take,
+            hasNextPage,
+            hasPreviousPage,
+            nextPage: hasNextPage ? (filters?.page || 1) + 1 : null,
+            previousPage: hasPreviousPage ? (filters?.page || 1) - 1 : null
+         };
+
+         // Calculate stats for cards (get all data for stats calculation)
+         let statsData = null;
+         if (filters?.page === 1 || !filters?.page) {
+            // Only calculate stats for first page or when no pagination
+            const allData = await db.parks_behaviour_alerts.findMany({
+               where: whereClause,
+               include: {
+                  parks: {
+                     select: {
+                        park_english_name: true,
+                        park_arabic_name: true,
+                        latitude: true,
+                        longitude: true   
+                     }
+                  },
+                  park_cameras: {
+                     select: {
+                        camera_english_name: true,
+                        camera_arabic_name: true,
+                        ip_address: true,
+                     }
+                  }
+               }
+            });
+
+            statsData = {
+               totalEvents: allData.length,
+               totalFallDowns: allData.filter(d => d.detected_behaviour === 'Fall Down').length,
+               totalAggression: allData.filter(d => d.detected_behaviour === 'Aggression').length,
+               totalFastMoving: allData.filter(d => d.detected_behaviour === 'Fast Moving').length,
+               totalPeople: allData.filter(d => d.detected_behaviour === 'People Gethering').length
+            };
+         }
+
+         return {
+            success: true,
+            data: enrichedResults,
+            total: totalCount,
+            pagination: paginationData,
+            stats: statsData
+         };
 
       } catch (error: any) {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch behavior alerts");

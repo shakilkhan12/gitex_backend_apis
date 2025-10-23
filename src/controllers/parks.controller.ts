@@ -331,12 +331,18 @@ const { camera_Id, ...fields } = req.body;
   public static getParkZonesJobHistory = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { parkId } = req.params;
-      const { zoneId, status, search } = req.query;
+      const { zoneId, status, search, page, limit, sortBy, sortOrder, fromDateTime, toDateTime } = req.query;
 
       const filters = {
         zoneId: zoneId ? parseInt(zoneId as string) : undefined,
         status: status as string,
-        search: search as string
+        search: search as string,
+        page: page ? parseInt(page as string) : undefined,
+        limit: limit ? parseInt(limit as string) : undefined,
+        sortBy: sortBy as string,
+        sortOrder: sortOrder as string,
+        fromDateTime: fromDateTime as string,
+        toDateTime: toDateTime as string
       };
 
       const result = await ParksService.getParkZonesJobHistoryService(
@@ -344,7 +350,19 @@ const { camera_Id, ...fields } = req.body;
         filters
       );
 
-      return res.status(STATUS.SUCCESS).json(result);
+      // Handle both paginated and non-paginated responses
+      if (result.pagination) {
+        // Paginated response
+        return res.status(STATUS.SUCCESS).json({
+          success: true,
+          message: "Park zones job history retrieved successfully",
+          data: result.data,
+          pagination: result.pagination
+        });
+      } else {
+        // Non-paginated response (backward compatibility)
+        return res.status(STATUS.SUCCESS).json(result);
+      }
     } catch (error) {
       next(error);
     }
