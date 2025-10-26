@@ -23,7 +23,10 @@ class UserRolesService {
     'park_intrusion_detection_view', 'park_intrusion_detection_add', 'park_intrusion_detection_update',
     'park_smoking_detection_view', 'park_smoking_detection_add', 'park_smoking_detection_update',
     'my_account_view',
-    'settings_view'
+    'settings_view',
+    'office_queue_management_view', 'office_queue_management_add', 'office_queue_management_update',
+    'park_plant_inspection_view', 'park_plant_inspection_add', 'park_plant_inspection_update',
+    'park_plant_disease_view', 'park_plant_disease_add', 'park_plant_disease_update'
   ];
 
   // Helper method to filter permissions to only include valid fields

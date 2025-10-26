@@ -537,6 +537,15 @@ exports.Prisma.Users_permissionsScalarFieldEnum = {
   park_smoking_detection_update: 'park_smoking_detection_update',
   my_account_view: 'my_account_view',
   settings_view: 'settings_view',
+  office_queue_management_view: 'office_queue_management_view',
+  office_queue_management_add: 'office_queue_management_add',
+  office_queue_management_update: 'office_queue_management_update',
+  park_plant_inspection_view: 'park_plant_inspection_view',
+  park_plant_inspection_add: 'park_plant_inspection_add',
+  park_plant_inspection_update: 'park_plant_inspection_update',
+  park_plant_disease_view: 'park_plant_disease_view',
+  park_plant_disease_add: 'park_plant_disease_add',
+  park_plant_disease_update: 'park_plant_disease_update',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

@@ -23,3 +23,6 @@ export { default as IntranetPostingHistoryService } from "@/services/intranet-po
 export { default as CamerasService } from "@/services/cameras.service"
 export { default as EventBufferService } from "@/services/event-buffer.service"
 export { default as FootfallAnalyticsService } from "@/services/footfall-analytics.service"
+export { default as PlantDiseaseService } from "@/services/plant-disease.service"
+export { default as LandscapingDashboardService } from "@/services/landscaping-dashboard.service"
+export { default as DailyLogsDashboardService } from "@/services/daily-logs-dashboard.service"

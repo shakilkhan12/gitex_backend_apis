@@ -8,6 +8,8 @@ import { v2 as cloudinary } from 'cloudinary';
 import { formatDate, formatTime } from "@/utils/dateTime.utils";
 import SocketService from "./socket.service";
 import { createCanvas, loadImage } from 'canvas';
+import * as fs from 'fs';
+import * as path from 'path';
 // Simple logger implementation
 const Logger = {
    info: (message: string, data?: any) => {
@@ -153,32 +155,67 @@ class EventHandlerService {
       }
    }
 
-   private static async uploadImageToCloudinary(base64Image: string, eventType: string, eventId: string): Promise<string> {
+   private static async saveImageLocally(base64Image: string, eventType: string, eventId: string): Promise<string> {
       const startTime = Date.now();
-      Logger.info(`[EventHandlerService] Starting to upload image to Cloudinary for eventType: ${eventType}, eventId: ${eventId}`);
+      Logger.info(`[EventHandlerService] Starting to save image locally for eventType: ${eventType}, eventId: ${eventId}`);
       
       try {
-         const publicId = `${this.CLOUDINARY_CONFIG.folder}/${eventType}/${eventId}_${Date.now()}`;
-         Logger.debug(`[EventHandlerService] Generated publicId: ${publicId}`);
+         // Create upload directory structure
+         const uploadDir = path.join(process.cwd(), 'uploads', eventType);
+         const fileName = `${eventId}_${Date.now()}.jpg`;
+         const filePath = path.join(uploadDir, fileName);
          
-         const result = await cloudinary.uploader.upload(base64Image, {
-            public_id: publicId,
-            resource_type: 'image',
-            format: 'jpg',
-            quality: 'auto',
-            fetch_format: 'auto'
-         });
+         // Ensure directory exists
+         if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+            Logger.info(`[EventHandlerService] Created directory: ${uploadDir}`);
+         }
+         
+         // Convert base64 to buffer and save
+         const imageBuffer = Buffer.from(base64Image, 'base64');
+         fs.writeFileSync(filePath, imageBuffer);
+         
+         // Generate URL path for the saved image
+         const imageUrl = `/uploads/${eventType}/${fileName}`;
          
          const duration = Date.now() - startTime;
-         Logger.info(`[EventHandlerService] Successfully uploaded image to Cloudinary in ${duration}ms. URL: ${result.secure_url}`);
+         Logger.info(`[EventHandlerService] Successfully saved image locally in ${duration}ms. Path: ${imageUrl}`);
          
-         return result.secure_url;
+         return imageUrl;
       } catch (error: any) {
          const duration = Date.now() - startTime;
-         Logger.error(`[EventHandlerService] Failed to upload image to Cloudinary for eventType: ${eventType}, eventId: ${eventId} after ${duration}ms`, error);
+         Logger.error(`[EventHandlerService] Failed to save image locally for eventType: ${eventType}, eventId: ${eventId} after ${duration}ms`, error);
          throw error;
       }
    }
+
+   // Keep the old Cloudinary function for backward compatibility (commented out)
+   // private static async uploadImageToCloudinary(base64Image: string, eventType: string, eventId: string): Promise<string> {
+   //    const startTime = Date.now();
+   //    Logger.info(`[EventHandlerService] Starting to upload image to Cloudinary for eventType: ${eventType}, eventId: ${eventId}`);
+   //    
+   //    try {
+   //       const publicId = `${this.CLOUDINARY_CONFIG.folder}/${eventType}/${eventId}_${Date.now()}`;
+   //       Logger.debug(`[EventHandlerService] Generated publicId: ${publicId}`);
+   //       
+   //       const result = await cloudinary.uploader.upload(base64Image, {
+   //          public_id: publicId,
+   //          resource_type: 'image',
+   //          format: 'jpg',
+   //          quality: 'auto',
+   //          fetch_format: 'auto'
+   //       });
+   //       
+   //       const duration = Date.now() - startTime;
+   //       Logger.info(`[EventHandlerService] Successfully uploaded image to Cloudinary in ${duration}ms. URL: ${result.secure_url}`);
+   //       
+   //       return result.secure_url;
+   //    } catch (error: any) {
+   //       const duration = Date.now() - startTime;
+   //       Logger.error(`[EventHandlerService] Failed to upload image to Cloudinary for eventType: ${eventType}, eventId: ${eventId} after ${duration}ms`, error);
+   //       throw error;
+   //    }
+   // }
 
    private static async callHikVisionAPI(baseUrl: string, endpoint: string, appKey: string, appSecret: string, requestData: any) {
       const startTime = Date.now();
@@ -280,6 +317,9 @@ class EventHandlerService {
          timestamp: eventData?.timestamp,
          hasEventData: !!eventData 
       });
+      
+      // Global image URL variable to reuse across all cases
+      let imageUrl: string | null = null;
       
       try { 
         // Fetch camera IDs from database
@@ -450,9 +490,9 @@ class EventHandlerService {
                                // The response is directly the base64 string, not wrapped in a data object
                                const base64Image = imageDataResponse;
                                
-                               // Upload to Cloudinary
-                               imageUrl = await this.uploadImageToCloudinary(base64Image, 'intrusion', eventIndexCode);
-                               Logger.info(`[EventHandlerService] Successfully uploaded intrusion image to Cloudinary`);
+                               // Save image locally
+                               imageUrl = await this.saveImageLocally(base64Image, 'intrusion', eventIndexCode);
+                               Logger.info(`[EventHandlerService] Successfully saved intrusion image locally`);
                             }
                          } else {
                             Logger.warn(`[EventHandlerService] No eventPicUri found for intrusion event`);
@@ -758,9 +798,14 @@ class EventHandlerService {
                                const base64Image = Buffer.from(imageBuffer).toString('base64');
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
-                               // Upload to Cloudinary
-                               image = await this.uploadImageToCloudinary(dataUrl, 'office-footfall', eventInfo.eventId);
-                               Logger.info(`[EventHandlerService] ✅ Successfully uploaded office footfall image to Cloudinary: ${image}`);
+                               // Use global imageUrl if available, otherwise upload
+                               if (!imageUrl) {
+                                  imageUrl = await this.saveImageLocally(dataUrl, 'office-footfall', eventInfo.eventId);
+                                  Logger.info(`[EventHandlerService] ✅ Successfully saved office footfall image locally: ${imageUrl}`);
+                               } else {
+                                  Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office footfall: ${imageUrl}`);
+                               }
+                               image = imageUrl;
                             } else {
                                Logger.warn(`[EventHandlerService] ⚠️ Failed to fetch image from URL: ${eventInfo.data.alarmResult.faces.URL}`);
                             }
@@ -880,9 +925,14 @@ class EventHandlerService {
                                // The response is directly the base64 string, not wrapped in a data object
                                const base64Image = imageDataResponse;
                                
-                               // Upload to Cloudinary
-                               sentimentImageUrl = await this.uploadImageToCloudinary(base64Image, 'sentiment', eventInfo.eventId);
-                               Logger.info(`[EventHandlerService] Successfully uploaded sentiment image to Cloudinary for office`);
+                               // Use global imageUrl if available, otherwise upload
+                               if (!imageUrl) {
+                                  imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
+                                  Logger.info(`[EventHandlerService] Successfully saved sentiment image locally for office`);
+                               } else {
+                                  Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office sentiment: ${imageUrl}`);
+                               }
+                               sentimentImageUrl = imageUrl;
                                
                                // Get emotion detection from the uploaded image
                                if (sentimentImageUrl) {
@@ -1080,9 +1130,14 @@ class EventHandlerService {
                                   // The response is directly the base64 string, not wrapped in a data object
                                   const base64Image = imageDataResponse;
                                   
-                                  // Upload to Cloudinary
-                                  exitSentimentImageUrl = await this.uploadImageToCloudinary(base64Image, 'sentiment', eventInfo.eventId);
-                                  Logger.info(`[EventHandlerService] Successfully uploaded exit sentiment image to Cloudinary for office`);
+                                  // Use global imageUrl if available, otherwise upload
+                                  if (!imageUrl) {
+                                     imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
+                                     Logger.info(`[EventHandlerService] Successfully saved exit sentiment image locally for office`);
+                                  } else {
+                                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office exit sentiment: ${imageUrl}`);
+                                  }
+                                  exitSentimentImageUrl = imageUrl;
                                   
                                   // Get emotion detection from the uploaded image
                                   if (exitSentimentImageUrl) {
@@ -1352,8 +1407,14 @@ class EventHandlerService {
                                
                                if (imageDataResponse) {
                                   const base64Image = imageDataResponse;
-                                  entryImageUrl = await this.uploadImageToCloudinary(base64Image, 'attendance', eventInfo.eventId);
-                                  Logger.info(`[EventHandlerService] Successfully uploaded entry image to Cloudinary for office attendance`);
+                                  // Use global imageUrl if available, otherwise upload
+                                  if (!imageUrl) {
+                                     imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
+                                     Logger.info(`[EventHandlerService] Successfully saved entry image locally for office attendance`);
+                                  } else {
+                                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office attendance entry: ${imageUrl}`);
+                                  }
+                                  entryImageUrl = imageUrl;
                                }
                             } catch (imageError: any) {
                                Logger.error(`[EventHandlerService] Failed to process entry image for office attendance:`, imageError.message);
@@ -1621,8 +1682,14 @@ class EventHandlerService {
                                   
                                   if (imageDataResponse) {
                                      const base64Image = imageDataResponse;
-                                     exitImageUrl = await this.uploadImageToCloudinary(base64Image, 'attendance', eventInfo.eventId);
-                                     Logger.info(`[EventHandlerService] Successfully uploaded exit image to Cloudinary for office attendance`);
+                                     // Use global imageUrl if available, otherwise upload
+                                     if (!imageUrl) {
+                                        imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
+                                        Logger.info(`[EventHandlerService] Successfully saved exit image locally for office attendance`);
+                                     } else {
+                                        Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office attendance exit: ${imageUrl}`);
+                                     }
+                                     exitImageUrl = imageUrl;
                                   }
                                } catch (imageError: any) {
                                   Logger.error(`[EventHandlerService] Failed to process exit image for office attendance:`, imageError.message);
@@ -1984,7 +2051,14 @@ class EventHandlerService {
                                const base64Image = Buffer.from(imageBuffer).toString('base64');
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
-                               image = await this.uploadImageToCloudinary(dataUrl, 'park-footfall', eventInfo.eventId);
+                               // Use global imageUrl if available, otherwise upload
+                               if (!imageUrl) {
+                                  imageUrl = await this.saveImageLocally(dataUrl, 'park-footfall', eventInfo.eventId);
+                                  Logger.info(`[EventHandlerService] ✅ Successfully saved park footfall image locally: ${imageUrl}`);
+                               } else {
+                                  Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park footfall: ${imageUrl}`);
+                               }
+                               image = imageUrl;
                             } else {
                                Logger.warn(`[EventHandlerService] ⚠️ Failed to fetch image from URL: ${eventInfo.data.alarmResult.faces.URL}`);
                             }
@@ -2094,9 +2168,14 @@ class EventHandlerService {
                                // The response is directly the base64 string, not wrapped in a data object
                                const base64Image = imageDataResponse;
                                
-                               // Upload to Cloudinary
-                               sentimentImageUrl = await this.uploadImageToCloudinary(base64Image, 'sentiment', eventInfo.eventId);
-                               Logger.info(`[EventHandlerService] Successfully uploaded sentiment image to Cloudinary for park`);
+                                 // Use global imageUrl if available, otherwise upload
+                               if (!imageUrl) {
+                                  imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
+                                  Logger.info(`[EventHandlerService] Successfully saved sentiment image locally for park`);
+                               } else {
+                                  Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park sentiment: ${imageUrl}`);
+                               }
+                               sentimentImageUrl = imageUrl;
                                
                                // Get emotion detection from the uploaded image
                                if (sentimentImageUrl) {
@@ -2296,9 +2375,14 @@ class EventHandlerService {
                                   // The response is directly the base64 string, not wrapped in a data object
                                   const base64Image = imageDataResponse;
                                   
-                                  // Upload to Cloudinary
-                                  exitSentimentImageUrl = await this.uploadImageToCloudinary(base64Image, 'sentiment', eventInfo.eventId);
-                                  Logger.info(`[EventHandlerService] Successfully uploaded exit sentiment image to Cloudinary for park`);
+                                  // Use global imageUrl if available, otherwise upload
+                                  if (!imageUrl) {
+                                     imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
+                                     Logger.info(`[EventHandlerService] Successfully saved exit sentiment image locally for park`);
+                                  } else {
+                                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park exit sentiment: ${imageUrl}`);
+                                  }
+                                  exitSentimentImageUrl = imageUrl;
                                   
                                   // Get emotion detection from the uploaded image
                                   if (exitSentimentImageUrl) {
@@ -2470,8 +2554,14 @@ class EventHandlerService {
                                
                                if (imageDataResponse) {
                                   const base64Image = imageDataResponse;
-                                  entryImageUrl = await this.uploadImageToCloudinary(base64Image, 'attendance', eventInfo.eventId);
-                                  Logger.info(`[EventHandlerService] Successfully uploaded entry image to Cloudinary for park attendance`);
+                                  // Use global imageUrl if available, otherwise upload
+                                  if (!imageUrl) {
+                                     imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
+                                     Logger.info(`[EventHandlerService] Successfully saved entry image locally for park attendance`);
+                                  } else {
+                                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park attendance entry: ${imageUrl}`);
+                                  }
+                                  entryImageUrl = imageUrl;
                                }
                             } catch (imageError: any) {
                                Logger.error(`[EventHandlerService] Failed to process entry image for park attendance:`, imageError.message);
@@ -2600,8 +2690,14 @@ class EventHandlerService {
                                   
                                   if (imageDataResponse) {
                                      const base64Image = imageDataResponse;
-                                     exitImageUrl = await this.uploadImageToCloudinary(base64Image, 'attendance', eventInfo.eventId);
-                                     Logger.info(`[EventHandlerService] Successfully uploaded exit image to Cloudinary for park attendance`);
+                                     // Use global imageUrl if available, otherwise upload
+                                     if (!imageUrl) {
+                                        imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
+                                        Logger.info(`[EventHandlerService] Successfully saved exit image locally for park attendance`);
+                                     } else {
+                                        Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park attendance exit: ${imageUrl}`);
+                                     }
+                                     exitImageUrl = imageUrl;
                                   }
                                } catch (imageError: any) {
                                   Logger.error(`[EventHandlerService] Failed to process exit image for park attendance:`, imageError.message);
@@ -2712,8 +2808,13 @@ class EventHandlerService {
                                  // The response is directly the base64 string, not wrapped in a data object
                                  const base64Image = imageDataResponse;
                                  
-                                 imageUrl = await this.uploadImageToCloudinary(base64Image, 'behavior', eventIndexCode);
-                                 Logger.info(`[EventHandlerService] Successfully uploaded behavior image to Cloudinary`);
+                                 // Use global imageUrl if available, otherwise upload
+                                 if (!imageUrl) {
+                                    imageUrl = await this.saveImageLocally(base64Image, 'behavior', eventIndexCode);
+                                    Logger.info(`[EventHandlerService] Successfully saved behavior image locally`);
+                                 } else {
+                                    Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for behavior detection: ${imageUrl}`);
+                                 }
                               } else {
                                  Logger.warn(`[EventHandlerService] No image data received for behavior event`);
                               }
@@ -3083,12 +3184,17 @@ class EventHandlerService {
             let imageUrl = null;
             if (base64ImageData) {
                try {
-                  Logger.info(`[EventHandlerService] 📤 Uploading guest user image to Cloudinary`);
+                  Logger.info(`[EventHandlerService] 📤 Saving guest user image locally`);
                   const dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
-                  imageUrl = await this.uploadImageToCloudinary(dataUrl, 'guest-users', guestUser.Id.toString());
-                  Logger.info(`[EventHandlerService] ✅ Successfully uploaded guest user image to Cloudinary: ${imageUrl}`);
+                  // Use global imageUrl if available, otherwise upload
+                  if (!imageUrl) {
+                     imageUrl = await this.saveImageLocally(dataUrl, 'guest-users', guestUser.Id.toString());
+                     Logger.info(`[EventHandlerService] ✅ Successfully saved guest user image locally: ${imageUrl}`);
+                  } else {
+                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for guest user: ${imageUrl}`);
+                  }
                } catch (cloudinaryError: any) {
-                  Logger.error(`[EventHandlerService] ❌ Failed to upload guest user image to Cloudinary:`, cloudinaryError.message);
+                  Logger.error(`[EventHandlerService] ❌ Failed to save guest user image locally:`, cloudinaryError.message);
                }
             }
             

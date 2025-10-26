@@ -29622,6 +29622,15 @@ export namespace Prisma {
     park_smoking_detection_update: boolean | null
     my_account_view: boolean | null
     settings_view: boolean | null
+    office_queue_management_view: boolean | null
+    office_queue_management_add: boolean | null
+    office_queue_management_update: boolean | null
+    park_plant_inspection_view: boolean | null
+    park_plant_inspection_add: boolean | null
+    park_plant_inspection_update: boolean | null
+    park_plant_disease_view: boolean | null
+    park_plant_disease_add: boolean | null
+    park_plant_disease_update: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -29676,6 +29685,15 @@ export namespace Prisma {
     park_smoking_detection_update: boolean | null
     my_account_view: boolean | null
     settings_view: boolean | null
+    office_queue_management_view: boolean | null
+    office_queue_management_add: boolean | null
+    office_queue_management_update: boolean | null
+    park_plant_inspection_view: boolean | null
+    park_plant_inspection_add: boolean | null
+    park_plant_inspection_update: boolean | null
+    park_plant_disease_view: boolean | null
+    park_plant_disease_add: boolean | null
+    park_plant_disease_update: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -29730,6 +29748,15 @@ export namespace Prisma {
     park_smoking_detection_update: number
     my_account_view: number
     settings_view: number
+    office_queue_management_view: number
+    office_queue_management_add: number
+    office_queue_management_update: number
+    park_plant_inspection_view: number
+    park_plant_inspection_add: number
+    park_plant_inspection_update: number
+    park_plant_disease_view: number
+    park_plant_disease_add: number
+    park_plant_disease_update: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -29796,6 +29823,15 @@ export namespace Prisma {
     park_smoking_detection_update?: true
     my_account_view?: true
     settings_view?: true
+    office_queue_management_view?: true
+    office_queue_management_add?: true
+    office_queue_management_update?: true
+    park_plant_inspection_view?: true
+    park_plant_inspection_add?: true
+    park_plant_inspection_update?: true
+    park_plant_disease_view?: true
+    park_plant_disease_add?: true
+    park_plant_disease_update?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -29850,6 +29886,15 @@ export namespace Prisma {
     park_smoking_detection_update?: true
     my_account_view?: true
     settings_view?: true
+    office_queue_management_view?: true
+    office_queue_management_add?: true
+    office_queue_management_update?: true
+    park_plant_inspection_view?: true
+    park_plant_inspection_add?: true
+    park_plant_inspection_update?: true
+    park_plant_disease_view?: true
+    park_plant_disease_add?: true
+    park_plant_disease_update?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -29904,6 +29949,15 @@ export namespace Prisma {
     park_smoking_detection_update?: true
     my_account_view?: true
     settings_view?: true
+    office_queue_management_view?: true
+    office_queue_management_add?: true
+    office_queue_management_update?: true
+    park_plant_inspection_view?: true
+    park_plant_inspection_add?: true
+    park_plant_inspection_update?: true
+    park_plant_disease_view?: true
+    park_plant_disease_add?: true
+    park_plant_disease_update?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -30045,6 +30099,15 @@ export namespace Prisma {
     park_smoking_detection_update: boolean | null
     my_account_view: boolean | null
     settings_view: boolean | null
+    office_queue_management_view: boolean | null
+    office_queue_management_add: boolean | null
+    office_queue_management_update: boolean | null
+    park_plant_inspection_view: boolean | null
+    park_plant_inspection_add: boolean | null
+    park_plant_inspection_update: boolean | null
+    park_plant_disease_view: boolean | null
+    park_plant_disease_add: boolean | null
+    park_plant_disease_update: boolean | null
     createdAt: Date | null
     updatedAt: Date
     _count: Users_permissionsCountAggregateOutputType | null
@@ -30118,6 +30181,15 @@ export namespace Prisma {
     park_smoking_detection_update?: boolean
     my_account_view?: boolean
     settings_view?: boolean
+    office_queue_management_view?: boolean
+    office_queue_management_add?: boolean
+    office_queue_management_update?: boolean
+    park_plant_inspection_view?: boolean
+    park_plant_inspection_add?: boolean
+    park_plant_inspection_update?: boolean
+    park_plant_disease_view?: boolean
+    park_plant_disease_add?: boolean
+    park_plant_disease_update?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     users_roles?: boolean | users_permissions$users_rolesArgs<ExtArgs>
@@ -30175,11 +30247,20 @@ export namespace Prisma {
     park_smoking_detection_update?: boolean
     my_account_view?: boolean
     settings_view?: boolean
+    office_queue_management_view?: boolean
+    office_queue_management_add?: boolean
+    office_queue_management_update?: boolean
+    park_plant_inspection_view?: boolean
+    park_plant_inspection_add?: boolean
+    park_plant_inspection_update?: boolean
+    park_plant_disease_view?: boolean
+    park_plant_disease_add?: boolean
+    park_plant_disease_update?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type users_permissionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "role_Id" | "dashboard_view" | "role_permission_view" | "role_permission_add" | "role_permission_update" | "offices_view" | "offices_add" | "offices_update" | "parks_view" | "parks_add" | "parks_update" | "system_report_view" | "alerts_view" | "office_attendance_view" | "office_attendance_add" | "office_attendance_update" | "office_footfall_view" | "office_footfall_add" | "office_footfall_update" | "office_sentimental_view" | "office_sentimental_add" | "office_sentimental_update" | "park_attendance_view" | "park_attendance_add" | "park_attendance_update" | "park_footfall_view" | "park_footfall_add" | "park_footfall_update" | "park_sentimental_view" | "park_sentimental_add" | "park_sentimental_update" | "park_irrigation_view" | "park_irrigation_add" | "park_irrigation_update" | "park_landscaping_view" | "park_landscaping_add" | "park_landscaping_update" | "park_litter_detection_view" | "park_litter_detection_add" | "park_litter_detection_update" | "park_intrusion_detection_view" | "park_intrusion_detection_add" | "park_intrusion_detection_update" | "park_smoking_detection_view" | "park_smoking_detection_add" | "park_smoking_detection_update" | "my_account_view" | "settings_view" | "createdAt" | "updatedAt", ExtArgs["result"]["users_permissions"]>
+  export type users_permissionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "role_Id" | "dashboard_view" | "role_permission_view" | "role_permission_add" | "role_permission_update" | "offices_view" | "offices_add" | "offices_update" | "parks_view" | "parks_add" | "parks_update" | "system_report_view" | "alerts_view" | "office_attendance_view" | "office_attendance_add" | "office_attendance_update" | "office_footfall_view" | "office_footfall_add" | "office_footfall_update" | "office_sentimental_view" | "office_sentimental_add" | "office_sentimental_update" | "park_attendance_view" | "park_attendance_add" | "park_attendance_update" | "park_footfall_view" | "park_footfall_add" | "park_footfall_update" | "park_sentimental_view" | "park_sentimental_add" | "park_sentimental_update" | "park_irrigation_view" | "park_irrigation_add" | "park_irrigation_update" | "park_landscaping_view" | "park_landscaping_add" | "park_landscaping_update" | "park_litter_detection_view" | "park_litter_detection_add" | "park_litter_detection_update" | "park_intrusion_detection_view" | "park_intrusion_detection_add" | "park_intrusion_detection_update" | "park_smoking_detection_view" | "park_smoking_detection_add" | "park_smoking_detection_update" | "my_account_view" | "settings_view" | "office_queue_management_view" | "office_queue_management_add" | "office_queue_management_update" | "park_plant_inspection_view" | "park_plant_inspection_add" | "park_plant_inspection_update" | "park_plant_disease_view" | "park_plant_disease_add" | "park_plant_disease_update" | "createdAt" | "updatedAt", ExtArgs["result"]["users_permissions"]>
   export type users_permissionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users_roles?: boolean | users_permissions$users_rolesArgs<ExtArgs>
   }
@@ -30239,6 +30320,15 @@ export namespace Prisma {
       park_smoking_detection_update: boolean | null
       my_account_view: boolean | null
       settings_view: boolean | null
+      office_queue_management_view: boolean | null
+      office_queue_management_add: boolean | null
+      office_queue_management_update: boolean | null
+      park_plant_inspection_view: boolean | null
+      park_plant_inspection_add: boolean | null
+      park_plant_inspection_update: boolean | null
+      park_plant_disease_view: boolean | null
+      park_plant_disease_add: boolean | null
+      park_plant_disease_update: boolean | null
       createdAt: Date | null
       updatedAt: Date
     }, ExtArgs["result"]["users_permissions"]>
@@ -30660,6 +30750,15 @@ export namespace Prisma {
     readonly park_smoking_detection_update: FieldRef<"users_permissions", 'Boolean'>
     readonly my_account_view: FieldRef<"users_permissions", 'Boolean'>
     readonly settings_view: FieldRef<"users_permissions", 'Boolean'>
+    readonly office_queue_management_view: FieldRef<"users_permissions", 'Boolean'>
+    readonly office_queue_management_add: FieldRef<"users_permissions", 'Boolean'>
+    readonly office_queue_management_update: FieldRef<"users_permissions", 'Boolean'>
+    readonly park_plant_inspection_view: FieldRef<"users_permissions", 'Boolean'>
+    readonly park_plant_inspection_add: FieldRef<"users_permissions", 'Boolean'>
+    readonly park_plant_inspection_update: FieldRef<"users_permissions", 'Boolean'>
+    readonly park_plant_disease_view: FieldRef<"users_permissions", 'Boolean'>
+    readonly park_plant_disease_add: FieldRef<"users_permissions", 'Boolean'>
+    readonly park_plant_disease_update: FieldRef<"users_permissions", 'Boolean'>
     readonly createdAt: FieldRef<"users_permissions", 'DateTime'>
     readonly updatedAt: FieldRef<"users_permissions", 'DateTime'>
   }
@@ -41018,6 +41117,15 @@ export namespace Prisma {
     park_smoking_detection_update: 'park_smoking_detection_update',
     my_account_view: 'my_account_view',
     settings_view: 'settings_view',
+    office_queue_management_view: 'office_queue_management_view',
+    office_queue_management_add: 'office_queue_management_add',
+    office_queue_management_update: 'office_queue_management_update',
+    park_plant_inspection_view: 'park_plant_inspection_view',
+    park_plant_inspection_add: 'park_plant_inspection_add',
+    park_plant_inspection_update: 'park_plant_inspection_update',
+    park_plant_disease_view: 'park_plant_disease_view',
+    park_plant_disease_add: 'park_plant_disease_add',
+    park_plant_disease_update: 'park_plant_disease_update',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -44101,6 +44209,15 @@ export namespace Prisma {
     park_smoking_detection_update?: BoolNullableFilter<"users_permissions"> | boolean | null
     my_account_view?: BoolNullableFilter<"users_permissions"> | boolean | null
     settings_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    office_queue_management_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    office_queue_management_add?: BoolNullableFilter<"users_permissions"> | boolean | null
+    office_queue_management_update?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_add?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_update?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_disease_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_disease_add?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_disease_update?: BoolNullableFilter<"users_permissions"> | boolean | null
     createdAt?: DateTimeNullableFilter<"users_permissions"> | Date | string | null
     updatedAt?: DateTimeFilter<"users_permissions"> | Date | string
     users_roles?: XOR<Users_rolesNullableScalarRelationFilter, users_rolesWhereInput> | null
@@ -44156,6 +44273,15 @@ export namespace Prisma {
     park_smoking_detection_update?: SortOrderInput | SortOrder
     my_account_view?: SortOrderInput | SortOrder
     settings_view?: SortOrderInput | SortOrder
+    office_queue_management_view?: SortOrderInput | SortOrder
+    office_queue_management_add?: SortOrderInput | SortOrder
+    office_queue_management_update?: SortOrderInput | SortOrder
+    park_plant_inspection_view?: SortOrderInput | SortOrder
+    park_plant_inspection_add?: SortOrderInput | SortOrder
+    park_plant_inspection_update?: SortOrderInput | SortOrder
+    park_plant_disease_view?: SortOrderInput | SortOrder
+    park_plant_disease_add?: SortOrderInput | SortOrder
+    park_plant_disease_update?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     users_roles?: users_rolesOrderByWithRelationInput
@@ -44214,6 +44340,15 @@ export namespace Prisma {
     park_smoking_detection_update?: BoolNullableFilter<"users_permissions"> | boolean | null
     my_account_view?: BoolNullableFilter<"users_permissions"> | boolean | null
     settings_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    office_queue_management_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    office_queue_management_add?: BoolNullableFilter<"users_permissions"> | boolean | null
+    office_queue_management_update?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_add?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_update?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_disease_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_disease_add?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_disease_update?: BoolNullableFilter<"users_permissions"> | boolean | null
     createdAt?: DateTimeNullableFilter<"users_permissions"> | Date | string | null
     updatedAt?: DateTimeFilter<"users_permissions"> | Date | string
     users_roles?: XOR<Users_rolesNullableScalarRelationFilter, users_rolesWhereInput> | null
@@ -44269,6 +44404,15 @@ export namespace Prisma {
     park_smoking_detection_update?: SortOrderInput | SortOrder
     my_account_view?: SortOrderInput | SortOrder
     settings_view?: SortOrderInput | SortOrder
+    office_queue_management_view?: SortOrderInput | SortOrder
+    office_queue_management_add?: SortOrderInput | SortOrder
+    office_queue_management_update?: SortOrderInput | SortOrder
+    park_plant_inspection_view?: SortOrderInput | SortOrder
+    park_plant_inspection_add?: SortOrderInput | SortOrder
+    park_plant_inspection_update?: SortOrderInput | SortOrder
+    park_plant_disease_view?: SortOrderInput | SortOrder
+    park_plant_disease_add?: SortOrderInput | SortOrder
+    park_plant_disease_update?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: users_permissionsCountOrderByAggregateInput
@@ -44331,6 +44475,15 @@ export namespace Prisma {
     park_smoking_detection_update?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
     my_account_view?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
     settings_view?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    office_queue_management_view?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    office_queue_management_add?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    office_queue_management_update?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_view?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_add?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_update?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    park_plant_disease_view?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    park_plant_disease_add?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    park_plant_disease_update?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"users_permissions"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"users_permissions"> | Date | string
   }
@@ -47869,6 +48022,15 @@ export namespace Prisma {
     park_smoking_detection_update?: boolean | null
     my_account_view?: boolean | null
     settings_view?: boolean | null
+    office_queue_management_view?: boolean | null
+    office_queue_management_add?: boolean | null
+    office_queue_management_update?: boolean | null
+    park_plant_inspection_view?: boolean | null
+    park_plant_inspection_add?: boolean | null
+    park_plant_inspection_update?: boolean | null
+    park_plant_disease_view?: boolean | null
+    park_plant_disease_add?: boolean | null
+    park_plant_disease_update?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     users_roles?: users_rolesCreateNestedOneWithoutUsers_permissionsInput
@@ -47924,6 +48086,15 @@ export namespace Prisma {
     park_smoking_detection_update?: boolean | null
     my_account_view?: boolean | null
     settings_view?: boolean | null
+    office_queue_management_view?: boolean | null
+    office_queue_management_add?: boolean | null
+    office_queue_management_update?: boolean | null
+    park_plant_inspection_view?: boolean | null
+    park_plant_inspection_add?: boolean | null
+    park_plant_inspection_update?: boolean | null
+    park_plant_disease_view?: boolean | null
+    park_plant_disease_add?: boolean | null
+    park_plant_disease_update?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -47976,6 +48147,15 @@ export namespace Prisma {
     park_smoking_detection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     my_account_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     settings_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users_roles?: users_rolesUpdateOneWithoutUsers_permissionsNestedInput
@@ -48031,6 +48211,15 @@ export namespace Prisma {
     park_smoking_detection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     my_account_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     settings_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -48085,6 +48274,15 @@ export namespace Prisma {
     park_smoking_detection_update?: boolean | null
     my_account_view?: boolean | null
     settings_view?: boolean | null
+    office_queue_management_view?: boolean | null
+    office_queue_management_add?: boolean | null
+    office_queue_management_update?: boolean | null
+    park_plant_inspection_view?: boolean | null
+    park_plant_inspection_add?: boolean | null
+    park_plant_inspection_update?: boolean | null
+    park_plant_disease_view?: boolean | null
+    park_plant_disease_add?: boolean | null
+    park_plant_disease_update?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -48137,6 +48335,15 @@ export namespace Prisma {
     park_smoking_detection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     my_account_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     settings_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -48191,6 +48398,15 @@ export namespace Prisma {
     park_smoking_detection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     my_account_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     settings_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -51169,6 +51385,15 @@ export namespace Prisma {
     park_smoking_detection_update?: SortOrder
     my_account_view?: SortOrder
     settings_view?: SortOrder
+    office_queue_management_view?: SortOrder
+    office_queue_management_add?: SortOrder
+    office_queue_management_update?: SortOrder
+    park_plant_inspection_view?: SortOrder
+    park_plant_inspection_add?: SortOrder
+    park_plant_inspection_update?: SortOrder
+    park_plant_disease_view?: SortOrder
+    park_plant_disease_add?: SortOrder
+    park_plant_disease_update?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51228,6 +51453,15 @@ export namespace Prisma {
     park_smoking_detection_update?: SortOrder
     my_account_view?: SortOrder
     settings_view?: SortOrder
+    office_queue_management_view?: SortOrder
+    office_queue_management_add?: SortOrder
+    office_queue_management_update?: SortOrder
+    park_plant_inspection_view?: SortOrder
+    park_plant_inspection_add?: SortOrder
+    park_plant_inspection_update?: SortOrder
+    park_plant_disease_view?: SortOrder
+    park_plant_disease_add?: SortOrder
+    park_plant_disease_update?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51282,6 +51516,15 @@ export namespace Prisma {
     park_smoking_detection_update?: SortOrder
     my_account_view?: SortOrder
     settings_view?: SortOrder
+    office_queue_management_view?: SortOrder
+    office_queue_management_add?: SortOrder
+    office_queue_management_update?: SortOrder
+    park_plant_inspection_view?: SortOrder
+    park_plant_inspection_add?: SortOrder
+    park_plant_inspection_update?: SortOrder
+    park_plant_disease_view?: SortOrder
+    park_plant_disease_add?: SortOrder
+    park_plant_disease_update?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -62288,6 +62531,15 @@ export namespace Prisma {
     park_smoking_detection_update?: boolean | null
     my_account_view?: boolean | null
     settings_view?: boolean | null
+    office_queue_management_view?: boolean | null
+    office_queue_management_add?: boolean | null
+    office_queue_management_update?: boolean | null
+    park_plant_inspection_view?: boolean | null
+    park_plant_inspection_add?: boolean | null
+    park_plant_inspection_update?: boolean | null
+    park_plant_disease_view?: boolean | null
+    park_plant_disease_add?: boolean | null
+    park_plant_disease_update?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -62341,6 +62593,15 @@ export namespace Prisma {
     park_smoking_detection_update?: boolean | null
     my_account_view?: boolean | null
     settings_view?: boolean | null
+    office_queue_management_view?: boolean | null
+    office_queue_management_add?: boolean | null
+    office_queue_management_update?: boolean | null
+    park_plant_inspection_view?: boolean | null
+    park_plant_inspection_add?: boolean | null
+    park_plant_inspection_update?: boolean | null
+    park_plant_disease_view?: boolean | null
+    park_plant_disease_add?: boolean | null
+    park_plant_disease_update?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -62482,6 +62743,15 @@ export namespace Prisma {
     park_smoking_detection_update?: BoolNullableFilter<"users_permissions"> | boolean | null
     my_account_view?: BoolNullableFilter<"users_permissions"> | boolean | null
     settings_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    office_queue_management_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    office_queue_management_add?: BoolNullableFilter<"users_permissions"> | boolean | null
+    office_queue_management_update?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_add?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_inspection_update?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_disease_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_disease_add?: BoolNullableFilter<"users_permissions"> | boolean | null
+    park_plant_disease_update?: BoolNullableFilter<"users_permissions"> | boolean | null
     createdAt?: DateTimeNullableFilter<"users_permissions"> | Date | string | null
     updatedAt?: DateTimeFilter<"users_permissions"> | Date | string
   }
@@ -66595,6 +66865,15 @@ export namespace Prisma {
     park_smoking_detection_update?: boolean | null
     my_account_view?: boolean | null
     settings_view?: boolean | null
+    office_queue_management_view?: boolean | null
+    office_queue_management_add?: boolean | null
+    office_queue_management_update?: boolean | null
+    park_plant_inspection_view?: boolean | null
+    park_plant_inspection_add?: boolean | null
+    park_plant_inspection_update?: boolean | null
+    park_plant_disease_view?: boolean | null
+    park_plant_disease_add?: boolean | null
+    park_plant_disease_update?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -66778,6 +67057,15 @@ export namespace Prisma {
     park_smoking_detection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     my_account_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     settings_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66831,6 +67119,15 @@ export namespace Prisma {
     park_smoking_detection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     my_account_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     settings_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66884,6 +67181,15 @@ export namespace Prisma {
     park_smoking_detection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     my_account_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     settings_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    office_queue_management_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_inspection_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    park_plant_disease_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

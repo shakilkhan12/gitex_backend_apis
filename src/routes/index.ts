@@ -26,6 +26,9 @@ import alertRouter from "./alert.routes";
 import eventBufferRouter from "./event-buffer.routes";
 import footfallAnalyticsRouter from "./footfall-analytics.routes";
 import optimizedComponentApisRouter from "./optimized-component-apis.routes";
+import plantDiseaseRouter from "./plant-disease.routes";
+import landscapingDashboardRouter from "./landscaping-dashboard.routes";
+import dailyLogsDashboardRouter from "./daily-logs-dashboard.routes";
 const mainRouter = Router();
 
 
@@ -56,5 +59,8 @@ mainRouter.use('/intranet-posting-history', intranetPostingHistoryRouter)
 mainRouter.use('/cameras', camerasRouter)
 mainRouter.use('/event-buffer', eventBufferRouter)
 mainRouter.use('/optimized-component-apis', optimizedComponentApisRouter)
+mainRouter.use('/plant-disease', plantDiseaseRouter)
+mainRouter.use('/landscaping-dashboard', landscapingDashboardRouter)
+mainRouter.use('/daily-logs-dashboard', dailyLogsDashboardRouter)
 
 export default mainRouter;

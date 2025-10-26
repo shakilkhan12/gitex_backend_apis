@@ -442,9 +442,9 @@ class QMSService {
         serviceCounts.length > 0 ? serviceCounts[0] : null;
 
       const paginationData = {
-        currentPage: page,
-        totalPages,
-        totalCount,
+          currentPage: page,
+          totalPages,
+          totalCount,
         limit: limit,
         hasNextPage,
         hasPreviousPage,

@@ -366,13 +366,21 @@ class UserService {
                            park_smoking_detection_add: true,
                            park_smoking_detection_update: true,
                            my_account_view: true,
-                           settings_view: true
+                           settings_view: true,
+                           office_queue_management_view: true,
+                           office_queue_management_add: true,
+                           office_queue_management_update: true,
+                           park_plant_inspection_view: true,
+                           park_plant_inspection_add: true,
+                           park_plant_inspection_update: true,
+                           park_plant_disease_view: true,
+                           park_plant_disease_add: true,
+                           park_plant_disease_update: true
                         }
                      }
                }
             });
             
-            console.log(`[UserService] Role and permissions query completed for role_Id: ${user.role_Id}`);
          }
 
          // Remove role_Id from the response and add users_roles

@@ -102,6 +102,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   }
 }));
 
+// Serve static files from uploads directory
+app.use('/uploads', express.static('uploads'));
+
 app.get("/", (_req: Request, res: Response) => res.send("🚀 Welcome to the API "));
 app.use('/api', mainRouter)
 app.use(errorHandler)
