@@ -180,39 +180,23 @@ class BehaviorAlertsService {
             previousPage: hasPreviousPage ? (filters?.page || 1) - 1 : null
          };
 
-         // Calculate stats for cards (get all data for stats calculation)
-         let statsData = null;
-         if (filters?.page === 1 || !filters?.page) {
-            // Only calculate stats for first page or when no pagination
-            const allData = await db.parks_behaviour_alerts.findMany({
-               where: whereClause,
-               include: {
-                  parks: {
-                     select: {
-                        park_english_name: true,
-                        park_arabic_name: true,
-                        latitude: true,
-                        longitude: true   
-                     }
-                  },
-                  park_cameras: {
-                     select: {
-                        camera_english_name: true,
-                        camera_arabic_name: true,
-                        ip_address: true,
-                     }
-                  }
-               }
-            });
+         // Calculate stats for cards from all filtered data (not just current page)
+         const allDataForStats = await db.parks_behaviour_alerts.findMany({
+            where: whereClause,
+            select: {
+               detected_behaviour: true
+            }
+         });
 
-            statsData = {
-               totalEvents: allData.length,
-               totalFallDowns: allData.filter(d => d.detected_behaviour === 'Fall Down').length,
-               totalAggression: allData.filter(d => d.detected_behaviour === 'Aggression').length,
-               totalFastMoving: allData.filter(d => d.detected_behaviour === 'Fast Moving').length,
-               totalPeople: allData.filter(d => d.detected_behaviour === 'People Gethering').length
-            };
-         }
+         const statsData = {
+            totalEvents: allDataForStats.length,
+            totalFallDowns: allDataForStats.filter(d => d.detected_behaviour === 'Fall Down').length,
+            totalAggression: allDataForStats.filter(d => d.detected_behaviour === 'Aggression').length,
+            totalFastMoving: allDataForStats.filter(d => d.detected_behaviour === 'Fast Moving').length,
+            totalPeople: allDataForStats.filter(d => d.detected_behaviour === 'People Gethering').length
+         };
+
+         console.log('📊 Behavior alerts stats calculated:', statsData);
 
          return {
             success: true,

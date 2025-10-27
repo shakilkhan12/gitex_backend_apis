@@ -59,13 +59,9 @@ class OfficeSentimentAnalysisController extends OfficeSentimentAnalysisService {
                success: true,
                message: "Office sentiment analyses retrieved successfully",
                data: result.data,
-               pagination: result.pagination
+               pagination: result.pagination,
+               stats: result.stats
             };
-            
-            // Include stats if available
-            if (result.stats) {
-               response.stats = result.stats;
-            }
             
             return res.status(STATUS.SUCCESS).json(response);
          } else {

@@ -6,4 +6,7 @@ const plantDiseaseRouter = Router();
 // Get plant disease data for dashboard
 plantDiseaseRouter.get('/dashboard', PlantDiseaseController.getPlantDiseaseData);
 
+// Get paginated plant disease data
+plantDiseaseRouter.get('/get', PlantDiseaseController.viewPlantDisease);
+
 export default plantDiseaseRouter;

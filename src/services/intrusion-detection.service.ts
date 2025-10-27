@@ -55,9 +55,10 @@ class IntrusionDetectionService {
       status: string;
       sortBy: string;
       sortOrder: string;
+      startDate?: string;
+      endDate?: string;
    }) => {
       try {
-         // If no pagination params provided, return all data (backward compatibility)
          if (!paginationParams) {
             const results = await db.parks_intrusion_detection.findMany({
                include: {
@@ -105,10 +106,8 @@ class IntrusionDetectionService {
             return results;
          }
 
-         // Build where clause for filtering
          const whereClause: any = {};
 
-         // Search functionality
          if (paginationParams.search) {
             whereClause.OR = [
                { location: { contains: paginationParams.search, mode: 'insensitive' } },
@@ -119,22 +118,31 @@ class IntrusionDetectionService {
             ];
          }
 
-         // Status filtering
          if (paginationParams.status) {
             whereClause.current_status = paginationParams.status;
          }
 
-         // Build orderBy clause
+         if (paginationParams.startDate || paginationParams.endDate) {
+            whereClause.occurrence_date = {};
+            
+            if (paginationParams.startDate) {
+               whereClause.occurrence_date.gte = new Date(paginationParams.startDate);
+            }
+            
+            if (paginationParams.endDate) {
+               const endDate = new Date(paginationParams.endDate);
+               endDate.setHours(23, 59, 59, 999);
+               whereClause.occurrence_date.lte = endDate;
+            }
+         }
+
          const orderByClause: any = {};
          orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
 
-         // Calculate pagination
          const skip = (paginationParams.page - 1) * paginationParams.limit;
 
-         // Get total count for pagination metadata
          const totalCount = await db.parks_intrusion_detection.count({ where: whereClause });
 
-         // Get paginated results
          const results = await db.parks_intrusion_detection.findMany({
             where: whereClause,
             include: {
@@ -179,10 +187,51 @@ class IntrusionDetectionService {
             take: paginationParams.limit
          });
 
-         // Calculate pagination metadata
          const totalPages = Math.ceil(totalCount / paginationParams.limit);
          const hasNextPage = paginationParams.page < totalPages;
          const hasPreviousPage = paginationParams.page > 1;
+
+         const allDataForStats = await db.parks_intrusion_detection.findMany({
+            where: whereClause,
+            select: {
+               current_status: true
+            }
+         });
+
+         const statusValues = allDataForStats.map(item => item.current_status);
+         const uniqueStatuses = Array.from(new Set(statusValues));
+
+         const stats = {
+            pending: allDataForStats.filter(
+               item => {
+                  const status = item.current_status?.toLowerCase()?.trim();
+                  return status && status !== 'under process' && 
+                         status !== 'open' && 
+                         status !== 'in progress' && 
+                         status !== 'closed' && 
+                         status !== 'resolved' && 
+                         status !== 'completed';
+               }
+            ).length,
+            underProcess: allDataForStats.filter(
+               item => {
+                  const status = item.current_status?.toLowerCase()?.trim();
+                  return !status || status === '' || 
+                         status === 'under process' || 
+                         status === 'in progress' || 
+                         status === 'open';
+               }
+            ).length,
+            completed: allDataForStats.filter(
+               item => {
+                  const status = item.current_status?.toLowerCase()?.trim();
+                  return status === 'closed' || 
+                         status === 'resolved' || 
+                         status === 'completed';
+               }
+            ).length,
+            total: allDataForStats.length
+         };
 
          return {
             data: results,
@@ -195,7 +244,8 @@ class IntrusionDetectionService {
                hasPreviousPage,
                nextPage: hasNextPage ? paginationParams.page + 1 : null,
                previousPage: hasPreviousPage ? paginationParams.page - 1 : null
-            }
+            },
+            stats
          };
 
       } catch (error: any) {

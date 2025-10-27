@@ -200,10 +200,6 @@ class ParkSentimentAnalysisService {
             }
          }
 
-         // Employee filter
-         if (filters?.employee && filters.employee !== 'All') {
-            whereClause.person_name = filters.employee;
-         }
 
          // Build order by clause
          const orderByClause: any = {};
@@ -324,7 +320,6 @@ class ParkSentimentAnalysisService {
             check_out_time: formatTimeFetchFromFullDate(sentiment.check_out_time)
          }));
 
-         // Calculate pagination metadata
          const totalPages = Math.ceil(totalCount / limit);
          const hasNextPage = page < totalPages;
          const hasPreviousPage = page > 1;
@@ -340,34 +335,23 @@ class ParkSentimentAnalysisService {
             previousPage: hasPreviousPage ? page - 1 : null
          };
 
-         // Calculate stats for cards (get all data for stats calculation)
-         let statsData = null;
-         if (page === 1 || !filters?.page) {
-            // Only calculate stats for first page or when no pagination
-            const allData = await db.parks_sentiment_analysis.findMany({
-               where: whereClause,
-               include: {
-                  parks: {
-                     select: {
-                        park_english_name: true,
-                        park_arabic_name: true,
-                        latitude: true,
-                        longitude: true
-                     }
-                  }
-               }
-            });
+         // Calculate stats for cards (get all filtered data for stats calculation)
+         const allDataForStats = await db.parks_sentiment_analysis.findMany({
+            where: whereClause,
+            select: {
+               check_in_sentiment: true,
+               check_out_sentiment: true
+            }
+         });
 
-            statsData = {
-               totalEvents: allData.length,
-               totalHappy: allData.filter(d => d.check_in_sentiment === 'happy').length,
-               totalNormal: allData.filter(d => d.check_in_sentiment === 'neutral').length,
-               totalSad: allData.filter(d => d.check_in_sentiment === 'sad').length,
-               totalAngry: allData.filter(d => d.check_in_sentiment === 'angry').length
-            };
-         }
+         const statsData = {
+            totalEvents: allDataForStats.length,
+            totalHappy: allDataForStats.filter(d => d.check_in_sentiment === 'happy').length,
+            totalNormal: allDataForStats.filter(d => d.check_in_sentiment === 'neutral').length,
+            totalSad: allDataForStats.filter(d => d.check_in_sentiment === 'sad').length,
+            totalAngry: allDataForStats.filter(d => d.check_in_sentiment === 'angry').length
+         };
 
-         console.log(`📦 [ParkSentimentAnalysisService] Retrieved ${formattedResults.length} park sentiment analyses with user details.`);
          
          return {
             success: true,

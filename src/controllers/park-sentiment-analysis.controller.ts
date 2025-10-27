@@ -35,7 +35,7 @@ class ParkSentimentAnalysisController extends ParkSentimentAnalysisService {
 
    public static viewParkSentimentAnalyses = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMood, exitMood, employee } = req.query;
+         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMood, exitMood } = req.query;
 
          const filters = {
             page: page ? parseInt(page as string) : undefined,
@@ -46,8 +46,7 @@ class ParkSentimentAnalysisController extends ParkSentimentAnalysisService {
             fromDateTime: fromDateTime as string,
             toDateTime: toDateTime as string,
             entryMood: entryMood as string,
-            exitMood: exitMood as string,
-            employee: employee as string
+            exitMood: exitMood as string
          };
 
          const result = await ParkSentimentAnalysisService.viewParkSentimentAnalysesService(filters);
@@ -59,13 +58,9 @@ class ParkSentimentAnalysisController extends ParkSentimentAnalysisService {
                success: true,
                message: "Park sentiment analyses retrieved successfully",
                data: result.data,
-               pagination: result.pagination
+               pagination: result.pagination,
+               stats: result.stats
             };
-            
-            // Include stats if available
-            if (result.stats) {
-               response.stats = result.stats;
-            }
             
             return res.status(STATUS.SUCCESS).json(response);
          } else {

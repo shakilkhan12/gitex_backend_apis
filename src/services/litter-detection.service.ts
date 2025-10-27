@@ -92,6 +92,8 @@ class LitterDetectionService {
       status: string;
       sortBy: string;
       sortOrder: string;
+      startDate?: string;
+      endDate?: string;
    }) => {
 
       try {
@@ -231,6 +233,22 @@ class LitterDetectionService {
             whereClause.status = paginationParams.status;
          }
 
+         // Date range filtering
+         if (paginationParams.startDate || paginationParams.endDate) {
+            whereClause.occurrence_date = {};
+            
+            if (paginationParams.startDate) {
+               whereClause.occurrence_date.gte = new Date(paginationParams.startDate);
+            }
+            
+            if (paginationParams.endDate) {
+               // Set end date to end of day
+               const endDate = new Date(paginationParams.endDate);
+               endDate.setHours(23, 59, 59, 999);
+               whereClause.occurrence_date.lte = endDate;
+            }
+         }
+
          // Build orderBy clause
          const orderByClause: any = {};
          orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
@@ -360,6 +378,34 @@ class LitterDetectionService {
          const hasNextPage = paginationParams.page < totalPages;
          const hasPreviousPage = paginationParams.page > 1;
 
+         // Calculate stats from ALL data (not just current page) for cards
+         const allDataForStats = await db.parks_litter_detection.findMany({
+            where: whereClause,
+            select: {
+               assinged_to: true,
+               status: true
+            }
+         });
+
+         const stats = {
+            unassigned: allDataForStats.filter(
+               item => !item.assinged_to || 
+                      (item.status && (item.status.toLowerCase() === 'pending' || item.status.toLowerCase() === 'open'))
+            ).length,
+            underProcess: allDataForStats.filter(
+               item =>
+                  item.assinged_to && 
+                  item.status &&
+                  !['completed', 'cleaned', 'closed', 'resolved'].includes(item.status.toLowerCase())
+            ).length,
+            completed: allDataForStats.filter(
+               item =>
+                  item.status &&
+                  ['completed', 'cleaned', 'closed', 'resolved'].includes(item.status.toLowerCase())
+            ).length,
+            total: allDataForStats.length
+         };
+
          return {
             data: resultsWithIntranetHistory,
             pagination: {
@@ -371,7 +417,8 @@ class LitterDetectionService {
                hasPreviousPage,
                nextPage: hasNextPage ? paginationParams.page + 1 : null,
                previousPage: hasPreviousPage ? paginationParams.page - 1 : null
-            }
+            },
+            stats
          };
 
       } catch (error: any) {

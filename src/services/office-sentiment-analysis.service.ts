@@ -421,37 +421,24 @@ class OfficeSentimentAnalysisService {
         previousPage: hasPreviousPage ? page - 1 : null
       };
 
-      // Calculate stats for cards (get all data for stats calculation)
-      let statsData = null;
-      if (page === 1 || !filters?.page) {
-        // Only calculate stats for first page or when no pagination
-        const allData = await db.offices_sentiment_analysis.findMany({
-          where: whereClause,
-          include: {
-            offices: {
-              select: {
-                office_english_name: true,
-                office_arabic_name: true,
-                latitude: true,
-                longitude: true,
-              }
-            }
-          }
-        });
+      // Calculate stats from all filtered data (not just current page)
+      const allDataForStats = await db.offices_sentiment_analysis.findMany({
+        where: whereClause,
+        select: {
+          check_in_sentiment: true,
+          check_out_sentiment: true
+        }
+      });
 
-        statsData = {
-          totalEvents: allData.length,
-          totalHappy: allData.filter(d => d.check_in_sentiment === 'happy').length,
-          totalNormal: allData.filter(d => d.check_in_sentiment === 'neutral').length,
-          totalSad: allData.filter(d => d.check_in_sentiment === 'sad').length,
-          totalAngry: allData.filter(d => d.check_in_sentiment === 'angry').length
-        };
-      }
+      const statsData = {
+        totalEvents: allDataForStats.length,
+        totalHappy: allDataForStats.filter(d => d.check_in_sentiment === 'happy').length,
+        totalNormal: allDataForStats.filter(d => d.check_in_sentiment === 'neutral').length,
+        totalSad: allDataForStats.filter(d => d.check_in_sentiment === 'sad').length,
+        totalAngry: allDataForStats.filter(d => d.check_in_sentiment === 'angry').length
+      };
 
-      console.log(
-        `📦 [OfficeSentimentAnalysisService] Retrieved ${formattedResults.length} office sentiment analyses with user details.`
-      );
-      
+   
       return {
         success: true,
         data: formattedResults,

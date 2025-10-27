@@ -28,6 +28,8 @@ class IntrusionDetectionController extends IntrusionDetectionService {
          const status = req.query.status as string || '';
          const sortBy = req.query.sortBy as string || 'createdAt';
          const sortOrder = req.query.sortOrder as string || 'desc';
+         const startDate = req.query.startDate as string || '';
+         const endDate = req.query.endDate as string || '';
 
          const result = await IntrusionDetectionService.viewIntrusionDetectionsService({
             page,
@@ -35,7 +37,9 @@ class IntrusionDetectionController extends IntrusionDetectionService {
             search,
             status,
             sortBy,
-            sortOrder
+            sortOrder,
+            startDate,
+            endDate
          });
 
          console.log("✅ [IntrusionDetectionController] Successfully retrieved intrusion detections");
@@ -54,7 +58,8 @@ class IntrusionDetectionController extends IntrusionDetectionService {
                success: true,
                message: "Intrusion detection records retrieved successfully",
                data: result.data,
-               pagination: result.pagination
+               pagination: result.pagination,
+               stats: result.stats
             });
          }
       } catch (error) {

@@ -116,6 +116,8 @@ class SmokingDetectionService {
       status: string;
       sortBy: string;
       sortOrder: string;
+      startDate?: string;
+      endDate?: string;
    }) => {
       try {
          // If no pagination params provided, return all data (backward compatibility)
@@ -185,6 +187,22 @@ class SmokingDetectionService {
             whereClause.current_status = paginationParams.status;
          }
 
+         // Date range filtering
+         if (paginationParams.startDate || paginationParams.endDate) {
+            whereClause.occurrence_date = {};
+            
+            if (paginationParams.startDate) {
+               whereClause.occurrence_date.gte = new Date(paginationParams.startDate);
+            }
+            
+            if (paginationParams.endDate) {
+               // Set end date to end of day
+               const endDate = new Date(paginationParams.endDate);
+               endDate.setHours(23, 59, 59, 999);
+               whereClause.occurrence_date.lte = endDate;
+            }
+         }
+
          // Build orderBy clause
          const orderByClause: any = {};
          orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
@@ -245,6 +263,55 @@ class SmokingDetectionService {
          const hasNextPage = paginationParams.page < totalPages;
          const hasPreviousPage = paginationParams.page > 1;
 
+         // Calculate stats from ALL data (not just current page) for cards
+         const allDataForStats = await db.parks_smoking_detection.findMany({
+            where: whereClause,
+            select: {
+               current_status: true
+            }
+         });
+
+         // Debug: Log unique status values to understand the data
+         const statusValues = allDataForStats.map(item => item.current_status);
+         const uniqueStatuses = Array.from(new Set(statusValues));
+         console.log('🔍 [SmokingDetectionService] Unique status values:', uniqueStatuses);
+
+         const stats = {
+            pending: allDataForStats.filter(
+               item => {
+                  const status = item.current_status?.toLowerCase()?.trim();
+                  // Pending: has a status but it's not under process, open, in progress, closed, resolved, or completed
+                  return status && status !== 'under process' && 
+                         status !== 'open' && 
+                         status !== 'in progress' && 
+                         status !== 'closed' && 
+                         status !== 'resolved' && 
+                         status !== 'completed';
+               }
+            ).length,
+            underProcess: allDataForStats.filter(
+               item => {
+                  const status = item.current_status?.toLowerCase()?.trim();
+                  // Under Process: null, empty, or explicitly "under process", "in progress", "open"
+                  return !status || status === '' || 
+                         status === 'under process' || 
+                         status === 'in progress' || 
+                         status === 'open';
+               }
+            ).length,
+            completed: allDataForStats.filter(
+               item => {
+                  const status = item.current_status?.toLowerCase()?.trim();
+                  return status === 'closed' || 
+                         status === 'resolved' || 
+                         status === 'completed';
+               }
+            ).length,
+            total: allDataForStats.length
+         };
+
+         console.log('🔍 [SmokingDetectionService] Calculated stats:', stats);
+
          return {
             data: results,
             pagination: {
@@ -256,7 +323,8 @@ class SmokingDetectionService {
                hasPreviousPage,
                nextPage: hasNextPage ? paginationParams.page + 1 : null,
                previousPage: hasPreviousPage ? paginationParams.page - 1 : null
-            }
+            },
+            stats
          };
 
       } catch (error: any) {
@@ -408,6 +476,46 @@ class SmokingDetectionService {
             throw error;
          }
          throw new HttpException(STATUS.BAD_REQUEST, `Failed to post to intranet API: ${error.message}`);
+      }
+   }
+
+   // Get statistics for smoking detection cards
+   protected static getSmokingDetectionStatsService = async () => {
+      try {
+         // Get counts for each status without fetching all data
+         const [pendingCount, underProcessCount, completedCount, totalCount] = await Promise.all([
+            db.parks_smoking_detection.count({
+               where: {
+                  current_status: {
+                     notIn: ['under process', 'open', 'in progress', 'closed', 'resolved', 'completed']
+                  }
+               }
+            }),
+            db.parks_smoking_detection.count({
+               where: {
+                  current_status: {
+                     in: ['under process', 'in progress', 'open']
+                  }
+               }
+            }),
+            db.parks_smoking_detection.count({
+               where: {
+                  current_status: {
+                     in: ['closed', 'resolved', 'completed']
+                  }
+               }
+            }),
+            db.parks_smoking_detection.count()
+         ]);
+
+         return {
+            pending: pendingCount,
+            underProcess: underProcessCount,
+            completed: completedCount,
+            total: totalCount
+         };
+      } catch (error: any) {
+         throw new HttpException(STATUS.BAD_REQUEST, `Failed to get smoking detection stats: ${error.message}`);
       }
    }
 

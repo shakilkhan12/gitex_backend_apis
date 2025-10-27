@@ -85,6 +85,8 @@ class LandscapingService {
       status: string;
       sortBy: string;
       sortOrder: string;
+      startDate?: string;
+      endDate?: string;
    }) => {
       try {
          // If no pagination params provided, return all data (backward compatibility)
@@ -156,6 +158,14 @@ class LandscapingService {
             whereClause.current_status = paginationParams.status;
          }
 
+         // Date range filtering
+         if (paginationParams.startDate && paginationParams.endDate) {
+            whereClause.createdAt = {
+               gte: new Date(paginationParams.startDate),
+               lte: new Date(paginationParams.endDate)
+            };
+         }
+
          // Build orderBy clause
          const orderByClause: any = {};
          orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
@@ -218,6 +228,38 @@ class LandscapingService {
          const hasNextPage = paginationParams.page < totalPages;
          const hasPreviousPage = paginationParams.page > 1;
 
+         // Calculate stats from all filtered data (not just current page)
+         const allDataForStats = await db.landscaping.findMany({
+            where: whereClause,
+            select: {
+               current_status: true
+            }
+         });
+
+         // Calculate stats based on current_status
+         const stats = {
+            pending: allDataForStats.filter(item => 
+               !item.current_status || 
+               item.current_status.toLowerCase() === 'pending' ||
+               item.current_status.toLowerCase() === 'new'
+            ).length,
+            underProcess: allDataForStats.filter(item => 
+               item.current_status && 
+               (item.current_status.toLowerCase() === 'under process' ||
+                item.current_status.toLowerCase() === 'in progress' ||
+                item.current_status.toLowerCase() === 'open' ||
+                item.current_status.toLowerCase() === 'assigned' ||
+                item.current_status.toLowerCase() === 'in review')
+            ).length,
+            completed: allDataForStats.filter(item => 
+               item.current_status && 
+               ['completed', 'closed', 'resolved', 'finished', 'done'].includes(item.current_status.toLowerCase())
+            ).length,
+            total: allDataForStats.length
+         };
+
+         console.log('📊 Landscaping stats calculated:', stats);
+
          return {
             data: results,
             pagination: {
@@ -229,7 +271,8 @@ class LandscapingService {
                hasPreviousPage,
                nextPage: hasNextPage ? paginationParams.page + 1 : null,
                previousPage: hasPreviousPage ? paginationParams.page - 1 : null
-            }
+            },
+            stats
          };
 
       } catch (error: any) {

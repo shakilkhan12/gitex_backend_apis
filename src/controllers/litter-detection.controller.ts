@@ -36,6 +36,8 @@ class LitterDetectionController extends LitterDetectionService {
          const status = req.query.status as string || '';
          const sortBy = req.query.sortBy as string || 'createdAt';
          const sortOrder = req.query.sortOrder as string || 'desc';
+         const startDate = req.query.startDate as string || '';
+         const endDate = req.query.endDate as string || '';
 
          const result = await LitterDetectionService.viewLitterDetectionsService({
             page,
@@ -43,7 +45,9 @@ class LitterDetectionController extends LitterDetectionService {
             search,
             status,
             sortBy,
-            sortOrder
+            sortOrder,
+            startDate,
+            endDate
          });
          
          console.log("✅ [LitterDetectionController] Successfully retrieved litter detections");
@@ -62,7 +66,8 @@ class LitterDetectionController extends LitterDetectionService {
                success: true,
                message: "Litter detection records retrieved successfully",
                data: result.data,
-               pagination: result.pagination
+               pagination: result.pagination,
+               stats: result.stats
             });
          }
       } catch (error) {

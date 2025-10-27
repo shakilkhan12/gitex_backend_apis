@@ -704,7 +704,7 @@ class EventHandlerService {
                                      Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for guest user`, {
                                         faceDataUrl: faceData
                                      });
-                                  } else {
+                                     } else {
                                      Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for guest user creation`);
                                   }
                                   
@@ -753,7 +753,7 @@ class EventHandlerService {
                                   Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for unknown visitor`, {
                                      faceDataUrl: faceData
                                   });
-                               } else {
+                                  } else {
                                   Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for unknown visitor guest creation`);
                                }
                                
@@ -1223,7 +1223,7 @@ class EventHandlerService {
                             searchPersonId,
                             check_out_capture: null
                          });
-
+                         
                          const latestSentiment = await db.offices_sentiment_analysis.findFirst({
                             where: {
                                office_Id: office_Id,
@@ -1971,7 +1971,7 @@ class EventHandlerService {
                                   Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for park guest user`, {
                                      faceDataUrl: faceData
                                   });
-                               } else {
+                                  } else {
                                   Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for park guest user creation`);
                                }
                                
