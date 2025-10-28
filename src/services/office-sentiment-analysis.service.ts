@@ -228,7 +228,6 @@ class OfficeSentimentAnalysisService {
     toDateTime?: string;
     entryMood?: string;
     exitMood?: string;
-    employee?: string;
   }) => {
     console.log(
       "🟡 [OfficeSentimentAnalysisService] Fetching office sentiment analyses with filters:",
@@ -271,11 +270,6 @@ class OfficeSentimentAnalysisService {
         } else {
           whereClause.check_out_sentiment = filters.exitMood;
         }
-      }
-
-      // Employee filter
-      if (filters?.employee && filters.employee !== 'All') {
-        whereClause.person_name = filters.employee;
       }
 
       // Build order by clause
