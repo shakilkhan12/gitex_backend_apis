@@ -3,6 +3,7 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import { formatDate, formatTime } from "@/utils/dateTime.utils";
 import { formatTimeFetchFromFullDate } from "./office-sentiment-analysis.service";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class ParkSentimentAnalysisService {
    protected static addParkSentimentAnalysisService = async (sentimentAnalysis: ParkSentimentAnalysisType) => {
@@ -353,9 +354,11 @@ class ParkSentimentAnalysisService {
          };
 
          
+         const imageFields = ['check_in_image', 'check_out_capture'];
+         const formattedResultsWithImages = formatImageUrlsInArray(formattedResults, imageFields);
          return {
             success: true,
-            data: formattedResults,
+            data: formattedResultsWithImages,
             total: totalCount,
             pagination: paginationData,
             stats: statsData

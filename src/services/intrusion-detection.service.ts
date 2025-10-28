@@ -1,6 +1,7 @@
 import { IntrusionDetectionType, STATUS } from "@/typescript";
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class IntrusionDetectionService {
    protected static addIntrusionDetectionService = async (intrusionDetection: IntrusionDetectionType) => {
@@ -231,10 +232,13 @@ class IntrusionDetectionService {
                }
             ).length,
             total: allDataForStats.length
-         };
+         }
+         
+         const imageFields = ['snap_shot'];
+         const formattedResultsWithImages = formatImageUrlsInArray(results, imageFields);
 
          return {
-            data: results,
+            data: formattedResultsWithImages,
             pagination: {
                currentPage: paginationParams.page,
                totalPages,

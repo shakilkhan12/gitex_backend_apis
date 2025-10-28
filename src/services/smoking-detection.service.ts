@@ -3,6 +3,7 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import axios from "axios";
 import https from "https";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class SmokingDetectionService {
    protected static addSmokingDetectionService = async (smokingDetection: SmokingDetectionType) => {
@@ -312,8 +313,12 @@ class SmokingDetectionService {
 
          console.log('🔍 [SmokingDetectionService] Calculated stats:', stats);
 
+         // Format image URLs in the results
+         const imageFields = ['snap_shot'];
+         const formattedResultsWithImages = formatImageUrlsInArray(results, imageFields);
+
          return {
-            data: results,
+            data: formattedResultsWithImages,
             pagination: {
                currentPage: paginationParams.page,
                totalPages,

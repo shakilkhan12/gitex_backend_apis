@@ -2,6 +2,7 @@ import {  OfficeType, OfficeCamera, OfficeSettingInputTypes, OfficeFootfallAnaly
 import { STATUS } from "@/typescript"
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class OfficesService {
   private static isEmployee = (item: any): boolean => {
@@ -445,6 +446,12 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             };
          });
 
+         // Format image URLs in the results
+         const imageFields = ['image'];
+         const formattedEmployees = formatImageUrlsInArray(uniqueEmployees, imageFields);
+         const formattedGuests = formatImageUrlsInArray(uniqueGuests, imageFields);
+         const formattedRawData = formatImageUrlsInArray(enhancedRawData, imageFields);
+
          return {
             summary: {
                totalFootfall,
@@ -457,11 +464,11 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                guestFemaleCount,
                guestChildrenCount
             },
-            employees: uniqueEmployees,
-            guests: uniqueGuests,
+            employees: formattedEmployees,
+            guests: formattedGuests,
             hourlyDistribution,
             dailyDistribution,
-            rawData: enhancedRawData
+            rawData: formattedRawData
          };
       } catch (error: any) {
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch footfall analysis data');

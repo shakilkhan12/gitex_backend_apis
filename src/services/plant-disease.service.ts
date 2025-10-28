@@ -1,11 +1,11 @@
 import { STATUS } from "@/typescript";
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class PlantDiseaseService {
     protected static getPlantDiseaseDataService = async () => {
         try {
-            // Get the latest 3 plant disease records from landscaping table where plant_type === "Plant"
             const plantDiseaseRecords = await db.landscaping.findMany({
                 where: {
                     plant_type: "Plant"
@@ -58,9 +58,13 @@ class PlantDiseaseService {
                 updatedAt: record.updatedAt
             }));
 
+            // Format image URLs in the results
+            const imageFields = ['image', 'disease_image'];
+            const formattedTransformedData = formatImageUrlsInArray(transformedData, imageFields);
+
             return {
                 success: true,
-                plantDiseaseData: transformedData,
+                plantDiseaseData: formattedTransformedData,
                 message: "Plant disease data retrieved successfully"
             };
 
@@ -229,8 +233,12 @@ class PlantDiseaseService {
                 total: allDataForStats.length
             };
 
+            // Format image URLs in the results
+            const imageFields = ['image', 'disease_image'];
+            const formattedResultsWithImages = formatImageUrlsInArray(results, imageFields);
+
             return {
-                data: results,
+                data: formattedResultsWithImages,
                 pagination: {
                     currentPage: paginationParams.page,
                     totalPages,

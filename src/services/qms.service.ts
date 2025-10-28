@@ -8,6 +8,7 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import axios from "axios";
 import { v2 as cloudinary } from "cloudinary";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 import https from "https";
 import * as nodeCrypto from "crypto";
 import EventBufferService from "./event-buffer.service";
@@ -257,16 +258,16 @@ class QMSService {
         ];
       }
 
-      // Date range filter - temporarily disabled for debugging
-      // if (filters?.fromDateTime || filters?.toDateTime) {
-      //   whereClause.createdAt = {};
-      //   if (filters.fromDateTime) {
-      //     whereClause.createdAt.gte = new Date(filters.fromDateTime);
-      //   }
-      //   if (filters.toDateTime) {
-      //     whereClause.createdAt.lte = new Date(filters.toDateTime);
-      //   }
-      // }
+      // Date range filter
+      if (filters?.fromDateTime || filters?.toDateTime) {
+        whereClause.entry_date = {};
+        if (filters.fromDateTime) {
+          whereClause.entry_date.gte = new Date(filters.fromDateTime).toISOString().split('T')[0];
+        }
+        if (filters.toDateTime) {
+          whereClause.entry_date.lte = new Date(filters.toDateTime).toISOString().split('T')[0];
+        }
+      }
 
       // Entry mode filter
       if (filters?.entryMode && filters.entryMode !== 'All') {
@@ -283,19 +284,17 @@ class QMSService {
         whereClause.service_english_name = filters.service;
       }
 
-      // Status filter - only show "Completed" records by default
-      if (filters?.status && filters.status !== 'All' && filters.status !== '') {
-        whereClause.status = filters.status;
-      } else {
-        // Default: only show completed records
-        whereClause.status = 'Completed';
-      }
+      // if (filters?.status && filters.status !== 'All' && filters.status !== '') {
+      //   whereClause.status = filters.status;
+      // } else {
+      //   whereClause.status = 'Completed';
+      // }
 
       // Build order by clause
       const orderByClause: any = {};
       if (filters?.sortBy) {
         const sortField = filters.sortBy === 'createdAt' ? 'createdAt' : 
-                         filters.sortBy === 'id' ? 'visit_id' :
+                         filters.sortBy === 'id' ? 'createdAt' : // Map 'id' to 'createdAt' for proper ordering
                          filters.sortBy === 'entry_date' ? 'entry_date' :
                          filters.sortBy === 'exit_date' ? 'exit_date' :
                          filters.sortBy === 'ticket_number' ? 'ticket_number' :
@@ -303,8 +302,6 @@ class QMSService {
                          filters.sortBy === 'status' ? 'status' : 'createdAt';
         orderByClause[sortField] = filters.sortOrder === 'asc' ? 'asc' : 'desc';
       } else {
-        // Default ordering: latest entry_date first, then by createdAt
-        orderByClause.entry_date = 'desc';
         orderByClause.createdAt = 'desc';
       }
       const [
@@ -332,20 +329,26 @@ class QMSService {
             where: whereClause,
           })
           .then((groups) => groups.length),
-        // In customers (Active status)
-        db.qms_history.count({
-          where: {
-            ...whereClause,
-            status: "Active",
-          },
-        }),
-        // Out customers (Completed status)
-        db.qms_history.count({
-          where: {
-            ...whereClause,
-            status: "Completed",
-          },
-        }),
+        // In customers (Active status - unique visit_id count)
+        db.qms_history
+          .groupBy({
+            by: ["visit_id"],
+            where: {
+              ...whereClause,
+              status: "Active",
+            },
+          })
+          .then((groups) => groups.length),
+        // Out customers (Completed status - unique visit_id count)
+        db.qms_history
+          .groupBy({
+            by: ["visit_id"],
+            where: {
+              ...whereClause,
+              status: "Completed",
+            },
+          })
+          .then((groups) => groups.length),
         // Unique services
         db.qms_history.findMany({
           where: {
@@ -452,15 +455,19 @@ class QMSService {
         previousPage: hasPreviousPage ? page - 1 : null
       };
 
+      // Format image URLs in the results
+      const imageFields = ['entry_image', 'exit_image'];
+      const formattedResultsWithImages = formatImageUrlsInArray(resultsWithCameraDetails, imageFields);
+
       return {
         success: true,
-        data: resultsWithCameraDetails,
+        data: formattedResultsWithImages,
         total: totalCount,
         pagination: paginationData,
         stats: {
-          totalCustomer: totalCustomers,
-          inCustomer: inCustomers,
-          outCustomer: outCustomers,
+          totalCustomers: totalCustomers,
+          inCustomers: inCustomers,
+          outCustomers: outCustomers,
           totalServices,
           mostHighlightedService: mostHighlightedService
             ? {

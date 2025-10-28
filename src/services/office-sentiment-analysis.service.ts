@@ -2,6 +2,7 @@ import { OfficeSentimentAnalysisType, STATUS } from "@/typescript";
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import { formatDate, formatTime } from "@/utils/dateTime.utils";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class OfficeSentimentAnalysisService {
   protected static addOfficeSentimentAnalysisService = async (
@@ -340,7 +341,29 @@ class OfficeSentimentAnalysisService {
             in: personIds.map((id) => parseInt(id)).filter((id) => !isNaN(id)),
           },
         },
-        include: {
+        select: {
+          Id: true,
+          user_Id: true,
+          emp_Id: true,
+          emp__eng_name: true,
+          emp__arabic_name: true,
+          gender: true,
+          country_code: true,
+          phone: true,
+          email: true,
+          dep_eng_name: true,
+          dep_arabic_name: true,
+          desig_eng_name: true,
+          desig_arabic_name: true,
+          unit_eng_name: true,
+          unit_arabic_name: true,
+          committe_eng_name: true,
+          committe_arabic_name: true,
+          ai_engine_access: true,
+          last_login: true,
+          image: true,
+          createdAt: true,
+          updatedAt: true,
           users_roles: {
             select: {
               role_name: true,
@@ -433,9 +456,13 @@ class OfficeSentimentAnalysisService {
       };
 
    
+      // Format image URLs in the results
+      const imageFields = ['check_in_image', 'check_out_capture'];
+      const formattedResultsWithImages = formatImageUrlsInArray(formattedResults, imageFields);
+
       return {
         success: true,
-        data: formattedResults,
+        data: formattedResultsWithImages,
         total: totalCount,
         pagination: paginationData,
         stats: statsData

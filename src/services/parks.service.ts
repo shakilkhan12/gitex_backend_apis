@@ -3,6 +3,7 @@ import { STATUS, } from "@/typescript"
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import DatabaseUtils from "@/utils/database.utils";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class ParkService {
   private static isEmployee = (item: any): boolean => {
@@ -501,6 +502,12 @@ class ParkService {
         };
       });
 
+      // Format image URLs in the results
+      const imageFields = ['image'];
+      const formattedEmployees = formatImageUrlsInArray(uniqueEmployees, imageFields);
+      const formattedGuests = formatImageUrlsInArray(uniqueGuests, imageFields);
+      const formattedRawData = formatImageUrlsInArray(enhancedRawData, imageFields);
+
       return {
         summary: {
           totalFootfall,
@@ -513,11 +520,11 @@ class ParkService {
           guestFemaleCount,
           guestChildrenCount
         },
-        employees: uniqueEmployees,
-        guests: uniqueGuests,
+        employees: formattedEmployees,
+        guests: formattedGuests,
         hourlyDistribution,
         dailyDistribution,
-        rawData: enhancedRawData
+        rawData: formattedRawData
       };
     } catch (error: any) {
       if (error instanceof HttpException) {

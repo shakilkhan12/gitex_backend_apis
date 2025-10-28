@@ -102,8 +102,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   }
 }));
 
-// Serve static files from uploads directory
-app.use('/uploads', express.static('uploads'));
+// Serve static files from uploads directory with CORS headers
+app.use('/uploads', (req, res, next) => {
+  console.log('🔍 Static file request:', req.url);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  console.log('🔍 CORS headers set for:', req.url);
+  next();
+}, express.static('uploads'));
 
 app.get("/", (_req: Request, res: Response) => res.send("🚀 Welcome to the API "));
 app.use('/api', mainRouter)

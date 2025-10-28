@@ -2,6 +2,7 @@ import { LitterDetectionType, LitterDetectionCompleteType, STATUS } from "@/type
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import axios from "axios";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class LitterDetectionService {
    protected static addLitterDetectionService = async (litterDetection: LitterDetectionType) => {
@@ -406,8 +407,11 @@ class LitterDetectionService {
             total: allDataForStats.length
          };
 
+         const imageFields = ['snap_shot', 'after_image'];
+         const formattedResultsWithImages = formatImageUrlsInArray(resultsWithIntranetHistory, imageFields);
+
          return {
-            data: resultsWithIntranetHistory,
+            data: formattedResultsWithImages,
             pagination: {
                currentPage: paginationParams.page,
                totalPages,

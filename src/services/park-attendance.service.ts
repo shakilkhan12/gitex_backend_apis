@@ -3,6 +3,7 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import { formatDate, formatDuration, formatTime } from "@/utils/dateTime.utils";
 import { format } from "date-fns";
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class ParkAttendanceService {
   protected static addParkAttendanceService = async (
@@ -392,13 +393,17 @@ class ParkAttendanceService {
           user?.emp__arabic_name ||
           (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
 
+        // Format image URLs in attendance times
+        const imageFields = ['entry_image', 'exit_image'];
+        const formattedAttendanceTimes = formatImageUrlsInArray(attendanceTimes, imageFields);
+
         return {
           id: user?.emp_Id,
           name: displayName,
           emp_english_name: user?.emp__eng_name || null,
           emp_arabic_name: user?.emp__arabic_name || null,
           status,
-          avatarUrl: user?.image,
+          avatarUrl: user?.image ? formatImageUrlsInArray([{ image: user.image }], imageFields)[0].image : null,
           department:
             user?.dep_eng_name ||
             user?.dep_arabic_name ||
@@ -411,7 +416,7 @@ class ParkAttendanceService {
           entryCount: inCount,
           finalExit,
           exitCount: outCount,
-          attendanceTimes,
+          attendanceTimes: formattedAttendanceTimes,
           summary: {
             workingPercent,
             workingHours: workingHHMMSS,

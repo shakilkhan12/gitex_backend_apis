@@ -30,7 +30,7 @@ const Logger = {
 interface FaceRect {
   x: number;      // normalized (0–1)
   y: number;      // normalized (0–1)
-  width: number;  // normalized (0–1)
+  width: number;  
   height: number; // normalized (0–1)
 }
 
@@ -94,6 +94,11 @@ class EventHandlerService {
       api_secret: process.env.CLOUDINARY_API_SECRET || 'your_api_secret',
       folder: 'event-images'
    };
+
+   private static readonly API_CONFIG = {
+      baseUrl: process.env.API_BASE_URL || 'http://10.160.133.77:5000',
+      emotionDetectionUrl: process.env.EMOTION_DETECTION_URL || 'http://127.0.0.1:8001/api/emotion-detection'
+   };
    
    static {
       
@@ -155,31 +160,86 @@ class EventHandlerService {
       }
    }
 
+   private static detectImageFormat(base64Image: string): string {
+      try {
+         const base64Data = base64Image.includes(',') ? base64Image.split(',')[1] : base64Image;
+         
+         const buffer = Buffer.from(base64Data, 'base64');
+         
+         if (buffer.length >= 4) {
+            if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+               return 'jpg';
+            }
+            if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+               return 'png';
+            }
+            if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x38) {
+               return 'gif';
+            }
+            if (buffer[0] === 0x42 && buffer[1] === 0x4D) {
+               return 'bmp';
+            }
+            if (buffer.length >= 12 && 
+                buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+                buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) {
+               return 'webp';
+            }
+         }
+         
+         Logger.warn(`[EventHandlerService] Could not detect image format, defaulting to jpg`);
+         return 'jpg';
+      } catch (error: any) {
+         Logger.error(`[EventHandlerService] Error detecting image format:`, error);
+         return 'jpg'; 
+      }
+   }
+
    private static async saveImageLocally(base64Image: string, eventType: string, eventId: string): Promise<string> {
       const startTime = Date.now();
       Logger.info(`[EventHandlerService] Starting to save image locally for eventType: ${eventType}, eventId: ${eventId}`);
       
       try {
-         // Create upload directory structure
          const uploadDir = path.join(process.cwd(), 'uploads', eventType);
-         const fileName = `${eventId}_${Date.now()}.jpg`;
+         
+         // Clean and validate base64 data
+         let cleanBase64 = base64Image.trim();
+         
+         // Remove data URL prefix if present (e.g., "data:image/jpeg;base64,")
+         if (cleanBase64.includes(',')) {
+            cleanBase64 = cleanBase64.split(',')[1];
+         }
+         
+         // Validate base64 format
+         if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
+            throw new Error('Invalid base64 format detected');
+         }
+         
+         // Detect image format from cleaned base64 data
+         const imageFormat = this.detectImageFormat(cleanBase64);
+         const fileName = `${eventId}_${Date.now()}.${imageFormat}`;
          const filePath = path.join(uploadDir, fileName);
          
-         // Ensure directory exists
+         Logger.info(`[EventHandlerService] Detected image format: ${imageFormat}, Base64 length: ${cleanBase64.length}`);
+         
          if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
             Logger.info(`[EventHandlerService] Created directory: ${uploadDir}`);
          }
          
-         // Convert base64 to buffer and save
-         const imageBuffer = Buffer.from(base64Image, 'base64');
+         // Convert cleaned base64 to buffer and save
+         const imageBuffer = Buffer.from(cleanBase64, 'base64');
+         
+         // Additional validation: check if buffer has valid content
+         if (imageBuffer.length === 0) {
+            throw new Error('Empty image buffer after base64 decoding');
+         }
+         
          fs.writeFileSync(filePath, imageBuffer);
          
-         // Generate URL path for the saved image
          const imageUrl = `/uploads/${eventType}/${fileName}`;
          
          const duration = Date.now() - startTime;
-         Logger.info(`[EventHandlerService] Successfully saved image locally in ${duration}ms. Path: ${imageUrl}`);
+         Logger.info(`[EventHandlerService] Successfully saved image locally in ${duration}ms. Path: ${imageUrl}, Size: ${imageBuffer.length} bytes`);
          
          return imageUrl;
       } catch (error: any) {
@@ -318,11 +378,9 @@ class EventHandlerService {
          hasEventData: !!eventData 
       });
       
-      // Global image URL variable to reuse across all cases
       let imageUrl: string | null = null;
       
       try { 
-        // Fetch camera IDs from database
         const office_cameras = await this.getOfficeCameraIds();
         const park_cameras = await this.getParkCameraIds();
          let intrusion_detection_code=131585
@@ -366,26 +424,23 @@ class EventHandlerService {
              });
              
              const extractEventData = (data: any) => {
-                // Check for direct event structure (Format 2)
                 if (data.event?.params?.events?.[0]) {
                    Logger.debug(`[EventHandlerService] Extracting event data from event.params.events[0]`);
                    return data.event.params.events[0];
                 }
                 
-                // Check for deeply nested logData structure (Format 1)
-                // This handles: data.logData.logData.logData.params.events[0]
+               
                 let currentLevel = data.logData;
                 let depth = 0;
-                const maxDepth = 10; // Prevent infinite loops
+                const maxDepth = 10; 
                 
                 while (currentLevel && depth < maxDepth) {
-                   // Check if current level has the event data
                    if (currentLevel.params?.events?.[0]) {
                       Logger.debug(`[EventHandlerService] Extracting event data from logData at depth ${depth}`);
                       return currentLevel.params.events[0];
                    }
                    
-                   // Check if current level has nested logData
+                  
                    if (currentLevel.logData) {
                       currentLevel = currentLevel.logData;
                       depth++;
@@ -394,7 +449,7 @@ class EventHandlerService {
                    }
                 }
                 
-                // Check for legacy logData structure (backward compatibility)
+               
                 if (data.logData?.event?.params?.events?.[0]) {
                    Logger.debug(`[EventHandlerService] Extracting event data from logData.event.params.events[0]`);
                    return data.logData.event.params.events[0];
@@ -417,19 +472,17 @@ class EventHandlerService {
                 throw new HttpException(STATUS.BAD_REQUEST, "Invalid event data structure");
              }
              
-             // Extract sendTime from the correct location (params level, not event level)
+            
              let sendTime = null;
              if (eventData.event?.params?.sendTime) {
                 sendTime = eventData.event.params.sendTime;
              } else if (eventData.logData?.event?.params?.sendTime) {
                 sendTime = eventData.logData.event.params.sendTime;
              } else {
-                // Fallback to happenTime if sendTime is not available
                 sendTime = eventInfo.happenTime;
                 Logger.warn(`[EventHandlerService] sendTime not found, using happenTime as fallback: ${sendTime}`);
              }
              
-             // Add sendTime to eventInfo for consistent access
              eventInfo.sendTime = sendTime;
              
              let eventType = eventInfo.eventType
@@ -487,10 +540,8 @@ class EventHandlerService {
                             const imageDataResponse = await this.getImageData(eventPicUri);
                             
                             if (imageDataResponse) {
-                               // The response is directly the base64 string, not wrapped in a data object
                                const base64Image = imageDataResponse;
                                
-                               // Save image locally
                                imageUrl = await this.saveImageLocally(base64Image, 'intrusion', eventIndexCode);
                                Logger.info(`[EventHandlerService] Successfully saved intrusion image locally`);
                             }
@@ -524,7 +575,6 @@ class EventHandlerService {
                       hasImage: !!imageUrl
                    });
                    
-                   // Check if intrusion detection with same detection_Id already exists
                    const existingIntrusion = await db.parks_intrusion_detection.findFirst({
                       where: {
                          detection_Id: intrusionData.detection_Id
@@ -656,7 +706,7 @@ class EventHandlerService {
                          genderValue = eventInfo.data.alarmResult.faces.gender.value
                          ageGroup = eventInfo.data.alarmResult.faces.age.ageGroup
                          genderName = gender_types.find(gt => gt.code === genderValue)?.name || 'Unknown'
-                         isChild = ageGroup <= 2 // INFANT, KID, CHILD
+                         isChild = ageGroup <= 2 
                          
                          const similarity = eventInfo.data.alarmResult.faces.identify.candidate.similarity
                          const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id
@@ -690,7 +740,6 @@ class EventHandlerService {
                                });
                                
                                try {
-                                  // Get faceData URL from event data
                                   let faceData = null;
                                   if(eventInfo.data?.alarmResult?.faces?.URL){
                                      faceData = eventInfo.data.alarmResult.faces.URL;
@@ -708,7 +757,6 @@ class EventHandlerService {
                                      Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for guest user creation`);
                                   }
                                   
-                                  // Get faceRect from event data for cropping
                                   if (eventInfo.data?.alarmResult?.faces?.faceRect) {
                                      faceRect = eventInfo.data.alarmResult.faces.faceRect;
                                      Logger.debug(`[EventHandlerService] 📐 Extracted face rect for cropping`, {
@@ -745,7 +793,6 @@ class EventHandlerService {
                             });
                             
                             try {
-                               // Get faceData URL from event data
                                let faceData = null;
                                let faceRect = null;
                                if (eventInfo.data?.alarmResult?.faces?.URL) {
@@ -757,7 +804,6 @@ class EventHandlerService {
                                   Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for unknown visitor guest creation`);
                                }
                                
-                               // Get faceRect from event data for cropping
                                if (eventInfo.data?.alarmResult?.faces?.faceRect) {
                                   faceRect = eventInfo.data.alarmResult.faces.faceRect;
                                   Logger.debug(`[EventHandlerService] 📐 Extracted face rect for unknown visitor cropping`, {
@@ -791,14 +837,12 @@ class EventHandlerService {
                       let image = null;
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
-                            // Fetch image data from the URL
                             const imageResponse = await fetch(eventInfo.data.alarmResult.faces.URL);
                             if (imageResponse.ok) {
                                const imageBuffer = await imageResponse.arrayBuffer();
                                const base64Image = Buffer.from(imageBuffer).toString('base64');
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
-                               // Use global imageUrl if available, otherwise upload
                                if (!imageUrl) {
                                   imageUrl = await this.saveImageLocally(dataUrl, 'office-footfall', eventInfo.eventId);
                                   Logger.info(`[EventHandlerService] ✅ Successfully saved office footfall image locally: ${imageUrl}`);
@@ -826,7 +870,6 @@ class EventHandlerService {
                          age_group: ageGroup,
                       }
                       
-                      // Only create footfall records for entry events, not exit events
                       Logger.info(`[EventHandlerService] Checking if should create footfall record:`, {
                          isEntry,
                          srcName: eventInfo.srcName,
@@ -863,7 +906,7 @@ class EventHandlerService {
                                  emp__eng_name: user.emp__eng_name,
                                  emp__arabic_name: user.emp__arabic_name,
                                  gender: user.gender,
-                                 image: user.image
+                                 image: user.image ? `${this.API_CONFIG.baseUrl}${user.image}` : null
                               };
                            }
                         }
@@ -910,11 +953,9 @@ class EventHandlerService {
                          });
                       }
 
-                      // Create sentiment analysis record for both entry and exit events
                       let sentimentImageUrl = null;
-                      let detectedSentiment = 'neutral'; // Default sentiment
+                      let detectedSentiment = 'neutral'; 
                       
-                      // Get faceData URL from event data (same as guest user creation)
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
                             Logger.info(`[EventHandlerService] Processing sentiment analysis image for office`);
@@ -922,10 +963,8 @@ class EventHandlerService {
                             const imageDataResponse = await this.getImageData(faceDataUrl);
                             
                             if (imageDataResponse) {
-                               // The response is directly the base64 string, not wrapped in a data object
                                const base64Image = imageDataResponse;
                                
-                               // Use global imageUrl if available, otherwise upload
                                if (!imageUrl) {
                                   imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
                                   Logger.info(`[EventHandlerService] Successfully saved sentiment image locally for office`);
@@ -934,12 +973,13 @@ class EventHandlerService {
                                }
                                sentimentImageUrl = imageUrl;
                                
-                               // Get emotion detection from the uploaded image
                                if (sentimentImageUrl) {
                                   try {
-                                     Logger.info(`[EventHandlerService] Calling emotion detection API for office sentiment`);
-                                     const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
-                                        image_url: sentimentImageUrl
+                                     // Construct full image URL
+                                     const fullImageUrl = `${this.API_CONFIG.baseUrl}${sentimentImageUrl}`;
+                                     Logger.info(`[EventHandlerService] Calling emotion detection API for office sentiment with full URL: ${fullImageUrl}`);
+                                     const emotionResponse = await axios.post(this.API_CONFIG.emotionDetectionUrl, {
+                                        image_url: fullImageUrl
                                      }, {
                                         timeout: 10000,
                                         headers: { 'Content-Type': 'application/json' }
@@ -971,7 +1011,6 @@ class EventHandlerService {
                          }
                       }
 
-                      // Get user details for sentiment analysis (same structure as office sentiment service)
                       let personName = 'Unknown';
                       let personImage = null;
                       let sentimentOf = 'visitor';
@@ -993,13 +1032,11 @@ class EventHandlerService {
                             personName = user.emp__eng_name || user.emp__arabic_name || 'Unknown';
                             personImage = user.image;
                             
-                            // Determine if employee or visitor (same logic as office sentiment service)
                             const isEmployee = (user.emp_Id && user.emp_Id.trim() !== '') ||
                                              (user.emp_code && user.emp_code.trim() !== '') ||
                                              user.is_attendance_user === true;
                             sentimentOf = isEmployee ? 'employee' : 'visitor';
                             
-                            // Create user details object (same structure as office sentiment service)
                             userDetails = {
                                Id: user.Id,
                                user_Id: user.user_Id,
@@ -1055,7 +1092,6 @@ class EventHandlerService {
                       }
                     
                       if(isEntry){
-                         // Create new sentiment analysis record for entry
                          Logger.info(`[EventHandlerService] Creating office sentiment analysis record for entry:`, {
                             officeId: officeSentimentData.office_Id,
                             personId: officeSentimentData.person_Id,
@@ -1094,7 +1130,7 @@ class EventHandlerService {
                                   exit_camera_Id: officeSentimentData.exit_camera_Id,
                                   createdAt: officeSentimentRecord.createdAt,
                                   updatedAt: officeSentimentRecord.updatedAt,
-                                  user: userDetails, // Complete user details (same as office sentiment service)
+                                  user: userDetails, 
                                   // Camera details (same structure as office sentiment service)
                                   offices_cameras_offices_sentiment_analysis_entry_camera_IdTooffices_cameras: isEntry ? {
                                      camera_english_name: officeCamera.camera_english_name,
@@ -1115,11 +1151,9 @@ class EventHandlerService {
                          // Find existing sentiment analysis record for exit (similar to attendance logic)
                          Logger.info(`[EventHandlerService] Processing office exit sentiment analysis`);
                          
-                         // Process exit sentiment image and detection
                          let exitSentimentImageUrl = null;
                          let exitDetectedSentiment = 'neutral'; // Default sentiment
                          
-                         // Get faceData URL from event data for exit sentiment
                          if (eventInfo.data?.alarmResult?.faces?.URL) {
                             try {
                                Logger.info(`[EventHandlerService] Processing exit sentiment analysis image for office`);
@@ -1127,10 +1161,8 @@ class EventHandlerService {
                                const imageDataResponse = await this.getImageData(faceDataUrl);
                                
                                if (imageDataResponse) {
-                                  // The response is directly the base64 string, not wrapped in a data object
                                   const base64Image = imageDataResponse;
                                   
-                                  // Use global imageUrl if available, otherwise upload
                                   if (!imageUrl) {
                                      imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
                                      Logger.info(`[EventHandlerService] Successfully saved exit sentiment image locally for office`);
@@ -1139,7 +1171,6 @@ class EventHandlerService {
                                   }
                                   exitSentimentImageUrl = imageUrl;
                                   
-                                  // Get emotion detection from the uploaded image
                                   if (exitSentimentImageUrl) {
                                      try {
                                         Logger.info(`[EventHandlerService] Calling emotion detection API for office exit sentiment`);
@@ -1176,7 +1207,6 @@ class EventHandlerService {
                             }
                          }
                          
-                         // If person_Id is null, try to find it using human_id from the event
                          let searchPersonId = person_Id;
                          
                          Logger.info(`[EventHandlerService] Initial searchPersonId for office sentiment exit:`, {
@@ -1283,7 +1313,6 @@ class EventHandlerService {
                             });
                             Logger.info(`[EventHandlerService] Successfully updated office exit sentiment analysis`);
                             
-                            // Get entry camera details for the exit update
                             let entryCameraDetails = null;
                             if (latestSentiment.entry_camera_Id) {
                                const entryCamera = await db.offices_cameras.findFirst({
@@ -1321,8 +1350,7 @@ class EventHandlerService {
                                      exit_camera_Id: officeSentimentData.exit_camera_Id,
                                      createdAt: latestSentiment.createdAt,
                                      updatedAt: latestSentiment.updatedAt,
-                                     user: userDetails, // Complete user details (same as office sentiment service)
-                                     // Camera details (same structure as office sentiment service)
+                                     user: userDetails, 
                                      offices_cameras_offices_sentiment_analysis_entry_camera_IdTooffices_cameras: entryCameraDetails,
                                      offices_cameras_offices_sentiment_analysis_exit_camera_IdTooffices_cameras: {
                                         camera_english_name: officeCamera.camera_english_name,
@@ -1385,7 +1413,6 @@ class EventHandlerService {
                       }
                       
                       if(isEntry){
-                         // Check if the person is a guest user
                          const isGuest = await this.isGuestUser(person_Id);
                          
                          if (isGuest) {
@@ -1397,7 +1424,6 @@ class EventHandlerService {
                          } else {
                          Logger.info(`[EventHandlerService] Processing office entry attendance`);
                          
-                         // Process and upload entry image
                          let entryImageUrl = null;
                          if (eventInfo.data?.alarmResult?.faces?.URL) {
                             try {
@@ -1407,7 +1433,6 @@ class EventHandlerService {
                                
                                if (imageDataResponse) {
                                   const base64Image = imageDataResponse;
-                                  // Use global imageUrl if available, otherwise upload
                                   if (!imageUrl) {
                                      imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
                                      Logger.info(`[EventHandlerService] Successfully saved entry image locally for office attendance`);
@@ -1438,7 +1463,6 @@ class EventHandlerService {
 
                          // Emit office attendance update via socket
                          try {
-                            // Get user details
                             const userDetails = officeAttendanceRecord.person_Id ? await db.users.findUnique({
                                where: { Id: officeAttendanceRecord.person_Id },
                                select: {
@@ -1456,7 +1480,6 @@ class EventHandlerService {
                                }
                             }) : null;
 
-                            // Get office details
                             const officeDetails = officeAttendanceRecord.office_Id ? await db.offices.findUnique({
                                where: { Id: officeAttendanceRecord.office_Id },
                                select: {
@@ -1468,7 +1491,6 @@ class EventHandlerService {
                                }
                             }) : null;
 
-                            // Format dates for frontend compatibility
                             const formatTimeToString = (timeValue: any): string => {
                                if (!timeValue) return "--";
                                
@@ -1557,13 +1579,11 @@ class EventHandlerService {
                                   ...officeAttendanceRecord,
                                   user: userDetails,
                                   office: officeDetails,
-                                  // Add formatted date/time fields for frontend compatibility
                                   formattedEntryTime: formatTimeToString(officeAttendanceRecord.entry_time),
                                   formattedDate: formatDateForDisplay(formatDateToString(officeAttendanceRecord.entry_time || officeAttendanceRecord.createdAt)),
                                   rawDate: formatDateToString(officeAttendanceRecord.entry_time || officeAttendanceRecord.createdAt),
-                                  // Include processed images
-                                  entry_image: officeAttendanceRecord.entry_image,
-                                  exit_image: officeAttendanceRecord.exit_image,
+                                  entry_image: officeAttendanceRecord.entry_image ? `${this.API_CONFIG.baseUrl}${officeAttendanceRecord.entry_image}` : null,
+                                  exit_image: officeAttendanceRecord.exit_image ? `${this.API_CONFIG.baseUrl}${officeAttendanceRecord.exit_image}` : null,
                                   createdAt: new Date(),
                                   updatedAt: new Date()
                                }
@@ -1575,7 +1595,6 @@ class EventHandlerService {
                             Logger.error(`[EventHandlerService] ❌ Failed to emit office attendance entry socket update:`, socketError.message);
                          }
                             
-                            // Call EmployeeEntryExitService API for entry
                             try {
                                const user = await db.users.findUnique({
                                   where: { Id: person_Id },
@@ -1832,8 +1851,8 @@ class EventHandlerService {
                                      formattedDate: formatDateForDisplay(formatDateToString(updatedAttendanceRecord.entry_time || updatedAttendanceRecord.createdAt)),
                                      rawDate: formatDateToString(updatedAttendanceRecord.entry_time || updatedAttendanceRecord.createdAt),
                                      // Include processed images
-                                     entry_image: updatedAttendanceRecord.entry_image,
-                                     exit_image: updatedAttendanceRecord.exit_image,
+                                     entry_image: updatedAttendanceRecord.entry_image ? `${this.API_CONFIG.baseUrl}${updatedAttendanceRecord.entry_image}` : null,
+                                     exit_image: updatedAttendanceRecord.exit_image ? `${this.API_CONFIG.baseUrl}${updatedAttendanceRecord.exit_image}` : null,
                                      createdAt: new Date(),
                                      updatedAt: new Date()
                                   }
@@ -1963,7 +1982,6 @@ class EventHandlerService {
                             });
                             
                             try {
-                               // Get faceData URL from event data
                                let faceData = null;
                                let faceRect = null;
                                if (eventInfo.data?.alarmResult?.faces?.URL) {
@@ -1975,7 +1993,6 @@ class EventHandlerService {
                                   Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for park guest user creation`);
                                }
                                
-                               // Get faceRect from event data for cropping
                                if (eventInfo.data?.alarmResult?.faces?.faceRect) {
                                   faceRect = eventInfo.data.alarmResult.faces.faceRect;
                                   Logger.debug(`[EventHandlerService] 📐 Extracted face rect for park guest cropping`, {
@@ -2011,7 +2028,6 @@ class EventHandlerService {
                          });
                          
                          try {
-                            // Get faceData URL from event data
                             let faceData = null;
                             if (eventInfo.data?.alarmResult?.faces?.URL) {
                                faceData = eventInfo.data.alarmResult.faces.URL;
@@ -2051,7 +2067,6 @@ class EventHandlerService {
                                const base64Image = Buffer.from(imageBuffer).toString('base64');
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
-                               // Use global imageUrl if available, otherwise upload
                                if (!imageUrl) {
                                   imageUrl = await this.saveImageLocally(dataUrl, 'park-footfall', eventInfo.eventId);
                                   Logger.info(`[EventHandlerService] ✅ Successfully saved park footfall image locally: ${imageUrl}`);
@@ -2078,7 +2093,6 @@ class EventHandlerService {
                          image: image
                       }
                       
-                      // Only create footfall records for entry events, not exit events
                       if(isEntry){
                          Logger.info(`[EventHandlerService] Creating park footfall record for entry:`, {
                          parkId: parkFootfallData.park_Id,
@@ -2095,9 +2109,7 @@ class EventHandlerService {
                         
                         Logger.info(`[EventHandlerService] Successfully created park footfall record with ID: ${parkFootfallRecord.id}`);
 
-                        // Emit park footfall update via socket
                         try {
-                           // Get user details
                            const userDetails = parkFootfallRecord.person_Id ? await db.users.findUnique({
                               where: { Id: parkFootfallRecord.person_Id },
                               select: {
@@ -2111,7 +2123,11 @@ class EventHandlerService {
                               }
                            }) : null;
 
-                           // Get park details
+                           // Format image URL if userDetails exists
+                           if (userDetails && userDetails.image) {
+                              userDetails.image = `${this.API_CONFIG.baseUrl}${userDetails.image}`;
+                           }
+
                            const parkDetails = parkFootfallRecord.park_Id ? await db.parks.findUnique({
                               where: { Id: parkFootfallRecord.park_Id },
                               select: {
@@ -2121,7 +2137,6 @@ class EventHandlerService {
                               }
                            }) : null;
 
-                           // Get camera details - convert string to number for Id field
                            const cameraDetails = parkFootfallRecord.detected_camera_Id ? await db.park_cameras.findUnique({
                               where: { Id: parseInt(parkFootfallRecord.detected_camera_Id) },
                               select: {
@@ -2153,11 +2168,9 @@ class EventHandlerService {
                          Logger.info(`[EventHandlerService] Skipping park footfall record creation for exit event`);
                       }
 
-                      // Create sentiment analysis record for both entry and exit events
                       let sentimentImageUrl = null;
-                      let detectedSentiment = 'neutral'; // Default sentiment
+                      let detectedSentiment = 'neutral'; 
                       
-                      // Get faceData URL from event data (same as guest user creation)
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
                             Logger.info(`[EventHandlerService] Processing sentiment analysis image for park`);
@@ -2165,10 +2178,8 @@ class EventHandlerService {
                             const imageDataResponse = await this.getImageData(faceDataUrl);
                             
                             if (imageDataResponse) {
-                               // The response is directly the base64 string, not wrapped in a data object
                                const base64Image = imageDataResponse;
                                
-                                 // Use global imageUrl if available, otherwise upload
                                if (!imageUrl) {
                                   imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
                                   Logger.info(`[EventHandlerService] Successfully saved sentiment image locally for park`);
@@ -2177,12 +2188,13 @@ class EventHandlerService {
                                }
                                sentimentImageUrl = imageUrl;
                                
-                               // Get emotion detection from the uploaded image
                                if (sentimentImageUrl) {
                                   try {
-                                     Logger.info(`[EventHandlerService] Calling emotion detection API for park sentiment`);
-                                     const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
-                                        image_url: sentimentImageUrl
+                                     // Construct full image URL
+                                     const fullImageUrl = `${this.API_CONFIG.baseUrl}${sentimentImageUrl}`;
+                                     Logger.info(`[EventHandlerService] Calling emotion detection API for park sentiment with full URL: ${fullImageUrl}`);
+                                     const emotionResponse = await axios.post(this.API_CONFIG.emotionDetectionUrl, {
+                                        image_url: fullImageUrl
                                      }, {
                                         timeout: 10000,
                                         headers: { 'Content-Type': 'application/json' }
@@ -2214,7 +2226,6 @@ class EventHandlerService {
                          }
                       }
 
-                      // Get user details for sentiment analysis (same structure as park sentiment service)
                       let personName = 'Unknown';
                       let personImage = null;
                       let sentimentOf = 'visitor';
@@ -2236,13 +2247,11 @@ class EventHandlerService {
                             personName = user.emp__eng_name || user.emp__arabic_name || 'Unknown';
                             personImage = user.image;
                             
-                            // Determine if employee or visitor (same logic as park sentiment service)
                             const isEmployee = (user.emp_Id && user.emp_Id.trim() !== '') ||
                                              (user.emp_code && user.emp_code.trim() !== '') ||
                                              user.is_attendance_user === true;
                             sentimentOf = isEmployee ? 'employee' : 'visitor';
                             
-                            // Create user details object (same structure as park sentiment service)
                             userDetails = {
                                Id: user.Id,
                                user_Id: user.user_Id,
@@ -2299,7 +2308,6 @@ class EventHandlerService {
                       }
                    
                       if(isEntry){
-                         // Create new sentiment analysis record for entry
                          Logger.info(`[EventHandlerService] Creating park sentiment analysis record for entry:`, {
                             parkId: parkSentimentData.park_Id,
                             personId: parkSentimentData.person_Id,
@@ -2315,7 +2323,6 @@ class EventHandlerService {
                          
                          Logger.info(`[EventHandlerService] Successfully created park sentiment analysis record with ID: ${parkSentimentRecord.Id}`);
                          
-                         // Emit socket event for real-time updates (same structure as park sentiment service)
                          try {
                             SocketService.emitParkSentimentUpdate({
                                type: 'new_entry',
@@ -2339,8 +2346,7 @@ class EventHandlerService {
                                   exit_camera_Id: parkSentimentData.exit_camera_Id,
                                   createdAt: parkSentimentRecord.createdAt,
                                   updatedAt: parkSentimentRecord.updatedAt,
-                                  user: userDetails, // Complete user details (same as park sentiment service)
-                                  // Camera details (same structure as park sentiment service)
+                                  user: userDetails, 
                                   park_cameras_parks_sentiment_analysis_entry_camera_IdTopark_cameras: isEntry ? {
                                      camera_english_name: parkCamera.camera_english_name,
                                      camera_arabic_name: parkCamera.camera_arabic_name,
@@ -2357,14 +2363,11 @@ class EventHandlerService {
                             Logger.error(`[EventHandlerService] Failed to emit park sentiment socket event:`, socketError);
                          }
                       } else if(isExit){
-                         // Find existing sentiment analysis record for exit (similar to attendance logic)
                          Logger.info(`[EventHandlerService] Processing park exit sentiment analysis`);
                          
-                         // Process exit sentiment image and detection
                          let exitSentimentImageUrl = null;
-                         let exitDetectedSentiment = 'neutral'; // Default sentiment
+                         let exitDetectedSentiment = 'neutral'; 
                          
-                         // Get faceData URL from event data for exit sentiment
                          if (eventInfo.data?.alarmResult?.faces?.URL) {
                             try {
                                Logger.info(`[EventHandlerService] Processing exit sentiment analysis image for park`);
@@ -2372,10 +2375,8 @@ class EventHandlerService {
                                const imageDataResponse = await this.getImageData(faceDataUrl);
                                
                                if (imageDataResponse) {
-                                  // The response is directly the base64 string, not wrapped in a data object
                                   const base64Image = imageDataResponse;
                                   
-                                  // Use global imageUrl if available, otherwise upload
                                   if (!imageUrl) {
                                      imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
                                      Logger.info(`[EventHandlerService] Successfully saved exit sentiment image locally for park`);
@@ -2384,7 +2385,6 @@ class EventHandlerService {
                                   }
                                   exitSentimentImageUrl = imageUrl;
                                   
-                                  // Get emotion detection from the uploaded image
                                   if (exitSentimentImageUrl) {
                                      try {
                                         Logger.info(`[EventHandlerService] Calling emotion detection API for park exit sentiment`);
@@ -2421,7 +2421,6 @@ class EventHandlerService {
                             }
                          }
                          
-                         // If person_Id is null, try to find it using human_id from the event
                          let searchPersonId = person_Id;
                          if (!searchPersonId && eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id) {
                             const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
@@ -2466,7 +2465,6 @@ class EventHandlerService {
                             });
                             Logger.info(`[EventHandlerService] Successfully updated park exit sentiment analysis`);
                             
-                            // Get entry camera details for the exit update
                             let entryCameraDetails = null;
                             if (latestSentiment.entry_camera_Id) {
                                const entryCamera = await db.park_cameras.findFirst({
@@ -2481,7 +2479,6 @@ class EventHandlerService {
                                }
                             }
 
-                            // Emit socket event for real-time updates (same structure as park sentiment service)
                             try {
                                SocketService.emitParkSentimentUpdate({
                                   type: 'exit_update',
@@ -2493,20 +2490,19 @@ class EventHandlerService {
                                      person_name: personName,
                                      person_image: personImage,
                                      gender: latestSentiment.gender,
-                                     check_in_image: latestSentiment.check_in_image,
+                                     check_in_image: latestSentiment.check_in_image ? `${this.API_CONFIG.baseUrl}${latestSentiment.check_in_image}` : null,
                                      check_in_date: formatDate(latestSentiment.check_in_date),
                                      check_in_time: formatTime(latestSentiment.check_in_time),
                                      check_in_sentiment: latestSentiment.check_in_sentiment,
                                      entry_camera_Id: latestSentiment.entry_camera_Id,
                                      check_out_date: formatDate(parkSentimentData.check_out_date),
                                      check_out_time: formatTime(parkSentimentData.check_out_time),
-                                     check_out_capture: exitSentimentImageUrl,
+                                     check_out_capture: exitSentimentImageUrl ? `${this.API_CONFIG.baseUrl}${exitSentimentImageUrl}` : null,
                                      check_out_sentiment: exitDetectedSentiment,
                                      exit_camera_Id: parkSentimentData.exit_camera_Id,
                                      createdAt: latestSentiment.createdAt,
                                      updatedAt: latestSentiment.updatedAt,
-                                     user: userDetails, // Complete user details (same as park sentiment service)
-                                     // Camera details (same structure as park sentiment service)
+                                     user: userDetails, 
                                      park_cameras_parks_sentiment_analysis_entry_camera_IdTopark_cameras: entryCameraDetails,
                                      park_cameras_parks_sentiment_analysis_exit_camera_IdTopark_cameras: {
                                         camera_english_name: parkCamera.camera_english_name,
@@ -2532,7 +2528,6 @@ class EventHandlerService {
                       }
                       
                       if(isEntry){
-                         // Check if the person is a guest user
                          const isGuest = await this.isGuestUser(person_Id);
                          
                          if (isGuest) {
@@ -2544,7 +2539,6 @@ class EventHandlerService {
                          } else {
                          Logger.info(`[EventHandlerService] Processing park entry attendance`);
                          
-                         // Process and upload entry image
                          let entryImageUrl = null;
                          if (eventInfo.data?.alarmResult?.faces?.URL) {
                             try {
@@ -2554,7 +2548,6 @@ class EventHandlerService {
                                
                                if (imageDataResponse) {
                                   const base64Image = imageDataResponse;
-                                  // Use global imageUrl if available, otherwise upload
                                   if (!imageUrl) {
                                      imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
                                      Logger.info(`[EventHandlerService] Successfully saved entry image locally for park attendance`);
@@ -2583,7 +2576,6 @@ class EventHandlerService {
                          
                          Logger.info(`[EventHandlerService] Successfully created park entry attendance record with ID: ${parkAttendanceRecord.Id}`);
                             
-                            // Call EmployeeEntryExitService API for entry
                             try {
                                const user = await db.users.findUnique({
                                   where: { Id: person_Id },
