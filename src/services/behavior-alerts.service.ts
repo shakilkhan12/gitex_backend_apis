@@ -86,17 +86,13 @@ class BehaviorAlertsService {
             };
          }
 
-         // Build order by clause
-         const orderByClause: any = {};
-         if (filters?.sortBy) {
-            const sortField = filters.sortBy === 'createdAt' ? 'createdAt' : 
-                             filters.sortBy === 'detection_date' ? 'detection_date' :
-                             filters.sortBy === 'behaviour' ? 'behaviour' :
-                             filters.sortBy === 'location' ? 'location' : 'createdAt';
-            orderByClause[sortField] = filters.sortOrder === 'asc' ? 'asc' : 'desc';
-         } else {
-            orderByClause.createdAt = 'desc';
-         }
+         // Build order by clause - Sort by createdAt desc, then by Id desc for consistent ordering
+         const orderByClause: any = [
+            { createdAt: 'desc' },
+            { Id: 'desc' }
+         ];
+
+         // Debug logging
 
          // Calculate pagination
          const skip = filters?.page && filters?.limit ? (filters.page - 1) * filters.limit : 0;
@@ -129,6 +125,8 @@ class BehaviorAlertsService {
             skip: skip,
             take: take
          });
+
+       
 
          // Enrich results with user information
          const enrichedResults = await Promise.all(
