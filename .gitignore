@@ -5,6 +5,9 @@ dist
 /.env.test
 /.env
 .env
+/uploads
+/.uploads
+./uploads
 .vercel
 *.local
 .DS_Store
