@@ -328,7 +328,7 @@ class OptimizedComponentApisController {
         }
     };
 
-    // Zone Usage API - Only zone usage data
+    // Controller Usage API - Only zone usage data
     public static getZoneUsageData = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const startDate = req.query.startDate as string;
@@ -571,7 +571,7 @@ class OptimizedComponentApisController {
 
             const irrigationData = irrigationLogs.map((log: any) => ({
                 id: log.Id,
-                zone: log.zone_name || 'Unknown Zone',
+                zone: log.zone_name || 'Unknown Controller',
                 duration: log.duration || 0,
                 status: log.status || 'completed',
                 startTime: log.start_time,

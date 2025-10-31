@@ -62,6 +62,7 @@ const userRouter = Router();
 userRouter.post('/login', userLoginValidations, UserController.login)
 
 userRouter.get('/get',UserController.getUsers)
+userRouter.get('/filters', UserController.getUsersFilters)
 
 /**
  * @swagger
@@ -384,6 +385,7 @@ userRouter.put('/update/role/:userId',UserController.updateUserRole)
  *         description: Internal server error
  */
 userRouter.post('/fetch-employees', UserController.fetchAndStoreEmployeeListing);
+userRouter.post('/fetch-employees-progress', UserController.fetchAndStoreEmployeeListingWithProgress);
 
 /**
  * @swagger

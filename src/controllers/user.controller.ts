@@ -140,7 +140,109 @@ class UserController extends UserService {
       } catch (error) {
         next(error);
       }
-    }
+   }
+
+    public static getUsersFilters = async (_req: Request, res: Response, next: NextFunction) => {
+      try {
+         const result = await UserService.getUsersFiltersService();
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
+      }
+   }
+
+   public static fetchAndStoreEmployeeListingWithProgress = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         // Set headers for SSE
+         res.setHeader('Content-Type', 'text/event-stream');
+         res.setHeader('Cache-Control', 'no-cache');
+         res.setHeader('Connection', 'keep-alive');
+         res.setHeader('X-Accel-Buffering', 'no'); // Disable buffering in nginx
+
+         // Send initial connection message immediately
+         res.write(`data: ${JSON.stringify({ type: 'connected', message: 'Connection established' })}\n\n`);
+         
+         // Force flush to send data immediately (if available)
+         if (typeof (res as any).flush === 'function') {
+            (res as any).flush();
+         }
+
+         // Send status update - fetching secret key
+         res.write(`data: ${JSON.stringify({ type: 'status', message: 'Fetching authentication...', current: 0, total: 0 })}\n\n`);
+         
+         // Force flush again
+         if (typeof (res as any).flush === 'function') {
+            (res as any).flush();
+         }
+
+         // Progress callback function
+         const onProgress = (progress: { current: number; total: number; processed: number; errors: number }) => {
+            try {
+               const progressData = {
+                  type: 'progress',
+                  current: progress.current,
+                  total: progress.total,
+                  processed: progress.processed,
+                  errors: progress.errors,
+                  message: `${progress.processed}/${progress.total} employees synced`
+               };
+               res.write(`data: ${JSON.stringify(progressData)}\n\n`);
+               // Force flush for immediate delivery
+               if (typeof (res as any).flush === 'function') {
+                  (res as any).flush();
+               }
+            } catch (error) {
+               console.error('[UserController] Error sending progress update:', error);
+            }
+         };
+
+         // Status callback for intermediate steps
+         const onStatus = (status: { message: string; current?: number; total?: number }) => {
+            try {
+               const statusData = {
+                  type: 'status',
+                  message: status.message,
+                  current: status.current || 0,
+                  total: status.total || 0
+               };
+               res.write(`data: ${JSON.stringify(statusData)}\n\n`);
+               // Force flush for immediate delivery
+               if (typeof (res as any).flush === 'function') {
+                  (res as any).flush();
+               }
+            } catch (error) {
+               console.error('[UserController] Error sending status update:', error);
+            }
+         };
+
+         // Execute the service with progress callback
+         UserService.fetchAndStoreEmployeeListingServiceWithProgress(onProgress, onStatus)
+            .then((result) => {
+               // Send completion message
+               const completionData = {
+                  type: 'complete',
+                  success: true,
+                  message: result.message,
+                  data: result.summary
+               };
+               res.write(`data: ${JSON.stringify(completionData)}\n\n`);
+               res.end();
+            })
+            .catch((error) => {
+               // Send error message
+               const errorData = {
+                  type: 'error',
+                  success: false,
+                  message: error instanceof Error ? error.message : 'Failed to sync employees'
+               };
+               res.write(`data: ${JSON.stringify(errorData)}\n\n`);
+               res.end();
+            });
+      } catch (error) {
+         console.error('[UserController] Error in fetchAndStoreEmployeeListingWithProgress:', error);
+         next(error);
+      }
+   }
 }
 
 export default UserController;

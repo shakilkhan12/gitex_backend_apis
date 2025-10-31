@@ -7,6 +7,7 @@ export interface ParkType {
   latitude: number;
   longitude: number;
   location?: string;
+  status?: string;
 }
 
 export interface SmokingDetectionType {

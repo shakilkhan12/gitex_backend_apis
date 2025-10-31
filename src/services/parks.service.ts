@@ -189,7 +189,7 @@ class ParkService {
    }
    // update park service
    protected static updateParkBasicInfoService = async (basicInfo: ParkType) => {
-      const {Id,park_Id, park_arabic_name, park_english_name, latitude, longitude} = basicInfo
+      const {Id,park_Id, park_arabic_name, park_english_name, latitude, longitude, status} = basicInfo
       const parkExist = await db.parks.findFirst({
                where: { Id: Id },
            });
@@ -202,7 +202,8 @@ class ParkService {
         park_arabic_name,
         park_english_name,
         latitude,
-        longitude
+        longitude,
+        status
       },
     });
     return result;
@@ -248,13 +249,13 @@ class ParkService {
    // update park status 
     protected static updateZoneStatusService = async (id: number, status: "active" | "inactive") => {
     if (!id) {
-      throw new HttpException(STATUS.BAD_REQUEST, "Zone Id is required");
+      throw new HttpException(STATUS.BAD_REQUEST, "Controller Id is required");
     }
 
     const existingZone = await db.park_zones.findUnique({ where: { Id: Number(id) } });
 
     if (!existingZone) {
-      throw new HttpException(STATUS.NOT_FOUND, "Zone not found");
+      throw new HttpException(STATUS.NOT_FOUND, "Controller not found");
     }
 
     const result = await db.park_zones.update({

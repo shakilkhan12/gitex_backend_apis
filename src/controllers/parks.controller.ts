@@ -236,7 +236,7 @@ const { camera_Id, ...fields } = req.body;
        const { Id, status } = req.body;
       const result = await ParksService.updateZoneStatusService(Number(Id), status);
       res.status(STATUS.SUCCESS).json({
-        message: "Zone status updated successfully",
+        message: "Controller status updated successfully",
         data: result,
       });
       } else {

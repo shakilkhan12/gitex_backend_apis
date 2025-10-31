@@ -21,7 +21,7 @@ optimizedComponentApisRouter.get('/notifications', OptimizedComponentApisControl
 // Park Live Stats API - Only zone usage data
 optimizedComponentApisRouter.get('/park-live-stats', OptimizedComponentApisController.getParkLiveStatsData);
 
-// Zone Usage API - Only zone usage data
+// Controller Usage API - Only zone usage data
 optimizedComponentApisRouter.get('/zone-usage', OptimizedComponentApisController.getZoneUsageData);
 
 // Daily Logs Card API - Only sentiment analysis data

@@ -16380,6 +16380,7 @@ export namespace Prisma {
     park_Id: string | null
     park_english_name: string | null
     park_arabic_name: string | null
+    status: string | null
     image: string | null
     latitude: Decimal | null
     longitude: Decimal | null
@@ -16393,6 +16394,7 @@ export namespace Prisma {
     park_Id: string | null
     park_english_name: string | null
     park_arabic_name: string | null
+    status: string | null
     image: string | null
     latitude: Decimal | null
     longitude: Decimal | null
@@ -16406,6 +16408,7 @@ export namespace Prisma {
     park_Id: number
     park_english_name: number
     park_arabic_name: number
+    status: number
     image: number
     latitude: number
     longitude: number
@@ -16433,6 +16436,7 @@ export namespace Prisma {
     park_Id?: true
     park_english_name?: true
     park_arabic_name?: true
+    status?: true
     image?: true
     latitude?: true
     longitude?: true
@@ -16446,6 +16450,7 @@ export namespace Prisma {
     park_Id?: true
     park_english_name?: true
     park_arabic_name?: true
+    status?: true
     image?: true
     latitude?: true
     longitude?: true
@@ -16459,6 +16464,7 @@ export namespace Prisma {
     park_Id?: true
     park_english_name?: true
     park_arabic_name?: true
+    status?: true
     image?: true
     latitude?: true
     longitude?: true
@@ -16559,6 +16565,7 @@ export namespace Prisma {
     park_Id: string | null
     park_english_name: string | null
     park_arabic_name: string | null
+    status: string | null
     image: string | null
     latitude: Decimal | null
     longitude: Decimal | null
@@ -16591,6 +16598,7 @@ export namespace Prisma {
     park_Id?: boolean
     park_english_name?: boolean
     park_arabic_name?: boolean
+    status?: boolean
     image?: boolean
     latitude?: boolean
     longitude?: boolean
@@ -16620,6 +16628,7 @@ export namespace Prisma {
     park_Id?: boolean
     park_english_name?: boolean
     park_arabic_name?: boolean
+    status?: boolean
     image?: boolean
     latitude?: boolean
     longitude?: boolean
@@ -16628,7 +16637,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type parksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "park_english_name" | "park_arabic_name" | "image" | "latitude" | "longitude" | "location" | "createdAt" | "updatedAt", ExtArgs["result"]["parks"]>
+  export type parksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "park_english_name" | "park_arabic_name" | "status" | "image" | "latitude" | "longitude" | "location" | "createdAt" | "updatedAt", ExtArgs["result"]["parks"]>
   export type parksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     park_cameras?: boolean | parks$park_camerasArgs<ExtArgs>
     park_streams?: boolean | parks$park_streamsArgs<ExtArgs>
@@ -16668,6 +16677,7 @@ export namespace Prisma {
       park_Id: string | null
       park_english_name: string | null
       park_arabic_name: string | null
+      status: string | null
       image: string | null
       latitude: Prisma.Decimal | null
       longitude: Prisma.Decimal | null
@@ -17060,6 +17070,7 @@ export namespace Prisma {
     readonly park_Id: FieldRef<"parks", 'String'>
     readonly park_english_name: FieldRef<"parks", 'String'>
     readonly park_arabic_name: FieldRef<"parks", 'String'>
+    readonly status: FieldRef<"parks", 'String'>
     readonly image: FieldRef<"parks", 'String'>
     readonly latitude: FieldRef<"parks", 'Decimal'>
     readonly longitude: FieldRef<"parks", 'Decimal'>
@@ -40828,6 +40839,7 @@ export namespace Prisma {
     park_Id: 'park_Id',
     park_english_name: 'park_english_name',
     park_arabic_name: 'park_arabic_name',
+    status: 'status',
     image: 'image',
     latitude: 'latitude',
     longitude: 'longitude',
@@ -41425,6 +41437,7 @@ export namespace Prisma {
     park_Id: 'park_Id',
     park_english_name: 'park_english_name',
     park_arabic_name: 'park_arabic_name',
+    status: 'status',
     image: 'image',
     location: 'location'
   };
@@ -42806,6 +42819,7 @@ export namespace Prisma {
     park_Id?: StringNullableFilter<"parks"> | string | null
     park_english_name?: StringNullableFilter<"parks"> | string | null
     park_arabic_name?: StringNullableFilter<"parks"> | string | null
+    status?: StringNullableFilter<"parks"> | string | null
     image?: StringNullableFilter<"parks"> | string | null
     latitude?: DecimalNullableFilter<"parks"> | Decimal | DecimalJsLike | number | string | null
     longitude?: DecimalNullableFilter<"parks"> | Decimal | DecimalJsLike | number | string | null
@@ -42832,6 +42846,7 @@ export namespace Prisma {
     park_Id?: SortOrderInput | SortOrder
     park_english_name?: SortOrderInput | SortOrder
     park_arabic_name?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
@@ -42862,6 +42877,7 @@ export namespace Prisma {
     NOT?: parksWhereInput | parksWhereInput[]
     park_english_name?: StringNullableFilter<"parks"> | string | null
     park_arabic_name?: StringNullableFilter<"parks"> | string | null
+    status?: StringNullableFilter<"parks"> | string | null
     image?: StringNullableFilter<"parks"> | string | null
     latitude?: DecimalNullableFilter<"parks"> | Decimal | DecimalJsLike | number | string | null
     longitude?: DecimalNullableFilter<"parks"> | Decimal | DecimalJsLike | number | string | null
@@ -42888,6 +42904,7 @@ export namespace Prisma {
     park_Id?: SortOrderInput | SortOrder
     park_english_name?: SortOrderInput | SortOrder
     park_arabic_name?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
@@ -42909,6 +42926,7 @@ export namespace Prisma {
     park_Id?: StringNullableWithAggregatesFilter<"parks"> | string | null
     park_english_name?: StringNullableWithAggregatesFilter<"parks"> | string | null
     park_arabic_name?: StringNullableWithAggregatesFilter<"parks"> | string | null
+    status?: StringNullableWithAggregatesFilter<"parks"> | string | null
     image?: StringNullableWithAggregatesFilter<"parks"> | string | null
     latitude?: DecimalNullableWithAggregatesFilter<"parks"> | Decimal | DecimalJsLike | number | string | null
     longitude?: DecimalNullableWithAggregatesFilter<"parks"> | Decimal | DecimalJsLike | number | string | null
@@ -46455,6 +46473,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -46481,6 +46500,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -46506,6 +46526,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -46532,6 +46553,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -46558,6 +46580,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -46570,6 +46593,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -46583,6 +46607,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -50440,6 +50465,7 @@ export namespace Prisma {
     park_Id?: SortOrder
     park_english_name?: SortOrder
     park_arabic_name?: SortOrder
+    status?: SortOrder
     image?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
@@ -50459,6 +50485,7 @@ export namespace Prisma {
     park_Id?: SortOrder
     park_english_name?: SortOrder
     park_arabic_name?: SortOrder
+    status?: SortOrder
     image?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
@@ -50472,6 +50499,7 @@ export namespace Prisma {
     park_Id?: SortOrder
     park_english_name?: SortOrder
     park_arabic_name?: SortOrder
+    status?: SortOrder
     image?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
@@ -56898,6 +56926,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -56923,6 +56952,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -57324,6 +57354,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -57349,6 +57380,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -57624,6 +57656,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -57649,6 +57682,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -57689,6 +57723,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -57714,6 +57749,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -57738,6 +57774,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -57763,6 +57800,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -57879,6 +57917,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -57904,6 +57943,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -58027,6 +58067,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -58052,6 +58093,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -58186,6 +58228,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -58211,6 +58254,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -59167,6 +59211,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -59192,6 +59237,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -59330,6 +59376,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -59355,6 +59402,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -59483,6 +59531,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -59508,6 +59557,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -59600,6 +59650,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -59625,6 +59676,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -59742,6 +59794,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -59767,6 +59820,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -59892,6 +59946,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -59917,6 +59972,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -59999,6 +60055,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -60024,6 +60081,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -60100,6 +60158,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -60125,6 +60184,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -60191,6 +60251,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -60216,6 +60277,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -60447,6 +60509,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -60472,6 +60535,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -60994,6 +61058,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -61019,6 +61084,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -61163,6 +61229,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -61188,6 +61255,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -61363,6 +61431,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -61388,6 +61457,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -61496,6 +61566,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -61521,6 +61592,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -62760,6 +62832,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -62785,6 +62858,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -62923,6 +62997,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -62948,6 +63023,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -63491,6 +63567,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -63516,6 +63593,7 @@ export namespace Prisma {
     park_Id?: string | null
     park_english_name?: string | null
     park_arabic_name?: string | null
+    status?: string | null
     image?: string | null
     latitude?: Decimal | DecimalJsLike | number | string | null
     longitude?: Decimal | DecimalJsLike | number | string | null
@@ -63676,6 +63754,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -63701,6 +63780,7 @@ export namespace Prisma {
     park_Id?: NullableStringFieldUpdateOperationsInput | string | null
     park_english_name?: NullableStringFieldUpdateOperationsInput | string | null
     park_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null

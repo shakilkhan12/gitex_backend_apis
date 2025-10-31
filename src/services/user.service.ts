@@ -146,11 +146,12 @@ class UserService {
 
          // Search filter
          if (filters?.search) {
+            
             whereClause.OR = [
-               { emp__eng_name: { contains: filters.search, mode: 'insensitive' } },
-               { emp__arabic_name: { contains: filters.search, mode: 'insensitive' } },
-               { emp_Id: { contains: filters.search, mode: 'insensitive' } },
-               { email: { contains: filters.search, mode: 'insensitive' } }
+               { emp__eng_name: { contains: filters.search } },
+               { emp__arabic_name: { contains: filters.search } },
+               { emp_Id: { contains: filters.search } },
+               { email: { contains: filters.search } }
             ];
          }
 
@@ -259,6 +260,59 @@ class UserService {
 
       } catch (error: any) {
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to fetch users");
+      }
+   }
+
+   /**
+    * Returns filter datasets for role-permission UI: departments and employees
+    * - departments: unique list from both English/Arabic names
+    * - employees: minimal list with Id, emp_Id, names (English/Arabic)
+    */
+   public static getUsersFiltersService = async () => {
+      try {
+         // Fetch fields needed for filters in a single pass (no pagination)
+         const allUsers = await db.users.findMany({
+            where: { user_Id: { not: null } },
+            select: {
+               Id: true,
+               emp_Id: true,
+               emp__eng_name: true,
+               emp__arabic_name: true,
+               dep_eng_name: true,
+               dep_arabic_name: true
+            }
+         });
+
+         // Build unique department lists for EN and AR separately
+         const deptSetEn = new Set<string>();
+         const deptSetAr = new Set<string>();
+         for (const u of allUsers) {
+            if (u.dep_eng_name) deptSetEn.add(u.dep_eng_name);
+            if (u.dep_arabic_name) deptSetAr.add(u.dep_arabic_name);
+         }
+         const departments_en = Array.from(deptSetEn).filter(Boolean).sort();
+         const departments_ar = Array.from(deptSetAr).filter(Boolean).sort();
+
+         // Employees list with minimal fields
+         const employees = allUsers
+            .filter(u => !!u.emp_Id)
+            .map(u => ({
+               id: u.Id,
+               emp_Id: u.emp_Id as string,
+               name_en: u.emp__eng_name || null,
+               name_ar: u.emp__arabic_name || null
+            }));
+
+         return {
+            success: true,
+            data: {
+               departments_en,
+               departments_ar,
+               employees
+            }
+         };
+      } catch (error) {
+         throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to fetch users filters");
       }
    }
 
@@ -539,12 +593,36 @@ class UserService {
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
    }
 
+   public static fetchAndStoreEmployeeListingServiceWithProgress = async (
+      onProgress?: (progress: { current: number; total: number; processed: number; errors: number }) => void,
+      onStatus?: (status: { message: string; current?: number; total?: number }) => void
+   ) => {
+      return this.fetchAndStoreEmployeeListingServiceInternal(onProgress, onStatus);
+   }
+
    public static fetchAndStoreEmployeeListingService = async () => {
-      
+      return this.fetchAndStoreEmployeeListingServiceInternal();
+   }
+
+   private static fetchAndStoreEmployeeListingServiceInternal = async (
+      onProgress?: (progress: { current: number; total: number; processed: number; errors: number }) => void,
+      onStatus?: (status: { message: string; current?: number; total?: number }) => void
+   ) => {
       try {
          console.log('[UserService] Starting fetchAndStoreEmployeeListingService');
+         
+         // Send status update - fetching secret key
+         if (onStatus) {
+            onStatus({ message: 'Authenticating...' });
+         }
+         
          const secretKey = await this.fetchSecretFromAPI();
          console.log('[UserService] Secret key obtained:', secretKey);
+
+         // Send status update - fetching employee data
+         if (onStatus) {
+            onStatus({ message: 'Fetching employee data from intranet...' });
+         }
 
          const payload = {
             SecretKey: `${secretKey}`,
@@ -580,6 +658,21 @@ class UserService {
          let successCount = 0;
          let errorCount = 0;
          let deletedCount = 0;
+
+         // Send initial progress immediately when we know the total count
+         if (onProgress) {
+            onProgress({
+               current: 0,
+               total: userListing.length,
+               processed: 0,
+               errors: 0
+            });
+         }
+         
+         // Send status update - starting sync
+         if (onStatus) {
+            onStatus({ message: `Starting sync of ${userListing.length} employees...`, total: userListing.length });
+         }
 
          // Get all emp_ids from API response
          const apiEmpIds = new Set(userListing.map((user: any) => user.EmpCode as string));
@@ -654,7 +747,9 @@ class UserService {
 
          console.log(`[UserService] Processing ${userListing.length} users from API`);
          
+         let currentIndex = 0;
          for (const userData of userListing) {
+            currentIndex++;
             try {
                const existingUser = await db.users.findFirst({
                   where: { user_Id: userData.UserID }
@@ -725,6 +820,16 @@ class UserService {
                   successCount++;
                }
 
+               // Send progress update every 10 employees or on last employee
+               if (onProgress && (currentIndex % 10 === 0 || currentIndex === userListing.length)) {
+                  onProgress({
+                     current: currentIndex,
+                     total: userListing.length,
+                     processed: successCount,
+                     errors: errorCount
+                  });
+               }
+
                // Log progress every 100 users
                if (successCount % 100 === 0) {
                   console.log(`[UserService] Processed ${successCount} users so far...`);
@@ -733,6 +838,16 @@ class UserService {
             } catch (userError) {
                errorCount++;
                console.error(`[UserService] Error processing user ${userData.UserID}:`, userError);
+               
+               // Send progress update even on error
+               if (onProgress) {
+                  onProgress({
+                     current: currentIndex,
+                     total: userListing.length,
+                     processed: successCount,
+                     errors: errorCount
+                  });
+               }
             }
          }
 

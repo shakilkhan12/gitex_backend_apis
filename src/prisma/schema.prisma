@@ -237,6 +237,7 @@ model parks {
   park_Id                      String?                        @unique(map: "park_Id") @db.VarChar(255)
   park_english_name            String?                        @db.VarChar(255)
   park_arabic_name             String?                        @db.VarChar(255)
+  status                       String?                        @db.VarChar(50)
   image                        String?                        @db.VarChar(255)
   latitude                     Decimal?                       @db.Decimal(10, 8)
   longitude                    Decimal?                       @db.Decimal(11, 8)

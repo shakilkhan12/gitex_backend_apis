@@ -169,7 +169,7 @@ export const validateOfficeCamera = [
 export const updateZoneStatusValidation = [
   body("Id")
     .isInt({ gt: 0 })
-    .withMessage("Valid Zone Id is required"),
+    .withMessage("Valid Controller Id is required"),
   body("status")
     .isIn(["active", "inactive"])
     .withMessage("Status must be either 'active' or 'inactive'"),

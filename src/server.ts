@@ -42,33 +42,27 @@ app.options('*', cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-// Apply CSP to all routes except Swagger UI
-app.use((req, res, next) => {
-  if (req.path.startsWith('/api-docs')) {
-    // Disable CSP for Swagger UI routes
-    return next();
-  }
-  
+app.use(
   helmet({
     contentSecurityPolicy: {
+      useDefaults: true,
       directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-        imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'"],
-        fontSrc: ["'self'"],
-        objectSrc: ["'none'"],
-        mediaSrc: ["'self'"],
-        frameSrc: ["'none'"],
+        defaultSrc: ["'self'", "*"],
+        imgSrc: ["'self'", "data:", "blob:", "http:", "https:"],
+        connectSrc: ["'self'", "http:", "https:"],
+        mediaSrc: ["'self'", "data:", "blob:", "http:", "https:"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "http:", "https:"],
+        styleSrc: ["'self'", "'unsafe-inline'", "http:", "https:"],
       },
     },
-  })(req, res, next);
-});
+    crossOriginResourcePolicy: false, // ✅ very important for images
+  })
+);
+
+
 app.use(morgan("dev"));
 app.use(compression());
 
-// Serve Swagger UI static assets with proper MIME types
 app.use('/api-docs', express.static('node_modules/swagger-ui-dist', {
   setHeaders: (res, path) => {
     if (path.endsWith('.css')) {
@@ -83,7 +77,6 @@ app.use('/api-docs', express.static('node_modules/swagger-ui-dist', {
   }
 }));
 
-// Serve the swagger.json file
 app.get('/api-docs/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -92,7 +85,6 @@ app.get('/api-docs/swagger.json', (req, res) => {
   res.send(specs);
 });
 
-// Swagger UI configuration with proper static asset handling
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Khorfakkan Smart City API Documentation',
@@ -102,13 +94,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   }
 }));
 
-// Serve static files from uploads directory with CORS headers
 app.use('/uploads', (req, res, next) => {
-  console.log('🔍 Static file request:', req.url);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  console.log('🔍 CORS headers set for:', req.url);
   next();
 }, express.static('uploads'));
 
@@ -118,13 +107,10 @@ app.use(errorHandler)
 
 const startServer = async () => {
   try {
-    // Initialize Socket.IO
     SocketService.initializeSocket(server);
     
-    // Initialize Cron Jobs
     CronService.initializeCronJobs();
     
-    // Initialize Event Buffer Service (for stream data bridge)
     EventBufferService.initialize();
     
     server.listen(PORT, () => {

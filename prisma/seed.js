@@ -422,7 +422,7 @@ async function main() {
       data: {
         park_Id: park.Id,
         zone_Id: `ZONE_${park.park_Id}_001`,
-        zone_english_name: `${park.park_english_name} - Irrigation Zone A`,
+        zone_english_name: `${park.park_english_name} - Irrigation Controller A`,
         zone_arabic_name: `${park.park_arabic_name} - منطقة الري أ`,
         latitude: (parseFloat(park.latitude) + 0.002).toFixed(6),
         longitude: (parseFloat(park.longitude) + 0.002).toFixed(6),
@@ -590,7 +590,7 @@ async function main() {
     await prisma.parks_intrusion_detection.create({
       data: {
         park_Id: parksList[i % parksList.length].Id,
-        location: `Zone ${i + 1} - ${parksList[i % parksList.length].park_english_name}`,
+        location: `Controller ${i + 1} - ${parksList[i % parksList.length].park_english_name}`,
         camera_Id: parkCameras[i % parkCameras.length].Id,
         occurrence_date: new Date(),
         occurrence_time: new Date(),

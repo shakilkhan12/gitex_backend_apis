@@ -281,6 +281,7 @@ exports.Prisma.ParksScalarFieldEnum = {
   park_Id: 'park_Id',
   park_english_name: 'park_english_name',
   park_arabic_name: 'park_arabic_name',
+  status: 'status',
   image: 'image',
   latitude: 'latitude',
   longitude: 'longitude',
@@ -779,6 +780,7 @@ exports.Prisma.parksOrderByRelevanceFieldEnum = {
   park_Id: 'park_Id',
   park_english_name: 'park_english_name',
   park_arabic_name: 'park_arabic_name',
+  status: 'status',
   image: 'image',
   location: 'location'
 };
