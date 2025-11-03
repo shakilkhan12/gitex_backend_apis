@@ -5,9 +5,7 @@ import { formatDate, formatTime } from "@/utils/dateTime.utils";
 import axios from "axios";
 import https from "https";
 import { UserType, AddUserType } from "@/typescript/interfaces";
-
 import fetch from "node-fetch";
-
 
 export async function urlToBase64(url: string): Promise<string | string> {
   try {
@@ -43,7 +41,6 @@ class UserService {
    
       try {
          const secretKey = await this.fetchSecretFromAPI();
-         console.log('secretKey',secretKey)
          const payload = {
             EmpCode,
             Password,
@@ -61,15 +58,8 @@ class UserService {
             }
          );
    
-         console.log('Login API Response:', JSON.stringify(response.data, null, 2));
    
          if (response.data.status !== 'SUCCESS' || response.data.code !== 200) {
-            console.error('Login failed - API Response:', {
-               status: response.data.status,
-               code: response.data.code,
-               error: response.data.error,
-               fullResponse: response.data
-            });
             throw new HttpException(STATUS.BAD_REQUEST, response.data.error?.msg || `Login failed: ${response.data.status} - ${response.data.code}`);
          }
    
@@ -78,7 +68,7 @@ class UserService {
          try {
             const user = await db.users.findFirst({
                where: {
-                  user_Id: userId
+                  emp_Id: EmpCode
                }
             });
    
@@ -97,7 +87,7 @@ class UserService {
             
          }
    
-         return response.data;
+         return EmpCode;
    
       } catch (error: any) {
          
@@ -316,14 +306,14 @@ class UserService {
       }
    }
 
-   protected static getUserDetailsByUserIdService = async (user_Id: string) => {
+   protected static getUserDetailsByUserIdService = async (emp_Id: string) => {
       try {
-         console.log(`[UserService] Starting getUserDetailsByUserIdService for user_Id: ${user_Id}`);
+         console.log(`[UserService] Starting getUserDetailsByUserIdService for user_Id: ${emp_Id}`);
          
          // First, get the basic user information
          const user = await db.users.findFirst({
             where: {
-               user_Id: user_Id
+               emp_Id
             },
             select: {
                Id: true,
@@ -354,10 +344,10 @@ class UserService {
             }
          });
 
-         console.log(`[UserService] Basic user query completed for user_Id: ${user_Id}`);
+         console.log(`[UserService] Basic user query completed for user_Id: ${emp_Id}`);
 
          if (!user) {
-            console.log(`[UserService] User not found for user_Id: ${user_Id}`);
+            console.log(`[UserService] User not found for user_Id: ${emp_Id}`);
             throw new HttpException(STATUS.NOT_FOUND, "User not found");
          }
 
@@ -444,11 +434,11 @@ class UserService {
             users_roles
          };
 
-         console.log(`[UserService] Successfully retrieved user details for user_Id: ${user_Id}`);
+         console.log(`[UserService] Successfully retrieved user details for user_Id: ${emp_Id}`);
          return result;
 
       } catch (error: any) {
-         console.error(`[UserService] Error in getUserDetailsByUserIdService for user_Id: ${user_Id}`, {
+         console.error(`[UserService] Error in getUserDetailsByUserIdService for user_Id: ${emp_Id}`, {
             error: error.message,
             stack: error.stack,
             name: error.name

@@ -44,19 +44,17 @@ class UserController extends UserService {
 
    public static getUserDetails = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const { user_Id } = req.body;
+         const { emp_Id } = req.body;
          
-         console.log(`[UserController] getUserDetails called with user_Id: ${user_Id}`);
+         console.log(`[UserController] getUserDetails called with user_Id: ${emp_Id}`);
          
-         if (!user_Id) {
-            console.log(`[UserController] Missing user_Id in request body`);
+         if (!emp_Id) {
             return res.status(STATUS.BAD_REQUEST).json({ 
-               error: "user_Id is required" 
+               error: "emp_Id is required" 
             });
          }
 
-         const userDetails = await UserService.getUserDetailsByUserIdService(user_Id);
-         console.log(`[UserController] Successfully retrieved user details for user_Id: ${user_Id}`);
+         const userDetails = await UserService.getUserDetailsByUserIdService(emp_Id);
          return res.status(STATUS.SUCCESS).json(userDetails);
       } catch (error) {
          console.error(`[UserController] Error in getUserDetails:`, {
