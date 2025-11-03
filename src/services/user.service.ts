@@ -21,13 +21,11 @@ export async function urlToBase64(url: string): Promise<string | string> {
     const arrayBuffer = await response.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString("base64");
 
-    console.log("\n✅ BASE64 OUTPUT:\n");
    //  console.log(base64);
 
     return base64;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error("❌ Error:", error.message);
     }
     return "";
   }
@@ -308,7 +306,6 @@ class UserService {
 
    protected static getUserDetailsByUserIdService = async (emp_Id: string) => {
       try {
-         console.log(`[UserService] Starting getUserDetailsByUserIdService for user_Id: ${emp_Id}`);
          
          // First, get the basic user information
          const user = await db.users.findFirst({
@@ -344,17 +341,13 @@ class UserService {
             }
          });
 
-         console.log(`[UserService] Basic user query completed for user_Id: ${emp_Id}`);
-
          if (!user) {
-            console.log(`[UserService] User not found for user_Id: ${emp_Id}`);
             throw new HttpException(STATUS.NOT_FOUND, "User not found");
          }
 
          // If user has a role, fetch role and permissions separately
          let users_roles = null;
          if (user.role_Id) {
-            console.log(`[UserService] Fetching role and permissions for role_Id: ${user.role_Id}`);
             
             users_roles = await db.users_roles.findUnique({
                where: {
@@ -434,15 +427,9 @@ class UserService {
             users_roles
          };
 
-         console.log(`[UserService] Successfully retrieved user details for user_Id: ${emp_Id}`);
          return result;
 
       } catch (error: any) {
-         console.error(`[UserService] Error in getUserDetailsByUserIdService for user_Id: ${emp_Id}`, {
-            error: error.message,
-            stack: error.stack,
-            name: error.name
-         });
          
          if (error instanceof HttpException) {
             throw error;
@@ -543,7 +530,6 @@ class UserService {
                   httpsAgent: new https.Agent({ rejectUnauthorized: false }),
                }
             );
-            console.log('response', response)
             
             if (response.data?.SecretKey) {
                return response.data.SecretKey;
@@ -599,7 +585,6 @@ class UserService {
       onStatus?: (status: { message: string; current?: number; total?: number }) => void
    ) => {
       try {
-         console.log('[UserService] Starting fetchAndStoreEmployeeListingService');
          
          // Send status update - fetching secret key
          if (onStatus) {
@@ -607,7 +592,6 @@ class UserService {
          }
          
          const secretKey = await this.fetchSecretFromAPI();
-         console.log('[UserService] Secret key obtained:', secretKey);
 
          // Send status update - fetching employee data
          if (onStatus) {
@@ -619,7 +603,6 @@ class UserService {
             Lang: "en"
          };
 
-         console.log('[UserService] Making API request to EmployeeListingGet with payload:', payload);
          const response = await axios.post(
             "https://192.168.164.7/middleware/?class=general&action=EmployeeListingGet",
             payload,
@@ -633,7 +616,6 @@ class UserService {
                })
             }
          )
-         console.log('[UserService] API response received:', response.status, response.data);
 
          if (!response.data?.data?.UserListing || !Array.isArray(response.data.data.UserListing)) {
             if (response.data?.error) {
@@ -692,7 +674,6 @@ class UserService {
 
          // Delete users not present in API response (batch deletion for better performance)
          if (usersToDelete.length > 0) {
-            console.log(`[UserService] Starting batch deletion of ${usersToDelete.length} users`);
             
             try {
                // Use deleteMany for batch deletion instead of individual deletes
@@ -705,23 +686,18 @@ class UserService {
                });
                
                deletedCount = deleteResult.count;
-               console.log(`[UserService] Successfully deleted ${deletedCount} users in batch`);
                
                // Log some examples of deleted users (first 5)
                const sampleDeleted = usersToDelete.slice(0, 5);
                sampleDeleted.forEach(user => {
-                  console.log(`Deleted user: ${user.emp_Id} - ${user.emp__eng_name}`);
                });
                
                if (usersToDelete.length > 5) {
-                  console.log(`... and ${usersToDelete.length - 5} more users`);
                }
                
             } catch (deleteError) {
-               console.error(`[UserService] Failed to delete users in batch:`, deleteError);
                
                // Fallback to individual deletion if batch fails
-               console.log(`[UserService] Falling back to individual deletion`);
                for (const userToDelete of usersToDelete) {
                   try {
                      await db.users.delete({
@@ -729,13 +705,11 @@ class UserService {
                      });
                      deletedCount++;
                   } catch (individualDeleteError) {
-                     console.error(`Failed to delete user ${userToDelete.emp_Id}:`, individualDeleteError);
                   }
                }
             }
          }
 
-         console.log(`[UserService] Processing ${userListing.length} users from API`);
          
          let currentIndex = 0;
          for (const userData of userListing) {
@@ -755,7 +729,6 @@ class UserService {
                      const date = new Date(dateString);
                      // Check if the date is valid
                      if (isNaN(date.getTime())) {
-                        console.warn(`Invalid date format: ${dateString}`);
                         return undefined;
                      }
                      return date;
@@ -892,7 +865,6 @@ class UserService {
 
    protected static addUserService = async (userData: AddUserType) => {
       try {
-         // Check if user already exists by user_Id
          const existingUser = await db.users.findFirst({
             where: {
                user_Id: userData.user_Id.toString()
@@ -903,7 +875,6 @@ class UserService {
             throw new HttpException(STATUS.BAD_REQUEST, "User with this User ID already exists");
          }
 
-         // Check if user already exists by emp_Id
          const existingEmpUser = await db.users.findFirst({
             where: {
                emp_Id: userData.emp_Id
@@ -914,7 +885,6 @@ class UserService {
             throw new HttpException(STATUS.BAD_REQUEST, "User with this Employee ID already exists");
          }
 
-         // Check if user already exists by unique_id
          const existingUniqueUser = await db.users.findFirst({
             where: {
                unique_id: userData.unique_id
@@ -978,9 +948,7 @@ class UserService {
     */
    public static uploadUserToHikVision = async (user: any) => {
       try {
-         console.log(`[UserService] Starting HIK Vision upload for user: ${user.emp_Id}`);
 
-         // Helper function to get image as base64
          const getImageAsBase64 = async (imageUrl: string): Promise<string | null> => {
             if (!imageUrl) {
                console.warn(`[UserService] No image URL provided for user: ${user.emp_Id}`);
@@ -999,13 +967,8 @@ class UserService {
 
                const response1  = await urlToBase64(imageUrl);
 
-               // const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
-               //  const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
-               
-
                if (response1 && typeof response1 === 'string') {
                   const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
-                  // const base64WithoutPrefix = response1.replace(/^data:image\/[a-z]+;base64,/, "");
                   return base64Image;
                }
                
@@ -1017,7 +980,7 @@ class UserService {
             }
          };
 
-         console.log("Useeeeeeeeeeeeeeeeeeeeeer", user);
+         console.log("User", user);
 
          // Get image as base64
          const faceData = await getImageAsBase64(user.image);
@@ -1035,15 +998,6 @@ class UserService {
             orgIndexCode: "2",
             faces: faceData ? [{ faceData: faceData }] : []
          };
-
-         console.log(`[UserService] Uploading user to HIK Vision:`, {
-            personCode: payload.personCode,
-            personFamilyName: payload.personGivenName,            
-            personGivenName: payload.personFamilyName,
-            gender: payload.gender,
-            hasFaceData: !!faceData
-         });
-
          // Call HIK Vision API to add person
          const response = await UserService.callHikVisionAPI(
             'https://10.70.90.183:443',
@@ -1054,18 +1008,11 @@ class UserService {
          );
 
          if (response && response.code === '0' && response.data) {
-            console.log(`[UserService] Successfully uploaded user to HIK Vision:`, {
-               personCode: payload.personCode,
-               hikVisionId: response.data
-            });
-
-            // Update user's unique_id with the response data
             await db.users.update({
                where: { Id: user.Id },
                data: { unique_id: response.data }
             });
 
-            console.log(`[UserService] Updated user unique_id: ${response.data}`);
 
             return {
                success: true,
@@ -1077,12 +1024,10 @@ class UserService {
                }
             };
          } else {
-            console.error(`[UserService] HIK Vision API returned error:`, response);
             throw new Error(`HIK Vision API error: ${response?.msg || 'Unknown error'}`);
          }
 
       } catch (error: any) {
-         console.error(`[UserService] Failed to upload user to HIK Vision:`, error);
          throw new HttpException(
             STATUS.INTERNAL_SERVER_ERROR,
             `Failed to upload user to HIK Vision: ${error.message}`
@@ -1097,7 +1042,6 @@ class UserService {
     */
    public static uploadUsersToHikVision = async (users: any[]) => {
       try {
-         console.log(`[UserService] Starting batch upload of ${users.length} users to HIK Vision`);
 
          const results = {
             success: 0,
@@ -1109,22 +1053,14 @@ class UserService {
             try {
                await this.uploadUserToHikVision(user);
                results.success++;
-               console.log(`[UserService] Successfully uploaded user ${user.emp_Id} (${results.success}/${users.length})`);
             } catch (error: any) {
                results.failed++;
                results.errors.push({
                   user: user.emp_Id,
                   error: error.message
                });
-               console.error(`[UserService] Failed to upload user ${user.emp_Id}:`, error.message);
             }
          }
-
-         console.log(`[UserService] Batch upload completed:`, {
-            total: users.length,
-            success: results.success,
-            failed: results.failed
-         });
 
          return {
             success: results.failed === 0,
@@ -1133,7 +1069,6 @@ class UserService {
          };
 
       } catch (error: any) {
-         console.error(`[UserService] Batch upload to HIK Vision failed:`, error);
          throw new HttpException(
             STATUS.INTERNAL_SERVER_ERROR,
             `Failed to upload users to HIK Vision: ${error.message}`
@@ -1211,7 +1146,6 @@ class UserService {
 
          return response.data;
       } catch (error: any) {
-         console.error(`[UserService] HIK Vision API call failed:`, error);
          throw error;
       }
    }
@@ -1223,7 +1157,6 @@ class UserService {
     */
    public static uploadAllUsersToHikVision = async () => {
       try {
-         console.log(`[UserService] Starting upload of first two users to HIK Vision (skipping index 0)`);
 
          // Get all users ordered by Id
          const allUsers = await db.users.findMany({
@@ -1240,15 +1173,8 @@ class UserService {
          // Get users at index 1 and 2 (skip index 0)
          const usersToUpload = allUsers.slice(1, 3); 
 
-         console.log(`[UserService] Found ${allUsers.length} total users. Uploading users at index 1 and 2:`, {
-            user1: { id: usersToUpload[0].Id, emp_Id: usersToUpload[0].emp_Id, name: usersToUpload[0].emp__eng_name },
-            user2: { id: usersToUpload[1].Id, emp_Id: usersToUpload[1].emp_Id, name: usersToUpload[1].emp__eng_name }
-         });
-
          // Upload the two users
          const result = await this.uploadUsersToHikVision(usersToUpload);
-
-         console.log(`[UserService] Upload of first two users completed:`, result);
 
          return {
             success: result.success,
@@ -1264,9 +1190,7 @@ class UserService {
             }
          };
 
-      } catch (error: any) {
-         console.error(`[UserService] Failed to upload first two users to HIK Vision:`, error);
-         
+      } catch (error: any) {  
          if (error instanceof HttpException) {
             throw error;
          }
