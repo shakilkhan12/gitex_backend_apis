@@ -116,7 +116,7 @@ class UserService {
       sortOrder?: 'asc' | 'desc';
       department?: string;
       employeeId?: string;
-      aiEngine?: string;
+      aiLogin?: string;
    } = {}) => {
 
       try {
@@ -157,9 +157,9 @@ class UserService {
          }
 
          // AI Engine filter
-         if (filters?.aiEngine) {
-            const aiEngineValue = filters.aiEngine === 'true';
-            whereClause.ai_engine_access = aiEngineValue;
+         if (filters?.aiLogin) {
+            const aiLoginValue = filters.aiLogin === 'true';
+            whereClause.is_ai_login_user = aiLoginValue;
          }
 
          // Build order by clause
@@ -201,6 +201,7 @@ class UserService {
                   committe_arabic_name: true,
                   ai_engine_access: true,
                   last_login: true,
+                  is_ai_login_user:true,
                   createdAt: true,
                   updatedAt: true,
                   landscaping_access: true,
@@ -251,11 +252,6 @@ class UserService {
       }
    }
 
-   /**
-    * Returns filter datasets for role-permission UI: departments and employees
-    * - departments: unique list from both English/Arabic names
-    * - employees: minimal list with Id, emp_Id, names (English/Arabic)
-    */
    public static getUsersFiltersService = async () => {
       try {
          // Fetch fields needed for filters in a single pass (no pagination)

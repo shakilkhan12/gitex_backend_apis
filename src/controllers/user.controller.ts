@@ -22,7 +22,7 @@ class UserController extends UserService {
 
    public static getUsers = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const { page, limit, search, sortBy, sortOrder, department, employeeId, aiEngine } = req.query;
+         const { page, limit, search, sortBy, sortOrder, department, employeeId, aiLogin } = req.query;
          
          const filters = {
             page: page ? parseInt(page as string) : undefined,
@@ -32,7 +32,7 @@ class UserController extends UserService {
             sortOrder: sortOrder as 'asc' | 'desc',
             department: department as string,
             employeeId: employeeId as string,
-            aiEngine: aiEngine as string
+            aiLogin: aiLogin as string
          };
 
          const result = await UserService.getAllUsersWithRoleNestedService(filters);
