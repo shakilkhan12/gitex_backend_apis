@@ -544,14 +544,16 @@ class UserService {
 
          // Remove role_Id from the response and add users_roles
          const { role_Id, ...userWithoutRoleId } = user;
-      const imageFields = ['image'];
-      // const formattedUser = formatImageUrlsInArray([{...userWithoutRoleId}], imageFields);
          const result = {
             ...userWithoutRoleId,
             users_roles
          };
 
-         return result;
+         // Format image URLs
+         const imageFields = ['image'];
+         const formattedUsers = formatImageUrlsInArray([result], imageFields);
+
+         return formattedUsers[0];
 
       } catch (error: any) {
          
