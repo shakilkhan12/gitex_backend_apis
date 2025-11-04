@@ -28008,6 +28008,7 @@ export namespace Prisma {
     emp_Id: string | null
     emp_code: string | null
     image: string | null
+    actuall_image: string | null
     gender: string | null
     unique_id: string | null
     emp__eng_name: string | null
@@ -28047,6 +28048,7 @@ export namespace Prisma {
     emp_Id: string | null
     emp_code: string | null
     image: string | null
+    actuall_image: string | null
     gender: string | null
     unique_id: string | null
     emp__eng_name: string | null
@@ -28086,6 +28088,7 @@ export namespace Prisma {
     emp_Id: number
     emp_code: number
     image: number
+    actuall_image: number
     gender: number
     unique_id: number
     emp__eng_name: number
@@ -28137,6 +28140,7 @@ export namespace Prisma {
     emp_Id?: true
     emp_code?: true
     image?: true
+    actuall_image?: true
     gender?: true
     unique_id?: true
     emp__eng_name?: true
@@ -28176,6 +28180,7 @@ export namespace Prisma {
     emp_Id?: true
     emp_code?: true
     image?: true
+    actuall_image?: true
     gender?: true
     unique_id?: true
     emp__eng_name?: true
@@ -28215,6 +28220,7 @@ export namespace Prisma {
     emp_Id?: true
     emp_code?: true
     image?: true
+    actuall_image?: true
     gender?: true
     unique_id?: true
     emp__eng_name?: true
@@ -28341,6 +28347,7 @@ export namespace Prisma {
     emp_Id: string | null
     emp_code: string | null
     image: string | null
+    actuall_image: string | null
     gender: string | null
     unique_id: string | null
     emp__eng_name: string | null
@@ -28399,6 +28406,7 @@ export namespace Prisma {
     emp_Id?: boolean
     emp_code?: boolean
     image?: boolean
+    actuall_image?: boolean
     gender?: boolean
     unique_id?: boolean
     emp__eng_name?: boolean
@@ -28451,6 +28459,7 @@ export namespace Prisma {
     emp_Id?: boolean
     emp_code?: boolean
     image?: boolean
+    actuall_image?: boolean
     gender?: boolean
     unique_id?: boolean
     emp__eng_name?: boolean
@@ -28484,7 +28493,7 @@ export namespace Prisma {
     role_Id?: boolean
   }
 
-  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "user_Id" | "emp_Id" | "emp_code" | "image" | "gender" | "unique_id" | "emp__eng_name" | "emp__arabic_name" | "location" | "country_code" | "phone" | "telephone" | "email" | "office_extension" | "nationality" | "joining_date" | "date_of_birth" | "dep_eng_name" | "dep_arabic_name" | "desig_eng_name" | "desig_arabic_name" | "unit_eng_name" | "unit_arabic_name" | "committe_eng_name" | "committe_arabic_name" | "is_attendance_user" | "is_ai_login_user" | "ai_engine_access" | "last_login" | "landscaping_access" | "plant_disease_access" | "litter_detection_access" | "createdAt" | "updatedAt" | "role_Id", ExtArgs["result"]["users"]>
+  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "user_Id" | "emp_Id" | "emp_code" | "image" | "actuall_image" | "gender" | "unique_id" | "emp__eng_name" | "emp__arabic_name" | "location" | "country_code" | "phone" | "telephone" | "email" | "office_extension" | "nationality" | "joining_date" | "date_of_birth" | "dep_eng_name" | "dep_arabic_name" | "desig_eng_name" | "desig_arabic_name" | "unit_eng_name" | "unit_arabic_name" | "committe_eng_name" | "committe_arabic_name" | "is_attendance_user" | "is_ai_login_user" | "ai_engine_access" | "last_login" | "landscaping_access" | "plant_disease_access" | "litter_detection_access" | "createdAt" | "updatedAt" | "role_Id", ExtArgs["result"]["users"]>
   export type usersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     live_stream_favourites?: boolean | users$live_stream_favouritesArgs<ExtArgs>
     offices_attendance?: boolean | users$offices_attendanceArgs<ExtArgs>
@@ -28519,6 +28528,7 @@ export namespace Prisma {
       emp_Id: string | null
       emp_code: string | null
       image: string | null
+      actuall_image: string | null
       gender: string | null
       unique_id: string | null
       emp__eng_name: string | null
@@ -28934,6 +28944,7 @@ export namespace Prisma {
     readonly emp_Id: FieldRef<"users", 'String'>
     readonly emp_code: FieldRef<"users", 'String'>
     readonly image: FieldRef<"users", 'String'>
+    readonly actuall_image: FieldRef<"users", 'String'>
     readonly gender: FieldRef<"users", 'String'>
     readonly unique_id: FieldRef<"users", 'String'>
     readonly emp__eng_name: FieldRef<"users", 'String'>
@@ -41043,6 +41054,7 @@ export namespace Prisma {
     emp_Id: 'emp_Id',
     emp_code: 'emp_code',
     image: 'image',
+    actuall_image: 'actuall_image',
     gender: 'gender',
     unique_id: 'unique_id',
     emp__eng_name: 'emp__eng_name',
@@ -41554,6 +41566,7 @@ export namespace Prisma {
     emp_Id: 'emp_Id',
     emp_code: 'emp_code',
     image: 'image',
+    actuall_image: 'actuall_image',
     gender: 'gender',
     unique_id: 'unique_id',
     emp__eng_name: 'emp__eng_name',
@@ -43943,6 +43956,7 @@ export namespace Prisma {
     emp_Id?: StringNullableFilter<"users"> | string | null
     emp_code?: StringNullableFilter<"users"> | string | null
     image?: StringNullableFilter<"users"> | string | null
+    actuall_image?: StringNullableFilter<"users"> | string | null
     gender?: StringNullableFilter<"users"> | string | null
     unique_id?: StringNullableFilter<"users"> | string | null
     emp__eng_name?: StringNullableFilter<"users"> | string | null
@@ -43992,6 +44006,7 @@ export namespace Prisma {
     emp_Id?: SortOrderInput | SortOrder
     emp_code?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    actuall_image?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     unique_id?: SortOrderInput | SortOrder
     emp__eng_name?: SortOrderInput | SortOrder
@@ -44045,6 +44060,7 @@ export namespace Prisma {
     emp_Id?: StringNullableFilter<"users"> | string | null
     emp_code?: StringNullableFilter<"users"> | string | null
     image?: StringNullableFilter<"users"> | string | null
+    actuall_image?: StringNullableFilter<"users"> | string | null
     gender?: StringNullableFilter<"users"> | string | null
     unique_id?: StringNullableFilter<"users"> | string | null
     emp__eng_name?: StringNullableFilter<"users"> | string | null
@@ -44094,6 +44110,7 @@ export namespace Prisma {
     emp_Id?: SortOrderInput | SortOrder
     emp_code?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    actuall_image?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     unique_id?: SortOrderInput | SortOrder
     emp__eng_name?: SortOrderInput | SortOrder
@@ -44141,6 +44158,7 @@ export namespace Prisma {
     emp_Id?: StringNullableWithAggregatesFilter<"users"> | string | null
     emp_code?: StringNullableWithAggregatesFilter<"users"> | string | null
     image?: StringNullableWithAggregatesFilter<"users"> | string | null
+    actuall_image?: StringNullableWithAggregatesFilter<"users"> | string | null
     gender?: StringNullableWithAggregatesFilter<"users"> | string | null
     unique_id?: StringNullableWithAggregatesFilter<"users"> | string | null
     emp__eng_name?: StringNullableWithAggregatesFilter<"users"> | string | null
@@ -47699,6 +47717,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -47747,6 +47766,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -47794,6 +47814,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47842,6 +47863,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47890,6 +47912,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -47928,6 +47951,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47966,6 +47990,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51242,6 +51267,7 @@ export namespace Prisma {
     emp_Id?: SortOrder
     emp_code?: SortOrder
     image?: SortOrder
+    actuall_image?: SortOrder
     gender?: SortOrder
     unique_id?: SortOrder
     emp__eng_name?: SortOrder
@@ -51286,6 +51312,7 @@ export namespace Prisma {
     emp_Id?: SortOrder
     emp_code?: SortOrder
     image?: SortOrder
+    actuall_image?: SortOrder
     gender?: SortOrder
     unique_id?: SortOrder
     emp__eng_name?: SortOrder
@@ -51325,6 +51352,7 @@ export namespace Prisma {
     emp_Id?: SortOrder
     emp_code?: SortOrder
     image?: SortOrder
+    actuall_image?: SortOrder
     gender?: SortOrder
     unique_id?: SortOrder
     emp__eng_name?: SortOrder
@@ -55197,6 +55225,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -55244,6 +55273,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -55400,6 +55430,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55447,6 +55478,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56107,6 +56139,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -56154,6 +56187,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -56262,6 +56296,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56309,6 +56344,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -59268,6 +59304,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -59315,6 +59352,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -59439,6 +59477,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -59486,6 +59525,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60401,6 +60441,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -60448,6 +60489,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -60666,6 +60708,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60713,6 +60756,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60805,6 +60849,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -60852,6 +60897,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -60966,6 +61012,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61013,6 +61060,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -62457,6 +62505,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -62504,6 +62553,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -62713,6 +62763,7 @@ export namespace Prisma {
     emp_Id?: StringNullableFilter<"users"> | string | null
     emp_code?: StringNullableFilter<"users"> | string | null
     image?: StringNullableFilter<"users"> | string | null
+    actuall_image?: StringNullableFilter<"users"> | string | null
     gender?: StringNullableFilter<"users"> | string | null
     unique_id?: StringNullableFilter<"users"> | string | null
     emp__eng_name?: StringNullableFilter<"users"> | string | null
@@ -62889,6 +62940,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -62936,6 +62988,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -63060,6 +63113,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63107,6 +63161,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63193,6 +63248,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -63240,6 +63296,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -63348,6 +63405,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63395,6 +63453,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63470,6 +63529,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -63517,6 +63577,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -63651,6 +63712,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63698,6 +63760,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63850,6 +63913,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -63897,6 +63961,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -64009,6 +64074,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64056,6 +64122,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66864,6 +66931,7 @@ export namespace Prisma {
     emp_Id?: string | null
     emp_code?: string | null
     image?: string | null
+    actuall_image?: string | null
     gender?: string | null
     unique_id?: string | null
     emp__eng_name?: string | null
@@ -66963,6 +67031,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67010,6 +67079,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67057,6 +67127,7 @@ export namespace Prisma {
     emp_Id?: NullableStringFieldUpdateOperationsInput | string | null
     emp_code?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    actuall_image?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     unique_id?: NullableStringFieldUpdateOperationsInput | string | null
     emp__eng_name?: NullableStringFieldUpdateOperationsInput | string | null

@@ -486,6 +486,7 @@ model users {
   emp_Id                    String?                     @db.VarChar(255)
   emp_code                  String?                     @db.VarChar(255)
   image                     String?                     @db.VarChar(500)
+  actuall_image              String?                     @db.VarChar(500)
   gender                    String?                     @db.VarChar(50)
   unique_id                 String?                     @db.VarChar(255)
   emp__eng_name             String?                     @db.VarChar(255)

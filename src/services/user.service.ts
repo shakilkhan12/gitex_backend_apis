@@ -6,6 +6,10 @@ import axios from "axios";
 import https from "https";
 import { UserType, AddUserType } from "@/typescript/interfaces";
 import fetch from "node-fetch";
+import * as fs from 'fs';
+import * as path from 'path';
+import * as crypto from 'crypto';
+import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 export async function urlToBase64(url: string): Promise<string | string> {
   try {
@@ -32,6 +36,125 @@ export async function urlToBase64(url: string): Promise<string | string> {
 }
 
 class UserService {
+   private static detectImageFormat(buffer: Buffer): string {
+      try {
+         if (buffer.length >= 4) {
+            if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+               return 'jpg';
+            }
+            if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+               return 'png';
+            }
+            if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x38) {
+               return 'gif';
+            }
+            if (buffer[0] === 0x42 && buffer[1] === 0x4D) {
+               return 'bmp';
+            }
+            if (buffer.length >= 12 && 
+                buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+                buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) {
+               return 'webp';
+            }
+         }
+         
+         return 'jpg';
+      } catch (error) {
+         return 'jpg';
+      }
+   }
+
+   private static async saveUserImageLocally(imageUrl: string, empId: string): Promise<string | null> {
+      try {
+         if (!imageUrl || imageUrl.trim() === '') {
+            return null;
+         }
+
+         // Check if a user with the same actual_image URL already exists
+         const existingUserWithSameImage = await db.users.findFirst({
+            where: { actuall_image: imageUrl },
+            select: { image: true }
+         });
+
+         if (existingUserWithSameImage?.image) {
+            // Check if the file still exists
+            const existingFilePath = path.join(process.cwd(), existingUserWithSameImage.image.replace(/^\//, ''));
+            if (fs.existsSync(existingFilePath)) {
+               return existingUserWithSameImage.image;
+            }
+         }
+
+         // Download image and convert to base64
+         const base64String = await urlToBase64(imageUrl);
+         
+         if (!base64String || base64String === '') {
+            return null;
+         }
+
+         // Clean base64 string
+         let cleanBase64 = base64String.trim();
+         if (cleanBase64.includes(',')) {
+            cleanBase64 = cleanBase64.split(',')[1];
+         }
+
+         // Validate base64 format
+         if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
+            return null;
+         }
+
+         // Convert to buffer
+         const imageBuffer = Buffer.from(cleanBase64, 'base64');
+         
+         if (imageBuffer.length === 0) {
+            return null;
+         }
+
+         // Create hash of image content to detect duplicates
+         const imageHash = crypto.createHash('md5').update(imageBuffer).digest('hex');
+
+         // Detect image format
+         const imageFormat = this.detectImageFormat(imageBuffer);
+         
+         // Create upload directory
+         const uploadDir = path.join(process.cwd(), 'uploads', 'user-images');
+         if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+         }
+
+         // Check for existing file with same hash
+         const existingFiles = fs.readdirSync(uploadDir);
+         for (const file of existingFiles) {
+            const filePath = path.join(uploadDir, file);
+            try {
+               const fileBuffer = fs.readFileSync(filePath);
+               const fileHash = crypto.createHash('md5').update(fileBuffer).digest('hex');
+               
+               if (fileHash === imageHash) {
+                  // Duplicate found, reuse existing file
+                  const existingImagePath = `/uploads/user-images/${file}`;
+                  return existingImagePath;
+               }
+            } catch (fileError) {
+               // Skip files that can't be read
+               continue;
+            }
+         }
+
+         // No duplicate found, save new image with hash in filename for easier identification
+         const fileName = `${empId}_${imageHash.substring(0, 8)}.${imageFormat}`;
+         const filePath = path.join(uploadDir, fileName);
+
+         // Save file
+         fs.writeFileSync(filePath, imageBuffer);
+
+         // Return local path
+         const imageLocalPath = `/uploads/user-images/${fileName}`;
+         
+         return imageLocalPath;
+      } catch (error: any) {
+         return null;
+      }
+   }
 
    
 
@@ -230,6 +353,10 @@ class UserService {
          const hasNextPage = page < totalPages;
          const hasPreviousPage = page > 1;
 
+      const imageFields = ['image'];
+      const formattedUsers = formatImageUrlsInArray(users, imageFields);
+
+
          const paginationData = {
             currentPage: page,
             totalPages,
@@ -243,7 +370,7 @@ class UserService {
 
          return {
             success: true,
-            data: users,
+            data: formattedUsers,
             pagination: paginationData
          };
 
@@ -254,7 +381,6 @@ class UserService {
 
    public static getUsersFiltersService = async () => {
       try {
-         // Fetch fields needed for filters in a single pass (no pagination)
          const allUsers = await db.users.findMany({
             where: { user_Id: { not: null } },
             select: {
@@ -418,6 +544,8 @@ class UserService {
 
          // Remove role_Id from the response and add users_roles
          const { role_Id, ...userWithoutRoleId } = user;
+      const imageFields = ['image'];
+      // const formattedUser = formatImageUrlsInArray([{...userWithoutRoleId}], imageFields);
          const result = {
             ...userWithoutRoleId,
             users_roles
@@ -712,7 +840,13 @@ class UserService {
             currentIndex++;
             try {
                const existingUser = await db.users.findFirst({
-                  where: { user_Id: userData.UserID }
+                  where: { user_Id: userData.UserID },
+                  select: {
+                     Id: true,
+                     image: true,
+                     actuall_image: true,
+                     ai_engine_access: true
+                  }
                });
 
                // Helper function to safely parse dates
@@ -734,14 +868,44 @@ class UserService {
                   }
                };
 
-               const userDataToProcess: UserType = {
+               // Get API response image URL
+               const apiImageUrl = userData.EmployeeImage1 || userData.EmployeeImage2 || null;
+               
+               // Handle image saving for existing users
+               let localImagePath: string | null = null;
+               if (existingUser) {
+                  // Compare API response image with actual_image
+                  const currentActualImage = existingUser.actuall_image;
+                  
+                  // If API image URL is different from stored actual_image, or if actual_image is null
+                  if (apiImageUrl && apiImageUrl !== currentActualImage) {
+                     // Save image locally
+                     localImagePath = await this.saveUserImageLocally(apiImageUrl, userData.EmpCode);
+                     
+                     if (!localImagePath) {
+                        // Keep existing image if save fails
+                        localImagePath = existingUser.image;
+                     }
+                  } else {
+                     // No change in image, keep existing local image path
+                     localImagePath = existingUser.image;
+                  }
+               } else {
+                  // New user - save image locally
+                  if (apiImageUrl) {
+                     localImagePath = await this.saveUserImageLocally(apiImageUrl, userData.EmpCode);
+                  }
+               }
+
+               const userDataToProcess: any = {
                   user_Id: userData.UserID,
                   emp_Id: userData.EmpCode,
                   emp_code: userData.EmpCode,
-                  image: userData.EmployeeImage1 || userData.EmployeeImage2,
+                  image: localImagePath, // Local path
+                  actuall_image: apiImageUrl, // API URL
                   gender: userData.Gender,
                   emp__eng_name: userData.Name,
-                  emp__arabic_name: userData.NameAr, // Added Arabic name mapping
+                  emp__arabic_name: userData.NameAr,
                   location: userData.Location,
                   telephone: userData.Telephone,
                   email: userData.Email,
@@ -750,14 +914,14 @@ class UserService {
                   joining_date: parseDate(userData.JoiningDate),
                   date_of_birth: parseDate(userData.DateOfBirth),
                   dep_eng_name: userData.Department,
-                  dep_arabic_name: userData.DepartmentAr, // Added Arabic department mapping
+                  dep_arabic_name: userData.DepartmentAr,
                   desig_eng_name: userData.Designation,
-                  desig_arabic_name: userData.DesignationAr, // Added Arabic designation mapping
-                  unit_eng_name: userData.Unit, // Changed from unit_arabic_name to unit_eng_name for English
-                  unit_arabic_name: userData.UnitAr, // Added Arabic unit mapping
+                  desig_arabic_name: userData.DesignationAr,
+                  unit_eng_name: userData.Unit,
+                  unit_arabic_name: userData.UnitAr,
                   is_attendance_user: userData.IsAttendenceUser === "Y",
                   is_ai_login_user: userData.IsAILoginUser === "Y",
-                  ai_engine_access: existingUser?.ai_engine_access || false, // Keep existing value or default
+                  ai_engine_access: existingUser?.ai_engine_access || false,
                   updatedAt: new Date()
                };
 
@@ -976,7 +1140,6 @@ class UserService {
             }
          };
 
-         console.log("User", user);
 
          // Get image as base64
          const faceData = await getImageAsBase64(user.image);
