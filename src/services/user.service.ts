@@ -730,7 +730,8 @@ class UserService {
          };
 
          const response = await axios.post(
-            "https://192.168.164.7/middleware/?class=general&action=EmployeeListingGet",
+            // "https://192.168.164.7/middleware/?class=general&action=EmployeeListingGet",
+            "https://khormun.gov.ae/middleware/?class=general&action=EmployeeListingUpdated",
             payload,
             {
                headers: {
@@ -798,43 +799,43 @@ class UserService {
             }
          });
 
-         // Delete users not present in API response (batch deletion for better performance)
-         if (usersToDelete.length > 0) {
+         // // Delete users not present in API response (batch deletion for better performance)
+         // if (usersToDelete.length > 0) {
             
-            try {
-               // Use deleteMany for batch deletion instead of individual deletes
-               const deleteResult = await db.users.deleteMany({
-                  where: {
-                     Id: {
-                        in: usersToDelete.map(user => user.Id)
-                     }
-                  }
-               });
+         //    try {
+         //       // Use deleteMany for batch deletion instead of individual deletes
+         //       const deleteResult = await db.users.deleteMany({
+         //          where: {
+         //             Id: {
+         //                in: usersToDelete.map(user => user.Id)
+         //             }
+         //          }
+         //       });
                
-               deletedCount = deleteResult.count;
+         //       deletedCount = deleteResult.count;
                
-               // Log some examples of deleted users (first 5)
-               const sampleDeleted = usersToDelete.slice(0, 5);
-               sampleDeleted.forEach(user => {
-               });
+         //       // Log some examples of deleted users (first 5)
+         //       const sampleDeleted = usersToDelete.slice(0, 5);
+         //       sampleDeleted.forEach(user => {
+         //       });
                
-               if (usersToDelete.length > 5) {
-               }
+         //       if (usersToDelete.length > 5) {
+         //       }
                
-            } catch (deleteError) {
+         //    } catch (deleteError) {
                
-               // Fallback to individual deletion if batch fails
-               for (const userToDelete of usersToDelete) {
-                  try {
-                     await db.users.delete({
-                        where: { Id: userToDelete.Id }
-                     });
-                     deletedCount++;
-                  } catch (individualDeleteError) {
-                  }
-               }
-            }
-         }
+         //       // Fallback to individual deletion if batch fails
+         //       for (const userToDelete of usersToDelete) {
+         //          try {
+         //             await db.users.delete({
+         //                where: { Id: userToDelete.Id }
+         //             });
+         //             deletedCount++;
+         //          } catch (individualDeleteError) {
+         //          }
+         //       }
+         //    }
+         // }
 
          
          let currentIndex = 0;

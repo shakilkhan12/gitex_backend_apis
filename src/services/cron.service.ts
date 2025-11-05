@@ -76,7 +76,7 @@ class CronService {
          timezone: this.TIMEZONE
       } as any);
 
-      this.irrigationCronTask = cron.schedule('0 8 * * *', async () => {
+      this.irrigationCronTask = cron.schedule('30 5 * * *', async () => {
          const triggerTime = new Date();
          console.log(`[CronService] 🕐 Irrigation monitoring cron triggered at ${triggerTime.toLocaleString()}`);
          
