@@ -20,10 +20,26 @@ class ParkAttendanceController extends ParkAttendanceService {
 
    public static viewParkAttendances = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const attendances = await ParkAttendanceService.viewParkAttendancesService();
+         const { department, employeeId } = req.query;
+         
+         const filters = {
+            department: department as string | undefined,
+            employeeId: employeeId as string | undefined
+         };
+         
+         const attendances = await ParkAttendanceService.viewParkAttendancesService(filters);
          return res.status(STATUS.SUCCESS).json(attendances);
       } catch (error) {
          next(error)
+      }
+   }
+
+   public static getParkAttendanceFilters = async (_req: Request, res: Response, next: NextFunction) => {
+      try {
+         const result = await ParkAttendanceService.getParkAttendanceFiltersService();
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
       }
    }
 }

@@ -121,7 +121,7 @@ class CronService {
          timezone: this.TIMEZONE
       } as any);
 
-      this.userFetchCronTask = cron.schedule('0 * * * *', async () => {
+      this.userFetchCronTask = cron.schedule('*/30 * * * *', async () => {
          const triggerTime = new Date();
          console.log(`[CronService] 🕐 User fetch cron triggered at ${triggerTime.toLocaleString()}`);
          
@@ -142,7 +142,7 @@ class CronService {
          }, this.JOB_TIMEOUT);
 
          try {
-            const result = await UserService.fetchAndStoreEmployeeListingService();
+            const result = await UserService.fetchAndStoreEmployeeListingService('cron');
             const duration = ((Date.now() - startTime) / 1000).toFixed(2);
             console.log('[CronService] ✅ User fetch completed successfully:', {
                message: result.message,
@@ -174,7 +174,7 @@ class CronService {
       console.log('[CronService] Schedule:');
       console.log('[CronService]   - Morning grass monitoring: 07:30 AM daily');
       console.log('[CronService]   - Morning irrigation monitoring: 08:00 AM daily');
-      console.log('[CronService]   - User fetch: Every hour');
+      console.log('[CronService]   - User fetch: Every 30 minutes');
       console.log('[CronService] Status:');
       console.log('[CronService]   - Grass cron task active:', isGrassTaskActive ? '✅ YES' : '❌ NO');
       console.log('[CronService]   - Irrigation cron task active:', isIrrigationTaskActive ? '✅ YES' : '❌ NO');
@@ -196,7 +196,14 @@ class CronService {
       }
       
       const nextUserFetchTime = new Date(now);
-      nextUserFetchTime.setHours(now.getHours() + 1, 0, 0, 0);
+      const currentMinutes = now.getMinutes();
+      if (currentMinutes < 30) {
+         // Next execution is at :30 of current hour
+         nextUserFetchTime.setMinutes(30, 0, 0);
+      } else {
+         // Next execution is at :00 of next hour
+         nextUserFetchTime.setHours(now.getHours() + 1, 0, 0, 0);
+      }
       
       console.log('[CronService] Next executions:');
       console.log('[CronService]   - Grass monitoring:', nextGrassTime.toLocaleString());
@@ -252,7 +259,14 @@ class CronService {
       }
       
       const nextUserFetchTime = new Date(currentTime);
-      nextUserFetchTime.setHours(currentTime.getHours() + 1, 0, 0, 0);
+      const currentMinutes = currentTime.getMinutes();
+      if (currentMinutes < 30) {
+         // Next execution is at :30 of current hour
+         nextUserFetchTime.setMinutes(30, 0, 0);
+      } else {
+         // Next execution is at :00 of next hour
+         nextUserFetchTime.setHours(currentTime.getHours() + 1, 0, 0, 0);
+      }
       
       return {
          isRunning: this.isRunning,
@@ -295,8 +309,8 @@ class CronService {
             },
             {
                name: 'User Fetch',
-               schedule: 'Every hour',
-               cronExpression: '0 * * * *',
+               schedule: 'Every 30 minutes',
+               cronExpression: '*/30 * * * *',
                timezone: this.TIMEZONE,
                isRunning: this.userFetchRunning,
                isScheduled: !!this.userFetchCronTask,

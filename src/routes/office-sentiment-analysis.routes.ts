@@ -428,4 +428,41 @@ officeSentimentAnalysisRouter.put('/update/:detection_Id', officeSentimentAnalys
  */
 officeSentimentAnalysisRouter.get('/get', OfficeSentimentAnalysisController.viewOfficeSentimentAnalyses)
 
+/**
+ * @swagger
+ * /office-sentiment-analysis/filters:
+ *   get:
+ *     summary: Get filters for office sentiment analysis
+ *     tags: [Office Sentiment Analysis]
+ *     description: Retrieve filter options for office sentiment analysis (employees list)
+ *     responses:
+ *       200:
+ *         description: Filters retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     employees:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: number
+ *                           emp_Id:
+ *                             type: string
+ *                           name_en:
+ *                             type: string
+ *                           name_ar:
+ *                             type: string
+ */
+officeSentimentAnalysisRouter.get('/filters', OfficeSentimentAnalysisController.getOfficeSentimentAnalysisFilters)
+
 export default officeSentimentAnalysisRouter; 

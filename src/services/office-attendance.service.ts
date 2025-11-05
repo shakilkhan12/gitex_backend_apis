@@ -3,6 +3,7 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import { formatDate, formatDuration, formatTime } from "@/utils/dateTime.utils";
 import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
+import { UserService } from "@/services";
 
 class OfficeAttendanceService {
   protected static addOfficeAttendanceService = async (
@@ -47,9 +48,51 @@ class OfficeAttendanceService {
     }
   };
 
-  protected static viewOfficeAttendancesService = async () => {
+  protected static viewOfficeAttendancesService = async (filters?: {
+    department?: string;
+    employeeId?: string;
+  }) => {
     try {
+      // Build where clause for filtering
+      const whereClause: any = {};
+
+      // Build user filter conditions
+      if (filters?.department || filters?.employeeId) {
+        const userConditions: any = {};
+
+        // Department filter
+        if (filters?.department) {
+          userConditions.OR = [
+            { dep_eng_name: filters.department },
+            { dep_arabic_name: filters.department }
+          ];
+        }
+
+        // Employee ID filter
+        if (filters?.employeeId) {
+          userConditions.emp_Id = filters.employeeId;
+        }
+
+        // Combine department and employeeId with AND
+        if (filters?.department && filters?.employeeId) {
+          whereClause.user = {
+            AND: [
+              {
+                OR: [
+                  { dep_eng_name: filters.department },
+                  { dep_arabic_name: filters.department }
+                ]
+              },
+              { emp_Id: filters.employeeId }
+            ]
+          };
+        } else {
+          whereClause.user = userConditions;
+        }
+      }
+
       const results = await db.offices_attendance.findMany({
+        where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
         include: {
           office: {
             select: {
@@ -358,7 +401,7 @@ class OfficeAttendanceService {
           (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
 
         // Format image URLs in attendance times
-        const imageFields = ['entry_image', 'exit_image'];
+        const imageFields = ['entry_image', 'exit_image', 'image'];
         const formattedAttendanceTimes = formatImageUrlsInArray(attendanceTimes, imageFields);
 
         return {
@@ -403,6 +446,26 @@ class OfficeAttendanceService {
       throw new HttpException(
         STATUS.BAD_REQUEST,
         "Failed to fetch office attendances summary"
+      );
+    }
+  };
+
+  protected static getOfficeAttendanceFiltersService = async () => {
+    try {
+      const userFiltersResult = await UserService.getUsersFiltersService();
+      
+      return {
+        success: true,
+        data: {
+          departments_en: userFiltersResult.data.departments_en,
+          departments_ar: userFiltersResult.data.departments_ar,
+          employees: userFiltersResult.data.employees
+        }
+      };
+    } catch (error) {
+      throw new HttpException(
+        STATUS.INTERNAL_SERVER_ERROR,
+        "Failed to fetch office attendance filters"
       );
     }
   };

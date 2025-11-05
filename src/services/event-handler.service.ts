@@ -3177,16 +3177,16 @@ class EventHandlerService {
             if (base64ImageData) {
                try {
                   Logger.info(`[EventHandlerService] 📤 Saving guest user image locally`);
-                  const dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
-                  // Use global imageUrl if available, otherwise upload
-                  if (!imageUrl) {
-                     imageUrl = await this.saveImageLocally(dataUrl, 'guest-users', guestUser.Id.toString());
-                     Logger.info(`[EventHandlerService] ✅ Successfully saved guest user image locally: ${imageUrl}`);
-                  } else {
-                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for guest user: ${imageUrl}`);
+                  // Check if base64ImageData already has data URL prefix (from cropping)
+                  let dataUrl = base64ImageData;
+                  if (!base64ImageData.startsWith('data:')) {
+                     dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
                   }
-               } catch (cloudinaryError: any) {
-                  Logger.error(`[EventHandlerService] ❌ Failed to save guest user image locally:`, cloudinaryError.message);
+                  
+                  imageUrl = await this.saveImageLocally(dataUrl, 'guest-users', guestUser.Id.toString());
+                  Logger.info(`[EventHandlerService] ✅ Successfully saved guest user image locally: ${imageUrl}`);
+               } catch (imageError: any) {
+                  Logger.error(`[EventHandlerService] ❌ Failed to save guest user image locally:`, imageError.message);
                }
             }
             
@@ -3242,6 +3242,34 @@ class EventHandlerService {
 
             return updatedGuestUser;
          } else {
+            // Even if HIK Vision upload fails, try to save the image if available
+            let imageUrl = null;
+            if (base64ImageData) {
+               try {
+                  Logger.info(`[EventHandlerService] 📤 Saving guest user image locally (HIK Vision failed)`);
+                  // Check if base64ImageData already has data URL prefix (from cropping)
+                  let dataUrl = base64ImageData;
+                  if (!base64ImageData.startsWith('data:')) {
+                     // If it's plain base64, add the data URL prefix
+                     dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
+                  }
+                  
+                  imageUrl = await this.saveImageLocally(dataUrl, 'guest-users', guestUser.Id.toString());
+                  Logger.info(`[EventHandlerService] ✅ Successfully saved guest user image locally: ${imageUrl}`);
+                  
+                  // Update guest user with image even if HIK Vision failed
+                  const updatedGuestUser = await db.users.update({
+                     where: { Id: guestUser.Id },
+                     data: { 
+                        image: imageUrl
+                     }
+                  });
+                  Logger.info(`[EventHandlerService] ✅ Updated guest user with image URL: ${imageUrl}`);
+               } catch (imageError: any) {
+                  Logger.error(`[EventHandlerService] ❌ Failed to save guest user image locally:`, imageError.message);
+               }
+            }
+            
             const duration = Date.now() - startTime;
             Logger.error(`[EventHandlerService] ❌ HIK Vision API returned error for guest user`, {
                guestUserId: guestUser.Id,
@@ -3251,6 +3279,14 @@ class EventHandlerService {
                error: hikVisionResponse?.msg || 'Unknown error'
             });
             Logger.warn(`[EventHandlerService] ⚠️ Returning guest user without HIK Vision ID due to upload failure`);
+            
+            // Return updated guest user with image if it was saved, otherwise return original
+            if (imageUrl) {
+               const guestUserWithImage = await db.users.findUnique({
+                  where: { Id: guestUser.Id }
+               });
+               return guestUserWithImage || guestUser;
+            }
             return guestUser;
          }
 

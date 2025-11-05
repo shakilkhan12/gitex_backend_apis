@@ -3,6 +3,7 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import { formatDate, formatTime } from "@/utils/dateTime.utils";
 import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
+import UserService from "./user.service";
 
 class OfficeSentimentAnalysisService {
   protected static addOfficeSentimentAnalysisService = async (
@@ -229,6 +230,8 @@ class OfficeSentimentAnalysisService {
     toDateTime?: string;
     entryMood?: string;
     exitMood?: string;
+    employeeId?: string;
+    sentimentOf?: string;
   }) => {
     console.log(
       "🟡 [OfficeSentimentAnalysisService] Fetching office sentiment analyses with filters:",
@@ -270,6 +273,31 @@ class OfficeSentimentAnalysisService {
           whereClause.check_out_sentiment = null;
         } else {
           whereClause.check_out_sentiment = filters.exitMood;
+        }
+      }
+
+      // Employee ID filter
+      if (filters?.employeeId) {
+        // Find user by emp_Id to get the user Id
+        const user = await db.users.findFirst({
+          where: { emp_Id: filters.employeeId },
+          select: { Id: true }
+        });
+        
+        if (user) {
+          whereClause.person_Id = user.Id.toString();
+        } else {
+          // If employee not found, return empty results
+          whereClause.person_Id = 'NOT_FOUND';
+        }
+      }
+
+      // Sentiment of filter (employee/visitor)
+      if (filters?.sentimentOf && filters.sentimentOf !== 'All') {
+        if (filters.sentimentOf === 'Employees') {
+          whereClause.sentiment_of = 'employee';
+        } else if (filters.sentimentOf === 'Guests') {
+          whereClause.sentiment_of = 'visitor';
         }
       }
 
@@ -389,6 +417,7 @@ class OfficeSentimentAnalysisService {
                 Id: user.Id,
                 user_Id: user.user_Id,
                 emp_Id: user.emp_Id,
+                image: user.image ? formatImageUrlsInArray([{ image: user.image }], ['image'])[0].image : null,
                 emp__eng_name: user.emp__eng_name,
                 emp__arabic_name: user.emp__arabic_name,
                 gender: user.gender,
@@ -457,7 +486,7 @@ class OfficeSentimentAnalysisService {
 
    
       // Format image URLs in the results
-      const imageFields = ['check_in_image', 'check_out_capture'];
+      const imageFields = ['check_in_image', 'check_out_capture', 'image'];
       const formattedResultsWithImages = formatImageUrlsInArray(formattedResults, imageFields);
 
       return {
@@ -475,6 +504,24 @@ class OfficeSentimentAnalysisService {
       throw new HttpException(
         STATUS.BAD_REQUEST,
         "Failed to fetch office sentiment analyses"
+      );
+    }
+  };
+
+  protected static getOfficeSentimentAnalysisFiltersService = async () => {
+    try {
+      const userFiltersResult = await UserService.getUsersFiltersService();
+      
+      return {
+        success: true,
+        data: {
+          employees: userFiltersResult.data.employees
+        }
+      };
+    } catch (error) {
+      throw new HttpException(
+        STATUS.INTERNAL_SERVER_ERROR,
+        "Failed to fetch office sentiment analysis filters"
       );
     }
   };

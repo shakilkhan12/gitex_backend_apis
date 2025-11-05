@@ -242,4 +242,53 @@ officeAttendanceRouter.post('/add', officeAttendanceValidations, OfficeAttendanc
  */
 officeAttendanceRouter.get('/get', OfficeAttendanceController.viewOfficeAttendances)
 
+/**
+ * @swagger
+ * /office-attendance/filters:
+ *   get:
+ *     summary: Get filter options for office attendance
+ *     tags: [Office Attendance]
+ *     description: Retrieve departments and employees for filtering office attendance records
+ *     responses:
+ *       200:
+ *         description: Filter options retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     departments_en:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["IT", "HR", "Finance"]
+ *                     departments_ar:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["تقنية المعلومات", "الموارد البشرية", "المالية"]
+ *                     employees:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           emp_Id:
+ *                             type: string
+ *                           name_en:
+ *                             type: string
+ *                           name_ar:
+ *                             type: string
+ *       500:
+ *         description: Internal server error
+ */
+officeAttendanceRouter.get('/filters', OfficeAttendanceController.getOfficeAttendanceFilters)
+
 export default officeAttendanceRouter; 

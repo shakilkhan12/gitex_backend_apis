@@ -4,6 +4,7 @@ import { HttpException } from "@/utils/HttpException.utils";
 import { formatDate, formatTime } from "@/utils/dateTime.utils";
 import { formatTimeFetchFromFullDate } from "./office-sentiment-analysis.service";
 import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
+import UserService from "./user.service";
 
 class ParkSentimentAnalysisService {
    protected static addParkSentimentAnalysisService = async (sentimentAnalysis: ParkSentimentAnalysisType) => {
@@ -159,7 +160,8 @@ class ParkSentimentAnalysisService {
       toDateTime?: string;
       entryMood?: string;
       exitMood?: string;
-      employee?: string;
+      employeeId?: string;
+      sentimentOf?: string;
    }) => {
       console.log("🟡 [ParkSentimentAnalysisService] Fetching park sentiment analyses with filters:", filters);
 
@@ -201,6 +203,30 @@ class ParkSentimentAnalysisService {
             }
          }
 
+         // Employee ID filter
+         if (filters?.employeeId) {
+            // Find user by emp_Id to get the user Id
+            const user = await db.users.findFirst({
+               where: { emp_Id: filters.employeeId },
+               select: { Id: true }
+            });
+            
+            if (user) {
+               whereClause.person_Id = user.Id.toString();
+            } else {
+               // If employee not found, return empty results
+               whereClause.person_Id = 'NOT_FOUND';
+            }
+         }
+
+         // Sentiment of filter (employee/visitor)
+         if (filters?.sentimentOf && filters.sentimentOf !== 'All') {
+            if (filters.sentimentOf === 'Employees') {
+               whereClause.sentiment_of = 'employee';
+            } else if (filters.sentimentOf === 'Guests') {
+               whereClause.sentiment_of = 'visitor';
+            }
+         }
 
          // Build order by clause
          const orderByClause: any = {};
@@ -289,6 +315,7 @@ class ParkSentimentAnalysisService {
                      Id: user.Id,
                      user_Id: user.user_Id,
                      emp_Id: user.emp_Id,
+                     image: user.image ? formatImageUrlsInArray([{ image: user.image }], ['image'])[0].image : null,
                      emp__eng_name: user.emp__eng_name,
                      emp__arabic_name: user.emp__arabic_name,
                      gender: user.gender,
@@ -354,7 +381,7 @@ class ParkSentimentAnalysisService {
          };
 
          
-         const imageFields = ['check_in_image', 'check_out_capture'];
+         const imageFields = ['check_in_image', 'check_out_capture', 'image'];
          const formattedResultsWithImages = formatImageUrlsInArray(formattedResults, imageFields);
          return {
             success: true,
@@ -369,6 +396,24 @@ class ParkSentimentAnalysisService {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch park sentiment analyses");
       }
    }
+
+   protected static getParkSentimentAnalysisFiltersService = async () => {
+      try {
+         const userFiltersResult = await UserService.getUsersFiltersService();
+         
+         return {
+            success: true,
+            data: {
+               employees: userFiltersResult.data.employees
+            }
+         };
+      } catch (error) {
+         throw new HttpException(
+            STATUS.INTERNAL_SERVER_ERROR,
+            "Failed to fetch park sentiment analysis filters"
+         );
+      }
+   };
 }
 
 export default ParkSentimentAnalysisService; 

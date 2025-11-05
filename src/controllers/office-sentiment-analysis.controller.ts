@@ -35,7 +35,7 @@ class OfficeSentimentAnalysisController extends OfficeSentimentAnalysisService {
 
    public static viewOfficeSentimentAnalyses = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMood, exitMood } = req.query;
+         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMood, exitMood, employeeId, sentimentOf } = req.query;
 
          const filters = {
             page: page ? parseInt(page as string) : undefined,
@@ -46,7 +46,9 @@ class OfficeSentimentAnalysisController extends OfficeSentimentAnalysisService {
             fromDateTime: fromDateTime as string,
             toDateTime: toDateTime as string,
             entryMood: entryMood as string,
-            exitMood: exitMood as string
+            exitMood: exitMood as string,
+            employeeId: employeeId as string,
+            sentimentOf: sentimentOf as string
          };
 
          const result = await OfficeSentimentAnalysisService.viewOfficeSentimentAnalysesService(filters);
@@ -69,6 +71,15 @@ class OfficeSentimentAnalysisController extends OfficeSentimentAnalysisService {
          }
       } catch (error) {
          next(error)
+      }
+   }
+
+   public static getOfficeSentimentAnalysisFilters = async (_req: Request, res: Response, next: NextFunction) => {
+      try {
+         const result = await OfficeSentimentAnalysisService.getOfficeSentimentAnalysisFiltersService();
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
       }
    }
 }

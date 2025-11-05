@@ -20,10 +20,26 @@ class OfficeAttendanceController extends OfficeAttendanceService {
 
    public static viewOfficeAttendances = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const attendances = await OfficeAttendanceService.viewOfficeAttendancesService();
+         const { department, employeeId } = req.query;
+         
+         const filters = {
+            department: department as string | undefined,
+            employeeId: employeeId as string | undefined
+         };
+         
+         const attendances = await OfficeAttendanceService.viewOfficeAttendancesService(filters);
          return res.status(STATUS.SUCCESS).json(attendances);
       } catch (error) {
          next(error)
+      }
+   }
+
+   public static getOfficeAttendanceFilters = async (_req: Request, res: Response, next: NextFunction) => {
+      try {
+         const result = await OfficeAttendanceService.getOfficeAttendanceFiltersService();
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
       }
    }
 }

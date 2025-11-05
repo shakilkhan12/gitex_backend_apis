@@ -699,16 +699,17 @@ class UserService {
       onProgress?: (progress: { current: number; total: number; processed: number; errors: number }) => void,
       onStatus?: (status: { message: string; current?: number; total?: number }) => void
    ) => {
-      return this.fetchAndStoreEmployeeListingServiceInternal(onProgress, onStatus);
+      return this.fetchAndStoreEmployeeListingServiceInternal(onProgress, onStatus, 'manual');
    }
 
-   public static fetchAndStoreEmployeeListingService = async () => {
-      return this.fetchAndStoreEmployeeListingServiceInternal();
+   public static fetchAndStoreEmployeeListingService = async (source: 'cron' | 'manual' = 'manual') => {
+      return this.fetchAndStoreEmployeeListingServiceInternal(undefined, undefined, source);
    }
 
    private static fetchAndStoreEmployeeListingServiceInternal = async (
       onProgress?: (progress: { current: number; total: number; processed: number; errors: number }) => void,
-      onStatus?: (status: { message: string; current?: number; total?: number }) => void
+      onStatus?: (status: { message: string; current?: number; total?: number }) => void,
+      source: 'cron' | 'manual' = 'manual'
    ) => {
       try {
          
@@ -729,9 +730,12 @@ class UserService {
             Lang: "en"
          };
 
+         const endpoint = source === 'cron' 
+            ? "https://192.168.164.7/middleware/?class=general&action=EmployeeListingUpdated"
+            : "https://192.168.164.7/middleware/?class=general&action=EmployeeListingGet";
+
          const response = await axios.post(
-            // "https://192.168.164.7/middleware/?class=general&action=EmployeeListingGet",
-            "https://khormun.gov.ae/middleware/?class=general&action=EmployeeListingUpdated",
+            endpoint,
             payload,
             {
                headers: {
@@ -758,7 +762,6 @@ class UserService {
          let errorCount = 0;
          let deletedCount = 0;
 
-         // Send initial progress immediately when we know the total count
          if (onProgress) {
             onProgress({
                current: 0,
@@ -768,15 +771,12 @@ class UserService {
             });
          }
          
-         // Send status update - starting sync
          if (onStatus) {
             onStatus({ message: `Starting sync of ${userListing.length} employees...`, total: userListing.length });
          }
 
-         // Get all emp_ids from API response
          const apiEmpIds = new Set(userListing.map((user: any) => user.EmpCode as string));
 
-         // Find users in DB that are not in API response (excluding EMP001)
          const usersToDelete = await db.users.findMany({
             where: {
                AND: [
@@ -946,7 +946,6 @@ class UserService {
                   successCount++;
                }
 
-               // Send progress update every 10 employees or on last employee
                if (onProgress && (currentIndex % 10 === 0 || currentIndex === userListing.length)) {
                   onProgress({
                      current: currentIndex,
@@ -956,7 +955,6 @@ class UserService {
                   });
                }
 
-               // Log progress every 100 users
                if (successCount % 100 === 0) {
                   console.log(`[UserService] Processed ${successCount} users so far...`);
                }
@@ -965,7 +963,6 @@ class UserService {
                errorCount++;
                console.error(`[UserService] Error processing user ${userData.UserID}:`, userError);
                
-               // Send progress update even on error
                if (onProgress) {
                   onProgress({
                      current: currentIndex,
@@ -1362,11 +1359,7 @@ class UserService {
             `Failed to upload first two users to HIK Vision: ${error.message}`
          );
       }
-   };
-
-   
-
-
+   }
 }
 
 export default UserService;
