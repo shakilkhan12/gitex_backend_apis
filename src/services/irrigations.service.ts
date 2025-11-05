@@ -23,22 +23,23 @@ export class IrrigationsService {
       {
          cameraIndex: "278",
          camera_Name: "INSIDE-2",
-         zones: [8815034]
-      },
+         zones: [11477966]
+      }
+      ,
       {
          cameraIndex: "283",
          camera_Name: "INSIDE-1",
-         zones: [8815065, 8815067, 8815068, 8815069]
+         zones: [11477969, 11477971, 11477972, 11477973]
       },
       {
          cameraIndex: "289",
          camera_Name: "IPCamera 12",
-         zones: [8815066, 8815070]
+         zones: [11477970, 11477974]
       },
       {
          cameraIndex: "288",
          camera_Name: "ENTRY",
-         zones: [8815033, 8815036]
+         zones: [11477965, 11477968]
       }
    ];
 
@@ -511,74 +512,137 @@ The response must be a single JSON object structured exactly as follows. The cal
       }
    }
 
-   private static async triggerWatering(zoneIds: number[]): Promise<any> {
-      try {
-         const wateringApiUrl = 'https://bms.rainbirdapi.com/api/v1/Programs/1801299/runtimes';
+   // private static async triggerWatering(zoneIds: number[]): Promise<any> {
+   //    try {
+   //       const wateringApiUrl = 'https://bms.rainbirdapi.com/api/v1/Programs/1801299/runtimes';
          
-         const requestBody = {
-            ids: zoneIds,
-            baseRunTime: 540
-         };
+   //       const requestBody = {
+   //          ids: zoneIds,
+   //          baseRunTime: 540
+   //       };
          
-         console.log(`[IrrigationsService] Sending Rainbird API request:`, {
-            url: wateringApiUrl,
-            body: requestBody,
-            zoneIds: zoneIds
-         });
+   //       console.log(`[IrrigationsService] Sending Rainbird API request:`, {
+   //          url: wateringApiUrl,
+   //          body: requestBody,
+   //          zoneIds: zoneIds
+   //       });
 
-         // Log the exact JSON string being sent
-         const jsonString = JSON.stringify(requestBody);
-         console.log(`[IrrigationsService] JSON payload being sent:`, jsonString);
+   //       // Log the exact JSON string being sent
+   //       const jsonString = JSON.stringify(requestBody);
+   //       console.log(`[IrrigationsService] JSON payload being sent:`, jsonString);
          
-         const response = await axios.patch(wateringApiUrl, requestBody, {
-            headers: {
-               'Content-Type': 'application/json',
-               'Authorization': 'Bearer B3ECE106BE349EC07A000EB3AEC16EB539705BE8F816EE102CC6A74550127467-1',
-               'Accept': '*/*',
-               'Accept-Encoding': 'gzip, deflate, br',
-               'Connection': 'keep-alive',
-               'Cache-Control': 'no-cache'
-            },
-            timeout: 30000,
-            transformRequest: [(data) => {
-               console.log(`[IrrigationsService] Transform request data:`, data);
-               return JSON.stringify(data);
-            }]
-         });
+   //       const response = await axios.patch(wateringApiUrl, requestBody, {
+   //          headers: {
+   //             'Content-Type': 'application/json',
+   //             'Authorization': 'Bearer B3ECE106BE349EC07A000EB3AEC16EB539705BE8F816EE102CC6A74550127467-1',
+   //             'Accept': '*/*',
+   //             'Accept-Encoding': 'gzip, deflate, br',
+   //             'Connection': 'keep-alive',
+   //             'Cache-Control': 'no-cache'
+   //          },
+   //          timeout: 30000,
+   //          transformRequest: [(data) => {
+   //             console.log(`[IrrigationsService] Transform request data:`, data);
+   //             return JSON.stringify(data);
+   //          }]
+   //       });
 
-         console.log(`[IrrigationsService] Watering triggered for zones: ${zoneIds.join(', ')}`);
-         console.log(`[IrrigationsService] Rainbird API response:`, response.data);
+   //       console.log(`[IrrigationsService] Watering triggered for zones: ${zoneIds.join(', ')}`);
+   //       console.log(`[IrrigationsService] Rainbird API response:`, response.data);
          
-         // Check if watering was successful
-         if (response.data && response.data.succeeded === true) {
-            console.log(`[IrrigationsService] Watering successful for zones: ${zoneIds.join(', ')}`);
-         } else {
-            console.warn(`[IrrigationsService] Watering failed for zones: ${zoneIds.join(', ')}. Response:`, response.data);
-         }
+   //       // Check if watering was successful
+   //       if (response.data && response.data.succeeded === true) {
+   //          console.log(`[IrrigationsService] Watering successful for zones: ${zoneIds.join(', ')}`);
+   //       } else {
+   //          console.warn(`[IrrigationsService] Watering failed for zones: ${zoneIds.join(', ')}. Response:`, response.data);
+   //       }
          
-         return response.data;
-      } catch (error: any) {
-         console.error(`[IrrigationsService] Error triggering watering for zones ${zoneIds.join(', ')}:`, error.message);
-         if (error.response) {
-            console.error('[IrrigationsService] Rainbird API error response:', {
-               status: error.response.status,
-               statusText: error.response.statusText,
-               data: error.response.data
-            });
+   //       return response.data;
+   //    } catch (error: any) {
+   //       console.error(`[IrrigationsService] Error triggering watering for zones ${zoneIds.join(', ')}:`, error.message);
+   //       if (error.response) {
+   //          console.error('[IrrigationsService] Rainbird API error response:', {
+   //             status: error.response.status,
+   //             statusText: error.response.statusText,
+   //             data: error.response.data
+   //          });
             
-            // Log detailed validation errors if available
-            if (error.response.data && error.response.data.errors) {
-               console.error('[IrrigationsService] Detailed validation errors:', JSON.stringify(error.response.data.errors, null, 2));
-            }
-         }
+   //          // Log detailed validation errors if available
+   //          if (error.response.data && error.response.data.errors) {
+   //             console.error('[IrrigationsService] Detailed validation errors:', JSON.stringify(error.response.data.errors, null, 2));
+   //          }
+   //       }
          
-         // Return a failed response object instead of throwing
-         return {
-            succeeded: false,
-            errors: error.response?.data?.errors || error.message
-         };
-      }
-   }
+   //       // Return a failed response object instead of throwing
+   //       return {
+   //          succeeded: false,
+   //          errors: error.response?.data?.errors || error.message
+   //       };
+   //    }
+   // }
+
+   private static async triggerWatering(zoneIds: number[]): Promise<any> {
+  try {
+    const wateringApiUrl = 'https://bms.rainbirdapi.com/api/v1/ManualOps/StartStations';
+
+    // Prepare request payload
+    const requestBody = {
+      stationIds: zoneIds,
+      seconds: zoneIds.map(() => 60) // assign 60 seconds for each station
+    };
+
+    console.log(`[IrrigationsService] Sending Rainbird API request:`, {
+      url: wateringApiUrl,
+      body: requestBody
+    });
+
+    const response = await axios.post(wateringApiUrl, requestBody, {
+      headers: {
+        'Content-Type': 'application/*+json',
+        'Authorization': 'Bearer B3ECE106BE349EC07A000EB3AEC16EB539705BE8F816EE102CC6A74550127467-1',
+        'Accept': 'application/json'
+      },
+      validateStatus: (status) => true, // let us handle 204 and 500 manually
+      timeout: 30000
+    });
+
+    console.log(`[IrrigationsService] Rainbird API response status:`, response.status);
+
+    // Success (204 No Content)
+    if (response.status === 204) {
+      console.log(`[IrrigationsService] ✅ Watering successfully started for stations: ${zoneIds.join(', ')}`);
+      return {
+        succeeded: true,
+        message: 'Watering started successfully',
+        status: response.status
+      };
+    }
+
+    // Handle failure (e.g., 500 error)
+    console.warn(`[IrrigationsService] ⚠️ Watering failed for stations: ${zoneIds.join(', ')}.`, response.data);
+    return {
+      succeeded: false,
+      status: response.status,
+      error: response.data?.Message || 'Unknown error from API'
+    };
+
+  } catch (error: any) {
+    console.error(`[IrrigationsService] ❌ Exception while triggering watering for stations ${zoneIds.join(', ')}:`, error.message);
+
+    if (error.response) {
+      console.error('[IrrigationsService] Rainbird API error response:', {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data
+      });
+    }
+
+    return {
+      succeeded: false,
+      error: error.response?.data?.Message || error.message
+    };
+  }
+}
 
    private static async createJobHistoryRecord(data: {
       cameraIndex: string;
