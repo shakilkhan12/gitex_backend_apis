@@ -834,7 +834,7 @@ class EventHandlerService {
                          Logger.debug(`[EventHandlerService] No face recognition data available for office attendance`);
                       }
                       
-                      let image = null;
+                      let officeFootfallImage = null;
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
                             const imageResponse = await fetch(eventInfo.data.alarmResult.faces.URL);
@@ -843,13 +843,9 @@ class EventHandlerService {
                                const base64Image = Buffer.from(imageBuffer).toString('base64');
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
-                               if (!imageUrl) {
-                                  imageUrl = await this.saveImageLocally(dataUrl, 'office-footfall', eventInfo.eventId);
-                                  Logger.info(`[EventHandlerService] ✅ Successfully saved office footfall image locally: ${imageUrl}`);
-                               } else {
-                                  Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office footfall: ${imageUrl}`);
-                               }
-                               image = imageUrl;
+                               // Always save a new image for footfall analysis
+                               officeFootfallImage = await this.saveImageLocally(dataUrl, 'office-footfall', eventInfo.eventId);
+                               Logger.info(`[EventHandlerService] ✅ Successfully saved office footfall image locally: ${officeFootfallImage}`);
                             } else {
                                Logger.warn(`[EventHandlerService] ⚠️ Failed to fetch image from URL: ${eventInfo.data.alarmResult.faces.URL}`);
                             }
@@ -866,7 +862,7 @@ class EventHandlerService {
                          time: eventInfo.sendTime,
                          detected_camera_Id: eventInfo.srcIndex,
                          detected_camera_name: eventInfo.srcName,
-                         image: image,
+                         image: officeFootfallImage,
                          age_group: ageGroup,
                       }
                       
@@ -2058,7 +2054,7 @@ class EventHandlerService {
                          }
                       }
                       
-                      let image = null;
+                      let parkFootfallImage = null;
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
                             const imageResponse = await fetch(eventInfo.data.alarmResult.faces.URL);
@@ -2067,13 +2063,8 @@ class EventHandlerService {
                                const base64Image = Buffer.from(imageBuffer).toString('base64');
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
-                               if (!imageUrl) {
-                                  imageUrl = await this.saveImageLocally(dataUrl, 'park-footfall', eventInfo.eventId);
-                                  Logger.info(`[EventHandlerService] ✅ Successfully saved park footfall image locally: ${imageUrl}`);
-                               } else {
-                                  Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park footfall: ${imageUrl}`);
-                               }
-                               image = imageUrl;
+                               parkFootfallImage = await this.saveImageLocally(dataUrl, 'park-footfall', eventInfo.eventId);
+                               Logger.info(`[EventHandlerService] ✅ Successfully saved park footfall image locally: ${parkFootfallImage}`);
                             } else {
                                Logger.warn(`[EventHandlerService] ⚠️ Failed to fetch image from URL: ${eventInfo.data.alarmResult.faces.URL}`);
                             }
@@ -2090,7 +2081,7 @@ class EventHandlerService {
                          time: eventInfo.sendTime,
                          detected_camera_Id: eventInfo.srcIndex,
                          detected_camera_name: eventInfo.srcName,
-                         image: image
+                         image: parkFootfallImage
                       }
                       
                       if(isEntry){

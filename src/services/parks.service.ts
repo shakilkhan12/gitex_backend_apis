@@ -414,7 +414,8 @@ class ParkService {
                detection_Id: item.detection_Id,
                detected_camera_Id: item.detected_camera_Id,
                detected_camera_name: item.detected_camera_name,
-               time: item.time
+               time: item.time,
+               footfall_image: item.image // Include footfall image separately from person image
             });
           }
           return acc;
@@ -433,7 +434,8 @@ class ParkService {
               is_child: item.is_child,
               detected_camera_Id: item.detected_camera_Id,
               detected_camera_name: item.detected_camera_name,
-              time: item.time
+              time: item.time,
+              image: item.image // Include footfall image
             });
           }
           return acc;
@@ -690,10 +692,14 @@ class ParkService {
           };
         });
 
+        // Format image URLs in job history
+        const imageFields = ['image'];
+        const formattedHistoryWithImages = formatImageUrlsInArray(formattedHistory, imageFields);
+
         return {
           success: true,
-          data: formattedHistory,
-          total: formattedHistory.length
+          data: formattedHistoryWithImages,
+          total: formattedHistoryWithImages.length
         };
       }
 
@@ -830,10 +836,12 @@ class ParkService {
         previousPage: hasPreviousPage ? filters.page - 1 : null
       };
 
+      const imageFields = ['image'];
+      const formattedHistoryWithImages = formatImageUrlsInArray(formattedHistory, imageFields);
 
       return {
         success: true,
-        data: formattedHistory,
+        data: formattedHistoryWithImages,
         total: totalCount,
         pagination: paginationData
       };

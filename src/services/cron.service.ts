@@ -1,15 +1,12 @@
 import cron from 'node-cron';
 import LandscapingService from './landscaping.service';
 import { IrrigationsService } from './irrigations.service';
-import UserService from './user.service';
 
 class CronService {
    private static isRunning = false;
    private static irrigationRunning = false;
-   private static userFetchRunning = false;
    private static grassCronTask: any = null;
    private static irrigationCronTask: any = null;
-   private static userFetchCronTask: any = null;
    private static readonly JOB_TIMEOUT = 60 * 60 * 1000; 
    
    private static readonly TIMEZONE = process.env.TZ || 'Asia/Dubai';
@@ -19,7 +16,6 @@ class CronService {
       
       this.isRunning = false;
       this.irrigationRunning = false;
-      this.userFetchRunning = false;
 
       const currentTime = new Date();
       console.log('[CronService] Initializing cron jobs...');
@@ -121,64 +117,17 @@ class CronService {
          timezone: this.TIMEZONE
       } as any);
 
-      this.userFetchCronTask = cron.schedule('*/30 * * * *', async () => {
-         const triggerTime = new Date();
-         console.log(`[CronService] 🕐 User fetch cron triggered at ${triggerTime.toLocaleString()}`);
-         
-         if (this.userFetchRunning) {
-            console.warn('[CronService] ⚠️ User fetch already running, skipping this execution');
-            return;
-         }
-
-         this.userFetchRunning = true;
-         const startTime = Date.now();
-         console.log('[CronService] Starting user fetch...');
-
-         const timeoutId = setTimeout(() => {
-            if (this.userFetchRunning) {
-               console.error('[CronService] ⚠️ User fetch job timed out after 1 hour, forcing reset');
-               this.userFetchRunning = false;
-            }
-         }, this.JOB_TIMEOUT);
-
-         try {
-            const result = await UserService.fetchAndStoreEmployeeListingService('cron');
-            const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-            console.log('[CronService] ✅ User fetch completed successfully:', {
-               message: result.message,
-               summary: result.summary,
-               duration: `${duration}s`
-            });
-         } catch (error: any) {
-            const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-            console.error('[CronService] ❌ User fetch failed:', {
-               error: error.message,
-               stack: error.stack,
-               duration: `${duration}s`
-            });
-         } finally {
-            clearTimeout(timeoutId);
-            this.userFetchRunning = false;
-            console.log('[CronService] User fetch job finished, flag reset');
-         }
-      }, {
-         timezone: this.TIMEZONE
-      } as any);
-
       const tasks = cron.getTasks();
       const isGrassTaskActive = this.grassCronTask && Object.keys(tasks).length > 0;
       const isIrrigationTaskActive = this.irrigationCronTask && Object.keys(tasks).length > 0;
-      const isUserFetchTaskActive = this.userFetchCronTask && Object.keys(tasks).length > 0;
       
       console.log('[CronService] ✅ Cron jobs initialized successfully');
       console.log('[CronService] Schedule:');
       console.log('[CronService]   - Morning grass monitoring: 07:30 AM daily');
       console.log('[CronService]   - Morning irrigation monitoring: 08:00 AM daily');
-      console.log('[CronService]   - User fetch: Every 30 minutes');
       console.log('[CronService] Status:');
       console.log('[CronService]   - Grass cron task active:', isGrassTaskActive ? '✅ YES' : '❌ NO');
       console.log('[CronService]   - Irrigation cron task active:', isIrrigationTaskActive ? '✅ YES' : '❌ NO');
-      console.log('[CronService]   - User fetch cron task active:', isUserFetchTaskActive ? '✅ YES' : '❌ NO');
       console.log('[CronService]   - Total active tasks:', Object.keys(tasks).length);
       console.log('[CronService]   - Timezone:', this.TIMEZONE);
       
@@ -195,22 +144,11 @@ class CronService {
          nextIrrigationTime.setDate(nextIrrigationTime.getDate() + 1);
       }
       
-      const nextUserFetchTime = new Date(now);
-      const currentMinutes = now.getMinutes();
-      if (currentMinutes < 30) {
-         // Next execution is at :30 of current hour
-         nextUserFetchTime.setMinutes(30, 0, 0);
-      } else {
-         // Next execution is at :00 of next hour
-         nextUserFetchTime.setHours(now.getHours() + 1, 0, 0, 0);
-      }
-      
       console.log('[CronService] Next executions:');
       console.log('[CronService]   - Grass monitoring:', nextGrassTime.toLocaleString());
       console.log('[CronService]   - Irrigation monitoring:', nextIrrigationTime.toLocaleString());
-      console.log('[CronService]   - User fetch:', nextUserFetchTime.toLocaleString());
       
-      if (!isGrassTaskActive || !isIrrigationTaskActive || !isUserFetchTaskActive) {
+      if (!isGrassTaskActive || !isIrrigationTaskActive) {
          console.warn('[CronService] ⚠️ WARNING: Some cron tasks may not be active. Server restart may be required.');
       }
    }
@@ -226,16 +164,11 @@ class CronService {
             this.irrigationCronTask.stop();
             this.irrigationCronTask = null;
          }
-         if (this.userFetchCronTask) {
-            this.userFetchCronTask.stop();
-            this.userFetchCronTask = null;
-         }
          cron.getTasks().forEach((task) => {
             task.stop();
          });
          this.isRunning = false;
          this.irrigationRunning = false;
-         this.userFetchRunning = false;
          console.log('[CronService] ✅ All cron jobs stopped');
       } catch (error: any) {
          console.error('[CronService] ❌ Error stopping cron jobs:', error.message);
@@ -258,25 +191,13 @@ class CronService {
          nextIrrigationTime.setDate(nextIrrigationTime.getDate() + 1);
       }
       
-      const nextUserFetchTime = new Date(currentTime);
-      const currentMinutes = currentTime.getMinutes();
-      if (currentMinutes < 30) {
-         // Next execution is at :30 of current hour
-         nextUserFetchTime.setMinutes(30, 0, 0);
-      } else {
-         // Next execution is at :00 of next hour
-         nextUserFetchTime.setHours(currentTime.getHours() + 1, 0, 0, 0);
-      }
-      
       return {
          isRunning: this.isRunning,
          irrigationRunning: this.irrigationRunning,
-         userFetchRunning: this.userFetchRunning,
          activeTasks: Object.keys(tasks).length,
          tasks: Object.keys(tasks),
          grassTaskActive: !!this.grassCronTask,
          irrigationTaskActive: !!this.irrigationCronTask,
-         userFetchTaskActive: !!this.userFetchCronTask,
          timezone: this.TIMEZONE,
          currentTime: {
             utc: currentTime.toISOString(),
@@ -285,8 +206,7 @@ class CronService {
          },
          nextExecutions: {
             grassMonitoring: nextGrassTime.toLocaleString(),
-            irrigationMonitoring: nextIrrigationTime.toLocaleString(),
-            userFetch: nextUserFetchTime.toLocaleString()
+            irrigationMonitoring: nextIrrigationTime.toLocaleString()
          },
          scheduledJobs: [
             {
@@ -306,15 +226,6 @@ class CronService {
                isRunning: this.irrigationRunning,
                isScheduled: !!this.irrigationCronTask,
                nextExecution: nextIrrigationTime.toISOString()
-            },
-            {
-               name: 'User Fetch',
-               schedule: 'Every 30 minutes',
-               cronExpression: '*/30 * * * *',
-               timezone: this.TIMEZONE,
-               isRunning: this.userFetchRunning,
-               isScheduled: !!this.userFetchCronTask,
-               nextExecution: nextUserFetchTime.toISOString()
             }
          ]
       };
@@ -333,11 +244,7 @@ class CronService {
          const irrigationResult = await IrrigationsService.monitorIrrigationZones();
          console.log('[CronService] Irrigation monitoring test result:', irrigationResult);
          
-         console.log('[CronService] Testing user fetch...');
-         const userFetchResult = await UserService.fetchAndStoreEmployeeListingService();
-         console.log('[CronService] User fetch test result:', userFetchResult);
-         
-         return { success: true, grassResult, irrigationResult, userFetchResult };
+         return { success: true, grassResult, irrigationResult };
       } catch (error: any) {
          console.error('[CronService] Manual test failed:', error.message);
          return { success: false, error: error.message };

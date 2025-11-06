@@ -699,17 +699,16 @@ class UserService {
       onProgress?: (progress: { current: number; total: number; processed: number; errors: number }) => void,
       onStatus?: (status: { message: string; current?: number; total?: number }) => void
    ) => {
-      return this.fetchAndStoreEmployeeListingServiceInternal(onProgress, onStatus, 'manual');
+      return this.fetchAndStoreEmployeeListingServiceInternal(onProgress, onStatus);
    }
 
-   public static fetchAndStoreEmployeeListingService = async (source: 'cron' | 'manual' = 'manual') => {
-      return this.fetchAndStoreEmployeeListingServiceInternal(undefined, undefined, source);
+   public static fetchAndStoreEmployeeListingService = async () => {
+      return this.fetchAndStoreEmployeeListingServiceInternal(undefined, undefined);
    }
 
    private static fetchAndStoreEmployeeListingServiceInternal = async (
       onProgress?: (progress: { current: number; total: number; processed: number; errors: number }) => void,
-      onStatus?: (status: { message: string; current?: number; total?: number }) => void,
-      source: 'cron' | 'manual' = 'manual'
+      onStatus?: (status: { message: string; current?: number; total?: number }) => void
    ) => {
       try {
          
@@ -730,9 +729,7 @@ class UserService {
             Lang: "en"
          };
 
-         const endpoint = source === 'cron' 
-            ? "https://192.168.164.7/middleware/?class=general&action=EmployeeListingUpdated"
-            : "https://192.168.164.7/middleware/?class=general&action=EmployeeListingGet";
+         const endpoint = "https://khormun.gov.ae/middleware/?class=general&action=EmployeeListingUpdated";
 
          const response = await axios.post(
             endpoint,
@@ -774,70 +771,7 @@ class UserService {
          if (onStatus) {
             onStatus({ message: `Starting sync of ${userListing.length} employees...`, total: userListing.length });
          }
-
-         const apiEmpIds = new Set(userListing.map((user: any) => user.EmpCode as string));
-
-         const usersToDelete = await db.users.findMany({
-            where: {
-               AND: [
-                  {
-                     emp_Id: {
-                        notIn: Array.from(apiEmpIds) as string[]
-                     }
-                  },
-                  {
-                     emp_Id: {
-                        not: 'EMP001'
-                     }
-                  }
-               ]
-            },
-            select: {
-               Id: true,
-               emp_Id: true,
-               emp__eng_name: true
-            }
-         });
-
-         // // Delete users not present in API response (batch deletion for better performance)
-         // if (usersToDelete.length > 0) {
-            
-         //    try {
-         //       // Use deleteMany for batch deletion instead of individual deletes
-         //       const deleteResult = await db.users.deleteMany({
-         //          where: {
-         //             Id: {
-         //                in: usersToDelete.map(user => user.Id)
-         //             }
-         //          }
-         //       });
-               
-         //       deletedCount = deleteResult.count;
-               
-         //       // Log some examples of deleted users (first 5)
-         //       const sampleDeleted = usersToDelete.slice(0, 5);
-         //       sampleDeleted.forEach(user => {
-         //       });
-               
-         //       if (usersToDelete.length > 5) {
-         //       }
-               
-         //    } catch (deleteError) {
-               
-         //       // Fallback to individual deletion if batch fails
-         //       for (const userToDelete of usersToDelete) {
-         //          try {
-         //             await db.users.delete({
-         //                where: { Id: userToDelete.Id }
-         //             });
-         //             deletedCount++;
-         //          } catch (individualDeleteError) {
-         //          }
-         //       }
-         //    }
-         // }
-
-         
+  
          let currentIndex = 0;
          for (const userData of userListing) {
             currentIndex++;
@@ -988,31 +922,22 @@ class UserService {
             summary
          };
          
-         console.log('[UserService] Returning result:', result);
          return result;
 
       } catch (error) {
-         console.error('[UserService] Error in fetchAndStoreEmployeeListingService:', error);
          
          if (error instanceof HttpException) {
             console.error('[UserService] HttpException thrown:', error.message);
             throw error;
          }
          
-         if (axios.isAxiosError(error)) {
-            console.error('[UserService] Axios error:', {
-               code: error.code,
-               message: error.message,
-               response: error.response?.data,
-               status: error.response?.status
-            });
-            
+         if (axios.isAxiosError(error)) { 
             if (error.code === 'ECONNREFUSED') {
                throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to third-party API");
             } else if (error.response) {
                throw new HttpException(STATUS.BAD_REQUEST, `Third-party API error: ${error.response.status} - ${error.response.statusText}`);
             } else if (error.request) {
-               throw new HttpException(STATUS.BAD_REQUEST, "No response received from third-party API");
+               throw new HttpException(STATUS.SUCCESS, "Users are already upto date!");
             }
          }
          

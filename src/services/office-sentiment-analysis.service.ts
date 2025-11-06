@@ -9,53 +9,32 @@ class OfficeSentimentAnalysisService {
   protected static addOfficeSentimentAnalysisService = async (
     sentimentAnalysis: OfficeSentimentAnalysisType
   ) => {
-    console.log(
-      "🟢 [OfficeSentimentAnalysisService] Adding new office sentiment analysis:",
-      sentimentAnalysis
-    );
-
     try {
-      // Check if office exists
       const officeExists = await db.offices.findFirst({
         where: { office_Id: sentimentAnalysis.office_Id },
       });
       if (!officeExists) {
-        console.error(
-          "❌ [OfficeSentimentAnalysisService] Office not found with office_Id:",
-          sentimentAnalysis.office_Id
-        );
+       
         throw new HttpException(STATUS.BAD_REQUEST, "Office does not exist");
       }
-      console.log(
-        "✅ [OfficeSentimentAnalysisService] Office exists:",
-        officeExists.office_english_name
-      );
+     
 
-      // Check if entry camera exists
       const entryCameraExists = await db.offices_cameras.findFirst({
         where: { camera_Id: sentimentAnalysis.entry_camera_Id },
       });
       if (!entryCameraExists) {
-        console.error(
-          "❌ [OfficeSentimentAnalysisService] Entry camera not found with camera_Id:",
-          sentimentAnalysis.entry_camera_Id
-        );
+        
         throw new HttpException(
           STATUS.BAD_REQUEST,
           "Entry camera does not exist"
         );
       }
-      console.log(
-        "✅ [OfficeSentimentAnalysisService] Entry camera exists:",
-        entryCameraExists.camera_english_name
-      );
+     
 
-      // Find user by emp_Id and get the user's Id
       const user = await db.users.findFirst({
         where: { emp_Id: sentimentAnalysis.person_Id },
       });
 
-      // Format date and time properly for database
       const checkInDate = new Date(sentimentAnalysis.check_in_date);
       const checkInTime = new Date(
         `1970-01-01T${sentimentAnalysis.check_in_time}Z`
@@ -82,16 +61,9 @@ class OfficeSentimentAnalysisService {
         data: createData,
       });
 
-      console.log(
-        "🎉 [OfficeSentimentAnalysisService] Office sentiment analysis saved successfully:",
-        result.Id
-      );
       return result;
     } catch (error: any) {
-      console.error(
-        "💥 [OfficeSentimentAnalysisService] Error adding office sentiment analysis:",
-        error.message || error
-      );
+      
       throw new HttpException(
         STATUS.BAD_REQUEST,
         "Failed to add office sentiment analysis"
@@ -104,7 +76,6 @@ class OfficeSentimentAnalysisService {
     updateData: Partial<OfficeSentimentAnalysisType>
   ) => {
     try {
-      // Find the office sentiment analysis by detection_Id
       const existingSentiment = await db.offices_sentiment_analysis.findFirst({
         where: { detection_Id: detection_Id },
       });
@@ -116,15 +87,12 @@ class OfficeSentimentAnalysisService {
         );
       }
 
-      // Prepare update data, excluding detection_Id from updates
       const { detection_Id: _, ...updateFields } = updateData;
 
-      // Prepare the update data object
       const updateDataForDb: any = {
         updatedAt: new Date(),
       };
 
-      // Handle each field individually to ensure proper type conversion
       if (updateFields.person_Id !== undefined)
         updateDataForDb.person_Id = updateFields.person_Id;
       if (updateFields.sentiment_of !== undefined)
@@ -156,7 +124,6 @@ class OfficeSentimentAnalysisService {
       if (updateFields.check_out_sentiment !== undefined)
         updateDataForDb.check_out_sentiment = updateFields.check_out_sentiment;
 
-      // If office_Id is being updated, validate it exists
       if (updateFields.office_Id) {
         const officeExists = await db.offices.findFirst({
           where: { office_Id: updateFields.office_Id },
@@ -167,7 +134,6 @@ class OfficeSentimentAnalysisService {
         updateDataForDb.office_Id = officeExists.Id;
       }
 
-      // If entry_camera_Id is being updated, validate it exists
       if (updateFields.entry_camera_Id) {
         const entryCameraExists = await db.offices_cameras.findFirst({
           where: { camera_Id: updateFields.entry_camera_Id },
@@ -181,7 +147,6 @@ class OfficeSentimentAnalysisService {
         updateDataForDb.entry_camera_Id = entryCameraExists.Id;
       }
 
-      // If exit_camera_Id is being updated, validate it exists
       if (updateFields.exit_camera_Id) {
         const exitCameraExists = await db.offices_cameras.findFirst({
           where: { camera_Id: updateFields.exit_camera_Id },
@@ -200,16 +165,8 @@ class OfficeSentimentAnalysisService {
         data: updateDataForDb,
       });
 
-      console.log(
-        "🎉 [OfficeSentimentAnalysisService] Office sentiment analysis updated successfully:",
-        result.Id
-      );
       return result;
     } catch (error: any) {
-      console.error(
-        "💥 [OfficeSentimentAnalysisService] Error updating office sentiment analysis:",
-        error.message || error
-      );
       if (error instanceof HttpException) {
         throw error;
       }
@@ -233,16 +190,9 @@ class OfficeSentimentAnalysisService {
     employeeId?: string;
     sentimentOf?: string;
   }) => {
-    console.log(
-      "🟡 [OfficeSentimentAnalysisService] Fetching office sentiment analyses with filters:",
-      filters
-    );
-
     try {
-      // Build where clause for filtering
       const whereClause: any = {};
 
-      // Search filter
       if (filters?.search) {
         whereClause.OR = [
           { person_name: { contains: filters.search, mode: 'insensitive' } },
@@ -251,7 +201,6 @@ class OfficeSentimentAnalysisService {
         ];
       }
 
-      // Date range filter
       if (filters?.fromDateTime || filters?.toDateTime) {
         whereClause.check_in_date = {};
         if (filters.fromDateTime) {
@@ -262,12 +211,10 @@ class OfficeSentimentAnalysisService {
         }
       }
 
-      // Entry mood filter
       if (filters?.entryMood && filters.entryMood !== 'All') {
         whereClause.check_in_sentiment = filters.entryMood;
       }
 
-      // Exit mood filter
       if (filters?.exitMood && filters.exitMood !== 'All') {
         if (filters.exitMood === 'No Exit') {
           whereClause.check_out_sentiment = null;
@@ -276,9 +223,7 @@ class OfficeSentimentAnalysisService {
         }
       }
 
-      // Employee ID filter
       if (filters?.employeeId) {
-        // Find user by emp_Id to get the user Id
         const user = await db.users.findFirst({
           where: { emp_Id: filters.employeeId },
           select: { Id: true }
@@ -287,12 +232,10 @@ class OfficeSentimentAnalysisService {
         if (user) {
           whereClause.person_Id = user.Id.toString();
         } else {
-          // If employee not found, return empty results
           whereClause.person_Id = 'NOT_FOUND';
         }
       }
 
-      // Sentiment of filter (employee/visitor)
       if (filters?.sentimentOf && filters.sentimentOf !== 'All') {
         if (filters.sentimentOf === 'Employees') {
           whereClause.sentiment_of = 'employee';
@@ -301,29 +244,16 @@ class OfficeSentimentAnalysisService {
         }
       }
 
-      // Build order by clause
-      const orderByClause: any = {};
-      if (filters?.sortBy) {
-        const sortField = filters.sortBy === 'createdAt' ? 'createdAt' : 
-                         filters.sortBy === 'check_in_date' ? 'check_in_date' :
-                         filters.sortBy === 'check_out_date' ? 'check_out_date' :
-                         filters.sortBy === 'person_name' ? 'person_name' :
-                         filters.sortBy === 'check_in_sentiment' ? 'check_in_sentiment' :
-                         filters.sortBy === 'check_out_sentiment' ? 'check_out_sentiment' : 'updatedAt';
-        orderByClause[sortField] = filters.sortOrder === 'asc' ? 'asc' : 'desc';
-      } else {
-        orderByClause.updatedAt = 'desc';
-      }
+      const orderByClause: any = {
+        updatedAt: 'desc'
+      };
 
-      // Set default pagination values
       const page = filters?.page || 1;
       const limit = filters?.limit || 10;
       const skip = (page - 1) * limit;
 
-      // Get total count for pagination metadata
       const totalCount = await db.offices_sentiment_analysis.count({ where: whereClause });
 
-      // Get paginated results
       const results = await db.offices_sentiment_analysis.findMany({
         where: whereClause,
         include: {
@@ -357,12 +287,10 @@ class OfficeSentimentAnalysisService {
         take: limit
       });
 
-      // Get all unique person IDs from results
       const personIds = Array.from(
         new Set(results.map((sentiment) => sentiment.person_Id).filter(Boolean))
       ) as string[];
 
-      // Fetch all users in a single query
       const users = await db.users.findMany({
         where: {
           Id: {
@@ -400,15 +328,19 @@ class OfficeSentimentAnalysisService {
         },
       });
 
-      // Create a map for quick user lookup
       const userMap = new Map(users.map((user) => [user.Id.toString(), user]));
 
-      // Get user details for each sentiment analysis record
       const sentimentWithUsers = results.map((sentiment) => {
-        // Find the user from the map
         const user = sentiment.person_Id
           ? userMap.get(sentiment.person_Id)
           : null;
+
+        let userImage = null;
+        if (user?.image) {
+          userImage = user.image;
+        } else if (sentiment.person_image) {
+          userImage = sentiment.person_image;
+        }
 
         return {
           ...sentiment,
@@ -417,7 +349,7 @@ class OfficeSentimentAnalysisService {
                 Id: user.Id,
                 user_Id: user.user_Id,
                 emp_Id: user.emp_Id,
-                image: user.image ? formatImageUrlsInArray([{ image: user.image }], ['image'])[0].image : null,
+                image: userImage ? formatImageUrlsInArray([{ image: userImage }], ['image'])[0].image : null,
                 emp__eng_name: user.emp__eng_name,
                 emp__arabic_name: user.emp__arabic_name,
                 gender: user.gender,
@@ -442,7 +374,6 @@ class OfficeSentimentAnalysisService {
         };
       });
 
-      // Format the dates and times
       const formattedResults = sentimentWithUsers.map((sentiment) => ({
         ...sentiment,
         check_in_date: formatDate(sentiment.check_in_date),
@@ -451,7 +382,6 @@ class OfficeSentimentAnalysisService {
         check_out_time: formatTimeFetchFromFullDate(sentiment.check_out_time),
       }));
 
-      // Calculate pagination metadata
       const totalPages = Math.ceil(totalCount / limit);
       const hasNextPage = page < totalPages;
       const hasPreviousPage = page > 1;
@@ -467,7 +397,6 @@ class OfficeSentimentAnalysisService {
         previousPage: hasPreviousPage ? page - 1 : null
       };
 
-      // Calculate stats from all filtered data (not just current page)
       const allDataForStats = await db.offices_sentiment_analysis.findMany({
         where: whereClause,
         select: {
@@ -485,7 +414,6 @@ class OfficeSentimentAnalysisService {
       };
 
    
-      // Format image URLs in the results
       const imageFields = ['check_in_image', 'check_out_capture', 'image'];
       const formattedResultsWithImages = formatImageUrlsInArray(formattedResults, imageFields);
 
@@ -497,10 +425,6 @@ class OfficeSentimentAnalysisService {
         stats: statsData
       };
     } catch (error: any) {
-      console.error(
-        "💥 [OfficeSentimentAnalysisService] Error fetching office sentiment analyses:",
-        error.message || error
-      );
       throw new HttpException(
         STATUS.BAD_REQUEST,
         "Failed to fetch office sentiment analyses"
@@ -528,7 +452,6 @@ class OfficeSentimentAnalysisService {
 }
 
 
-//TODO FetchTime
 export function formatTimeFetchFromFullDate(date: Date | string | null) {
   if (!date) return null;
   const d = new Date(date);

@@ -357,7 +357,8 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                      detection_Id: item.detection_Id,
                      detected_camera_Id: item.detected_camera_Id,
                      detected_camera_name: item.detected_camera_name,
-                     time: item.time
+                     time: item.time,
+                     footfall_image: item.image // Include footfall image separately from person image
                   });
                }
                return acc;
@@ -376,13 +377,13 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                      is_child: item.is_child,
                      detected_camera_Id: item.detected_camera_Id,
                      detected_camera_name: item.detected_camera_name,
-                     time: item.time
+                     time: item.time,
+                     image: item.image // Include footfall image
                   });
                }
                return acc;
             }, []);
 
-         // Enhanced hourly distribution with employee and guest breakdown
          const hourlyDistribution = footfallData.reduce((acc, item) => {
             try {
                const hour = new Date(item.time).getHours();
@@ -451,7 +452,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          const formattedEmployees = formatImageUrlsInArray(uniqueEmployees, imageFields);
          const formattedGuests = formatImageUrlsInArray(uniqueGuests, imageFields);
          const formattedRawData = formatImageUrlsInArray(enhancedRawData, imageFields);
-
+         
          return {
             summary: {
                totalFootfall,
@@ -600,9 +601,13 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             status: 'Active' // Default status for footfall entries
          }));
 
+         // Format image URLs in the transformed data
+         const imageFields = ['person_image', 'entry_image'];
+         const formattedTransformedData = formatImageUrlsInArray(transformedData, imageFields);
+
          return {
             success: true,
-            data: transformedData
+            data: formattedTransformedData
          };
       } catch (error: any) {
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch footfall details');

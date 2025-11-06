@@ -2,15 +2,11 @@ import { LandscapingType, STATUS } from "@/typescript";
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import axios from "axios";
-import { v2 as cloudinary } from 'cloudinary';
 import https from "https";
 import * as nodeCrypto from 'crypto';
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+import * as fs from 'fs';
+import * as path from 'path';
+import { formatImageUrl } from "@/utils/imageUrl.utils";
 
 class LandscapingService {
    private static readonly HIK_CONFIG = {
@@ -441,13 +437,13 @@ class LandscapingService {
                   continue;
                }
 
-               const cloudinaryUrl = await this.uploadImageToCloudinary(base64Image!, camera.camera_Id);
+               const imageUrl = await this.saveImageLocally(base64Image!, camera.camera_Id);
                
-               if (!cloudinaryUrl) {
+               if (!imageUrl) {
                   continue;
                }
 
-               const geminiResponse = await this.analyzeImageWithGemini(cloudinaryUrl!);
+               const geminiResponse = await this.analyzeImageWithGemini(imageUrl!);
                
                if (!geminiResponse) {
                   continue;
@@ -457,7 +453,7 @@ class LandscapingService {
                   const landscapingRecord = await this.createGrassMonitoringRecord({
                      parkId: camera.park_Id || undefined,
                      cameraId: camera.camera_Id,
-                     imageUrl: cloudinaryUrl!,
+                     imageUrl: imageUrl!,
                      geminiResponse: geminiResponse!
                   });
 
@@ -487,7 +483,7 @@ class LandscapingService {
                      parkId: camera.park_Id,
                      success: true,
                      message: "Processed successfully but database record creation failed",
-                     cloudinaryUrl: cloudinaryUrl,
+                     imageUrl: imageUrl,
                      geminiResponse: geminiResponse
                   });
                }
@@ -650,32 +646,91 @@ class LandscapingService {
       }
    }
 
-   private static async uploadImageToCloudinary(base64Image: string, cameraId: string): Promise<string | null> {
+   private static detectImageFormat(base64Image: string): string {
       try {
-         const publicId = `landscaping/grass-monitoring/${cameraId}_${Date.now()}`;
-         
-         const result = await cloudinary.uploader.upload(base64Image, {
-            public_id: publicId,
-            resource_type: 'image',
-            format: 'jpg',
-            quality: 'auto',
-            fetch_format: 'auto',
-            folder: 'landscaping'
-         });
+         // Remove data URL prefix if present
+         let cleanBase64 = base64Image.trim();
+         if (cleanBase64.includes(',')) {
+            cleanBase64 = cleanBase64.split(',')[1];
+         }
 
-         return result.secure_url;
+         // Decode base64 to check magic bytes
+         const buffer = Buffer.from(cleanBase64, 'base64');
+         
+         // Check magic bytes for different image formats
+         if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+            return 'jpg';
+         } else if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+            return 'png';
+         } else if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46) {
+            return 'gif';
+         } else if (buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46) {
+            return 'webp';
+         }
+         
+         // Default to jpg if format cannot be determined
+         return 'jpg'; 
+      } catch (error) {
+         console.error('[LandscapingService] Error detecting image format:', error);
+         return 'jpg';
+      }
+   }
+
+   private static async saveImageLocally(base64Image: string, cameraId: string): Promise<string | null> {
+      try {
+         const uploadDir = path.join(process.cwd(), 'uploads', 'landscaping');
+         
+         // Clean and validate base64 data
+         let cleanBase64 = base64Image.trim();
+         
+         // Remove data URL prefix if present (e.g., "data:image/jpeg;base64,")
+         if (cleanBase64.includes(',')) {
+            cleanBase64 = cleanBase64.split(',')[1];
+         }
+         
+         // Validate base64 format
+         if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
+            throw new Error('Invalid base64 format detected');
+         }
+         
+         // Detect image format from cleaned base64 data
+         const imageFormat = this.detectImageFormat(base64Image);
+         const fileName = `landscaping_${cameraId}_${Date.now()}.${imageFormat}`;
+         const filePath = path.join(uploadDir, fileName);
+         
+         if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+            console.log(`[LandscapingService] Created directory: ${uploadDir}`);
+         }
+         
+         // Convert cleaned base64 to buffer and save
+         const imageBuffer = Buffer.from(cleanBase64, 'base64');
+         
+         // Additional validation: check if buffer has valid content
+         if (imageBuffer.length === 0) {
+            throw new Error('Empty image buffer after base64 decoding');
+         }
+         
+         fs.writeFileSync(filePath, imageBuffer);
+         
+         const imageUrl = `/uploads/landscaping/${fileName}`;
+         
+         console.log(`[LandscapingService] Successfully saved image locally. Path: ${imageUrl}, Size: ${imageBuffer.length} bytes`);
+         return imageUrl;
       } catch (error: any) {
-         console.error(`[LandscapingService] Error uploading image to Cloudinary for camera ${cameraId}:`, error.message);
+         console.error(`[LandscapingService] Error saving image locally for camera ${cameraId}:`, error.message);
          return null;
       }
    }
 
-   private static async analyzeImageWithGemini(cloudinaryUrl: string): Promise<string | null> {
+   private static async analyzeImageWithGemini(imageUrl: string): Promise<string | null> {
       try {
          const GEMINI_API_KEY = 'AIzaSyAc6TkgL2AfKiPqcsVYf2JJC5VhF5vuNjM';
          const MODEL = "gemini-2.5-flash";
          const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
          
+         // Format image URL using utility function
+         const fullImageUrl = formatImageUrl(imageUrl) || imageUrl;
          
          const prompt = `Objective:
 Analyze the provided visual and contextual data to determine the current grass height in inches/centimeters and whether the grass needs cutting.
@@ -697,7 +752,7 @@ Seasonal Context: [Grass growth speed may depend on the season; e.g., fast growt
 Maintenance Frequency: [Optional: how often the area is usually cut, if available.]
 
 3. VISUAL SUPPORT (REQUIRED):
-Still Image Link: ${cloudinaryUrl}
+Still Image Link: ${fullImageUrl}
 
 OUTPUT FORMAT:
 [remove pre and post text]. The response must be a single JSON object only, structured as follows:
@@ -852,20 +907,20 @@ OUTPUT FORMAT:
             const imageBase64 = images[i];
             
             try {
-               // Upload image to Cloudinary
-               const cloudinaryUrl = await this.uploadImageToCloudinary(imageBase64, `landscaping_testing_${i + 1}`);
+               // Save image locally
+               const imageUrl = await this.saveImageLocally(imageBase64, `landscaping_testing_${i + 1}`);
                
-               if (!cloudinaryUrl) {
+               if (!imageUrl) {
                   results.push({
                      imageIndex: i + 1,
                      success: false,
-                     error: "Failed to upload image to Cloudinary"
+                     error: "Failed to save image locally"
                   });
                   continue;
                }
 
                // Analyze image with Gemini
-               const geminiResponse = await this.analyzeImageWithGemini(cloudinaryUrl);
+               const geminiResponse = await this.analyzeImageWithGemini(imageUrl);
                
                if (!geminiResponse) {
                   results.push({
@@ -884,7 +939,7 @@ OUTPUT FORMAT:
                // Only save to testing_modules table if needs_cutting is true
                if (needsCutting) {
                   const testingRecord = await this.createTestingModuleRecord({
-                     image: cloudinaryUrl,
+                     image: imageUrl,
                      name: `Landscaping Testing`,
                      case_type: "Landscaping Testing",
                      estimated_height: (geminiData as any).estimated_height || null,
@@ -902,7 +957,7 @@ OUTPUT FORMAT:
                   results.push({
                      imageIndex: i + 1,
                      success: true,
-                     cloudinaryUrl: cloudinaryUrl,
+                     imageUrl: imageUrl,
                      testingRecordId: testingRecord.id,
                      geminiResponse: geminiResponse,
                      needs_cutting: true,
@@ -912,7 +967,7 @@ OUTPUT FORMAT:
                   results.push({
                      imageIndex: i + 1,
                      success: true,
-                     cloudinaryUrl: cloudinaryUrl,
+                     imageUrl: imageUrl,
                      testingRecordId: null,
                      geminiResponse: geminiResponse,
                      needs_cutting: false,

@@ -229,18 +229,9 @@ class ParkSentimentAnalysisService {
          }
 
          // Build order by clause
-         const orderByClause: any = {};
-         if (filters?.sortBy) {
-            const sortField = filters.sortBy === 'createdAt' ? 'createdAt' : 
-                             filters.sortBy === 'check_in_date' ? 'check_in_date' :
-                             filters.sortBy === 'check_out_date' ? 'check_out_date' :
-                             filters.sortBy === 'person_name' ? 'person_name' :
-                             filters.sortBy === 'check_in_sentiment' ? 'check_in_sentiment' :
-                             filters.sortBy === 'check_out_sentiment' ? 'check_out_sentiment' : 'updatedAt';
-            orderByClause[sortField] = filters.sortOrder === 'asc' ? 'asc' : 'desc';
-         } else {
-            orderByClause.updatedAt = 'desc';
-         }
+         const orderByClause: any = {
+            updatedAt: 'desc'
+         };
 
          // Set default pagination values
          const page = filters?.page || 1;
@@ -309,13 +300,23 @@ class ParkSentimentAnalysisService {
                // Find the user from the map
                const user = sentiment.person_Id ? userMap.get(sentiment.person_Id) : null;
 
+               // Determine the image to use: prefer user.image from users table, fallback to person_image from sentiment record
+               // This ensures guest user images are included even if they're not yet saved in the users table
+               let userImage = null;
+               if (user?.image) {
+                  userImage = user.image;
+               } else if (sentiment.person_image) {
+                  // Fallback to person_image from sentiment record (useful for guest users)
+                  userImage = sentiment.person_image;
+               }
+
                return {
                   ...sentiment,
                   user: user ? {
                      Id: user.Id,
                      user_Id: user.user_Id,
                      emp_Id: user.emp_Id,
-                     image: user.image ? formatImageUrlsInArray([{ image: user.image }], ['image'])[0].image : null,
+                     image: userImage ? formatImageUrlsInArray([{ image: userImage }], ['image'])[0].image : null,
                      emp__eng_name: user.emp__eng_name,
                      emp__arabic_name: user.emp__arabic_name,
                      gender: user.gender,
