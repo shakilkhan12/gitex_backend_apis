@@ -2183,7 +2183,7 @@ class EventHandlerService {
                                if (sentimentImageUrl) {
                                   try {
                                      // Construct full image URL
-                                     const fullImageUrl = `${this.API_CONFIG.baseUrl}${sentimentImageUrl}`;
+                                     const fullImageUrl = `${this.API_CONFIG.localHostUrl}${sentimentImageUrl}`;
                                      Logger.info(`[EventHandlerService] Calling emotion detection API for park sentiment with full URL: ${fullImageUrl}`);
                                      const emotionResponse = await axios.post(this.API_CONFIG.emotionDetectionUrl, {
                                         image_url: fullImageUrl
