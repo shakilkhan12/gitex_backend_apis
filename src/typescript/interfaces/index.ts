@@ -210,6 +210,7 @@ export interface ParkZone extends ParkCombine {
   zone_english_name: string;
   zone_arabic_name: string;
   zone_Id: string;
+  camera_Id:number,
   device_ip: string;
   web_api: string;
   status: string;

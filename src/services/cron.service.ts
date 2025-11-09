@@ -5,8 +5,10 @@ import { IrrigationsService } from './irrigations.service';
 class CronService {
    private static isRunning = false;
    private static irrigationRunning = false;
+   private static irrigationAfterImageRunning = false;
    private static grassCronTask: any = null;
    private static irrigationCronTask: any = null;
+   private static irrigationAfterImageCronTask: any = null;
    private static readonly JOB_TIMEOUT = 60 * 60 * 1000; 
    
    private static readonly TIMEZONE = process.env.TZ || 'Asia/Dubai';
@@ -16,6 +18,7 @@ class CronService {
       
       this.isRunning = false;
       this.irrigationRunning = false;
+      this.irrigationAfterImageRunning = false;
 
       const currentTime = new Date();
       console.log('[CronService] Initializing cron jobs...');
@@ -117,17 +120,65 @@ class CronService {
          timezone: this.TIMEZONE
       } as any);
 
+      this.irrigationAfterImageCronTask = cron.schedule('5 6 * * *', async () => {
+         const triggerTime = new Date();
+         console.log(`[CronService] 🕐 Irrigation after-image update cron triggered at ${triggerTime.toLocaleString()}`);
+         
+         if (this.irrigationAfterImageRunning) {
+            console.warn('[CronService] ⚠️ Irrigation after-image update already running, skipping this execution');
+            return;
+         }
+
+         this.irrigationAfterImageRunning = true;
+         const startTime = Date.now();
+         console.log('[CronService] Starting irrigation after-image update...');
+
+         const timeoutId = setTimeout(() => {
+            if (this.irrigationAfterImageRunning) {
+               console.error('[CronService] ⚠️ Irrigation after-image update job timed out after 1 hour, forcing reset');
+               this.irrigationAfterImageRunning = false;
+            }
+         }, this.JOB_TIMEOUT);
+
+         try {
+            const result = await IrrigationsService.updateIrrigationZonesAfterImage();
+            const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+            console.log('[CronService] ✅ Irrigation after-image update completed successfully:', {
+               success: result.success,
+               message: result.message,
+               processedCameras: result.results?.length || 0,
+               duration: `${duration}s`
+            });
+         } catch (error: any) {
+            const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+            console.error('[CronService] ❌ Irrigation after-image update failed:', {
+               error: error.message,
+               stack: error.stack,
+               duration: `${duration}s`
+            });
+         } finally {
+            clearTimeout(timeoutId);
+            this.irrigationAfterImageRunning = false;
+            console.log('[CronService] Irrigation after-image update job finished, flag reset');
+         }
+      }, {
+         timezone: this.TIMEZONE
+      } as any);
+
       const tasks = cron.getTasks();
       const isGrassTaskActive = this.grassCronTask && Object.keys(tasks).length > 0;
       const isIrrigationTaskActive = this.irrigationCronTask && Object.keys(tasks).length > 0;
+      const isIrrigationAfterImageTaskActive = this.irrigationAfterImageCronTask && Object.keys(tasks).length > 0;
       
       console.log('[CronService] ✅ Cron jobs initialized successfully');
       console.log('[CronService] Schedule:');
       console.log('[CronService]   - Morning grass monitoring: 07:30 AM daily');
-      console.log('[CronService]   - Morning irrigation monitoring: 08:00 AM daily');
+      console.log('[CronService]   - Morning irrigation monitoring: 05:30 AM daily');
+      console.log('[CronService]   - Evening irrigation after-image update: 06:05 AM daily');
       console.log('[CronService] Status:');
       console.log('[CronService]   - Grass cron task active:', isGrassTaskActive ? '✅ YES' : '❌ NO');
       console.log('[CronService]   - Irrigation cron task active:', isIrrigationTaskActive ? '✅ YES' : '❌ NO');
+      console.log('[CronService]   - Irrigation after-image cron task active:', isIrrigationAfterImageTaskActive ? '✅ YES' : '❌ NO');
       console.log('[CronService]   - Total active tasks:', Object.keys(tasks).length);
       console.log('[CronService]   - Timezone:', this.TIMEZONE);
       
@@ -139,16 +190,23 @@ class CronService {
       }
       
       const nextIrrigationTime = new Date(now);
-      nextIrrigationTime.setHours(8, 0, 0, 0);
+      nextIrrigationTime.setHours(5, 30, 0, 0);
       if (nextIrrigationTime <= now) {
          nextIrrigationTime.setDate(nextIrrigationTime.getDate() + 1);
+      }
+
+      const nextIrrigationAfterImageTime = new Date(now);
+      nextIrrigationAfterImageTime.setHours(6, 5, 0, 0);
+      if (nextIrrigationAfterImageTime <= now) {
+         nextIrrigationAfterImageTime.setDate(nextIrrigationAfterImageTime.getDate() + 1);
       }
       
       console.log('[CronService] Next executions:');
       console.log('[CronService]   - Grass monitoring:', nextGrassTime.toLocaleString());
       console.log('[CronService]   - Irrigation monitoring:', nextIrrigationTime.toLocaleString());
+      console.log('[CronService]   - Irrigation after-image update:', nextIrrigationAfterImageTime.toLocaleString());
       
-      if (!isGrassTaskActive || !isIrrigationTaskActive) {
+      if (!isGrassTaskActive || !isIrrigationTaskActive || !isIrrigationAfterImageTaskActive) {
          console.warn('[CronService] ⚠️ WARNING: Some cron tasks may not be active. Server restart may be required.');
       }
    }
@@ -164,11 +222,16 @@ class CronService {
             this.irrigationCronTask.stop();
             this.irrigationCronTask = null;
          }
+         if (this.irrigationAfterImageCronTask) {
+            this.irrigationAfterImageCronTask.stop();
+            this.irrigationAfterImageCronTask = null;
+         }
          cron.getTasks().forEach((task) => {
             task.stop();
          });
          this.isRunning = false;
          this.irrigationRunning = false;
+         this.irrigationAfterImageRunning = false;
          console.log('[CronService] ✅ All cron jobs stopped');
       } catch (error: any) {
          console.error('[CronService] ❌ Error stopping cron jobs:', error.message);
@@ -186,18 +249,26 @@ class CronService {
       }
       
       const nextIrrigationTime = new Date(currentTime);
-      nextIrrigationTime.setHours(8, 0, 0, 0);
+      nextIrrigationTime.setHours(5, 30, 0, 0);
       if (nextIrrigationTime <= currentTime) {
          nextIrrigationTime.setDate(nextIrrigationTime.getDate() + 1);
+      }
+
+      const nextIrrigationAfterImageTime = new Date(currentTime);
+      nextIrrigationAfterImageTime.setHours(6, 5, 0, 0);
+      if (nextIrrigationAfterImageTime <= currentTime) {
+         nextIrrigationAfterImageTime.setDate(nextIrrigationAfterImageTime.getDate() + 1);
       }
       
       return {
          isRunning: this.isRunning,
          irrigationRunning: this.irrigationRunning,
+         irrigationAfterImageRunning: this.irrigationAfterImageRunning,
          activeTasks: Object.keys(tasks).length,
          tasks: Object.keys(tasks),
          grassTaskActive: !!this.grassCronTask,
          irrigationTaskActive: !!this.irrigationCronTask,
+         irrigationAfterImageTaskActive: !!this.irrigationAfterImageCronTask,
          timezone: this.TIMEZONE,
          currentTime: {
             utc: currentTime.toISOString(),
@@ -206,7 +277,8 @@ class CronService {
          },
          nextExecutions: {
             grassMonitoring: nextGrassTime.toLocaleString(),
-            irrigationMonitoring: nextIrrigationTime.toLocaleString()
+            irrigationMonitoring: nextIrrigationTime.toLocaleString(),
+            irrigationAfterImageUpdate: nextIrrigationAfterImageTime.toLocaleString()
          },
          scheduledJobs: [
             {
@@ -220,12 +292,21 @@ class CronService {
             },
             {
                name: 'Morning Irrigation Monitoring', 
-               schedule: '08:00 AM daily',
-               cronExpression: '0 8 * * *',
+               schedule: '05:30 AM daily',
+               cronExpression: '30 5 * * *',
                timezone: this.TIMEZONE,
                isRunning: this.irrigationRunning,
                isScheduled: !!this.irrigationCronTask,
                nextExecution: nextIrrigationTime.toISOString()
+            },
+            {
+               name: 'Evening Irrigation After-Image Update',
+               schedule: '06:05 AM daily',
+               cronExpression: '5 6 * * *',
+               timezone: this.TIMEZONE,
+               isRunning: this.irrigationAfterImageRunning,
+               isScheduled: !!this.irrigationAfterImageCronTask,
+               nextExecution: nextIrrigationAfterImageTime.toISOString()
             }
          ]
       };
@@ -244,7 +325,11 @@ class CronService {
          const irrigationResult = await IrrigationsService.monitorIrrigationZones();
          console.log('[CronService] Irrigation monitoring test result:', irrigationResult);
          
-         return { success: true, grassResult, irrigationResult };
+         console.log('[CronService] Testing irrigation after-image update...');
+         const irrigationAfterImageResult = await IrrigationsService.updateIrrigationZonesAfterImage();
+         console.log('[CronService] Irrigation after-image update test result:', irrigationAfterImageResult);
+         
+         return { success: true, grassResult, irrigationResult, irrigationAfterImageResult };
       } catch (error: any) {
          console.error('[CronService] Manual test failed:', error.message);
          return { success: false, error: error.message };

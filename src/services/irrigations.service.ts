@@ -15,29 +15,7 @@ export class IrrigationsService {
       appSecret: 'YuWS8qCb61xbD8fEbwFJ'
    };
 
-   private static ZONES = [
-      {
-         cameraIndex: "278",
-         camera_Name: "INSIDE-2",
-         zones: [11477966]
-      }
-      ,
-      {
-         cameraIndex: "283",
-         camera_Name: "INSIDE-1",
-         zones: [11477969, 11477971, 11477972, 11477973]
-      },
-      {
-         cameraIndex: "289",
-         camera_Name: "IPCamera 12",
-         zones: [11477970, 11477974]
-      },
-      {
-         cameraIndex: "288",
-         camera_Name: "ENTRY",
-         zones: [11477965, 11477968]
-      }
-   ];
+   // Removed hardcoded ZONES array - now fetched dynamically from database
 
    public static testingIrrigationZones = async (images: string[]) => {
       try {
@@ -144,106 +122,193 @@ export class IrrigationsService {
          
          const results = [];
 
-         for (const zone of this.ZONES) {
+         // Fetch all zones that have cameras linked
+         const zonesWithCameras = await db.park_zones.findMany({
+            where: {
+               camera_Id: { not: null }
+            },
+            include: {
+               camera: {
+                  select: {
+                     Id: true,
+                     camera_Id: true,
+                     camera_english_name: true,
+                     camera_arabic_name: true
+                  }
+               }
+            }
+         });
+
+         if (!zonesWithCameras || zonesWithCameras.length === 0) {
+            return {
+               success: true,
+               message: 'No zones with linked cameras found',
+               results: []
+            };
+         }
+
+         // Group zones by camera_Id
+         const zonesByCamera = new Map<number, typeof zonesWithCameras>();
+         
+         for (const zone of zonesWithCameras) {
+            if (!zone.camera_Id || !zone.camera) {
+               continue;
+            }
+            
+            if (!zonesByCamera.has(zone.camera_Id)) {
+               zonesByCamera.set(zone.camera_Id, []);
+            }
+            zonesByCamera.get(zone.camera_Id)!.push(zone);
+         }
+
+         // Process each camera and its linked zones
+         const cameraEntries = Array.from(zonesByCamera.entries());
+         for (const [cameraDbId, zones] of cameraEntries) {
+            const camera = zones[0].camera;
+            
+            if (!camera || !camera.camera_Id) {
+               console.warn(`[IrrigationsService] Camera ${cameraDbId} has no camera_Id, skipping`);
+               continue;
+            }
+
             try {
-               const base64Image = await this.captureCameraImage(zone.cameraIndex, appKey, secretKey);
+               const cameraIndex = camera.camera_Id; 
+               const cameraName = camera.camera_english_name || camera.camera_arabic_name || 'Unknown Camera';
+               
+               // Capture image from camera
+               const base64Image = await this.captureCameraImage(cameraIndex, appKey, secretKey);
                
                if (!base64Image) {
+                  const zoneIdsForError = zones
+                     .map((z: typeof zonesWithCameras[0]) => z.zone_Id)
+                     .filter((id): id is string => id !== null && id !== undefined)
+                     .map((id: string) => Number(id))
+                     .filter((id: number) => !isNaN(id));
+                  
+                  results.push({
+                     cameraIndex: cameraIndex,
+                     cameraName: cameraName,
+                     zones: zoneIdsForError,
+                     success: false,
+                     error: "Failed to capture camera image"
+                  });
                   continue;
                }
 
-               const imageUrl = await this.saveImageLocally(base64Image!, zone.cameraIndex);
+               const imageUrl = await this.saveImageLocally(base64Image, cameraIndex);
                
                if (!imageUrl) {
+                  const zoneIdsForError = zones
+                     .map((z: typeof zonesWithCameras[0]) => z.zone_Id)
+                     .filter((id): id is string => id !== null && id !== undefined)
+                     .map((id: string) => Number(id))
+                     .filter((id: number) => !isNaN(id));
+                  
+                  results.push({
+                     cameraIndex: cameraIndex,
+                     cameraName: cameraName,
+                     zones: zoneIdsForError,
+                     success: false,
+                     error: "Failed to save image locally"
+                  });
                   continue;
                }
 
-               const geminiResponse = await this.analyzeImageWithGemini(imageUrl!);
+               const geminiResponse = await this.analyzeImageWithGemini(imageUrl);
                
                if (!geminiResponse) {
+                  const zoneIdsForError = zones
+                     .map((z: typeof zonesWithCameras[0]) => z.zone_Id)
+                     .filter((id): id is string => id !== null && id !== undefined)
+                     .map((id: string) => Number(id))
+                     .filter((id: number) => !isNaN(id));
+                  
+                  results.push({
+                     cameraIndex: cameraIndex,
+                     cameraName: cameraName,
+                     zones: zoneIdsForError,
+                     success: false,
+                     error: "Failed to analyze image with Gemini"
+                  });
                   continue;
                }
 
-               console.log('🔍 Gemini Response:', geminiResponse);
-               // Check if watering is needed based on Gemini response
+               // Check if watering is needed based on Gemini response (once per camera)
                const needsWatering = this.shouldWaterGrass(geminiResponse);
                
-               if (needsWatering) {
-                  // Trigger watering for all zones of this camera
-                  const wateringResult = await this.triggerWatering(zone.zones);
-                  
-                  // Check if watering was successful
-                  if (wateringResult && wateringResult.succeeded === true) {
-                     // Create job history records for each zone only if watering succeeded
-                     const jobHistoryResults = [];
-                     for (const zoneId of zone.zones) {
-                        try {
-                           const jobRecord = await this.createJobHistoryRecord({
-                              cameraIndex: zone.cameraIndex,
-                              zoneId: zoneId,
-                              image: imageUrl,
-                              geminiResponse: geminiResponse,
-                              wateringTriggered: true
-                           });
-                           jobHistoryResults.push({ zoneId, success: true, recordId: jobRecord.Id });
-                           console.log(`[IrrigationsService] Job history record created for zone ${zoneId}:`, jobRecord.Id);
-                        } catch (dbError: any) {
-                           console.error(`[IrrigationsService] Failed to create job history for zone ${zoneId}:`, dbError.message);
-                           jobHistoryResults.push({ zoneId, success: false, error: dbError.message });
-                        }
-                     }
+               // Extract zone IDs for Rainbird API (zone_Id is String, convert to Number)
+               const zoneIds = zones
+                  .map((z: typeof zonesWithCameras[0]) => z.zone_Id)
+                  .filter((id): id is string => id !== null && id !== undefined)
+                  .map((id: string) => Number(id))
+                  .filter((id: number) => !isNaN(id));
 
-                     results.push({
-                        cameraIndex: zone.cameraIndex,
-                        cameraName: zone.camera_Name,
-                        zones: zone.zones,
-                        success: true,
-                        wateringTriggered: true,
-                        wateringSucceeded: true,
-                        wateringResult: wateringResult,
-                        imageUrl: imageUrl,
-                        jobHistoryResults: jobHistoryResults
-                     });
-                  } else {
-                     // Watering failed, don't create job history records
-                     results.push({
-                        cameraIndex: zone.cameraIndex,
-                        cameraName: zone.camera_Name,
-                        zones: zone.zones,
-                        success: false,
-                        wateringTriggered: true,
-                        wateringSucceeded: false,
-                        wateringResult: wateringResult,
-                        error: "Watering API call failed"
-                     });
-                  }
-               } else {
-                  // Create job history record even if no watering needed
-                  for (const zoneId of zone.zones) {
-                     await this.createJobHistoryRecord({
-                        cameraIndex: zone.cameraIndex,
-                        zoneId: zoneId,
-                        image: imageUrl,
-                        geminiResponse: geminiResponse,
-                        wateringTriggered: false
-                     });
-                  }
-
-                  results.push({
-                     cameraIndex: zone.cameraIndex,
-                     cameraName: zone.camera_Name,
-                     zones: zone.zones,
-                     success: true,
-                     wateringTriggered: false,
-                     reason: "Grass does not need watering"
-                  });
+               // Trigger watering once for all zones of this camera (if needed)
+               let wateringTriggered = false;
+               let wateringSucceeded = false;
+               let wateringResult = null;
+               
+               if (needsWatering && zoneIds.length > 0) {
+                  wateringTriggered = true;
+                  wateringResult = await this.triggerWatering(zoneIds);
+                  wateringSucceeded = wateringResult && wateringResult.succeeded === true;
                }
 
-            } catch (error: any) {
+               // Create job history records for each zone linked to this camera
+               // One record per zone, all using the same captured image and Gemini analysis
+               const jobHistoryResults = [];
+               for (const zone of zones) {
+                  if (!zone.zone_Id) continue;
+                  
+                  try {
+                     const jobRecord = await this.createJobHistoryRecord({
+                        cameraIndex: cameraIndex,
+                        zoneId: Number(zone.zone_Id),
+                        image: imageUrl,
+                        geminiResponse: geminiResponse,
+                        wateringTriggered: wateringTriggered
+                     });
+                     
+                     jobHistoryResults.push({ 
+                        zoneId: Number(zone.zone_Id), 
+                        success: true, 
+                        recordId: jobRecord.Id 
+                     });
+                     console.log(`[IrrigationsService] Job history record created for zone ${zone.zone_Id}:`, jobRecord.Id);
+                  } catch (dbError: any) {
+                     console.error(`[IrrigationsService] Failed to create job history for zone ${zone.zone_Id}:`, dbError.message);
+                     jobHistoryResults.push({ 
+                        zoneId: Number(zone.zone_Id), 
+                        success: false, 
+                        error: dbError.message 
+                     });
+                  }
+               }
+
                results.push({
-                  cameraIndex: zone.cameraIndex,
-                  cameraName: zone.camera_Name,
-                  zones: zone.zones,
+                  cameraIndex: cameraIndex,
+                  cameraName: cameraName,
+                  zones: zoneIds,
+                  success: true,
+                  wateringTriggered: wateringTriggered,
+                  wateringSucceeded: wateringSucceeded,
+                  wateringResult: wateringResult,
+                  imageUrl: imageUrl,
+                  jobHistoryResults: jobHistoryResults,
+                  reason: needsWatering ? (wateringSucceeded ? "Watering triggered and succeeded" : "Watering triggered but failed") : "Grass does not need watering"
+               });
+
+            } catch (error: any) {
+               const zoneIds = zones
+                  .map((z: typeof zonesWithCameras[0]) => z.zone_Id)
+                  .filter((id): id is string => id !== null && id !== undefined)
+                  .map((id: string) => Number(id))
+                  .filter((id: number) => !isNaN(id));
+               
+               results.push({
+                  cameraIndex: camera?.camera_Id || 'Unknown',
+                  cameraName: camera?.camera_english_name || camera?.camera_arabic_name || 'Unknown Camera',
+                  zones: zoneIds,
                   success: false,
                   error: error.message
                });
@@ -252,12 +317,201 @@ export class IrrigationsService {
 
          return {
             success: true,
-            message: `Processed ${results.length} irrigation zones`,
+            message: `Processed ${results.length} irrigation cameras with linked zones`,
             results: results
          };
 
       } catch (error: any) {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to monitor irrigation zones");
+      }
+   }
+
+   public static updateIrrigationZonesAfterImage = async () => {
+      try {
+         const appKey = this.HIK_CONFIG.appKey;
+         const secretKey = this.HIK_CONFIG.appSecret;
+         
+         const results = [];
+
+         // Fetch all zones that have cameras linked
+         const zonesWithCameras = await db.park_zones.findMany({
+            where: {
+               camera_Id: { not: null }
+            },
+            include: {
+               camera: {
+                  select: {
+                     Id: true,
+                     camera_Id: true,
+                     camera_english_name: true,
+                     camera_arabic_name: true
+                  }
+               }
+            }
+         });
+
+         if (!zonesWithCameras || zonesWithCameras.length === 0) {
+            return {
+               success: true,
+               message: 'No zones with linked cameras found',
+               results: []
+            };
+         }
+
+         // Group zones by camera_Id
+         const zonesByCamera = new Map<number, typeof zonesWithCameras>();
+         
+         for (const zone of zonesWithCameras) {
+            if (!zone.camera_Id || !zone.camera) {
+               continue;
+            }
+            
+            if (!zonesByCamera.has(zone.camera_Id)) {
+               zonesByCamera.set(zone.camera_Id, []);
+            }
+            zonesByCamera.get(zone.camera_Id)!.push(zone);
+         }
+
+         // Process each camera and its linked zones
+         const cameraEntries = Array.from(zonesByCamera.entries());
+         for (const [cameraDbId, zones] of cameraEntries) {
+            const camera = zones[0].camera;
+            
+            if (!camera || !camera.camera_Id) {
+               console.warn(`[IrrigationsService] Camera ${cameraDbId} has no camera_Id, skipping`);
+               continue;
+            }
+
+            try {
+               const cameraIndex = camera.camera_Id;
+               const cameraName = camera.camera_english_name || camera.camera_arabic_name || 'Unknown Camera';
+               
+               // Capture image from camera
+               const base64Image = await this.captureCameraImage(cameraIndex, appKey, secretKey);
+               
+               if (!base64Image) {
+                  results.push({
+                     cameraIndex: cameraIndex,
+                     cameraName: cameraName,
+                     zones: zones.map((z: typeof zonesWithCameras[0]) => z.zone_Id).filter((id): id is string => id !== null && id !== undefined),
+                     success: false,
+                     error: "Failed to capture camera image"
+                  });
+                  continue;
+               }
+
+               // Save image locally
+               const imageUrl = await this.saveImageLocally(base64Image, cameraIndex);
+               
+               if (!imageUrl) {
+                  results.push({
+                     cameraIndex: cameraIndex,
+                     cameraName: cameraName,
+                     zones: zones.map((z: typeof zonesWithCameras[0]) => z.zone_Id).filter((id): id is string => id !== null && id !== undefined),
+                     success: false,
+                     error: "Failed to save image locally"
+                  });
+                  continue;
+               }
+
+               // Get today's date range (start and end of day)
+               const today = new Date();
+               today.setHours(0, 0, 0, 0);
+               const tomorrow = new Date(today);
+               tomorrow.setDate(tomorrow.getDate() + 1);
+
+               // Update existing records for each zone linked to this camera
+               const updateResults = [];
+               for (const zone of zones) {
+                  if (!zone.zone_Id || !zone.Id) {
+                     continue;
+                  }
+
+                  try {
+                     // Find existing records for this camera and zone created today
+                     const existingRecords = await db.parks_zones_job_history.findMany({
+                        where: {
+                           camera_Id: cameraDbId,
+                           zone_Id: zone.Id,
+                           createdAt: {
+                              gte: today,
+                              lt: tomorrow
+                           }
+                        }
+                     });
+
+                     if (existingRecords.length > 0) {
+                        const updateResult = await db.parks_zones_job_history.updateMany({
+                           where: {
+                              camera_Id: cameraDbId,
+                              zone_Id: zone.Id,
+                              createdAt: {
+                                 gte: today,
+                                 lt: tomorrow
+                              }
+                           },
+                           data: {
+                              after_image: imageUrl,
+                              updatedAt: new Date()
+                           }
+                        });
+
+                        updateResults.push({
+                           zoneId: zone.zone_Id,
+                           zoneDbId: zone.Id,
+                           recordsUpdated: updateResult.count,
+                           success: true
+                        });
+                        console.log(`[IrrigationsService] Updated ${updateResult.count} records for zone ${zone.zone_Id} with after_image: ${imageUrl}`);
+                     } else {
+                        updateResults.push({
+                           zoneId: zone.zone_Id,
+                           zoneDbId: zone.Id,
+                           recordsUpdated: 0,
+                           success: true,
+                           message: `No existing records found for zone ${zone.zone_Id} created today`
+                        });
+                        console.log(`[IrrigationsService] No existing records found for zone ${zone.zone_Id} created today`);
+                     }
+                  } catch (dbError: any) {
+                     console.error(`[IrrigationsService] Failed to update records for zone ${zone.zone_Id}:`, dbError.message);
+                     updateResults.push({
+                        zoneId: zone.zone_Id,
+                        zoneDbId: zone.Id,
+                        success: false,
+                        error: dbError.message
+                     });
+                  }
+               }
+
+               results.push({
+                  cameraIndex: cameraIndex,
+                  cameraName: cameraName,
+                  imageUrl: imageUrl,
+                  zones: zones.map((z: typeof zonesWithCameras[0]) => z.zone_Id).filter((id): id is string => id !== null && id !== undefined),
+                  success: true,
+                  updateResults: updateResults
+               });
+
+            } catch (error: any) {
+               results.push({
+                  cameraIndex: camera?.camera_Id || 'Unknown',
+                  cameraName: camera?.camera_english_name || camera?.camera_arabic_name || 'Unknown Camera',
+                  zones: zones.map((z: typeof zonesWithCameras[0]) => z.zone_Id).filter((id): id is string => id !== null && id !== undefined),
+                  success: false,
+                  error: error.message
+               });
+            }
+         }
+
+         return {
+            success: true,
+            message: `Updated after_image for ${results.length} cameras with linked zones`,
+            results: results
+         };
+
+      } catch (error: any) {
+         throw new HttpException(STATUS.BAD_REQUEST, "Failed to update irrigation zones after image");
       }
    }
 
@@ -643,7 +897,7 @@ The response must be a single JSON object structured exactly as follows. The cal
     // Prepare request payload
     const requestBody = {
       stationIds: zoneIds,
-      seconds: zoneIds.map(() => 60) // assign 60 seconds for each station
+      seconds: zoneIds.map(() => 60) 
     };
 
     console.log(`[IrrigationsService] Sending Rainbird API request:`, {
@@ -657,13 +911,11 @@ The response must be a single JSON object structured exactly as follows. The cal
         'Authorization': 'Bearer B3ECE106BE349EC07A000EB3AEC16EB539705BE8F816EE102CC6A74550127467-1',
         'Accept': 'application/json'
       },
-      validateStatus: (status) => true, // let us handle 204 and 500 manually
+      validateStatus: (status) => true, 
       timeout: 30000
     });
 
-    console.log(`[IrrigationsService] Rainbird API response status:`, response.status);
 
-    // Success (204 No Content)
     if (response.status === 204) {
       console.log(`[IrrigationsService] ✅ Watering successfully started for stations: ${zoneIds.join(', ')}`);
       return {
@@ -673,8 +925,6 @@ The response must be a single JSON object structured exactly as follows. The cal
       };
     }
 
-    // Handle failure (e.g., 500 error)
-    console.warn(`[IrrigationsService] ⚠️ Watering failed for stations: ${zoneIds.join(', ')}.`, response.data);
     return {
       succeeded: false,
       status: response.status,

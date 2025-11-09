@@ -252,6 +252,7 @@ exports.Prisma.Park_zonesScalarFieldEnum = {
   longitude: 'longitude',
   device_ip: 'device_ip',
   web_api: 'web_api',
+  camera_Id: 'camera_Id',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -264,6 +265,7 @@ exports.Prisma.Parks_zones_job_historyScalarFieldEnum = {
   zone_Id: 'zone_Id',
   job_Id: 'job_Id',
   image: 'image',
+  after_image: 'after_image',
   started_at: 'started_at',
   start_for_time: 'start_for_time',
   suggestion: 'suggestion',
@@ -768,6 +770,7 @@ exports.Prisma.park_zonesOrderByRelevanceFieldEnum = {
 exports.Prisma.parks_zones_job_historyOrderByRelevanceFieldEnum = {
   job_Id: 'job_Id',
   image: 'image',
+  after_image: 'after_image',
   start_for_time: 'start_for_time',
   suggestion: 'suggestion',
   status: 'status',

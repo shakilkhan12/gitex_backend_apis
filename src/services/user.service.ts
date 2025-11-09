@@ -820,11 +820,9 @@ class UserService {
                      localImagePath = await this.saveUserImageLocally(apiImageUrl, userData.EmpCode);
                      
                      if (!localImagePath) {
-                        // Keep existing image if save fails
                         localImagePath = existingUser.image;
                      }
                   } else {
-                     // No change in image, keep existing local image path
                      localImagePath = existingUser.image;
                   }
                } else {

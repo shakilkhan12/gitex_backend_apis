@@ -66,7 +66,8 @@ class ParkService {
          park_Id: Number(park_Id)
       },
       include: {
-         parks: true
+         parks: true,
+         camera: true
       },
       orderBy: {
     Id: "desc",
@@ -94,7 +95,6 @@ class ParkService {
       });
       return result;
    }
-      // update park zone service
       protected static updateParkZoneService = async (zoneData: ParkZone, id: number) => {
       const result = await db.park_zones.update({
          where: { Id: id },

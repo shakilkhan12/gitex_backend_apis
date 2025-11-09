@@ -118,7 +118,7 @@ const startServer = async () => {
       console.log(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
       console.log(`🌐 Server URL: http://localhost:${PORT}`);
       console.log(`🔌 WebSocket server initialized`);
-      console.log(`⏰ Cron jobs initialized - Grass monitoring at 07:30AM, Irrigation at 08:00AM daily`);
+      console.log(`⏰ Cron jobs initialized - Grass monitoring at 07:30AM, Irrigation at 05:30AM, After-image update at 06:05AM daily`);
       console.log(`🔄 QMS Stream Bridge initialized`);
     });
   } catch (error) {
