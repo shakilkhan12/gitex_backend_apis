@@ -11,7 +11,8 @@
     "prisma-gen": "prisma generate --schema ./src/prisma/schema.prisma",
     "prisma-seed": "node -r dotenv/config prisma/seed.js",
     "prisma-db-push": "npx prisma db push --schema ./src/prisma/schema.prisma",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "update-sentiment": "ts-node -r tsconfig-paths/register src/scripts/update-sentiment.ts"
   },
   "keywords": [],
   "author": "",
