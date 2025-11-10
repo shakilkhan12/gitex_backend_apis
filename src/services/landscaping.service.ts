@@ -85,7 +85,6 @@ class LandscapingService {
       endDate?: string;
    }) => {
       try {
-         // If no pagination params provided, return all data (backward compatibility)
          if (!paginationParams) {
             const results = await db.landscaping.findMany({
                include: {
@@ -135,10 +134,8 @@ class LandscapingService {
             return results;
          }
 
-         // Build where clause for filtering
          const whereClause: any = {};
 
-         // Search functionality
          if (paginationParams.search) {
             whereClause.OR = [
                { case_Id: { contains: paginationParams.search, mode: 'insensitive' } },
@@ -149,12 +146,10 @@ class LandscapingService {
             ];
          }
 
-         // Status filtering
          if (paginationParams.status) {
             whereClause.current_status = paginationParams.status;
          }
 
-         // Date range filtering
          if (paginationParams.startDate && paginationParams.endDate) {
             whereClause.createdAt = {
                gte: new Date(paginationParams.startDate),
@@ -162,17 +157,13 @@ class LandscapingService {
             };
          }
 
-         // Build orderBy clause
          const orderByClause: any = {};
          orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
 
-         // Calculate pagination
          const skip = (paginationParams.page - 1) * paginationParams.limit;
 
-         // Get total count for pagination metadata
          const totalCount = await db.landscaping.count({ where: whereClause });
 
-         // Get paginated results
          const results = await db.landscaping.findMany({
             where: whereClause,
             include: {
@@ -219,12 +210,10 @@ class LandscapingService {
             take: paginationParams.limit
          });
 
-         // Calculate pagination metadata
          const totalPages = Math.ceil(totalCount / paginationParams.limit);
          const hasNextPage = paginationParams.page < totalPages;
          const hasPreviousPage = paginationParams.page > 1;
 
-         // Calculate stats from all filtered data (not just current page)
          const allDataForStats = await db.landscaping.findMany({
             where: whereClause,
             select: {
@@ -232,7 +221,6 @@ class LandscapingService {
             }
          });
 
-         // Calculate stats based on current_status
          const stats = {
             pending: allDataForStats.filter(item => 
                !item.current_status || 
@@ -254,7 +242,6 @@ class LandscapingService {
             total: allDataForStats.length
          };
 
-         console.log('📊 Landscaping stats calculated:', stats);
 
          return {
             data: results,
@@ -385,10 +372,8 @@ class LandscapingService {
          const appKey = this.HIK_CONFIG.appKey;
          const secretKey = this.HIK_CONFIG.appSecret;
        
-         // Use hardcoded camera list (same as irrigation service)
          const cameraIndexes = ["278", "283", "289", "288"];
          
-         // Get park_Id for each camera from database
          const parkCameras = [];
          for (const cameraIndex of cameraIndexes) {
             try {
@@ -414,8 +399,6 @@ class LandscapingService {
                   });
                }
             } catch (dbError: any) {
-               console.warn(`[LandscapingService] Could not fetch park_Id for camera ${cameraIndex}:`, dbError.message);
-               // Fallback if database query fails
                parkCameras.push({
                   camera_Id: cameraIndex,
                   park_Id: 1
@@ -457,7 +440,6 @@ class LandscapingService {
                      geminiResponse: geminiResponse!
                   });
 
-                  // Check if record was actually stored (needs_cutting was true)
                   if (landscapingRecord.id) {
                      results.push({
                         cameraId: camera.camera_Id,
@@ -620,7 +602,6 @@ class LandscapingService {
 
          return response.data;
       } catch (error: any) {
-         console.error(`[LandscapingService] HikVision API call failed:`, error.message);
          throw error;
       }
    }
@@ -637,27 +618,22 @@ class LandscapingService {
          if (response && response.code === '0' && response.msg === 'Success' && response.data) {
             return response.data;
          } else {
-            console.warn(`[LandscapingService] HIK Vision API returned unsuccessful response for camera: ${cameraIndexCode}`);
             return null;
          }
       } catch (error: any) {
-         console.error(`[LandscapingService] Failed to get camera image for camera: ${cameraIndexCode}`, error.message);
          throw error;
       }
    }
 
    private static detectImageFormat(base64Image: string): string {
       try {
-         // Remove data URL prefix if present
          let cleanBase64 = base64Image.trim();
          if (cleanBase64.includes(',')) {
             cleanBase64 = cleanBase64.split(',')[1];
          }
 
-         // Decode base64 to check magic bytes
          const buffer = Buffer.from(cleanBase64, 'base64');
          
-         // Check magic bytes for different image formats
          if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
             return 'jpg';
          } else if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
@@ -668,10 +644,8 @@ class LandscapingService {
             return 'webp';
          }
          
-         // Default to jpg if format cannot be determined
          return 'jpg'; 
-      } catch (error) {
-         console.error('[LandscapingService] Error detecting image format:', error);
+      } catch (error) { 
          return 'jpg';
       }
    }
@@ -679,34 +653,27 @@ class LandscapingService {
    private static async saveImageLocally(base64Image: string, cameraId: string): Promise<string | null> {
       try {
          const uploadDir = path.join(process.cwd(), 'uploads', 'landscaping');
-         
-         // Clean and validate base64 data
+
          let cleanBase64 = base64Image.trim();
          
-         // Remove data URL prefix if present (e.g., "data:image/jpeg;base64,")
          if (cleanBase64.includes(',')) {
             cleanBase64 = cleanBase64.split(',')[1];
          }
          
-         // Validate base64 format
          if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
             throw new Error('Invalid base64 format detected');
          }
          
-         // Detect image format from cleaned base64 data
          const imageFormat = this.detectImageFormat(base64Image);
          const fileName = `landscaping_${cameraId}_${Date.now()}.${imageFormat}`;
          const filePath = path.join(uploadDir, fileName);
          
          if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
-            console.log(`[LandscapingService] Created directory: ${uploadDir}`);
          }
          
-         // Convert cleaned base64 to buffer and save
          const imageBuffer = Buffer.from(cleanBase64, 'base64');
          
-         // Additional validation: check if buffer has valid content
          if (imageBuffer.length === 0) {
             throw new Error('Empty image buffer after base64 decoding');
          }
@@ -714,11 +681,9 @@ class LandscapingService {
          fs.writeFileSync(filePath, imageBuffer);
          
          const imageUrl = `/uploads/landscaping/${fileName}`;
-         
-         console.log(`[LandscapingService] Successfully saved image locally. Path: ${imageUrl}, Size: ${imageBuffer.length} bytes`);
+
          return imageUrl;
       } catch (error: any) {
-         console.error(`[LandscapingService] Error saving image locally for camera ${cameraId}:`, error.message);
          return null;
       }
    }
@@ -729,7 +694,6 @@ class LandscapingService {
          const MODEL = "gemini-2.5-flash";
          const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
          
-         // Format image URL using utility function
          const fullImageUrl = formatImageUrl(imageUrl) || imageUrl;
          
          const prompt = `Objective:
@@ -787,8 +751,6 @@ OUTPUT FORMAT:
             },
             timeout: 30000
          });
-         console.log('response',response)
-         console.log('[LandscapingService] Gemini API response structure:', JSON.stringify(response.data, null, 2));
 
          if (response.data && response.data.candidates && response.data.candidates[0] && response.data.candidates[0].content && response.data.candidates[0].content.parts && response.data.candidates[0].content.parts[0]) {
             const geminiResponse = response.data.candidates[0].content.parts[0].text;
@@ -804,21 +766,13 @@ OUTPUT FORMAT:
                const parsedResponse = JSON.parse(cleanResponse);
                return parsedResponse;
             } catch (parseError) {
-               console.warn('[LandscapingService] Failed to parse Gemini response as JSON, returning raw text');
                return geminiResponse;
             }
          }
 
          return null;
       } catch (error: any) {
-         console.error('[LandscapingService] Error analyzing image with Gemini:', error.message);
-         if (error.response) {
-            console.error('[LandscapingService] Gemini API error response:', {
-               status: error.response.status,
-               statusText: error.response.statusText,
-               data: error.response.data
-            });
-         }
+        
          return null;
       }
    }
@@ -836,9 +790,7 @@ OUTPUT FORMAT:
          const needsCutting = data.geminiResponse?.cutting_recommendation?.needs_cutting || false;
          const recommendationNote = data.geminiResponse?.cutting_recommendation?.recommendation_note || "No recommendation available";
 
-         // Only store records where needs_cutting is true
          if (!needsCutting) {
-            console.log(`[LandscapingService] Skipping record creation - grass does not need cutting. Height: ${estimatedHeight}, Camera: ${data.cameraId}`);
             return {
                id: null,
                case_Id: null,
@@ -851,24 +803,20 @@ OUTPUT FORMAT:
 
          const caseId = await this.generateUniqueCaseId();
 
-         // Calculate grass health percentage based on height and cutting needs
          let grassHealthPercentage = "100%";
          if (needsCutting) {
-            // If grass needs cutting, health is reduced based on how overgrown it is
             const heightValue = parseFloat(estimatedHeight.replace(/[^\d.]/g, ''));
             if (heightValue > 4.5) {
-               grassHealthPercentage = "60%"; // Severely overgrown
+               grassHealthPercentage = "60%"; 
             } else if (heightValue > 3.5) {
-               grassHealthPercentage = "75%"; // Moderately overgrown
+               grassHealthPercentage = "75%"; 
             } else {
-               grassHealthPercentage = "85%"; // Slightly overgrown
+               grassHealthPercentage = "85%"; 
             }
          } else {
-            // If grass doesn't need cutting, it's in good health
             grassHealthPercentage = "95%";
          }
 
-         // Create comprehensive suggestion text
          const suggestions = `Height: ${estimatedHeight}\nConfidence: ${confidenceScore}%\nNeeds Cutting: ${needsCutting ? 'Yes' : 'No'}\nRecommendation: ${recommendationNote}\n\nAnalysis: ${rationale}`;
 
          const result = await db.landscaping.create({
@@ -891,10 +839,8 @@ OUTPUT FORMAT:
             },
          });
 
-         console.log(`[LandscapingService] Successfully created landscaping record - grass needs cutting. Height: ${estimatedHeight}, Camera: ${data.cameraId}, Record ID: ${result.id}`);
          return result;
       } catch (error: any) {
-         console.error('[LandscapingService] Error creating grass monitoring record:', error.message);
          throw error;
       }
    }
@@ -907,7 +853,6 @@ OUTPUT FORMAT:
             const imageBase64 = images[i];
             
             try {
-               // Save image locally
                const imageUrl = await this.saveImageLocally(imageBase64, `landscaping_testing_${i + 1}`);
                
                if (!imageUrl) {
@@ -919,7 +864,6 @@ OUTPUT FORMAT:
                   continue;
                }
 
-               // Analyze image with Gemini
                const geminiResponse = await this.analyzeImageWithGemini(imageUrl);
                
                if (!geminiResponse) {
@@ -931,12 +875,10 @@ OUTPUT FORMAT:
                   continue;
                }
 
-               // Extract Gemini response data (same as monitorParkCamerasService)
                const geminiData = geminiResponse || {};
                const cuttingRecommendation = (geminiData as any).cutting_recommendation || {};
                const needsCutting = (cuttingRecommendation as any).needs_cutting || false;
 
-               // Only save to testing_modules table if needs_cutting is true
                if (needsCutting) {
                   const testingRecord = await this.createTestingModuleRecord({
                      image: imageUrl,
@@ -950,8 +892,8 @@ OUTPUT FORMAT:
                      status: (geminiData as any).status || null,
                      confidence_score: String((geminiData as any).confidence_score || "0"),
                      rationale: (geminiData as any).rationale || null,
-                     gallons_required_estimate: null, // Not applicable for landscaping
-                     calculation_note: null // Not applicable for landscaping
+                     gallons_required_estimate: null, 
+                     calculation_note: null 
                   });
 
                   results.push({
@@ -1050,8 +992,7 @@ OUTPUT FORMAT:
 
          return result;
       } catch (error: any) {
-         console.error('[LandscapingService] Error creating testing module record:', error.message);
-         throw error;
+            throw error;
       }
    }
 }

@@ -16,14 +16,12 @@ class OfficesService {
   private static isGuest = (item: any): boolean => {
     return !OfficesService.isEmployee(item);
   };
-   // add park service
    protected static addOfficeService = async (office: OfficeType) => {
       const result = await db.offices.create({
       data: {...office, createdAt: new Date()},
   });
   return result;
    }
-   // get parks service
    protected static getOfficesService = async () => {
       return await db.offices.findMany({
          include: {
@@ -35,7 +33,6 @@ class OfficesService {
       });
    }
 
-   // get park cameras service
     protected static getOfficeCamerasService = async (office_Id: number) => {
       if(!office_Id) {
           throw new HttpException(STATUS.BAD_REQUEST, `office id is required`)
@@ -49,9 +46,7 @@ class OfficesService {
   },
    });
    }
-   // add office camera service
    protected static addOfficeCameraService = async (cameraData: OfficeCamera) => {
-     console.log('Data -> ', cameraData)
       const result = await db.offices_cameras.create({
          data: {
             office_Id: Number(cameraData.office_Id),
@@ -82,16 +77,14 @@ class OfficesService {
 protected static changeOfficeSettingService = async (setting: OfficeSettingInputTypes) => {
   const { password, stream_api_key, stream_path, stream_url, office_Id } = setting;
 
-  // Try to find an existing record with this office_Id
   const existing = await db.office_streams.findFirst({
     where: { office_Id: Number(office_Id) }
   });
 
   let result;
   if (existing) {
-    // Update the existing record
     result = await db.office_streams.update({
-      where: { Id: existing.Id }, // use the unique `id` field
+      where: { Id: existing.Id }, 
       data: {
         password,
         stream_api_key,
@@ -100,7 +93,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       }
     });
   } else {
-    // Create a new record
     result = await db.office_streams.create({
       data: {
         office_Id: Number(office_Id),
@@ -149,7 +141,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             throw new HttpException(STATUS.NOT_FOUND, `No office found with the given ID`);
            }
    }
-   // get office setting
       protected static getOfficeSettingService = async (office_Id: number) => {
       if(!office_Id) {
          throw new HttpException(STATUS.BAD_REQUEST, `Office id is required`);
@@ -175,8 +166,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
            } else {
             throw new HttpException(STATUS.NOT_FOUND, `No functionalities found with the given ID`);
            }
-   }
-      // update office image 
+   }  
    protected static updateOfficeImageService = async (data: {Id: number, image: string}) => {
       const {Id, image} = data;
       const result = await db.offices.update({
@@ -187,7 +177,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       })
       return result;
    }
-      // update office camera service 
       protected static updateOfficeCameraService = async (cameraData: OfficeCamera, id: number) => {
       const result = await db.offices_cameras.update({
          where: {Id: Number(id)},
@@ -208,17 +197,14 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       return result;
    }
 
-   // Get office footfall analysis data
    protected static getOfficeFootfallAnalysisService = async (officeIds: number | number[], fromDate?: string, toDate?: string) => {
       if (!officeIds || (Array.isArray(officeIds) && officeIds.length === 0)) {
          throw new HttpException(STATUS.BAD_REQUEST, 'office_Id is required');
       }
 
       try {
-         // Build where clause for date filtering and exclude exit cameras
          const whereClause: any = {
             office_Id: Array.isArray(officeIds) ? { in: officeIds } : Number(officeIds),
-            // Exclude cameras with "exit" in their name to count only entry events
             detected_camera_name: {
                not: {
                   contains: 'exit'
@@ -233,7 +219,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             };
          }
 
-         // Get footfall analysis data
          const footfallData = await db.offices_footfall_analysis.findMany({
             where: whereClause,
             include: {
@@ -261,7 +246,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             }
          });
 
-         // Get camera information for all unique camera IDs
          const cameraIds = footfallData.map(item => item.detected_camera_Id);
          const uniqueCameraIds = cameraIds.filter((id, index) => cameraIds.indexOf(id) === index);
          const camerasData = await db.offices_cameras.findMany({
@@ -277,7 +261,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             }
          });
 
-         // Create a map for quick camera lookup
          const cameraMap = new Map();
          camerasData.forEach(camera => {
             cameraMap.set(camera.camera_Id, {
@@ -286,7 +269,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             });
          });
 
-         // Calculate statistics
          const totalFootfall = footfallData.length;
          
          if (totalFootfall === 0) {
@@ -310,11 +292,9 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             };
          }
          
-         // Separate data for employees and guests based on user_Id
          const employeeData = footfallData.filter(item => OfficesService.isEmployee(item));
          const guestData = footfallData.filter(item => OfficesService.isGuest(item));
          
-         // Employee counts
          const employeeCount = employeeData.length;
          const employeeMaleCount = employeeData.filter(item => {
             const gender = item.person?.gender || item.gender;
@@ -330,7 +310,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          }).length;
          const employeeChildrenCount = employeeData.filter(item => item.is_child === true).length;
          
-         // Guest counts
          const guestCount = guestData.length;
          const guestMaleCount = guestData.filter(item => {
             const gender = item.gender;
@@ -347,7 +326,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
          
       
-         // Get unique employees (those with valid user_Id)
          const uniqueEmployees = footfallData
             .filter(item => OfficesService.isEmployee(item))
             .reduce((acc: any[], item) => {
@@ -358,13 +336,12 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                      detected_camera_Id: item.detected_camera_Id,
                      detected_camera_name: item.detected_camera_name,
                      time: item.time,
-                     footfall_image: item.image // Include footfall image separately from person image
+                     footfall_image: item.image 
                   });
                }
                return acc;
             }, []);
 
-         // Create unique guests list based on detection_Id (for those without valid user_Id)
          const uniqueGuests = guestData
             .reduce((acc: any[], item) => {
                if (!acc.find(guest => guest.detection_Id === item.detection_Id)) {
@@ -378,7 +355,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                      detected_camera_Id: item.detected_camera_Id,
                      detected_camera_name: item.detected_camera_name,
                      time: item.time,
-                     image: item.image // Include footfall image
+                     image: item.image 
                   });
                }
                return acc;
@@ -404,13 +381,11 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                   acc[hour].guests += 1;
                }
             } catch (error) {
-               // Skip invalid time entries
             }
             
             return acc;
          }, {} as Record<number, { total: number; employees: number; guests: number }>);
 
-         // Enhanced daily distribution with employee and guest breakdown
          const dailyDistribution = footfallData.reduce((acc, item) => {
             try {
                const date = new Date(item.time).toISOString().split('T')[0];
@@ -431,13 +406,11 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                   acc[date].guests += 1;
                }
             } catch (error) {
-               // Skip invalid time entries
             }
             
             return acc;
          }, {} as Record<string, { total: number; employees: number; guests: number }>);
 
-         // Enhance rawData with camera names
          const enhancedRawData = footfallData.map(item => {
             const cameraInfo = cameraMap.get(item.detected_camera_Id);
             return {
@@ -447,7 +420,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             };
          });
 
-         // Format image URLs in the results
          const imageFields = ['image'];
          const formattedEmployees = formatImageUrlsInArray(uniqueEmployees, imageFields);
          const formattedGuests = formatImageUrlsInArray(uniqueGuests, imageFields);
@@ -476,16 +448,14 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       }
    }
 
-   // Add footfall analysis entry
    protected static addOfficeFootfallAnalysisService = async (footfallData: OfficeFootfallAnalysisType) => {
       try {
-         // person_Id can be null for guest entries, so we don't validate it as required
 
          const result = await db.offices_footfall_analysis.create({
             data: {
                office_Id: Number(footfallData.office_Id),
                detection_Id: footfallData.detection_Id,
-               person_Id: footfallData.person_Id || null, // Allow null for guests
+               person_Id: footfallData.person_Id || null, 
                gender: footfallData.gender || undefined,
                is_child: footfallData.is_child || false,
                detected_camera_Id: footfallData.detected_camera_Id,
@@ -502,7 +472,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       }
    }
 
-   // Get detailed footfall data for drawer
    protected static getOfficeFootfallDetailsService = async (
       officeId: number, 
       fromDate?: string, 
@@ -511,10 +480,8 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       filterValue?: string
    ) => {
       try {
-         // Build where clause for date filtering and exclude exit cameras
          const whereClause: any = {
             office_Id: officeId,
-            // Exclude cameras with "exit" in their name to count only entry events
             detected_camera_name: {
                not: {
                   contains: 'exit'
@@ -529,7 +496,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             };
          }
 
-         // Get footfall data with person information
          const footfallData = await db.offices_footfall_analysis.findMany({
             where: whereClause,
             include: {
@@ -547,7 +513,6 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             }
          });
 
-         // Apply filters
          let filteredData = footfallData;
 
          if (filterType && filterValue) {
@@ -579,17 +544,14 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                      if (filterValue === 'child') {
                         return item.is_child === true;
                      }
-                     // Add more age group logic if needed
                      return true;
                   });
                   break;
                default:
-                  // No additional filtering
                   break;
             }
          }
 
-         // Transform data for frontend
          const transformedData = filteredData.map(item => ({
             person_name: item.person?.emp__eng_name || 'Guest',
             person_image: item.person?.image || null,
@@ -598,10 +560,9 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
             entry_date: item.time ? item.time.toISOString().split('T')[0] : null,
             entry_time: item.time ? item.time.toISOString().split('T')[1].split('.')[0] : null,
             entry_image: item.image || null,
-            status: 'Active' // Default status for footfall entries
+            status: 'Active' 
          }));
 
-         // Format image URLs in the transformed data
          const imageFields = ['person_image', 'entry_image'];
          const formattedTransformedData = formatImageUrlsInArray(transformedData, imageFields);
 

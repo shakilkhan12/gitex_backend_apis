@@ -3,7 +3,6 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 
 class UserRolesService {
-  // Define valid permission fields based on the database schema
   private static readonly VALID_PERMISSION_FIELDS = [
     'dashboard_view',
     'role_permission_view', 'role_permission_add', 'role_permission_update',
@@ -29,7 +28,6 @@ class UserRolesService {
     'park_plant_disease_view', 'park_plant_disease_add', 'park_plant_disease_update'
   ];
 
-  // Helper method to filter permissions to only include valid fields
   private static filterValidPermissions(permissions: any): any {
     if (!permissions) return undefined;
     
@@ -71,10 +69,8 @@ class UserRolesService {
     }
   }
 
-   // ✅ Add new user role (with optional permissions)
    protected static addUserRole=async (roleData: { role_name: string; permissions?: any })=> {
     try {
-      // Filter permissions to only include valid fields
       const filteredPermissions = this.filterValidPermissions(roleData.permissions);
 
       const newRole = await db.users_roles.create({
@@ -104,23 +100,16 @@ class UserRolesService {
     }
   }
 
-  // ✅ Update existing user role (and permissions if provided)
   protected static updateUserRole = async (
     roleId: number,
     updateData: { role_name?: string; permissions?: any }
   ) => {
     try {
-      console.log('roleId', roleId);
-      console.log('updateData', updateData);
   
-      // Extract permission ID and remove it from the update data
       const permissionId = updateData.permissions?.Id;
       const { Id, ...permissionsWithoutId } = updateData.permissions || {};
   
-      // Filter permissions to only include valid fields
       const filteredPermissions = this.filterValidPermissions(permissionsWithoutId);
-  
-      console.log('Filtered permissions:', filteredPermissions);
   
       const updatedRole = await db.users_roles.update({
         where: { Id: roleId },
@@ -131,12 +120,12 @@ class UserRolesService {
             ? {
                 update: {
                   where: { Id: permissionId },
-                  data: filteredPermissions, // Use filtered data without invalid fields
+                  data: filteredPermissions,
                 },
               }
             : updateData.permissions && !permissionId
             ? {
-                create: filteredPermissions, // Create new permissions with only valid fields
+                create: filteredPermissions,
               }
             : undefined,
         },
@@ -151,7 +140,6 @@ class UserRolesService {
         message: "Role updated successfully",
       };
     } catch (error: any) {
-      console.error('Update role error details:', error);
       throw new HttpException(
         STATUS.BAD_REQUEST,
         error.message || "Failed to update role"

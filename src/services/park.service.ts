@@ -4,33 +4,27 @@ import { HttpException } from "@/utils/HttpException.utils";
 
 class ParkService {
    protected static addParkService = async (park: ParkType) => {
-    console.log("🟢 [ParkService] Adding new park:", park);
 
     try {
       const exist = await db.parks.findFirst({
                where: { park_Id: park.park_Id },
            });
       if (exist) {
-        console.error("❌ [ParkService] Park ID already exists:", park.park_Id);
          throw new HttpException(STATUS.BAD_REQUEST, "park id is already exist");
       }
-      console.log("✅ [ParkService] Park ID is unique:", park.park_Id);
 
       const result = await db.parks.create({
         data: { ...park, createdAt: new Date() },
   });
 
-      console.log("🎉 [ParkService] Park saved successfully:", result.Id);
   return result;
 
     } catch (error: any) {
-      console.error("💥 [ParkService] Error adding park:", error.message || error);
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to add park");
     }
    }
 
    protected static viewParksService = async () => {
-    console.log("🟡 [ParkService] Fetching all parks...");
 
     try {
       const results = await db.parks.findMany({
@@ -68,17 +62,14 @@ class ParkService {
         }
       });
 
-      console.log(`📦 [ParkService] Retrieved ${results.length} parks with related data.`);
       return results;
 
     } catch (error: any) {
-      console.error("💥 [ParkService] Error fetching parks:", error.message || error);
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch parks");
     }
   }
 
   protected static getParkByIdService = async (parkId: number) => {
-    console.log(`🟢 [ParkService] Getting park with ID ${parkId}...`);
 
     try {
       const park = await db.parks.findUnique({
@@ -118,22 +109,18 @@ class ParkService {
       });
 
       if (!park) {
-        console.log("🟡 [ParkService] Park not found");
         throw new HttpException(STATUS.NOT_FOUND, "Park not found");
       }
 
-      console.log("✅ [ParkService] Successfully retrieved park data");
       return park;
 
     } catch (error: any) {
-      console.error("💥 [ParkService] Error getting park by ID:", error.message || error);
       if (error instanceof HttpException) throw error;
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch park");
     }
   }
 
   protected static getParkByParkIdService = async (parkId: string) => {
-    console.log(`🟢 [ParkService] Getting park with park_Id ${parkId}...`);
 
     try {
       const park = await db.parks.findUnique({
@@ -173,22 +160,18 @@ class ParkService {
       });
 
       if (!park) {
-        console.log("🟡 [ParkService] Park not found");
         throw new HttpException(STATUS.NOT_FOUND, "Park not found");
       }
 
-      console.log("✅ [ParkService] Successfully retrieved park data");
       return park;
 
     } catch (error: any) {
-      console.error("💥 [ParkService] Error getting park by park_Id:", error.message || error);
       if (error instanceof HttpException) throw error;
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch park");
     }
   }
 
   protected static getParkStatisticsService = async (parkId: number) => {
-    console.log(`🟢 [ParkService] Getting statistics for park ID ${parkId}...`);
 
     try {
       const [
@@ -222,11 +205,9 @@ class ParkService {
         footfallAnalysis: footfallCount
       };
 
-      console.log("✅ [ParkService] Successfully retrieved park statistics");
       return statistics;
 
     } catch (error: any) {
-      console.error("💥 [ParkService] Error getting park statistics:", error.message || error);
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch park statistics");
     }
   }

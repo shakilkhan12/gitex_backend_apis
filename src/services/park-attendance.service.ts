@@ -54,14 +54,11 @@ class ParkAttendanceService {
     employeeId?: string;
   }) => {
     try {
-      // Build where clause for filtering
       const whereClause: any = {};
 
-      // Build user filter conditions
       if (filters?.department || filters?.employeeId) {
         const userConditions: any = {};
 
-        // Department filter
         if (filters?.department) {
           userConditions.OR = [
             { dep_eng_name: filters.department },
@@ -69,12 +66,10 @@ class ParkAttendanceService {
           ];
         }
 
-        // Employee ID filter
         if (filters?.employeeId) {
           userConditions.emp_Id = filters.employeeId;
         }
 
-        // Combine department and employeeId with AND
         if (filters?.department && filters?.employeeId) {
           whereClause.user = {
             AND: [
@@ -258,7 +253,6 @@ class ParkAttendanceService {
         const uniqueId = records[0].user?.unique_id;
         const user = records[0].user;
 
-        // sort by time
         records.sort(
           (a, b) =>
             new Date(a.entry_time || a.createdAt).getTime() -
@@ -314,18 +308,12 @@ class ParkAttendanceService {
         );
         const formattedDate = formatDateForDisplay(rawDate);
 
-        // === NEW CALCULATION ===
         let totalWorkingMinutes = 0;
         let totalBreakMinutes = 0;
         const now = new Date();
 
-        // If user never checked OUT, cap the last working period at 15:30 (3:30pm) of the same day
-        // This prevents working hours from running until "now" if OUT is missing
-
-        // Find the date of the first event (assume all events are for the same day)
         let attendanceDay: Date | null = null;
         if (allEvents.length > 0) {
-          // Use the date part of the first IN or OUT event
           const firstEventDate = new Date(allEvents[0].datetime);
           attendanceDay = new Date(
             firstEventDate.getFullYear(),
@@ -334,11 +322,10 @@ class ParkAttendanceService {
           );
         }
 
-        // Set the default OUT time as 15:30 (3:30pm) on the attendance day
         let defaultOutDate: Date | null = null;
         if (attendanceDay) {
           defaultOutDate = new Date(attendanceDay);
-          defaultOutDate.setHours(15, 30, 0, 0); // 15:30:00.000
+          defaultOutDate.setHours(15, 30, 0, 0); 
         }
 
         for (let i = 0; i < allEvents.length; i++) {
@@ -346,7 +333,6 @@ class ParkAttendanceService {
           const next = allEvents[i + 1];
 
           if (curr.type === "IN") {
-            // Calculate the 15:30 (3:30pm) cutoff for this day
             let cutoffTime: Date | null = null;
             if (curr.datetime) {
               const currDate = new Date(curr.datetime);
@@ -358,13 +344,11 @@ class ParkAttendanceService {
               );
             }
 
-            // If IN is after 15:30, skip this IN event for working minutes
             if (cutoffTime && new Date(curr.datetime) >= cutoffTime) {
               continue;
             }
 
             if (next && next.type === "OUT") {
-              // If OUT is after 15:30, cap at 15:30
               let outTime = new Date(next.datetime);
               if (cutoffTime && outTime > cutoffTime) {
                 outTime = cutoffTime;
@@ -372,12 +356,10 @@ class ParkAttendanceService {
               totalWorkingMinutes +=
                 (outTime.getTime() - new Date(curr.datetime).getTime()) / 60000;
             } else if (!next) {
-              // No OUT after this IN, cap at 15:30 or now, whichever is earlier
               let outTime = now;
               if (defaultOutDate) {
                 outTime = now > defaultOutDate ? defaultOutDate : now;
               }
-              // Also cap at 15:30 if needed
               if (cutoffTime && outTime > cutoffTime) {
                 outTime = cutoffTime;
               }
@@ -387,7 +369,6 @@ class ParkAttendanceService {
           }
 
           if (curr.type === "OUT" && next && next.type === "IN") {
-            // For break calculation, only count if next IN is before 15:30
             let cutoffTime: Date | null = null;
             if (next.datetime) {
               const nextDate = new Date(next.datetime);
@@ -426,7 +407,6 @@ class ParkAttendanceService {
         const lastEvent = allEvents[allEvents.length - 1];
         const status = lastEvent?.type === "IN" ? "Inside" : "Outside";
 
-        // format into HH:mm:ss
         const workingHHMMSS = formatDuration(totalWorkingMinutes);
         const breakHHMMSS = formatDuration(totalBreakMinutes);
 
@@ -436,7 +416,6 @@ class ParkAttendanceService {
           user?.emp__arabic_name ||
           (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
 
-        // Format image URLs in attendance times
         const imageFields = ['entry_image', 'exit_image', 'image'];
         const formattedAttendanceTimes = formatImageUrlsInArray(attendanceTimes, imageFields);
 

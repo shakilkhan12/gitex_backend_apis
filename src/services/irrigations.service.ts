@@ -15,7 +15,6 @@ export class IrrigationsService {
       appSecret: 'YuWS8qCb61xbD8fEbwFJ'
    };
 
-   // Removed hardcoded ZONES array - now fetched dynamically from database
 
    public static testingIrrigationZones = async (images: string[]) => {
       try {
@@ -25,7 +24,6 @@ export class IrrigationsService {
             const imageBase64 = images[i];
             
             try {
-               // Save image locally
                const imageUrl = await this.saveImageLocally(imageBase64, `testing_${i + 1}`);
                
                if (!imageUrl) {
@@ -37,7 +35,6 @@ export class IrrigationsService {
                   continue;
                }
 
-               // Analyze image with Gemini
                const geminiResponse = await this.analyzeImageWithGemini(imageUrl);
                
                if (!geminiResponse) {
@@ -49,18 +46,16 @@ export class IrrigationsService {
                   continue;
                }
 
-               // Extract Gemini response data (same as monitorIrrigationZones)
                const geminiData = geminiResponse || {};
                const wateringRecommendation = geminiData.watering_recommendation || {};
 
-               // Save to testing_modules table
                const testingRecord = await this.createTestingModuleRecord({
                   image: imageUrl,
                   name: `Irrigation Testing`,
                   case_type: "Irrigation Testing",
-                  estimated_height: null, // Not applicable for irrigation
-                  needs_cutting: null, // Not applicable for irrigation
-                  recommendation_note: null, // Not applicable for irrigation
+                  estimated_height: null, 
+                  needs_cutting: null,
+                  recommendation_note: null, 
                   health: geminiData.status || "Unknown",
                   suggestion: geminiData.suggestions || null,
                   status: geminiData.status || null,
@@ -78,7 +73,6 @@ export class IrrigationsService {
                   geminiResponse: geminiResponse
                });
 
-               console.log(`[IrrigationsService] Testing record created for image ${i + 1}:`, testingRecord.id);
 
             } catch (error: any) {
                results.push({
@@ -122,7 +116,6 @@ export class IrrigationsService {
          
          const results = [];
 
-         // Fetch all zones that have cameras linked
          const zonesWithCameras = await db.park_zones.findMany({
             where: {
                camera_Id: { not: null }
@@ -147,7 +140,6 @@ export class IrrigationsService {
             };
          }
 
-         // Group zones by camera_Id
          const zonesByCamera = new Map<number, typeof zonesWithCameras>();
          
          for (const zone of zonesWithCameras) {
@@ -161,21 +153,18 @@ export class IrrigationsService {
             zonesByCamera.get(zone.camera_Id)!.push(zone);
          }
 
-         // Process each camera and its linked zones
          const cameraEntries = Array.from(zonesByCamera.entries());
          for (const [cameraDbId, zones] of cameraEntries) {
             const camera = zones[0].camera;
             
             if (!camera || !camera.camera_Id) {
-               console.warn(`[IrrigationsService] Camera ${cameraDbId} has no camera_Id, skipping`);
                continue;
             }
 
             try {
                const cameraIndex = camera.camera_Id; 
                const cameraName = camera.camera_english_name || camera.camera_arabic_name || 'Unknown Camera';
-               
-               // Capture image from camera
+
                const base64Image = await this.captureCameraImage(cameraIndex, appKey, secretKey);
                
                if (!base64Image) {
@@ -233,17 +222,14 @@ export class IrrigationsService {
                   continue;
                }
 
-               // Check if watering is needed based on Gemini response (once per camera)
                const needsWatering = this.shouldWaterGrass(geminiResponse);
                
-               // Extract zone IDs for Rainbird API (zone_Id is String, convert to Number)
                const zoneIds = zones
                   .map((z: typeof zonesWithCameras[0]) => z.zone_Id)
                   .filter((id): id is string => id !== null && id !== undefined)
                   .map((id: string) => Number(id))
                   .filter((id: number) => !isNaN(id));
 
-               // Trigger watering once for all zones of this camera (if needed)
                let wateringTriggered = false;
                let wateringSucceeded = false;
                let wateringResult = null;
@@ -254,8 +240,6 @@ export class IrrigationsService {
                   wateringSucceeded = wateringResult && wateringResult.succeeded === true;
                }
 
-               // Create job history records for each zone linked to this camera
-               // One record per zone, all using the same captured image and Gemini analysis
                const jobHistoryResults = [];
                for (const zone of zones) {
                   if (!zone.zone_Id) continue;
@@ -274,9 +258,7 @@ export class IrrigationsService {
                         success: true, 
                         recordId: jobRecord.Id 
                      });
-                     console.log(`[IrrigationsService] Job history record created for zone ${zone.zone_Id}:`, jobRecord.Id);
                   } catch (dbError: any) {
-                     console.error(`[IrrigationsService] Failed to create job history for zone ${zone.zone_Id}:`, dbError.message);
                      jobHistoryResults.push({ 
                         zoneId: Number(zone.zone_Id), 
                         success: false, 
@@ -333,7 +315,6 @@ export class IrrigationsService {
          
          const results = [];
 
-         // Fetch all zones that have cameras linked
          const zonesWithCameras = await db.park_zones.findMany({
             where: {
                camera_Id: { not: null }
@@ -358,7 +339,6 @@ export class IrrigationsService {
             };
          }
 
-         // Group zones by camera_Id
          const zonesByCamera = new Map<number, typeof zonesWithCameras>();
          
          for (const zone of zonesWithCameras) {
@@ -372,13 +352,11 @@ export class IrrigationsService {
             zonesByCamera.get(zone.camera_Id)!.push(zone);
          }
 
-         // Process each camera and its linked zones
          const cameraEntries = Array.from(zonesByCamera.entries());
          for (const [cameraDbId, zones] of cameraEntries) {
             const camera = zones[0].camera;
             
             if (!camera || !camera.camera_Id) {
-               console.warn(`[IrrigationsService] Camera ${cameraDbId} has no camera_Id, skipping`);
                continue;
             }
 
@@ -386,7 +364,6 @@ export class IrrigationsService {
                const cameraIndex = camera.camera_Id;
                const cameraName = camera.camera_english_name || camera.camera_arabic_name || 'Unknown Camera';
                
-               // Capture image from camera
                const base64Image = await this.captureCameraImage(cameraIndex, appKey, secretKey);
                
                if (!base64Image) {
@@ -400,7 +377,6 @@ export class IrrigationsService {
                   continue;
                }
 
-               // Save image locally
                const imageUrl = await this.saveImageLocally(base64Image, cameraIndex);
                
                if (!imageUrl) {
@@ -414,13 +390,11 @@ export class IrrigationsService {
                   continue;
                }
 
-               // Get today's date range (start and end of day)
                const today = new Date();
                today.setHours(0, 0, 0, 0);
                const tomorrow = new Date(today);
                tomorrow.setDate(tomorrow.getDate() + 1);
 
-               // Update existing records for each zone linked to this camera
                const updateResults = [];
                for (const zone of zones) {
                   if (!zone.zone_Id || !zone.Id) {
@@ -428,7 +402,6 @@ export class IrrigationsService {
                   }
 
                   try {
-                     // Find existing records for this camera and zone created today
                      const existingRecords = await db.parks_zones_job_history.findMany({
                         where: {
                            camera_Id: cameraDbId,
@@ -462,7 +435,6 @@ export class IrrigationsService {
                            recordsUpdated: updateResult.count,
                            success: true
                         });
-                        console.log(`[IrrigationsService] Updated ${updateResult.count} records for zone ${zone.zone_Id} with after_image: ${imageUrl}`);
                      } else {
                         updateResults.push({
                            zoneId: zone.zone_Id,
@@ -470,11 +442,9 @@ export class IrrigationsService {
                            recordsUpdated: 0,
                            success: true,
                            message: `No existing records found for zone ${zone.zone_Id} created today`
-                        });
-                        console.log(`[IrrigationsService] No existing records found for zone ${zone.zone_Id} created today`);
+                        });   
                      }
                   } catch (dbError: any) {
-                     console.error(`[IrrigationsService] Failed to update records for zone ${zone.zone_Id}:`, dbError.message);
                      updateResults.push({
                         zoneId: zone.zone_Id,
                         zoneDbId: zone.Id,
@@ -528,11 +498,9 @@ export class IrrigationsService {
          if (response && response.code === '0' && response.msg === 'Success' && response.data) {
             return response.data;
          } else {
-            console.warn(`[IrrigationsService] HIK Vision API returned unsuccessful response for camera: ${cameraIndexCode}`);
             return null;
          }
       } catch (error: any) {
-         console.error(`[IrrigationsService] Failed to get camera image for camera: ${cameraIndexCode}`, error.message);
          throw error;
       }
    }
@@ -594,23 +562,19 @@ export class IrrigationsService {
 
          return response.data;
       } catch (error: any) {
-         console.error(`[IrrigationsService] HikVision API call failed:`, error.message);
          throw error;
       }
    }
 
    private static detectImageFormat(base64Image: string): string {
       try {
-         // Remove data URL prefix if present
          let cleanBase64 = base64Image.trim();
          if (cleanBase64.includes(',')) {
             cleanBase64 = cleanBase64.split(',')[1];
          }
 
-         // Decode base64 to check magic bytes
          const buffer = Buffer.from(cleanBase64, 'base64');
          
-         // Check magic bytes for different image formats
          if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
             return 'jpg';
          } else if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
@@ -621,10 +585,8 @@ export class IrrigationsService {
             return 'webp';
          }
          
-         // Default to jpg if format cannot be determined
          return 'jpg'; 
       } catch (error) {
-         console.error('[IrrigationsService] Error detecting image format:', error);
          return 'jpg';
       }
    }
@@ -632,34 +594,27 @@ export class IrrigationsService {
    private static async saveImageLocally(base64Image: string, cameraId: string): Promise<string | null> {
       try {
          const uploadDir = path.join(process.cwd(), 'uploads', 'irrigation');
-         
-         // Clean and validate base64 data
+
          let cleanBase64 = base64Image.trim();
          
-         // Remove data URL prefix if present (e.g., "data:image/jpeg;base64,")
          if (cleanBase64.includes(',')) {
             cleanBase64 = cleanBase64.split(',')[1];
          }
          
-         // Validate base64 format
          if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
             throw new Error('Invalid base64 format detected');
          }
          
-         // Detect image format from cleaned base64 data
          const imageFormat = this.detectImageFormat(base64Image);
          const fileName = `irrigation_${cameraId}_${Date.now()}.${imageFormat}`;
          const filePath = path.join(uploadDir, fileName);
          
          if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
-            console.log(`[IrrigationsService] Created directory: ${uploadDir}`);
          }
          
-         // Convert cleaned base64 to buffer and save
          const imageBuffer = Buffer.from(cleanBase64, 'base64');
          
-         // Additional validation: check if buffer has valid content
          if (imageBuffer.length === 0) {
             throw new Error('Empty image buffer after base64 decoding');
          }
@@ -668,27 +623,23 @@ export class IrrigationsService {
          
          const imageUrl = `/uploads/irrigation/${fileName}`;
          
-         console.log(`[IrrigationsService] Successfully saved image locally. Path: ${imageUrl}, Size: ${imageBuffer.length} bytes`);
          return imageUrl;
       } catch (error: any) {
-         console.error(`[IrrigationsService] Error saving image locally for camera ${cameraId}:`, error.message);
          return null;
       }
    }
 
    private static async analyzeImageWithGemini(imageUrl: string): Promise<any> {
       const maxRetries = 3;
-      const retryDelay = 2000; // 2 seconds
+      const retryDelay = 2000; 
       
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
          try {
-            console.log(`[IrrigationsService] Gemini API attempt ${attempt}/${maxRetries} for URL: ${imageUrl}`);
             
             const GEMINI_API_KEY = 'AIzaSyAc6TkgL2AfKiPqcsVYf2JJC5VhF5vuNjM';
             const MODEL = "gemini-2.5-flash";
             const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
             
-            // Format image URL using utility function
             const fullImageUrl = formatImageUrl(imageUrl) || imageUrl;
             
             const prompt = `*GRASS STATUS ANALYSIS REQUEST (JSON OUTPUT)*
@@ -748,10 +699,9 @@ The response must be a single JSON object structured exactly as follows. The cal
             headers: {
                'Content-Type': 'application/json',
             },
-            timeout: 60000 // Increased to 60 seconds
+               timeout: 60000 
          });
 
-         console.log('[IrrigationsService] Gemini API response structure:', JSON.stringify(response.data, null, 2));
             if (response.data && response.data.candidates && response.data.candidates[0] && response.data.candidates[0].content && response.data.candidates[0].content.parts && response.data.candidates[0].content.parts[0]) {
                const geminiResponse = response.data.candidates[0].content.parts[0].text;
                
@@ -764,34 +714,18 @@ The response must be a single JSON object structured exactly as follows. The cal
                   }
                   
                   const parsedResponse = JSON.parse(cleanResponse);
-                  console.log(`[IrrigationsService] Gemini API successful on attempt ${attempt}`);
                   return parsedResponse;
                } catch (parseError) {
-                  console.warn('[IrrigationsService] Failed to parse Gemini response as JSON, returning raw text');
                   return geminiResponse;
                }
             }
 
             return null;
          } catch (error: any) {
-            console.error(`[IrrigationsService] Gemini API attempt ${attempt} failed:`, error.message);
-            
-            if (error.response) {
-               console.error('[IrrigationsService] Gemini API error response:', {
-                  status: error.response.status,
-                  statusText: error.response.statusText,
-                  data: error.response.data
-               });
-            }
-            
-            // If this is the last attempt, return null
             if (attempt === maxRetries) {
-               console.error('[IrrigationsService] All Gemini API attempts failed');
                return null;
             }
             
-            // Wait before retrying
-            console.log(`[IrrigationsService] Waiting ${retryDelay}ms before retry...`);
             await new Promise(resolve => setTimeout(resolve, retryDelay));
          }
       }
@@ -804,106 +738,29 @@ The response must be a single JSON object structured exactly as follows. The cal
          const status = geminiResponse?.status?.toLowerCase();
          const suggestions = geminiResponse?.suggestions?.toLowerCase() || '';
          
-         // Check if status indicates need for watering
          if (status === 'dry') {
             return true;
          }
          
-         // Check if suggestions mention watering
          if (suggestions.includes('water') || suggestions.includes('watering') || suggestions.includes('irrigat')) {
             return true;
          }
          
          return false;
       } catch (error) {
-         console.error('[IrrigationsService] Error determining watering need:', error);
          return false;
       }
    }
-
-   // private static async triggerWatering(zoneIds: number[]): Promise<any> {
-   //    try {
-   //       const wateringApiUrl = 'https://bms.rainbirdapi.com/api/v1/Programs/1801299/runtimes';
-         
-   //       const requestBody = {
-   //          ids: zoneIds,
-   //          baseRunTime: 540
-   //       };
-         
-   //       console.log(`[IrrigationsService] Sending Rainbird API request:`, {
-   //          url: wateringApiUrl,
-   //          body: requestBody,
-   //          zoneIds: zoneIds
-   //       });
-
-   //       // Log the exact JSON string being sent
-   //       const jsonString = JSON.stringify(requestBody);
-   //       console.log(`[IrrigationsService] JSON payload being sent:`, jsonString);
-         
-   //       const response = await axios.patch(wateringApiUrl, requestBody, {
-   //          headers: {
-   //             'Content-Type': 'application/json',
-   //             'Authorization': 'Bearer B3ECE106BE349EC07A000EB3AEC16EB539705BE8F816EE102CC6A74550127467-1',
-   //             'Accept': '*/*',
-   //             'Accept-Encoding': 'gzip, deflate, br',
-   //             'Connection': 'keep-alive',
-   //             'Cache-Control': 'no-cache'
-   //          },
-   //          timeout: 30000,
-   //          transformRequest: [(data) => {
-   //             console.log(`[IrrigationsService] Transform request data:`, data);
-   //             return JSON.stringify(data);
-   //          }]
-   //       });
-
-   //       console.log(`[IrrigationsService] Watering triggered for zones: ${zoneIds.join(', ')}`);
-   //       console.log(`[IrrigationsService] Rainbird API response:`, response.data);
-         
-   //       // Check if watering was successful
-   //       if (response.data && response.data.succeeded === true) {
-   //          console.log(`[IrrigationsService] Watering successful for zones: ${zoneIds.join(', ')}`);
-   //       } else {
-   //          console.warn(`[IrrigationsService] Watering failed for zones: ${zoneIds.join(', ')}. Response:`, response.data);
-   //       }
-         
-   //       return response.data;
-   //    } catch (error: any) {
-   //       console.error(`[IrrigationsService] Error triggering watering for zones ${zoneIds.join(', ')}:`, error.message);
-   //       if (error.response) {
-   //          console.error('[IrrigationsService] Rainbird API error response:', {
-   //             status: error.response.status,
-   //             statusText: error.response.statusText,
-   //             data: error.response.data
-   //          });
-            
-   //          // Log detailed validation errors if available
-   //          if (error.response.data && error.response.data.errors) {
-   //             console.error('[IrrigationsService] Detailed validation errors:', JSON.stringify(error.response.data.errors, null, 2));
-   //          }
-   //       }
-         
-   //       // Return a failed response object instead of throwing
-   //       return {
-   //          succeeded: false,
-   //          errors: error.response?.data?.errors || error.message
-   //       };
-   //    }
-   // }
 
    private static async triggerWatering(zoneIds: number[]): Promise<any> {
   try {
     const wateringApiUrl = 'https://bms.rainbirdapi.com/api/v1/ManualOps/StartStations';
 
-    // Prepare request payload
     const requestBody = {
       stationIds: zoneIds,
       seconds: zoneIds.map(() => 60) 
     };
 
-    console.log(`[IrrigationsService] Sending Rainbird API request:`, {
-      url: wateringApiUrl,
-      body: requestBody
-    });
 
     const response = await axios.post(wateringApiUrl, requestBody, {
       headers: {
@@ -917,7 +774,6 @@ The response must be a single JSON object structured exactly as follows. The cal
 
 
     if (response.status === 204) {
-      console.log(`[IrrigationsService] ✅ Watering successfully started for stations: ${zoneIds.join(', ')}`);
       return {
         succeeded: true,
         message: 'Watering started successfully',
@@ -932,16 +788,6 @@ The response must be a single JSON object structured exactly as follows. The cal
     };
 
   } catch (error: any) {
-    console.error(`[IrrigationsService] ❌ Exception while triggering watering for stations ${zoneIds.join(', ')}:`, error.message);
-
-    if (error.response) {
-      console.error('[IrrigationsService] Rainbird API error response:', {
-        status: error.response.status,
-        statusText: error.response.statusText,
-        data: error.response.data
-      });
-    }
-
     return {
       succeeded: false,
       error: error.response?.data?.Message || error.message
@@ -957,7 +803,6 @@ The response must be a single JSON object structured exactly as follows. The cal
       wateringTriggered: boolean;
    }): Promise<any> {
       try {
-         // Try to find the actual database ID for this camera index
          let cameraDbId = null;
          let parkDbId = null;
          try {
@@ -973,12 +818,10 @@ The response must be a single JSON object structured exactly as follows. The cal
             cameraDbId = camera?.Id || null;
             parkDbId = camera?.park_Id || null;
          } catch (dbError: any) {
-            console.warn(`[IrrigationsService] Could not find camera database ID for index ${data.cameraIndex}:`, dbError.message);
          }
 
          let zoneDbId = null;
          try {
-            // Get all zones for the park and find the one that matches by comparing Number(zone_Id) with zoneId
             const zones = await db.park_zones.findMany({
                where: {
                   park_Id: parkDbId
@@ -989,18 +832,12 @@ The response must be a single JSON object structured exactly as follows. The cal
                }
             });
             
-            // Find the zone where Number(zone_Id) matches the zoneId
             const matchingZone = zones.find(zone => Number(zone.zone_Id) === data.zoneId);
             zoneDbId = matchingZone?.Id || null;
             
-            if (!zoneDbId) {
-               console.warn(`[IrrigationsService] No matching zone found for zoneId ${data.zoneId} in park ${parkDbId}`);
-            }
          } catch (dbError: any) {
-            console.warn(`[IrrigationsService] Could not find zone database ID for zoneId ${data.zoneId}:`, dbError.message);
          }
 
-         // Extract Gemini response data
          const geminiData = data.geminiResponse || {};
          const wateringRecommendation = geminiData.watering_recommendation || {};
          
@@ -1026,7 +863,6 @@ The response must be a single JSON object structured exactly as follows. The cal
 
          return result;
       } catch (error: any) {
-         console.error('[IrrigationsService] Error creating job history record:', error.message);
          throw error;
       }
    }
@@ -1069,7 +905,6 @@ The response must be a single JSON object structured exactly as follows. The cal
 
          return result;
       } catch (error: any) {
-         console.error('[IrrigationsService] Error creating testing module record:', error.message);
          throw error;
       }
    }

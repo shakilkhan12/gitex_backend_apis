@@ -13,7 +13,7 @@ import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 export async function urlToBase64(url: string): Promise<string | string> {
   try {
-    const agent = new https.Agent({ rejectUnauthorized: false }); // ✅ Ignore SSL errors
+    const agent = new https.Agent({ rejectUnauthorized: false }); 
     const options: any = { agent };
 
     const response = await fetch(url, options);
@@ -25,7 +25,6 @@ export async function urlToBase64(url: string): Promise<string | string> {
     const arrayBuffer = await response.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString("base64");
 
-   //  console.log(base64);
 
     return base64;
   } catch (error: unknown) {
@@ -70,58 +69,48 @@ class UserService {
             return null;
          }
 
-         // Check if a user with the same actual_image URL already exists
          const existingUserWithSameImage = await db.users.findFirst({
             where: { actuall_image: imageUrl },
             select: { image: true }
          });
 
          if (existingUserWithSameImage?.image) {
-            // Check if the file still exists
             const existingFilePath = path.join(process.cwd(), existingUserWithSameImage.image.replace(/^\//, ''));
             if (fs.existsSync(existingFilePath)) {
                return existingUserWithSameImage.image;
             }
          }
 
-         // Download image and convert to base64
          const base64String = await urlToBase64(imageUrl);
          
          if (!base64String || base64String === '') {
             return null;
          }
 
-         // Clean base64 string
          let cleanBase64 = base64String.trim();
          if (cleanBase64.includes(',')) {
             cleanBase64 = cleanBase64.split(',')[1];
          }
 
-         // Validate base64 format
          if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
             return null;
          }
 
-         // Convert to buffer
          const imageBuffer = Buffer.from(cleanBase64, 'base64');
          
          if (imageBuffer.length === 0) {
             return null;
          }
 
-         // Create hash of image content to detect duplicates
          const imageHash = crypto.createHash('md5').update(imageBuffer).digest('hex');
 
-         // Detect image format
          const imageFormat = this.detectImageFormat(imageBuffer);
          
-         // Create upload directory
          const uploadDir = path.join(process.cwd(), 'uploads', 'user-images');
          if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
          }
 
-         // Check for existing file with same hash
          const existingFiles = fs.readdirSync(uploadDir);
          for (const file of existingFiles) {
             const filePath = path.join(uploadDir, file);
@@ -130,24 +119,19 @@ class UserService {
                const fileHash = crypto.createHash('md5').update(fileBuffer).digest('hex');
                
                if (fileHash === imageHash) {
-                  // Duplicate found, reuse existing file
                   const existingImagePath = `/uploads/user-images/${file}`;
                   return existingImagePath;
                }
             } catch (fileError) {
-               // Skip files that can't be read
                continue;
             }
          }
 
-         // No duplicate found, save new image with hash in filename for easier identification
          const fileName = `${empId}_${imageHash.substring(0, 8)}.${imageFormat}`;
          const filePath = path.join(uploadDir, fileName);
 
-         // Save file
          fs.writeFileSync(filePath, imageBuffer);
 
-         // Return local path
          const imageLocalPath = `/uploads/user-images/${fileName}`;
          
          return imageLocalPath;
@@ -174,7 +158,7 @@ class UserService {
             payload,
             {
                headers: { "Content-Type": "application/json" },
-               timeout: 30000, // 30 seconds timeout (increased to accommodate secret key retries)
+               timeout: 30000, 
                httpsAgent: new https.Agent({ rejectUnauthorized: false }),
             }
          );
@@ -243,19 +227,16 @@ class UserService {
    } = {}) => {
 
       try {
-         // Set default values
          const page = filters?.page || 1;
          const limit = filters?.limit || 10;
          const skip = (page - 1) * limit;
 
-         // Build where clause for filtering
          const whereClause: any = {
             user_Id: {
                not: null
             }
          };
 
-         // Search filter
          if (filters?.search) {
             
             whereClause.OR = [
@@ -266,7 +247,6 @@ class UserService {
             ];
          }
 
-         // Department filter
          if (filters?.department) {
             whereClause.OR = [
                { dep_eng_name: filters.department },
@@ -274,18 +254,15 @@ class UserService {
             ];
          }
 
-         // Employee ID filter
          if (filters?.employeeId) {
             whereClause.emp_Id = filters.employeeId;
          }
 
-         // AI Engine filter
          if (filters?.aiLogin) {
             const aiLoginValue = filters.aiLogin === 'true';
             whereClause.is_ai_login_user = aiLoginValue;
          }
 
-         // Build order by clause
          const orderByClause: any = {};
          if (filters?.sortBy) {
             const sortField = filters.sortBy === 'emp__eng_name' ? 'emp__eng_name' :
@@ -393,7 +370,6 @@ class UserService {
             }
          });
 
-         // Build unique department lists for EN and AR separately
          const deptSetEn = new Set<string>();
          const deptSetAr = new Set<string>();
          for (const u of allUsers) {
@@ -403,7 +379,6 @@ class UserService {
          const departments_en = Array.from(deptSetEn).filter(Boolean).sort();
          const departments_ar = Array.from(deptSetAr).filter(Boolean).sort();
 
-         // Employees list with minimal fields
          const employees = allUsers
             .filter(u => !!u.emp_Id)
             .map(u => ({
@@ -429,7 +404,6 @@ class UserService {
    protected static getUserDetailsByUserIdService = async (emp_Id: string) => {
       try {
          
-         // First, get the basic user information
          const user = await db.users.findFirst({
             where: {
                emp_Id
@@ -467,7 +441,6 @@ class UserService {
             throw new HttpException(STATUS.NOT_FOUND, "User not found");
          }
 
-         // If user has a role, fetch role and permissions separately
          let users_roles = null;
          if (user.role_Id) {
             
@@ -542,14 +515,12 @@ class UserService {
             
          }
 
-         // Remove role_Id from the response and add users_roles
          const { role_Id, ...userWithoutRoleId } = user;
          const result = {
             ...userWithoutRoleId,
             users_roles
          };
 
-         // Format image URLs
          const imageFields = ['image'];
          const formattedUsers = formatImageUrlsInArray([result], imageFields);
 
@@ -587,13 +558,11 @@ class UserService {
             throw new HttpException(STATUS.BAD_REQUEST, "User not found");
          }
 
-         // Prepare update data
          const updateData: any = {
                role_Id: roleId,
                updatedAt: new Date()
          };
 
-         // Add supervisor access fields if provided
          if (supervisorAccess) {
             if (supervisorAccess.landscapingAccess !== undefined) {
                updateData.landscaping_access = supervisorAccess.landscapingAccess;
@@ -639,8 +608,8 @@ class UserService {
    }
 
    private static async fetchSecretFromAPI(): Promise<string> {
-      const maxRetries = 3;
-      const baseTimeout = 20000; // 20 seconds base timeout
+         const maxRetries = 3;
+         const baseTimeout = 20000; 
       
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
          try {
@@ -652,7 +621,7 @@ class UserService {
                },
                {
                   headers: { "Content-Type": "application/json" },
-                  timeout: baseTimeout * attempt, // Progressive timeout: 20s, 40s, 60s
+                  timeout: baseTimeout * attempt, 
                   httpsAgent: new https.Agent({ rejectUnauthorized: false }),
                }
             );
@@ -672,10 +641,10 @@ class UserService {
                   if (attempt === maxRetries) {
                      throw new HttpException(STATUS.BAD_REQUEST, `Secret key API request timed out after ${maxRetries} attempts`);
                   }
-                  continue; // Retry on timeout
+                  continue; 
                } else if (error.code === 'ECONNREFUSED') {
                   throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to secret key API");
-               } else if (error.response) {
+                  } else if (error.response) {
                   throw new HttpException(STATUS.BAD_REQUEST, `Secret key API error: ${error.response.status} - ${error.response.statusText}`);
                }
             }
@@ -687,7 +656,7 @@ class UserService {
                );
             }
             
-            const waitTime = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
+            const waitTime = Math.pow(2, attempt) * 1000; 
             await new Promise(resolve => setTimeout(resolve, waitTime));
          }
       }
@@ -712,14 +681,12 @@ class UserService {
    ) => {
       try {
          
-         // Send status update - fetching secret key
          if (onStatus) {
             onStatus({ message: 'Authenticating...' });
          }
          
          const secretKey = await this.fetchSecretFromAPI();
 
-         // Send status update - fetching employee data
          if (onStatus) {
             onStatus({ message: 'Fetching employee data from intranet...' });
          }
@@ -738,7 +705,7 @@ class UserService {
                headers: {
                   'Content-Type': 'application/json',
                },
-               timeout: 30000, // 30 seconds timeout
+               timeout: 30000, 
                httpsAgent: new https.Agent({
                   rejectUnauthorized: false
                })
@@ -786,7 +753,6 @@ class UserService {
                   }
                });
 
-               // Helper function to safely parse dates
                const parseDate = (dateString: string | null | undefined): Date | undefined => {
                   if (!dateString || dateString.trim() === '') {
                      return undefined;
@@ -794,29 +760,22 @@ class UserService {
                   
                   try {
                      const date = new Date(dateString);
-                     // Check if the date is valid
                      if (isNaN(date.getTime())) {
                         return undefined;
                      }
                      return date;
                   } catch (error) {
-                     console.warn(`Error parsing date: ${dateString}`, error);
                      return undefined;
                   }
                };
 
-               // Get API response image URL
                const apiImageUrl = userData.EmployeeImage1 || userData.EmployeeImage2 || null;
                
-               // Handle image saving for existing users
                let localImagePath: string | null = null;
                if (existingUser) {
-                  // Compare API response image with actual_image
                   const currentActualImage = existingUser.actuall_image;
                   
-                  // If API image URL is different from stored actual_image, or if actual_image is null
                   if (apiImageUrl && apiImageUrl !== currentActualImage) {
-                     // Save image locally
                      localImagePath = await this.saveUserImageLocally(apiImageUrl, userData.EmpCode);
                      
                      if (!localImagePath) {
@@ -826,7 +785,6 @@ class UserService {
                      localImagePath = existingUser.image;
                   }
                } else {
-                  // New user - save image locally
                   if (apiImageUrl) {
                      localImagePath = await this.saveUserImageLocally(apiImageUrl, userData.EmpCode);
                   }
@@ -836,8 +794,8 @@ class UserService {
                   user_Id: userData.UserID,
                   emp_Id: userData.EmpCode,
                   emp_code: userData.EmpCode,
-                  image: localImagePath, // Local path
-                  actuall_image: apiImageUrl, // API URL
+                  image: localImagePath, 
+                  actuall_image: apiImageUrl, 
                   gender: userData.Gender,
                   emp__eng_name: userData.Name,
                   emp__arabic_name: userData.NameAr,
@@ -887,13 +845,8 @@ class UserService {
                   });
                }
 
-               if (successCount % 100 === 0) {
-                  console.log(`[UserService] Processed ${successCount} users so far...`);
-               }
-
             } catch (userError) {
                errorCount++;
-               console.error(`[UserService] Error processing user ${userData.UserID}:`, userError);
                
                if (onProgress) {
                   onProgress({
@@ -913,7 +866,6 @@ class UserService {
             deleted: deletedCount
          };
 
-         console.log('[UserService] Processing completed. Summary:', summary);
          
          const result = {
             message: "Employee listing fetch and store completed - existing users updated, new users created, obsolete users deleted (excluding EMP001)",
@@ -925,8 +877,7 @@ class UserService {
       } catch (error) {
          
          if (error instanceof HttpException) {
-            console.error('[UserService] HttpException thrown:', error.message);
-            throw error;
+               throw error;
          }
          
          if (axios.isAxiosError(error)) { 
@@ -978,7 +929,6 @@ class UserService {
             throw new HttpException(STATUS.BAD_REQUEST, "User with this Unique ID already exists");
          }
 
-         // Create new user
          const newUser = await db.users.create({
             data: {
                unique_id: userData.unique_id,
@@ -1024,30 +974,15 @@ class UserService {
       }
    }
 
-   /**
-    * Upload user to HIK Vision NVR system
-    * @param user - User object to upload
-    * @returns Promise with upload result
-    */
    public static uploadUserToHikVision = async (user: any) => {
       try {
 
          const getImageAsBase64 = async (imageUrl: string): Promise<string | null> => {
             if (!imageUrl) {
-               console.warn(`[UserService] No image URL provided for user: ${user.emp_Id}`);
                return null;
             }
 
             try {
-               // Use the same image data endpoint as in event-handler
-               // const response = await UserService.callHikVisionAPI(
-               //    'https://10.70.90.183:443',
-               //    '/artemis/api/eventService/v1/image_data',
-               //    '59315117',
-               //    'YuWS8qCb61xbD8fEbwFJ',
-               //    { picUri: imageUrl }
-               // );
-
                const response1  = await urlToBase64(imageUrl);
 
                if (response1 && typeof response1 === 'string') {
@@ -1055,19 +990,15 @@ class UserService {
                   return base64Image;
                }
                
-               console.warn(`[UserService] Invalid image data response for user: ${user.emp_Id}`);
                return null;
             } catch (error: any) {
-               console.error(`[UserService] Failed to get image data for user ${user.emp_Id}:`, error.message);
                return null;
             }
          };
 
 
-         // Get image as base64
          const faceData = await getImageAsBase64(user.image);
          
-         // Prepare the payload
          const nameParts = user.emp__eng_name ? user.emp__eng_name.trim().split(' ') : [];
          const personGivenName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : '';
          const personFamilyName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : user.emp__eng_name || '';
@@ -1080,7 +1011,6 @@ class UserService {
             orgIndexCode: "2",
             faces: faceData ? [{ faceData: faceData }] : []
          };
-         // Call HIK Vision API to add person
          const response = await UserService.callHikVisionAPI(
             'https://10.70.90.183:443',
             '/artemis/api/resource/v1/person/single/add',
@@ -1117,11 +1047,6 @@ class UserService {
       }
    };
 
-   /**
-    * Upload multiple users to HIK Vision NVR system
-    * @param users - Array of user objects to upload
-    * @returns Promise with upload results
-    */
    public static uploadUsersToHikVision = async (users: any[]) => {
       try {
 
@@ -1234,13 +1159,11 @@ class UserService {
 
    /**
     * Upload the first two users (index 1 and 2) to HIK Vision NVR system
-    * Skips the user at index 0
     * @returns Promise with upload results
     */
    public static uploadAllUsersToHikVision = async () => {
       try {
 
-         // Get all users ordered by Id
          const allUsers = await db.users.findMany({
             orderBy: { Id: 'asc' }
          });
@@ -1252,10 +1175,8 @@ class UserService {
             );
          }
 
-         // Get users at index 1 and 2 (skip index 0)
          const usersToUpload = allUsers.slice(1, 3); 
 
-         // Upload the two users
          const result = await this.uploadUsersToHikVision(usersToUpload);
 
          return {

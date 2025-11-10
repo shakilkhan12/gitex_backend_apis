@@ -8,7 +8,6 @@ import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 class SmokingDetectionService {
    protected static addSmokingDetectionService = async (smokingDetection: SmokingDetectionType) => {
       try {
-         console.log('🔍 Looking for park with park_Id:', smokingDetection.park_Id);
          const parkExists = await db.parks.findFirst({
             where: { park_Id: smokingDetection.park_Id },
          });
@@ -28,9 +27,8 @@ class SmokingDetectionService {
          }
 
 
-         // Format date and time properly for database with consistent timestamps
          const currentTimestamp = new Date();
-         const currentTimeString = new Date().toTimeString().split(' ')[0]; // Get HH:MM:SS format
+         const currentTimeString = new Date().toTimeString().split(' ')[0]; 
          const occurrenceDate = new Date(smokingDetection.occurrence_date);
          const occurrenceTime = new Date(`1970-01-01T${smokingDetection.occurrence_time}Z`);
          const detectionDate = smokingDetection.detection_date ? new Date(smokingDetection.detection_date) : currentTimestamp;
@@ -70,7 +68,6 @@ class SmokingDetectionService {
          }
 
          try {
-            // Use consistent date/time for intranet posting
             const currentDate = new Date();
             const currentTime = new Date(`1970-01-01T${new Date().toTimeString().split(' ')[0]}Z`);
             
@@ -121,7 +118,6 @@ class SmokingDetectionService {
       endDate?: string;
    }) => {
       try {
-         // If no pagination params provided, return all data (backward compatibility)
          if (!paginationParams) {
             const results = await db.parks_smoking_detection.findMany({
                include: {
@@ -169,10 +165,8 @@ class SmokingDetectionService {
             return results;
          }
 
-         // Build where clause for filtering
          const whereClause: any = {};
 
-         // Search functionality
          if (paginationParams.search) {
             whereClause.OR = [
                { location: { contains: paginationParams.search, mode: 'insensitive' } },
@@ -183,12 +177,10 @@ class SmokingDetectionService {
             ];
          }
 
-         // Status filtering
          if (paginationParams.status) {
             whereClause.current_status = paginationParams.status;
          }
 
-         // Date range filtering
          if (paginationParams.startDate || paginationParams.endDate) {
             whereClause.occurrence_date = {};
             
@@ -197,24 +189,19 @@ class SmokingDetectionService {
             }
             
             if (paginationParams.endDate) {
-               // Set end date to end of day
                const endDate = new Date(paginationParams.endDate);
                endDate.setHours(23, 59, 59, 999);
                whereClause.occurrence_date.lte = endDate;
             }
          }
 
-         // Build orderBy clause
          const orderByClause: any = {};
          orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
 
-         // Calculate pagination
          const skip = (paginationParams.page - 1) * paginationParams.limit;
 
-         // Get total count for pagination metadata
          const totalCount = await db.parks_smoking_detection.count({ where: whereClause });
 
-         // Get paginated results
          const results = await db.parks_smoking_detection.findMany({
             where: whereClause,
             include: {
@@ -259,12 +246,10 @@ class SmokingDetectionService {
             take: paginationParams.limit
          });
 
-         // Calculate pagination metadata
          const totalPages = Math.ceil(totalCount / paginationParams.limit);
          const hasNextPage = paginationParams.page < totalPages;
          const hasPreviousPage = paginationParams.page > 1;
 
-         // Calculate stats from ALL data (not just current page) for cards
          const allDataForStats = await db.parks_smoking_detection.findMany({
             where: whereClause,
             select: {
@@ -272,16 +257,13 @@ class SmokingDetectionService {
             }
          });
 
-         // Debug: Log unique status values to understand the data
          const statusValues = allDataForStats.map(item => item.current_status);
          const uniqueStatuses = Array.from(new Set(statusValues));
-         console.log('🔍 [SmokingDetectionService] Unique status values:', uniqueStatuses);
 
          const stats = {
             pending: allDataForStats.filter(
                item => {
                   const status = item.current_status?.toLowerCase()?.trim();
-                  // Pending: has a status but it's not under process, open, in progress, closed, resolved, or completed
                   return status && status !== 'under process' && 
                          status !== 'open' && 
                          status !== 'in progress' && 
@@ -293,7 +275,6 @@ class SmokingDetectionService {
             underProcess: allDataForStats.filter(
                item => {
                   const status = item.current_status?.toLowerCase()?.trim();
-                  // Under Process: null, empty, or explicitly "under process", "in progress", "open"
                   return !status || status === '' || 
                          status === 'under process' || 
                          status === 'in progress' || 
@@ -311,9 +292,7 @@ class SmokingDetectionService {
             total: allDataForStats.length
          };
 
-         console.log('🔍 [SmokingDetectionService] Calculated stats:', stats);
 
-         // Format image URLs in the results
          const imageFields = ['snap_shot'];
          const formattedResultsWithImages = formatImageUrlsInArray(results, imageFields);
 
@@ -468,7 +447,6 @@ class SmokingDetectionService {
          };
          
          const response = await axios.post(endpoint, payload, requestConfig);
-         console.log('response',response);
          if (response.data?.status === "SUCCESS" && response.data?.code === 200) {
             return response.data;
          } else {
@@ -484,10 +462,8 @@ class SmokingDetectionService {
       }
    }
 
-   // Get statistics for smoking detection cards
    protected static getSmokingDetectionStatsService = async () => {
       try {
-         // Get counts for each status without fetching all data
          const [pendingCount, underProcessCount, completedCount, totalCount] = await Promise.all([
             db.parks_smoking_detection.count({
                where: {

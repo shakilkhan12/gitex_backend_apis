@@ -36,13 +36,12 @@ class PlantDiseaseService {
                 take: 3
             });
 
-            // Transform the data to match the expected format for the dashboard
             const transformedData = plantDiseaseRecords.map((record: any) => ({
                 caseid: record.case_Id || `PD-${record.id}`,
                 location: record.parks?.park_english_name || 'Unknown Location',
                 location_arabic: record.parks?.park_arabic_name || 'موقع غير معروف',
                 disease: record.name || 'Unknown Disease',
-                disease_arabic: record.name || 'مرض غير معروف', // You might want to add Arabic disease names
+                disease_arabic: record.name || 'مرض غير معروف',
                 status: record.current_status || record.status || 'Pending',
                 suggestion: record.suggestion || '',
                 confidence_score: record.confidence_score || '',
@@ -58,7 +57,6 @@ class PlantDiseaseService {
                 updatedAt: record.updatedAt
             }));
 
-            // Format image URLs in the results
             const imageFields = ['image', 'disease_image'];
             const formattedTransformedData = formatImageUrlsInArray(transformedData, imageFields);
 
@@ -69,7 +67,6 @@ class PlantDiseaseService {
             };
 
         } catch (error: any) {
-            console.error("Error fetching plant disease data:", error);
             throw new Error("Failed to fetch plant disease data");
         }
     };
@@ -85,7 +82,6 @@ class PlantDiseaseService {
         endDate?: string;
     }) => {
         try {
-            // If no pagination params provided, return all data (backward compatibility)
             if (!paginationParams) {
                 const results = await db.landscaping.findMany({
                     where: {
@@ -119,12 +115,10 @@ class PlantDiseaseService {
                 return results;
             }
 
-            // Build where clause for filtering
             const whereClause: any = {
                 plant_type: "Plant"
             };
             
-            // Search functionality
             if (paginationParams.search) {
                 whereClause.OR = [
                     { case_Id: { contains: paginationParams.search, mode: 'insensitive' } },
@@ -135,12 +129,10 @@ class PlantDiseaseService {
                 ];
             }
 
-            // Status filtering
             if (paginationParams.status) {
                 whereClause.current_status = paginationParams.status;
             }
 
-            // Date range filtering
             if (paginationParams.startDate || paginationParams.endDate) {
                 whereClause.createdAt = {};
                 
@@ -149,24 +141,19 @@ class PlantDiseaseService {
                 }
                 
                 if (paginationParams.endDate) {
-                    // Set end date to end of day
                     const endDate = new Date(paginationParams.endDate);
                     endDate.setHours(23, 59, 59, 999);
                     whereClause.createdAt.lte = endDate;
                 }
             }
 
-            // Build orderBy clause
             const orderByClause: any = {};
             orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
 
-            // Calculate pagination
             const skip = (paginationParams.page - 1) * paginationParams.limit;
 
-            // Get total count for pagination metadata
             const totalCount = await db.landscaping.count({ where: whereClause });
 
-            // Get paginated results
             const results = await db.landscaping.findMany({
                 where: whereClause,
                 include: {
@@ -194,12 +181,10 @@ class PlantDiseaseService {
                 take: paginationParams.limit
             });
 
-            // Calculate pagination metadata
             const totalPages = Math.ceil(totalCount / paginationParams.limit);
             const hasNextPage = paginationParams.page < totalPages;
             const hasPreviousPage = paginationParams.page > 1;
 
-            // Calculate stats from ALL data (not just current page) for cards
             const allDataForStats = await db.landscaping.findMany({
                 where: whereClause,
                 select: {
@@ -233,7 +218,6 @@ class PlantDiseaseService {
                 total: allDataForStats.length
             };
 
-            // Format image URLs in the results
             const imageFields = ['image', 'disease_image'];
             const formattedResultsWithImages = formatImageUrlsInArray(results, imageFields);
 

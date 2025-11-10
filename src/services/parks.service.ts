@@ -17,14 +17,12 @@ class ParkService {
   private static isGuest = (item: any): boolean => {
     return !ParkService.isEmployee(item);
   };
-   // add park service
    protected static addParkService = async (park: ParkType) => {
       const result = await db.parks.create({
       data: {...park, createdAt: new Date()},
   });
   return result;
    }
-   // get parks service
    protected static getParksService = async () => {
       return await DatabaseUtils.executeWithRetry(
          async () => {
@@ -45,7 +43,6 @@ class ParkService {
          'getParksService'
       );
    }
-   // get park service
    protected static getParkService = async (park_Id: number) => {
       if(!park_Id) {
          throw new HttpException(STATUS.BAD_REQUEST, `park id is required`)
@@ -56,7 +53,6 @@ class ParkService {
     },
       });
    }
-   // get park zones service
    protected static getParkZonesService = async (park_Id: number) => {
       if(!park_Id) {
           throw new HttpException(STATUS.BAD_REQUEST, `park id is required`)
@@ -74,7 +70,6 @@ class ParkService {
   },
    });
    }
-   // get park cameras service
     protected static getParkCamerasService = async (park_Id: number) => {
       if(!park_Id) {
           throw new HttpException(STATUS.BAD_REQUEST, `park id is required`)
@@ -88,7 +83,6 @@ class ParkService {
   },
    });
    }
-   // add park zone service
    protected static addParkZoneService = async (zoneData: ParkZone) => {
       const result = await db.park_zones.create({
          data: {...zoneData, createdAt: new Date() }
@@ -103,7 +97,6 @@ class ParkService {
       });
       return result;
    }
-   // add park camera service
    protected static addParCameraService = async (cameraData: ParkCamera) => {
       const result = await db.park_cameras.create({
          data: {
@@ -122,7 +115,6 @@ class ParkService {
       })
       return result;
    }
-   // update park camera service
       protected static updateParkCameraService = async (cameraData: ParkCamera, id: number) => {
       const result = await db.park_cameras.update({
          where: {Id: Number(id)},
@@ -166,7 +158,7 @@ class ParkService {
   let result;
   if(parkExist) {
       result = await db.park_streams.update({
-  where: { Id: Number(parkExist?.Id) }, // must be a unique field
+  where: { Id: Number(parkExist?.Id) }, 
   data: {
     password,
     stream_api_key,
@@ -187,7 +179,6 @@ class ParkService {
   }
     return result;
    }
-   // update park service
    protected static updateParkBasicInfoService = async (basicInfo: ParkType) => {
       const {Id,park_Id, park_arabic_name, park_english_name, latitude, longitude, status} = basicInfo
       const parkExist = await db.parks.findFirst({
@@ -235,7 +226,6 @@ class ParkService {
          throw new HttpException(STATUS.NOT_FOUND, `No Settings found with the given ID`);
       }
    }
-   // update park image service
    protected static updateParkImageService = async (data: {Id: number, image: string}) => {
       const {Id, image} = data;
       const result = await db.parks.update({
@@ -246,7 +236,6 @@ class ParkService {
       })
       return result;
    }
-   // update park status 
     protected static updateZoneStatusService = async (id: number, status: "active" | "inactive") => {
     if (!id) {
       throw new HttpException(STATUS.BAD_REQUEST, "Controller Id is required");
@@ -266,17 +255,14 @@ class ParkService {
     return result;
   };
 
-  // Get park footfall analysis service
   protected static getParkFootfallAnalysisService = async (parkIds: number | number[], fromDate?: string, toDate?: string) => {
     if (!parkIds || (Array.isArray(parkIds) && parkIds.length === 0)) {
       throw new HttpException(STATUS.BAD_REQUEST, 'park_Id is required');
     }
 
     try {
-      // Build where clause for date filtering and exclude exit cameras
       const whereClause: any = {
         park_Id: Array.isArray(parkIds) ? { in: parkIds } : Number(parkIds),
-        // Exclude cameras with "exit" in their name to count only entry events
         detected_camera_name: {
           not: {
             contains: 'exit'
@@ -291,7 +277,6 @@ class ParkService {
         };
       }
 
-      // Get footfall analysis data
       const footfallData = await db.parks_footfall_analysis.findMany({
         where: whereClause,
         include: {
@@ -319,7 +304,6 @@ class ParkService {
         }
       });
 
-      // Get camera information for all unique camera IDs
       const cameraIds = footfallData.map(item => item.detected_camera_Id);
       const uniqueCameraIds = cameraIds.filter((id, index) => cameraIds.indexOf(id) === index);
       const camerasData = await db.park_cameras.findMany({
@@ -335,7 +319,6 @@ class ParkService {
         }
       });
 
-      // Create a map for quick camera lookup
       const cameraMap = new Map();
       camerasData.forEach(camera => {
         cameraMap.set(camera.camera_Id, {
@@ -344,7 +327,6 @@ class ParkService {
         });
       });
 
-      // Calculate statistics
       const totalFootfall = footfallData.length;
       
       if (totalFootfall === 0) {
@@ -368,11 +350,9 @@ class ParkService {
          };
       }
       
-      // Separate data for employees and guests based on user_Id
       const employeeData = footfallData.filter(item => ParkService.isEmployee(item));
       const guestData = footfallData.filter(item => ParkService.isGuest(item));
       
-      // Employee counts
       const employeeCount = employeeData.length;
       const employeeMaleCount = employeeData.filter(item => {
         const gender = item.person?.gender || item.gender;
@@ -388,7 +368,6 @@ class ParkService {
       }).length;
       const employeeChildrenCount = employeeData.filter(item => item.is_child === true).length;
       
-      // Guest counts
       const guestCount = guestData.length;
       const guestMaleCount = guestData.filter(item => {
         const gender = item.gender;
@@ -404,7 +383,6 @@ class ParkService {
       }).length;
       const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
       
-      // Get unique employees (those with valid user_Id)
       const uniqueEmployees = footfallData
         .filter(item => ParkService.isEmployee(item))
         .reduce((acc: any[], item) => {
@@ -415,13 +393,12 @@ class ParkService {
                detected_camera_Id: item.detected_camera_Id,
                detected_camera_name: item.detected_camera_name,
                time: item.time,
-               footfall_image: item.image // Include footfall image separately from person image
+               footfall_image: item.image
             });
           }
           return acc;
         }, []);
 
-      // Create unique guests list based on detection_Id (for those without valid user_Id)
       const uniqueGuests = guestData
         .reduce((acc: any[], item) => {
           if (!acc.find(guest => guest.detection_Id === item.detection_Id)) {
@@ -435,13 +412,12 @@ class ParkService {
               detected_camera_Id: item.detected_camera_Id,
               detected_camera_name: item.detected_camera_name,
               time: item.time,
-              image: item.image // Include footfall image
+              image: item.image 
             });
           }
           return acc;
         }, []);
 
-      // Enhanced hourly distribution with employee and guest breakdown
       const hourlyDistribution = footfallData.reduce((acc, item) => {
         try {
           const hour = new Date(item.time).getHours();
@@ -462,13 +438,11 @@ class ParkService {
             acc[hour].guests += 1;
           }
         } catch (error) {
-          // Skip invalid time entries
         }
         
         return acc;
       }, {} as Record<number, { total: number; employees: number; guests: number }>);
 
-      // Enhanced daily distribution with employee and guest breakdown
       const dailyDistribution = footfallData.reduce((acc, item) => {
         try {
           const date = new Date(item.time).toISOString().split('T')[0];
@@ -489,13 +463,11 @@ class ParkService {
             acc[date].guests += 1;
           }
         } catch (error) {
-          // Skip invalid time entries
         }
         
         return acc;
       }, {} as Record<string, { total: number; employees: number; guests: number }>);
 
-      // Enhance rawData with camera names
       const enhancedRawData = footfallData.map(item => {
         const cameraInfo = cameraMap.get(item.detected_camera_Id);
         return {
@@ -505,7 +477,6 @@ class ParkService {
         };
       });
 
-      // Format image URLs in the results
       const imageFields = ['image'];
       const formattedEmployees = formatImageUrlsInArray(uniqueEmployees, imageFields);
       const formattedGuests = formatImageUrlsInArray(uniqueGuests, imageFields);
@@ -537,16 +508,14 @@ class ParkService {
     }
   };
 
-  // Add park footfall analysis service
   protected static addParkFootfallAnalysisService = async (footfallData: ParkFootfallAnalysisType) => {
     try {
-      // person_Id can be null for guest entries, so we don't validate it as required
 
       const result = await db.parks_footfall_analysis.create({
         data: {
           park_Id: Number(footfallData.park_Id),
           detection_Id: footfallData.detection_Id,
-          person_Id: footfallData.person_Id || null, // Allow null for guests
+          person_Id: footfallData.person_Id || null, 
           gender: footfallData.gender || undefined,
           is_child: footfallData.is_child || false,
           detected_camera_Id: footfallData.detected_camera_Id,
@@ -566,7 +535,6 @@ class ParkService {
     }
   };
 
-    // Get park zones job history service
     protected static getParkZonesJobHistoryService = async (parkId: number, filters?: {
       zoneId?: number;
       status?: string;
@@ -579,22 +547,14 @@ class ParkService {
       toDateTime?: string;
     }) => {
       try {
-        console.log('[ParkService] Getting zones job history for parkId:', parkId);
-        console.log('[ParkService] Filters:', filters);
         
         const whereClause: any = {
           park_Id: parkId
         };
 
-      // Add filters if provided
       if (filters?.zoneId) {
         whereClause.zone_Id = filters.zoneId;
       }
-
-      // Note: Status filtering is now handled on frontend since it's calculated dynamically
-      // if (filters?.status) {
-      //   whereClause.start_for_time = filters.status;
-      // }
 
       if (filters?.search) {
         whereClause.job_Id = {
@@ -603,36 +563,27 @@ class ParkService {
         };
       }
 
-      // Add date filtering
       if (filters?.fromDateTime && filters?.toDateTime) {
         whereClause.started_at = {
           gte: new Date(filters.fromDateTime),
           lte: new Date(filters.toDateTime)
         };
-        console.log('[ParkService] Date filter applied:', {
-          fromDateTime: new Date(filters.fromDateTime),
-          toDateTime: new Date(filters.toDateTime)
-        });
       } else if (filters?.fromDateTime) {
         whereClause.started_at = {
           gte: new Date(filters.fromDateTime)
         };
-        console.log('[ParkService] From date filter applied:', new Date(filters.fromDateTime));
       } else if (filters?.toDateTime) {
         whereClause.started_at = {
           lte: new Date(filters.toDateTime)
         };
-        console.log('[ParkService] To date filter applied:', new Date(filters.toDateTime));
       }
 
 
-      // Build orderBy clause
       const orderByClause: any = {};
       const sortBy = filters?.sortBy || 'started_at';
       const sortOrder = filters?.sortOrder || 'desc';
       orderByClause[sortBy] = sortOrder;
 
-      // If no pagination params provided, return all data (backward compatibility)
       if (!filters?.page || !filters?.limit) {
         const jobHistory = await db.parks_zones_job_history.findMany({
           where: whereClause,
@@ -665,7 +616,6 @@ class ParkService {
           const currentTime = new Date();
           const status = jobCompletion && currentTime > jobCompletion ? 'Completed' : 'Pending';
           
-          // Get zone details from included relation
           const zoneDetails = job.park_zones;
           
           return {
@@ -680,7 +630,8 @@ class ParkService {
             jobInitiated: jobInitiated,
             jobCompletion: jobCompletion,
             image: job.image,
-            status: status, // Add the calculated status (Completed/Pending)
+            afterImage: job.after_image,
+            status: status, 
             grassStatus: job.status,
             parkName: job.parks?.park_english_name,
             parkArabicName: job.parks?.park_arabic_name,
@@ -692,8 +643,7 @@ class ParkService {
           };
         });
 
-        // Format image URLs in job history
-        const imageFields = ['image'];
+        const imageFields = ['image', 'afterImage'];
         const formattedHistoryWithImages = formatImageUrlsInArray(formattedHistory, imageFields);
 
         return {
@@ -703,14 +653,10 @@ class ParkService {
         };
       }
 
-      // Calculate pagination
       const skip = (filters.page - 1) * filters.limit;
 
-      // Get total count for pagination metadata
       const totalCount = await db.parks_zones_job_history.count({ where: whereClause });
-      console.log('[ParkService] Total count:', totalCount);
 
-      // Get paginated results
       const jobHistory = await db.parks_zones_job_history.findMany({
         where: whereClause,
         include: {
@@ -735,65 +681,39 @@ class ParkService {
         take: filters.limit
       });
       
-      console.log('[ParkService] Raw job history count:', jobHistory.length);
-      console.log('[ParkService] Sample job history record:', jobHistory[0] ? {
-        Id: jobHistory[0].Id,
-        started_at: jobHistory[0].started_at,
-        job_Id: jobHistory[0].job_Id,
-        zone_Id: jobHistory[0].zone_Id
-      } : 'No records found');
-      
-      // Show actual dates in database for debugging
-      if (jobHistory.length > 0) {
-        console.log('[ParkService] Actual dates in database:');
-        jobHistory.slice(0, 3).forEach((record, index) => {
-          console.log(`Record ${index + 1}:`, {
-            started_at: record.started_at,
-          });
-        });
-      }
         
-      // Helper function to parse duration text to minutes
       const parseDurationToMinutes = (durationText: string | null): number => {
         if (!durationText) return 0;
         
         const text = durationText.toLowerCase().trim();
         
-        // Handle seconds
         if (text.includes('second')) {
           const seconds = parseInt(text.replace(/[^\d]/g, '')) || 0;
-          return seconds / 60; // Convert seconds to minutes
+          return seconds / 60; 
         }
         
-        // Handle minutes
         if (text.includes('minute')) {
           return parseInt(text.replace(/[^\d]/g, '')) || 0;
         }
         
-        // Handle hours
         if (text.includes('hour')) {
           const hours = parseInt(text.replace(/[^\d]/g, '')) || 0;
-          return hours * 60; // Convert hours to minutes
+          return hours * 60; 
         }
         
-        // If it's just a number, assume minutes
         const number = parseInt(text.replace(/[^\d]/g, ''));
         return isNaN(number) ? 0 : number;
       };
 
-      // Format the response to match the frontend requirements
       const formattedHistory = jobHistory.map(job => {
         const jobInitiated = job.started_at;
         const durationInMinutes = parseDurationToMinutes(job.start_for_time);
         
-        // Calculate job completion time (initiated + duration)
         const jobCompletion = jobInitiated ? new Date(new Date(jobInitiated).getTime() + (durationInMinutes * 60 * 1000)) : null;
         
-        // Calculate status based on current time vs completion time
         const currentTime = new Date();
         const status = jobCompletion && currentTime > jobCompletion ? 'Completed' : 'Pending';
         
-        // Get zone details from included relation
         const zoneDetails = job.park_zones;
         
         return {
@@ -808,7 +728,8 @@ class ParkService {
           jobInitiated: jobInitiated,
           jobCompletion: jobCompletion,
           image: job.image,
-          status: status, // Add the calculated status (Completed/Pending)
+          afterImage: job.after_image,
+          status: status, 
           grassStatus: job.status,
           parkName: job.parks?.park_english_name,
           parkArabicName: job.parks?.park_arabic_name,
@@ -820,7 +741,6 @@ class ParkService {
         };
       });
 
-      // Calculate pagination metadata
       const totalPages = Math.ceil(totalCount / filters.limit);
       const hasNextPage = filters.page < totalPages;
       const hasPreviousPage = filters.page > 1;
@@ -836,7 +756,7 @@ class ParkService {
         previousPage: hasPreviousPage ? filters.page - 1 : null
       };
 
-      const imageFields = ['image'];
+      const imageFields = ['image', 'afterImage'];
       const formattedHistoryWithImages = formatImageUrlsInArray(formattedHistory, imageFields);
 
       return {
@@ -846,7 +766,6 @@ class ParkService {
         pagination: paginationData
       };
     } catch (error: any) {
-      console.error('[ParkService] Error fetching zones job history:', error);
         throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch zones job history');
     }
   };

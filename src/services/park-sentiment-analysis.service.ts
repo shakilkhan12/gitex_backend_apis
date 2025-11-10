@@ -25,12 +25,10 @@ class ParkSentimentAnalysisService {
             throw new HttpException(STATUS.BAD_REQUEST, "Entry camera does not exist");
          }
 
-         // Find user by emp_Id and get the user's Id
          const user = await db.users.findFirst({
             where: { emp_Id: sentimentAnalysis.person_Id },
          });
 
-         // Format date and time properly for database
          const checkInDate = new Date(sentimentAnalysis.check_in_date);
          const checkInTime = new Date(`1970-01-01T${sentimentAnalysis.check_in_time}Z`);
 
@@ -56,18 +54,15 @@ class ParkSentimentAnalysisService {
             data: createData,
          });
 
-         console.log("🎉 [ParkSentimentAnalysisService] Park sentiment analysis saved successfully:", result.Id);
          return result;
 
       } catch (error: any) {
-         console.error("💥 [ParkSentimentAnalysisService] Error adding park sentiment analysis:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to add park sentiment analysis");
       }
    }
 
    protected static updateParkSentimentAnalysisService = async (detection_Id: string, updateData: Partial<ParkSentimentAnalysisType>) => {
       try {
-         // Find the park sentiment analysis by detection_Id
          const existingSentiment = await db.parks_sentiment_analysis.findFirst({
             where: { detection_Id: detection_Id },
          });
@@ -76,15 +71,12 @@ class ParkSentimentAnalysisService {
             throw new HttpException(STATUS.NOT_FOUND, "Park sentiment analysis not found with the provided detection ID");
          }
 
-         // Prepare update data, excluding detection_Id from updates
          const { detection_Id: _, ...updateFields } = updateData;
 
-         // Prepare the update data object
          const updateDataForDb: any = {
             updatedAt: new Date()
          };
 
-         // Handle each field individually to ensure proper type conversion
          if (updateFields.person_Id !== undefined) updateDataForDb.person_Id = updateFields.person_Id;
          if (updateFields.sentiment_of !== undefined) updateDataForDb.sentiment_of = updateFields.sentiment_of;
          if (updateFields.check_in_date !== undefined) updateDataForDb.check_in_date = new Date(updateFields.check_in_date);
@@ -99,7 +91,6 @@ class ParkSentimentAnalysisService {
          if (updateFields.check_in_image !== undefined) updateDataForDb.check_in_image = updateFields.check_in_image;
          if (updateFields.check_out_sentiment !== undefined) updateDataForDb.check_out_sentiment = updateFields.check_out_sentiment;
 
-         // If park_Id is being updated, validate it exists
          if (updateFields.park_Id) {
             const parkExists = await db.parks.findFirst({
                where: { park_Id: updateFields.park_Id },
@@ -110,7 +101,6 @@ class ParkSentimentAnalysisService {
             updateDataForDb.park_Id = parkExists.Id;
          }
 
-         // If entry_camera_Id is being updated, validate it exists
          if (updateFields.entry_camera_Id) {
             const entryCameraExists = await db.park_cameras.findFirst({
                where: { camera_Id: updateFields.entry_camera_Id },
@@ -121,7 +111,6 @@ class ParkSentimentAnalysisService {
             updateDataForDb.entry_camera_Id = entryCameraExists.Id;
          }
 
-         // If exit_camera_Id is being updated, validate it exists
          if (updateFields.exit_camera_Id) {
             const exitCameraExists = await db.park_cameras.findFirst({
                where: { camera_Id: updateFields.exit_camera_Id },
@@ -132,17 +121,14 @@ class ParkSentimentAnalysisService {
             updateDataForDb.exit_camera_Id = exitCameraExists.Id;
          }
 
-         // Update the record
          const result = await db.parks_sentiment_analysis.update({
             where: { Id: existingSentiment.Id },
             data: updateDataForDb,
          });
 
-         console.log("🎉 [ParkSentimentAnalysisService] Park sentiment analysis updated successfully:", result.Id);
          return result;
 
       } catch (error: any) {
-         console.error("💥 [ParkSentimentAnalysisService] Error updating park sentiment analysis:", error.message || error);
          if (error instanceof HttpException) {
             throw error;
          }
@@ -163,13 +149,10 @@ class ParkSentimentAnalysisService {
       employeeId?: string;
       sentimentOf?: string;
    }) => {
-      console.log("🟡 [ParkSentimentAnalysisService] Fetching park sentiment analyses with filters:", filters);
 
       try {
-         // Build where clause for filtering
          const whereClause: any = {};
 
-         // Search filter
          if (filters?.search) {
             whereClause.OR = [
                { person_name: { contains: filters.search, mode: 'insensitive' } },
@@ -178,8 +161,7 @@ class ParkSentimentAnalysisService {
             ];
          }
 
-         // Date range filter
-         if (filters?.fromDateTime || filters?.toDateTime) {
+            if (filters?.fromDateTime || filters?.toDateTime) {
             whereClause.check_in_date = {};
             if (filters.fromDateTime) {
                whereClause.check_in_date.gte = new Date(filters.fromDateTime);
@@ -189,12 +171,10 @@ class ParkSentimentAnalysisService {
             }
          }
 
-         // Entry mood filter
          if (filters?.entryMood && filters.entryMood !== 'All') {
             whereClause.check_in_sentiment = filters.entryMood;
          }
 
-         // Exit mood filter
          if (filters?.exitMood && filters.exitMood !== 'All') {
             if (filters.exitMood === 'No Exit') {
                whereClause.check_out_sentiment = null;
@@ -203,9 +183,7 @@ class ParkSentimentAnalysisService {
             }
          }
 
-         // Employee ID filter
          if (filters?.employeeId) {
-            // Find user by emp_Id to get the user Id
             const user = await db.users.findFirst({
                where: { emp_Id: filters.employeeId },
                select: { Id: true }
@@ -214,12 +192,10 @@ class ParkSentimentAnalysisService {
             if (user) {
                whereClause.person_Id = user.Id.toString();
             } else {
-               // If employee not found, return empty results
                whereClause.person_Id = 'NOT_FOUND';
             }
          }
 
-         // Sentiment of filter (employee/visitor)
          if (filters?.sentimentOf && filters.sentimentOf !== 'All') {
             if (filters.sentimentOf === 'Employees') {
                whereClause.sentiment_of = 'employee';
@@ -228,20 +204,16 @@ class ParkSentimentAnalysisService {
             }
          }
 
-         // Build order by clause
          const orderByClause: any = {
             updatedAt: 'desc'
          };
 
-         // Set default pagination values
          const page = filters?.page || 1;
          const limit = filters?.limit || 10;
          const skip = (page - 1) * limit;
 
-         // Get total count for pagination metadata
          const totalCount = await db.parks_sentiment_analysis.count({ where: whereClause });
 
-         // Get paginated results
          const results = await db.parks_sentiment_analysis.findMany({
             where: whereClause,
             include: {
@@ -273,10 +245,8 @@ class ParkSentimentAnalysisService {
             take: limit
          });
 
-         // Get all unique person IDs from results
          const personIds = Array.from(new Set(results.map(sentiment => sentiment.person_Id).filter(Boolean))) as string[];
          
-         // Fetch all users in a single query
          const users = await db.users.findMany({
             where: { 
                Id: { 
@@ -292,21 +262,15 @@ class ParkSentimentAnalysisService {
             }
          });
          
-         // Create a map for quick user lookup
          const userMap = new Map(users.map(user => [user.Id.toString(), user]));
 
-         // Get user details for each sentiment analysis record
          const sentimentWithUsers = results.map((sentiment) => {
-               // Find the user from the map
                const user = sentiment.person_Id ? userMap.get(sentiment.person_Id) : null;
 
-               // Determine the image to use: prefer user.image from users table, fallback to person_image from sentiment record
-               // This ensures guest user images are included even if they're not yet saved in the users table
                let userImage = null;
                if (user?.image) {
                   userImage = user.image;
                } else if (sentiment.person_image) {
-                  // Fallback to person_image from sentiment record (useful for guest users)
                   userImage = sentiment.person_image;
                }
 
@@ -340,7 +304,6 @@ class ParkSentimentAnalysisService {
                };
             });
 
-         // Format the dates and times
          const formattedResults = sentimentWithUsers.map(sentiment => ({
             ...sentiment,
             check_in_date: formatDate(sentiment.check_in_date),
@@ -364,7 +327,6 @@ class ParkSentimentAnalysisService {
             previousPage: hasPreviousPage ? page - 1 : null
          };
 
-         // Calculate stats for cards (get all filtered data for stats calculation)
          const allDataForStats = await db.parks_sentiment_analysis.findMany({
             where: whereClause,
             select: {
@@ -393,7 +355,6 @@ class ParkSentimentAnalysisService {
          };
 
       } catch (error: any) {
-         console.error("💥 [ParkSentimentAnalysisService] Error fetching park sentiment analyses:", error.message || error);
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch park sentiment analyses");
       }
    }

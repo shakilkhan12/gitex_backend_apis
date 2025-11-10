@@ -53,14 +53,11 @@ class OfficeAttendanceService {
     employeeId?: string;
   }) => {
     try {
-      // Build where clause for filtering
       const whereClause: any = {};
 
-      // Build user filter conditions
       if (filters?.department || filters?.employeeId) {
         const userConditions: any = {};
 
-        // Department filter
         if (filters?.department) {
           userConditions.OR = [
             { dep_eng_name: filters.department },
@@ -68,12 +65,10 @@ class OfficeAttendanceService {
           ];
         }
 
-        // Employee ID filter
         if (filters?.employeeId) {
           userConditions.emp_Id = filters.employeeId;
         }
 
-        // Combine department and employeeId with AND
         if (filters?.department && filters?.employeeId) {
           whereClause.user = {
             AND: [
@@ -285,10 +280,6 @@ class OfficeAttendanceService {
         let totalBreakMinutes = 0;
         const now = new Date();
 
-        // calculate working/breaks
-        // Apply 3:30pm (15:30) cutoff logic for working/breaks, similar to park-attendance.service.ts
-
-        // Find the date of the first event (assume all events are for the same day)
         let attendanceDay: Date | null = null;
         if (allEvents.length > 0) {
           const firstEventDate = new Date(allEvents[0].datetime);
@@ -299,11 +290,10 @@ class OfficeAttendanceService {
           );
         }
 
-        // Set the default OUT time as 15:30 (3:30pm) on the attendance day
         let defaultOutDate: Date | null = null;
         if (attendanceDay) {
           defaultOutDate = new Date(attendanceDay);
-          defaultOutDate.setHours(15, 30, 0, 0); // 15:30:00.000
+          defaultOutDate.setHours(15, 30, 0, 0); 
         }
 
         for (let i = 0; i < allEvents.length; i++) {
@@ -311,7 +301,6 @@ class OfficeAttendanceService {
           const next = allEvents[i + 1];
 
           if (curr.type === "IN") {
-            // Calculate the 15:30 (3:30pm) cutoff for this day
             let cutoffTime: Date | null = null;
             if (curr.datetime) {
               const currDate = new Date(curr.datetime);
@@ -323,13 +312,11 @@ class OfficeAttendanceService {
               );
             }
 
-            // If IN is after 15:30, skip this IN event for working minutes
             if (cutoffTime && new Date(curr.datetime) >= cutoffTime) {
               continue;
             }
 
             if (next && next.type === "OUT") {
-              // If OUT is after 15:30, cap at 15:30
               let outTime = new Date(next.datetime);
               if (cutoffTime && outTime > cutoffTime) {
                 outTime = cutoffTime;
@@ -337,12 +324,10 @@ class OfficeAttendanceService {
               totalWorkingMinutes +=
                 (outTime.getTime() - new Date(curr.datetime).getTime()) / 60000;
             } else if (!next) {
-              // No OUT after this IN, cap at 15:30 or now, whichever is earlier
               let outTime = now;
               if (defaultOutDate) {
                 outTime = now > defaultOutDate ? defaultOutDate : now;
               }
-              // Also cap at 15:30 if needed
               if (cutoffTime && outTime > cutoffTime) {
                 outTime = cutoffTime;
               }
@@ -352,7 +337,6 @@ class OfficeAttendanceService {
           }
 
           if (curr.type === "OUT" && next && next.type === "IN") {
-            // For break calculation, only count if next IN is before 15:30
             let cutoffTime: Date | null = null;
             if (next.datetime) {
               const nextDate = new Date(next.datetime);
@@ -390,7 +374,6 @@ class OfficeAttendanceService {
         const lastRecord = allEvents[allEvents.length - 1];
         const status = lastRecord?.type === "IN" ? "Inside" : "Outside";
 
-        // format into HH:mm:ss
         const workingHHMMSS = formatDuration(totalWorkingMinutes);
         const breakHHMMSS = formatDuration(totalBreakMinutes);
 
@@ -399,8 +382,7 @@ class OfficeAttendanceService {
           user?.emp__eng_name ||
           user?.emp__arabic_name ||
           (isEmployee ? `Employee ${uniqueId}` : `Visitor ${uniqueId}`);
-
-        // Format image URLs in attendance times
+        
         const imageFields = ['entry_image', 'exit_image', 'image'];
         const formattedAttendanceTimes = formatImageUrlsInArray(attendanceTimes, imageFields);
 

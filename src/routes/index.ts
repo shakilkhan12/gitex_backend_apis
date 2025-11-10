@@ -29,6 +29,7 @@ import optimizedComponentApisRouter from "./optimized-component-apis.routes";
 import plantDiseaseRouter from "./plant-disease.routes";
 import landscapingDashboardRouter from "./landscaping-dashboard.routes";
 import dailyLogsDashboardRouter from "./daily-logs-dashboard.routes";
+import sentimentUpdateRouter from "./sentiment-update.routes";
 const mainRouter = Router();
 
 
@@ -62,5 +63,6 @@ mainRouter.use('/optimized-component-apis', optimizedComponentApisRouter)
 mainRouter.use('/plant-disease', plantDiseaseRouter)
 mainRouter.use('/landscaping-dashboard', landscapingDashboardRouter)
 mainRouter.use('/daily-logs-dashboard', dailyLogsDashboardRouter)
+mainRouter.use('/sentiment-update', sentimentUpdateRouter)
 
 export default mainRouter;

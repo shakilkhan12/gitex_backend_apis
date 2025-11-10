@@ -4,7 +4,6 @@ import db from "@/prisma/client";
 class LandscapingDashboardService {
     protected static getLandscapingDashboardDataService = async () => {
         try {
-            // Get the latest 3 landscaping records where plant_type is NOT "Plant"
             const landscapingRecords = await db.landscaping.findMany({
                 where: {
                     plant_type: {
@@ -38,7 +37,6 @@ class LandscapingDashboardService {
             });
 
 
-            // Transform the data to match the expected format for the dashboard
             const transformedData = landscapingRecords.map((record: any) => ({
                 caseid: record.case_Id || `LS-${record.id}`,
                 location: record.parks?.park_english_name || 'Unknown Location',
@@ -70,7 +68,6 @@ class LandscapingDashboardService {
             };
 
         } catch (error: any) {
-            console.error("Error fetching landscaping dashboard data:", error);
             throw new Error("Failed to fetch landscaping dashboard data");
         }
     };

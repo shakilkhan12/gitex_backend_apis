@@ -4,7 +4,6 @@ import { TermsPrivacyType } from "@/typescript"
 import { HttpException } from "@/utils/HttpException.utils";
 
 class TermsPrivacyService {
-  // ✅ Add Terms & Privacy
   protected static addTermsPrivacyService = async (data: TermsPrivacyType) => {
 
     const existing = await db.termsPrivacy.findFirst();
@@ -21,7 +20,6 @@ class TermsPrivacyService {
     return result;
   };
 
-  // ✅ Get Terms & Privacy
   protected static getTermsPrivacyService = async () => {
     const termsPrivacy = await db.termsPrivacy.findFirst();
     if (!termsPrivacy) {
@@ -33,7 +31,6 @@ class TermsPrivacyService {
     return termsPrivacy;
   };
 
-  // ✅ Update Terms & Privacy
   protected static updateTermsPrivacyService = async (
     data: TermsPrivacyType
   ) => {
@@ -77,7 +74,6 @@ static async updateFAQs(
   const result = await Promise.all(
     faqs.map(faq => {
       if (faq.id) {
-        // Update existing
         return db.fAQ.update({
           where: { id: faq.id },
           data: {
@@ -85,8 +81,7 @@ static async updateFAQs(
             answer: faq.answer,
           }
         });
-      } else {
-        // Create new
+      } else {  
         return db.fAQ.create({
           data: {
             question: faq.question,

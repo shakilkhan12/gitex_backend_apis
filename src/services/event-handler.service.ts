@@ -10,31 +10,13 @@ import SocketService from "./socket.service";
 import { createCanvas, loadImage } from 'canvas';
 import * as fs from 'fs';
 import * as path from 'path';
-// Simple logger implementation
-const Logger = {
-   info: (message: string, data?: any) => {
-      console.log(`[INFO] ${new Date().toISOString()} - ${message}`, data ? JSON.stringify(data, null, 2) : '');
-   },
-   debug: (message: string, data?: any) => {
-      console.log(`[DEBUG] ${new Date().toISOString()} - ${message}`, data ? JSON.stringify(data, null, 2) : '');
-   },
-   warn: (message: string, data?: any) => {
-      console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, data ? JSON.stringify(data, null, 2) : '');
-   },
-   error: (message: string, error?: any) => {
-      console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error);
-   }
-};
-
-// Face rectangle interface for cropping
 interface FaceRect {
-  x: number;      // normalized (0–1)
-  y: number;      // normalized (0–1)
+  x: number;      
+  y: number;      
   width: number;  
-  height: number; // normalized (0–1)
+  height: number; 
 }
 
-// Helper function to crop face with 40% margin
 async function cropFaceWithMargin(base64Image: string, faceRect: FaceRect): Promise<string> {
   try {
     const img = await loadImage(base64Image);
@@ -43,11 +25,9 @@ async function cropFaceWithMargin(base64Image: string, faceRect: FaceRect): Prom
     
     if (!ctx) throw new Error("Canvas not supported");
 
-    // Image dimensions
     const imgWidth = img.width;
     const imgHeight = img.height;
 
-    // Calculate 40% expansion
     const expandX = faceRect.width * 0.4;
     const expandY = faceRect.height * 0.4;
 
@@ -56,24 +36,18 @@ async function cropFaceWithMargin(base64Image: string, faceRect: FaceRect): Prom
     const newWidth = Math.min(1, faceRect.width * 1.8 - Math.max(0, expandX - faceRect.x));
     const newHeight = Math.min(1, faceRect.height * 1.8 - Math.max(0, expandY - faceRect.y));
 
-    // Convert normalized values to pixel values
     const cropX = newX * imgWidth;
     const cropY = newY * imgHeight;
     const cropW = newWidth * imgWidth;
     const cropH = newHeight * imgHeight;
 
-    // Set canvas size
     canvas.width = cropW;
     canvas.height = cropH;
 
-    // Draw the cropped region
     ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
-    // Return new base64
     return canvas.toDataURL("image/png");
   } catch (error) {
-    Logger.error(`[EventHandlerService] Error cropping face with margin:`, error);
-    // Return original image if cropping fails
     return base64Image;
   }
 }
@@ -113,7 +87,6 @@ class EventHandlerService {
 
    private static async getEventRecords(eventIndexCode: string) {
       const startTime = Date.now();
-      Logger.info(`[EventHandlerService] Starting to get event records for eventIndexCode: ${eventIndexCode}`);
       
       try {
          const response = await this.callHikVisionAPI(
@@ -125,20 +98,16 @@ class EventHandlerService {
          );
          
          const duration = Date.now() - startTime;
-         Logger.info(`[EventHandlerService] Successfully retrieved event records for eventIndexCode: ${eventIndexCode} in ${duration}ms`);
-         Logger.debug(`[EventHandlerService] Event records response:`, { code: response?.code, dataLength: response?.data?.list?.length });
-         
+        
          return response;
       } catch (error: any) {
          const duration = Date.now() - startTime;
-         Logger.error(`[EventHandlerService] Failed to get event records for eventIndexCode: ${eventIndexCode} after ${duration}ms`, error);
          throw error;
       }
    }
 
    private static async getImageData(picUri: string) {
       const startTime = Date.now();
-      Logger.info(`[EventHandlerService] Starting to get image data for picUri: ${picUri}`);
       
       try {
          const response = await this.callHikVisionAPI(
@@ -150,13 +119,10 @@ class EventHandlerService {
          );
          
          const duration = Date.now() - startTime;
-         Logger.info(`[EventHandlerService] Successfully retrieved image data for picUri: ${picUri} in ${duration}ms`);
-         Logger.debug(`[EventHandlerService] Image data response length: ${response?.length || 0} characters`);
-         
+        
          return response;
       } catch (error: any) {
          const duration = Date.now() - startTime;
-         Logger.error(`[EventHandlerService] Failed to get image data for picUri: ${picUri} after ${duration}ms`, error);
          throw error;
       }
    }
@@ -187,50 +153,39 @@ class EventHandlerService {
             }
          }
          
-         Logger.warn(`[EventHandlerService] Could not detect image format, defaulting to jpg`);
          return 'jpg';
       } catch (error: any) {
-         Logger.error(`[EventHandlerService] Error detecting image format:`, error);
          return 'jpg'; 
       }
    }
 
    private static async saveImageLocally(base64Image: string, eventType: string, eventId: string): Promise<string> {
       const startTime = Date.now();
-      Logger.info(`[EventHandlerService] Starting to save image locally for eventType: ${eventType}, eventId: ${eventId}`);
       
       try {
          const uploadDir = path.join(process.cwd(), 'uploads', eventType);
          
-         // Clean and validate base64 data
          let cleanBase64 = base64Image.trim();
          
-         // Remove data URL prefix if present (e.g., "data:image/jpeg;base64,")
          if (cleanBase64.includes(',')) {
             cleanBase64 = cleanBase64.split(',')[1];
          }
          
-         // Validate base64 format
          if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
             throw new Error('Invalid base64 format detected');
          }
          
-         // Detect image format from cleaned base64 data
          const imageFormat = this.detectImageFormat(cleanBase64);
          const fileName = `${eventId}_${Date.now()}.${imageFormat}`;
          const filePath = path.join(uploadDir, fileName);
          
-         Logger.info(`[EventHandlerService] Detected image format: ${imageFormat}, Base64 length: ${cleanBase64.length}`);
          
          if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
-            Logger.info(`[EventHandlerService] Created directory: ${uploadDir}`);
          }
          
-         // Convert cleaned base64 to buffer and save
          const imageBuffer = Buffer.from(cleanBase64, 'base64');
          
-         // Additional validation: check if buffer has valid content
          if (imageBuffer.length === 0) {
             throw new Error('Empty image buffer after base64 decoding');
          }
@@ -240,49 +195,17 @@ class EventHandlerService {
          const imageUrl = `/uploads/${eventType}/${fileName}`;
          
          const duration = Date.now() - startTime;
-         Logger.info(`[EventHandlerService] Successfully saved image locally in ${duration}ms. Path: ${imageUrl}, Size: ${imageBuffer.length} bytes`);
          
          return imageUrl;
       } catch (error: any) {
          const duration = Date.now() - startTime;
-         Logger.error(`[EventHandlerService] Failed to save image locally for eventType: ${eventType}, eventId: ${eventId} after ${duration}ms`, error);
          throw error;
       }
    }
 
-   // Keep the old Cloudinary function for backward compatibility (commented out)
-   // private static async uploadImageToCloudinary(base64Image: string, eventType: string, eventId: string): Promise<string> {
-   //    const startTime = Date.now();
-   //    Logger.info(`[EventHandlerService] Starting to upload image to Cloudinary for eventType: ${eventType}, eventId: ${eventId}`);
-   //    
-   //    try {
-   //       const publicId = `${this.CLOUDINARY_CONFIG.folder}/${eventType}/${eventId}_${Date.now()}`;
-   //       Logger.debug(`[EventHandlerService] Generated publicId: ${publicId}`);
-   //       
-   //       const result = await cloudinary.uploader.upload(base64Image, {
-   //          public_id: publicId,
-   //          resource_type: 'image',
-   //          format: 'jpg',
-   //          quality: 'auto',
-   //          fetch_format: 'auto'
-   //       });
-   //       
-   //       const duration = Date.now() - startTime;
-   //       Logger.info(`[EventHandlerService] Successfully uploaded image to Cloudinary in ${duration}ms. URL: ${result.secure_url}`);
-   //       
-   //       return result.secure_url;
-   //    } catch (error: any) {
-   //       const duration = Date.now() - startTime;
-   //       Logger.error(`[EventHandlerService] Failed to upload image to Cloudinary for eventType: ${eventType}, eventId: ${eventId} after ${duration}ms`, error);
-   //       throw error;
-   //    }
-   // }
-
    private static async callHikVisionAPI(baseUrl: string, endpoint: string, appKey: string, appSecret: string, requestData: any) {
       const startTime = Date.now();
-      Logger.info(`[EventHandlerService] Starting HikVision API call to ${baseUrl}${endpoint}`);
-      Logger.debug(`[EventHandlerService] Request data:`, requestData);
-      
+
       try {
          const method = 'POST';
          const accept = '*/*';
@@ -328,12 +251,6 @@ class EventHandlerService {
             'X-Ca-Nonce': nonce,
          };
 
-         Logger.debug(`[EventHandlerService] Making HTTP request with headers:`, { 
-            'X-Ca-Key': appKey, 
-            'X-Ca-Timestamp': timestamp.toString(),
-            'X-Ca-Nonce': nonce 
-         });
-
          const response = await axios({
             method,
             url: `${baseUrl}${endpoint}`,
@@ -344,41 +261,22 @@ class EventHandlerService {
          });
 
          const duration = Date.now() - startTime;
-         Logger.info(`[EventHandlerService] HikVision API call successful in ${duration}ms. Status: ${response.status}`);
-         Logger.debug(`[EventHandlerService] Response data:`, { 
-            code: response.data?.code, 
-            message: response.data?.msg,
-            dataLength: response.data?.data?.list?.length || 0 
-         });
-
          return response.data;
       } catch (error: any) {
          const duration = Date.now() - startTime;
-         Logger.error(`[EventHandlerService] HikVision API call failed after ${duration}ms`, error);
          
          if (error.response) {
             const errorMsg = `HikVision API Error: ${error.response.status} - ${error.response.statusText}`;
-            Logger.error(`[EventHandlerService] ${errorMsg}`, { 
-               status: error.response.status, 
-               statusText: error.response.statusText,
-               responseData: error.response.data 
-            });
             throw new Error(errorMsg);
          } else {
             const errorMsg = `Error: ${error.message}`;
-            Logger.error(`[EventHandlerService] ${errorMsg}`, error);
             throw new Error(errorMsg);
          }
       }
    }
 
   public static handleEventService = async (eventData: any) => {
-      const startTime = Date.now();
-      Logger.info(`[EventHandlerService] Starting event processing`, { 
-         timestamp: eventData?.timestamp,
-         hasEventData: !!eventData 
-      });
-      
+      const startTime = Date.now(); 
       let imageUrl: string | null = null;
       
       try { 
@@ -387,16 +285,7 @@ class EventHandlerService {
          let intrusion_detection_code=131585
          let attendance_code=131659
          let bevaviour_code=[131593,131605,131592,131677,131596,192515]
-         
-         Logger.debug(`[EventHandlerService] Event type codes configured:`, {
-            intrusion_detection_code,
-            attendance_code,
-            bevaviour_code,
-            office_cameras_count: office_cameras.length,
-            park_cameras_count: park_cameras.length
-         });
-         
-         
+
          const age_groups = [
             { code: 'UNKNOWN', name: 'Unknown.', remarks: 0 },
             { code: 'CHILD', name: 'Teenager.', remarks: 3 },
@@ -417,16 +306,9 @@ class EventHandlerService {
          ]
 
           if(eventData){
-             Logger.debug(`[EventHandlerService] Processing event data:`, { 
-                hasEventData: !!eventData.event,
-                hasLogData: !!eventData.logData,
-                eventKeys: eventData.event ? Object.keys(eventData.event) : [],
-                logDataKeys: eventData.logData ? Object.keys(eventData.logData) : []
-             });
-             
+            
              const extractEventData = (data: any) => {
                 if (data.event?.params?.events?.[0]) {
-                   Logger.debug(`[EventHandlerService] Extracting event data from event.params.events[0]`);
                    return data.event.params.events[0];
                 }
                 
@@ -437,7 +319,6 @@ class EventHandlerService {
                 
                 while (currentLevel && depth < maxDepth) {
                    if (currentLevel.params?.events?.[0]) {
-                      Logger.debug(`[EventHandlerService] Extracting event data from logData at depth ${depth}`);
                       return currentLevel.params.events[0];
                    }
                    
@@ -452,24 +333,14 @@ class EventHandlerService {
                 
                
                 if (data.logData?.event?.params?.events?.[0]) {
-                   Logger.debug(`[EventHandlerService] Extracting event data from logData.event.params.events[0]`);
                    return data.logData.event.params.events[0];
                 }
-                
-                Logger.warn(`[EventHandlerService] No valid event data found in expected structure`);
-                Logger.debug(`[EventHandlerService] Available data structure:`, {
-                   hasEvent: !!data.event,
-                   hasLogData: !!data.logData,
-                   logDataDepth: depth,
-                   eventKeys: data.event ? Object.keys(data.event) : [],
-                   logDataKeys: data.logData ? Object.keys(data.logData) : []
-                });
+               
                 return null;
              };
              
              const eventInfo = extractEventData(eventData);
              if (!eventInfo) {
-                Logger.error(`[EventHandlerService] Invalid event data structure`, eventData);
                 throw new HttpException(STATUS.BAD_REQUEST, "Invalid event data structure");
              }
              
@@ -481,33 +352,13 @@ class EventHandlerService {
                 sendTime = eventData.logData.event.params.sendTime;
              } else {
                 sendTime = eventInfo.happenTime;
-                Logger.warn(`[EventHandlerService] sendTime not found, using happenTime as fallback: ${sendTime}`);
              }
              
              eventInfo.sendTime = sendTime;
              
-             let eventType = eventInfo.eventType
-             Logger.info(`[EventHandlerService] Extracted event info:`, {
-                eventType,
-                eventId: eventInfo.eventId,
-                srcIndex: eventInfo.srcIndex,
-                srcName: eventInfo.srcName,
-                happenTime: eventInfo.happenTime,
-                sendTime: eventInfo.sendTime
-             });
-             
-             if (eventType === intrusion_detection_code) {
-                Logger.info(`[EventHandlerService] Processing intrusion detection event`);
-             } else if (eventType === attendance_code) {
-                Logger.info(`[EventHandlerService] Processing attendance event`);
-             } else if (bevaviour_code.includes(eventType)) {
-                Logger.info(`[EventHandlerService] Processing behavior detection event`);
-             } else {
-                Logger.warn(`[EventHandlerService] Unknown event type: ${eventType}`);
-             }
+             let eventType = eventInfo.eventType 
              
              if(eventType===intrusion_detection_code){
-                Logger.info(`[EventHandlerService] Processing intrusion detection for camera: ${eventInfo.srcIndex}`);
                 let park_Id;
 
                 let parkcamera=await db.park_cameras.findFirst({
@@ -517,25 +368,18 @@ class EventHandlerService {
                 })
                 
                 if(parkcamera){
-                   Logger.info(`[EventHandlerService] Found park camera:`, {
-                      cameraId: parkcamera.Id,
-                      parkId: parkcamera.park_Id,
-                      cameraIndex: eventInfo.srcIndex
-                   });
-                   
+                  
                    park_Id=parkcamera.park_Id
                    let imageUrl = null;
                    
                    try {
                       const eventIndexCode = eventInfo.eventId;
-                      Logger.debug(`[EventHandlerService] Attempting to retrieve image for intrusion event: ${eventIndexCode}`);
                       
                       const eventRecordsResponse = await this.getEventRecords(eventIndexCode);
                       
                       if (eventRecordsResponse && eventRecordsResponse.code === '0' && eventRecordsResponse.data?.list?.length > 0) {
                          const eventRecord = eventRecordsResponse.data.list[0];
                          const eventPicUri = eventRecord.eventPicUri;
-                         Logger.debug(`[EventHandlerService] Found event record with picUri: ${eventPicUri ? 'Yes' : 'No'}`);
                          
                          if (eventPicUri) {
                             const imageDataResponse = await this.getImageData(eventPicUri);
@@ -544,16 +388,12 @@ class EventHandlerService {
                                const base64Image = imageDataResponse;
                                
                                imageUrl = await this.saveImageLocally(base64Image, 'intrusion', eventIndexCode);
-                               Logger.info(`[EventHandlerService] Successfully saved intrusion image locally`);
                             }
                          } else {
-                            Logger.warn(`[EventHandlerService] No eventPicUri found for intrusion event`);
                          }
                       } else {
-                         Logger.warn(`[EventHandlerService] No valid event records found for intrusion event`);
                       }
                    } catch (imageError: any) {
-                      Logger.error(`[EventHandlerService] Failed to process intrusion image:`, imageError);
                    }
 
                    const intrusionData = {
@@ -568,14 +408,7 @@ class EventHandlerService {
                       is_employee:false,
                       description: `Intrusion detected at ${eventInfo.srcName} camera`
                    }
-                   
-                   Logger.info(`[EventHandlerService] Creating intrusion detection record:`, {
-                      parkId: intrusionData.park_Id,
-                      cameraId: intrusionData.camera_Id,
-                      detectionId: intrusionData.detection_Id,
-                      hasImage: !!imageUrl
-                   });
-                   
+                
                    const existingIntrusion = await db.parks_intrusion_detection.findFirst({
                       where: {
                          detection_Id: intrusionData.detection_Id
@@ -583,7 +416,6 @@ class EventHandlerService {
                    });
                    
                    if (existingIntrusion) {
-                      Logger.warn(`[EventHandlerService] Intrusion detection with detection_Id ${intrusionData.detection_Id} already exists. Skipping duplicate creation.`);
                       return;
                    }
                    
@@ -591,7 +423,6 @@ class EventHandlerService {
                       data: intrusionData
                    })
                    
-                   Logger.info(`[EventHandlerService] Successfully created intrusion detection record with ID: ${new_intrusion_detection.Id}`);
 
                    const parkExists = await db.parks.findFirst({
                       where: { Id: parkcamera.park_Id || 0},
@@ -633,67 +464,35 @@ class EventHandlerService {
                                updatedAt: new Date()
                             }
                          });
-                         Logger.info(`[EventHandlerService] Intrusion detection record updated with intranet details`);
                       } else {
-                         Logger.info(`[EventHandlerService] Intrusion detection record saved without intranet details due to API failure`);
                       }
 
                    } catch (historyError: any) {
-                      Logger.error(`[EventHandlerService] Failed to create intranet posting history:`, historyError.message);
                    }
                 }
                 else{
-                   Logger.error(`[EventHandlerService] Park camera not found for camera index: ${eventInfo.srcIndex}`);
                    return new HttpException(STATUS.NOT_FOUND, "Park camera not found")
                 }
              }
              else if(eventType===attendance_code){
-                Logger.info(`[EventHandlerService] Processing attendance event for camera: ${eventInfo.srcIndex} (${eventInfo.srcName})`);
                 const isOfficeCamera = office_cameras.includes(eventInfo.srcIndex)
                 const isParkCamera = park_cameras.includes(eventInfo.srcIndex)
                 
-                Logger.info(`[EventHandlerService] Camera type detection:`, {
-                   srcIndex: eventInfo.srcIndex,
-                   srcName: eventInfo.srcName,
-                   isOfficeCamera,
-                   isParkCamera,
-                   officeCamerasList: office_cameras,
-                   parkCamerasList: park_cameras
-                });
+            
                 
                 if(isOfficeCamera){
-                   Logger.info(`[EventHandlerService] Processing office camera attendance - Camera: ${eventInfo.srcName} (${eventInfo.srcIndex})`);
                    const officeCamera = await db.offices_cameras.findFirst({
                       where: {
                          camera_Id: eventInfo.srcIndex
                       }
                    })
                    
-                   Logger.info(`[EventHandlerService] Office camera lookup result:`, {
-                      found: !!officeCamera,
-                      cameraId: officeCamera?.Id,
-                      officeId: officeCamera?.office_Id,
-                      cameraName: officeCamera?.camera_english_name
-                   });
-                   
                    if(officeCamera && officeCamera.office_Id){
-                      Logger.info(`[EventHandlerService] Found office camera:`, {
-                         cameraId: officeCamera.Id,
-                         officeId: officeCamera.office_Id,
-                         cameraIndex: eventInfo.srcIndex
-                      });
+                     
                       
                       const office_Id = officeCamera.office_Id
                       const isEntry = eventInfo.srcName.toLowerCase().includes("entry") || eventInfo.srcName.toLowerCase().includes("test")
                       const isExit = eventInfo.srcName.toLowerCase().includes("exit")
-                      
-                      Logger.info(`[EventHandlerService] Office attendance type:`, {
-                         srcName: eventInfo.srcName,
-                         isEntry,
-                         isExit,
-                         officeId: office_Id,
-                         srcIndex: eventInfo.srcIndex
-                      });
                       
                       let genderName = 'Unknown';
                       let genderValue = 0;
@@ -703,7 +502,6 @@ class EventHandlerService {
                      let ageGroup = null;
                       
                       if (eventInfo.data?.alarmResult?.faces) {
-                         Logger.debug(`[EventHandlerService] Processing face recognition data for office attendance`);
                          genderValue = eventInfo.data.alarmResult.faces.gender.value
                          ageGroup = eventInfo.data.alarmResult.faces.age.ageGroup
                          genderName = gender_types.find(gt => gt.code === genderValue)?.name || 'Unknown'
@@ -712,127 +510,65 @@ class EventHandlerService {
                          const similarity = eventInfo.data.alarmResult.faces.identify.candidate.similarity
                          const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id
                          
-                         Logger.debug(`[EventHandlerService] Face recognition details:`, {
-                            genderValue,
-                            ageGroup,
-                            genderName,
-                            isChild,
-                            similarity,
-                            humanId
-                         });
-                         
                          if (humanId) {
                             const user = await db.users.findFirst({
                                where: { unique_id: humanId.toString() }
                             });
                             if (user) {
                                person_Id = user.Id;
-                               Logger.info(`[EventHandlerService] Identified employee:`, {
-                                  personId: person_Id,
-                                  empId: humanId,
-                                  similarity
-                               });
+                              
                             } else {
-                               Logger.warn(`[EventHandlerService] Employee not found in database for empId: ${humanId}`);
-                               Logger.info(`[EventHandlerService] 👤 Employee not found, creating guest user for office attendance`, {
-                                  empId: humanId,
-                                  similarity,
-                                  gender: genderName
-                               });
-                               
+                              
                                try {
                                   let faceData = null;
                                   if(eventInfo.data?.alarmResult?.faces?.URL){
                                      faceData = eventInfo.data.alarmResult.faces.URL;
-                                     Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for guest user`, {
-                                        faceDataUrl: faceData
-                                     });
+                                     
                                   }
                                   let faceRect = null;
                                   if (eventInfo.data?.alarmResult?.faces?.URL) {
                                      faceData = eventInfo.data.alarmResult.faces.URL;
-                                     Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for guest user`, {
-                                        faceDataUrl: faceData
-                                     });
+                                     
                                      } else {
-                                     Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for guest user creation`);
                                   }
                                   
                                   if (eventInfo.data?.alarmResult?.faces?.faceRect) {
                                      faceRect = eventInfo.data.alarmResult.faces.faceRect;
-                                     Logger.debug(`[EventHandlerService] 📐 Extracted face rect for cropping`, {
-                                        faceRect: faceRect
-                                     });
+                                     
                                   }
                                   
                                   const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect);
                                   person_Id = guestUser.Id;
-                                  
-                                  Logger.info(`[EventHandlerService] ✅ Successfully created guest user for office attendance`, {
-                                     guestUserId: person_Id,
-                                     guestName: guestUser.emp__eng_name,
-                                     gender: genderName,
-                                     unique_id: guestUser.unique_id,
-                                     originalEmpId: humanId
-                                  });
+                                 
                                } catch (guestError: any) {
-                                  Logger.error(`[EventHandlerService] ❌ Failed to create guest user for office attendance`, {
-                                     error: guestError.message,
-                                     empId: humanId,
-                                     gender: genderName,
-                                     hasFaceData: !!faceData
-                                  });
+                                 
                                }
                             }
                          } else {
-                           console.log('No Human')
-                            Logger.debug(`[EventHandlerService] No valid employee identification (similarity: ${similarity}, humanId: ${humanId})`);
-                            Logger.info(`[EventHandlerService] 👤 Unknown person detected, creating guest user for office attendance`, {
-                               similarity,
-                               humanId,
-                               gender: genderName
-                            });
+                          
                             
                             try {
                                let faceData = null;
                                let faceRect = null;
                                if (eventInfo.data?.alarmResult?.faces?.URL) {
                                   faceData = eventInfo.data.alarmResult.faces.URL;
-                                  Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for unknown visitor`, {
-                                     faceDataUrl: faceData
-                                  });
+                                  
                                   } else {
-                                  Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for unknown visitor guest creation`);
                                }
                                
                                if (eventInfo.data?.alarmResult?.faces?.faceRect) {
                                   faceRect = eventInfo.data.alarmResult.faces.faceRect;
-                                  Logger.debug(`[EventHandlerService] 📐 Extracted face rect for unknown visitor cropping`, {
-                                     faceRect: faceRect
-                                  });
+                                  
                                }
                                
                                const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect);
                                   person_Id = guestUser.Id;
                                
-                               Logger.info(`[EventHandlerService] ✅ Successfully created guest user for unknown office visitor`, {
-                                  guestUserId: person_Id,
-                                     guestName: guestUser.emp__eng_name,
-                                  gender: genderName,
-                                  unique_id: guestUser.unique_id,
-                                  originalHumanId: humanId
-                                  });
                                } catch (guestError: any) {
-                                Logger.error(`[EventHandlerService] ❌ Failed to create guest user for unknown office visitor`, {
-                                   error: guestError.message,
-                                   humanId,
-                                   gender: genderName,
-                                   hasFaceData: !!faceData
-                                });
+                                
                              }
                          }
                       } else {
-                         Logger.debug(`[EventHandlerService] No face recognition data available for office attendance`);
                       }
                       
                       let officeFootfallImage = null;
@@ -844,14 +580,10 @@ class EventHandlerService {
                                const base64Image = Buffer.from(imageBuffer).toString('base64');
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
-                               // Always save a new image for footfall analysis
                                officeFootfallImage = await this.saveImageLocally(dataUrl, 'office-footfall', eventInfo.eventId);
-                               Logger.info(`[EventHandlerService] ✅ Successfully saved office footfall image locally: ${officeFootfallImage}`);
                             } else {
-                               Logger.warn(`[EventHandlerService] ⚠️ Failed to fetch image from URL: ${eventInfo.data.alarmResult.faces.URL}`);
                             }
                          } catch (imageError: any) {
-                            Logger.error(`[EventHandlerService] ❌ Error processing office footfall image:`, imageError.message);
                          }
                       }
                       const officeFootfallData = {
@@ -867,30 +599,15 @@ class EventHandlerService {
                          age_group: ageGroup,
                       }
                       
-                      Logger.info(`[EventHandlerService] Checking if should create footfall record:`, {
-                         isEntry,
-                         srcName: eventInfo.srcName,
-                         officeId: officeFootfallData.office_Id,
-                         personId: officeFootfallData.person_Id
-                      });
+                     
                       
                       if(isEntry){
-                         Logger.info(`[EventHandlerService] ✅ Creating office footfall record for entry:`, {
-                         officeId: officeFootfallData.office_Id,
-                         personId: officeFootfallData.person_Id,
-                         gender: officeFootfallData.gender,
-                         isChild: officeFootfallData.is_child,
-                         detectionId: officeFootfallData.detection_Id,
-                         image: officeFootfallData.image,
-                         age_group: officeFootfallData.age_group,
-                         srcName: eventInfo.srcName,
-                      });
+                       
                       
                         const officeFootfallRecord = await db.offices_footfall_analysis.create({
                            data: officeFootfallData
                         })
                         
-                        Logger.info(`[EventHandlerService] Successfully created office footfall record with ID: ${officeFootfallRecord.id}`);
 
                         let userDetails = null;
                         if (person_Id) {
@@ -943,11 +660,7 @@ class EventHandlerService {
                         
                         SocketService.emitOfficeFootfallUpdate(socketData);
                       } else {
-                         Logger.info(`[EventHandlerService] ❌ Skipping office footfall record creation for exit event:`, {
-                            srcName: eventInfo.srcName,
-                            isEntry,
-                            isExit
-                         });
+                         
                       }
 
                       let sentimentImageUrl = null;
@@ -955,7 +668,6 @@ class EventHandlerService {
                       
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
-                            Logger.info(`[EventHandlerService] Processing sentiment analysis image for office`);
                             const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
                             const imageDataResponse = await this.getImageData(faceDataUrl);
                             
@@ -964,17 +676,13 @@ class EventHandlerService {
                                
                                if (!imageUrl) {
                                   imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
-                                  Logger.info(`[EventHandlerService] Successfully saved sentiment image locally for office`);
                                } else {
-                                  Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office sentiment: ${imageUrl}`);
                                }
                                sentimentImageUrl = imageUrl;
                                
                                if (sentimentImageUrl) {
                                   try {
-                                     // Construct full image URL
                                      const fullImageUrl = `${this.API_CONFIG.localHostUrl}${sentimentImageUrl}`;
-                                     Logger.info(`[EventHandlerService] Calling emotion detection API for office sentiment with full URL: ${fullImageUrl}`);
                                      const emotionResponse = await axios.post(this.API_CONFIG.emotionDetectionUrl, {
                                         image_url: fullImageUrl
                                      }, {
@@ -984,27 +692,19 @@ class EventHandlerService {
                                      
                                      if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
                                         detectedSentiment = emotionResponse.data.faces[0].emotion;
-                                        Logger.info(`[EventHandlerService] Detected office sentiment: ${detectedSentiment}`, {
-                                           confidence: emotionResponse.data.faces[0].confidence,
-                                           processingTime: emotionResponse.data.processing_time
-                                        });
+                                       
                                      } else {
-                                        Logger.warn(`[EventHandlerService] No emotion detected for office image, using default: neutral`);
                                      }
                                   } catch (emotionError: any) {
                                      if (emotionError.code === 'ECONNREFUSED') {
-                                        Logger.warn(`[EventHandlerService] Emotion detection service is not available (ECONNREFUSED). Using default sentiment: neutral`);
                                      } else if (emotionError.code === 'ETIMEDOUT') {
-                                        Logger.warn(`[EventHandlerService] Emotion detection service timed out. Using default sentiment: neutral`);
                                      } else {
-                                        Logger.error(`[EventHandlerService] Failed to detect emotion for office image:`, emotionError.message);
-                                        Logger.info(`[EventHandlerService] Using default sentiment: neutral`);
+                                       
                                      }
                                   }
                                }
                             }
                          } catch (imageError: any) {
-                            Logger.error(`[EventHandlerService] Failed to process office sentiment image:`, imageError);
                          }
                       }
 
@@ -1059,11 +759,7 @@ class EventHandlerService {
                                updatedAt: user.updatedAt
                             };
                             
-                            Logger.debug(`[EventHandlerService] Office sentiment analysis user details:`, {
-                               personName,
-                               sentimentOf,
-                               hasPersonImage: !!personImage
-                            });
+                           
                          }
                       }
 
@@ -1089,20 +785,11 @@ class EventHandlerService {
                       }
                     
                       if(isEntry){
-                         Logger.info(`[EventHandlerService] Creating office sentiment analysis record for entry:`, {
-                            officeId: officeSentimentData.office_Id,
-                            personId: officeSentimentData.person_Id,
-                            personName: officeSentimentData.person_name,
-                            sentimentOf: officeSentimentData.sentiment_of,
-                            hasImage: !!sentimentImageUrl,
-                            age_group: officeSentimentData.age_group
-                         });
                          
                          const officeSentimentRecord = await db.offices_sentiment_analysis.create({
                             data: officeSentimentData
                          });
                          
-                         Logger.info(`[EventHandlerService] Successfully created office sentiment analysis record with ID: ${officeSentimentRecord.Id}`);
                          
                          try {
                             SocketService.emitOfficeSentimentUpdate({
@@ -1128,7 +815,6 @@ class EventHandlerService {
                                   createdAt: officeSentimentRecord.createdAt,
                                   updatedAt: officeSentimentRecord.updatedAt,
                                   user: userDetails, 
-                                  // Camera details (same structure as office sentiment service)
                                   offices_cameras_offices_sentiment_analysis_entry_camera_IdTooffices_cameras: isEntry ? {
                                      camera_english_name: officeCamera.camera_english_name,
                                      camera_arabic_name: officeCamera.camera_arabic_name,
@@ -1142,18 +828,14 @@ class EventHandlerService {
                                }
                             });
                          } catch (socketError) {
-                            Logger.error(`[EventHandlerService] Failed to emit socket event:`, socketError);
                          }
                       } else if(isExit){
-                         // Find existing sentiment analysis record for exit (similar to attendance logic)
-                         Logger.info(`[EventHandlerService] Processing office exit sentiment analysis`);
                          
                          let exitSentimentImageUrl = null;
-                         let exitDetectedSentiment = 'neutral'; // Default sentiment
+                         let exitDetectedSentiment = 'neutral'; 
                          
                          if (eventInfo.data?.alarmResult?.faces?.URL) {
                             try {
-                               Logger.info(`[EventHandlerService] Processing exit sentiment analysis image for office`);
                                const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
                                const imageDataResponse = await this.getImageData(faceDataUrl);
                                
@@ -1162,15 +844,12 @@ class EventHandlerService {
                                   
                                   if (!imageUrl) {
                                      imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
-                                     Logger.info(`[EventHandlerService] Successfully saved exit sentiment image locally for office`);
                                   } else {
-                                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office exit sentiment: ${imageUrl}`);
                                   }
                                   exitSentimentImageUrl = imageUrl;
                                   
                                   if (exitSentimentImageUrl) {
                                      try {
-                                        Logger.info(`[EventHandlerService] Calling emotion detection API for office exit sentiment`);
                                         const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
                                            image_url: exitSentimentImageUrl
                                         }, {
@@ -1180,76 +859,44 @@ class EventHandlerService {
                                         
                                         if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
                                            exitDetectedSentiment = emotionResponse.data.faces[0].emotion;
-                                           Logger.info(`[EventHandlerService] Detected office exit sentiment: ${exitDetectedSentiment}`, {
-                                              confidence: emotionResponse.data.faces[0].confidence,
-                                              processingTime: emotionResponse.data.processing_time
-                                           });
+                                           
                                         } else {
-                                           Logger.warn(`[EventHandlerService] No emotion detected for office exit image, using default: neutral`);
                                         }
                                      } catch (emotionError: any) {
                                         if (emotionError.code === 'ECONNREFUSED') {
-                                           Logger.warn(`[EventHandlerService] Emotion detection service is not available (ECONNREFUSED). Using default exit sentiment: neutral`);
                                         } else if (emotionError.code === 'ETIMEDOUT') {
-                                           Logger.warn(`[EventHandlerService] Emotion detection service timed out. Using default exit sentiment: neutral`);
                                         } else {
-                                           Logger.error(`[EventHandlerService] Failed to detect emotion for office exit image:`, emotionError.message);
-                                           Logger.info(`[EventHandlerService] Using default exit sentiment: neutral`);
+                                          
                                         }
                                      }
                                   }
                                }
                             } catch (imageError: any) {
-                               Logger.error(`[EventHandlerService] Failed to process office exit sentiment image:`, imageError);
                             }
                          }
                          
                          let searchPersonId = person_Id;
-                         
-                         Logger.info(`[EventHandlerService] Initial searchPersonId for office sentiment exit:`, {
-                            person_Id,
-                            searchPersonId,
-                            hasHumanId: !!eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id,
-                            humanId: eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id
-                         });
+                        
                          
                          if (!searchPersonId && eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id) {
                             const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
-                            Logger.info(`[EventHandlerService] Attempting to find user by human_id for office sentiment exit:`, {
-                               humanId,
-                               humanIdString: humanId.toString()
-                            });
                             
                             if (humanId && humanId !== "-1") {
                                const user = await db.users.findFirst({
                                   where: { unique_id: humanId.toString() }
                                });
                                
-                               Logger.info(`[EventHandlerService] User lookup result for office sentiment exit:`, {
-                                  found: !!user,
-                                  userId: user?.Id,
-                                  userUniqueId: user?.unique_id,
-                                  userName: user?.emp__eng_name
-                               });
+                              
                                
                                if (user) {
                                   searchPersonId = user.Id;
-                                  Logger.info(`[EventHandlerService] Found person_Id for exit sentiment using human_id: ${searchPersonId}`);
                                }
                             }
                          }
                          
                          if (!searchPersonId) {
-                            Logger.warn(`[EventHandlerService] Cannot process exit sentiment - no valid person_Id found`);
                             return;
                          }
-                         
-                         Logger.info(`[EventHandlerService] Searching for office sentiment record with criteria:`, {
-                            office_Id,
-                            person_Id: searchPersonId.toString(),
-                            searchPersonId,
-                            check_out_capture: null
-                         });
                          
                          const latestSentiment = await db.offices_sentiment_analysis.findFirst({
                             where: {
@@ -1262,14 +909,7 @@ class EventHandlerService {
                             }
                          });
 
-                         Logger.info(`[EventHandlerService] Office sentiment search result:`, {
-                            found: !!latestSentiment,
-                            recordId: latestSentiment?.Id,
-                            person_Id: latestSentiment?.person_Id,
-                            check_in_date: latestSentiment?.check_in_date,
-                            check_out_capture: latestSentiment?.check_out_capture
-                         });
-
+                       
                          if (!latestSentiment) {
                             const allSentimentRecords = await db.offices_sentiment_analysis.findMany({
                                where: {
@@ -1282,22 +922,10 @@ class EventHandlerService {
                                take: 5
                             });
                             
-                            Logger.info(`[EventHandlerService] All office sentiment records for debugging:`, {
-                               office_Id,
-                               searchPersonId: searchPersonId.toString(),
-                               totalRecords: allSentimentRecords.length,
-                               records: allSentimentRecords.map(record => ({
-                                  id: record.Id,
-                                  person_Id: record.person_Id,
-                                  check_in_date: record.check_in_date,
-                                  check_out_capture: record.check_out_capture,
-                                  sentiment_of: record.sentiment_of
-                               }))
-                            });
+                           
                          }
                          
                          if(latestSentiment){
-                            Logger.info(`[EventHandlerService] Updating office exit sentiment analysis for record ID: ${latestSentiment.Id}`);
                             await db.offices_sentiment_analysis.update({
                                where: { Id: latestSentiment.Id },
                                data: {
@@ -1308,7 +936,6 @@ class EventHandlerService {
                                   exit_camera_Id: officeSentimentData.exit_camera_Id
                                }
                             });
-                            Logger.info(`[EventHandlerService] Successfully updated office exit sentiment analysis`);
                             
                             let entryCameraDetails = null;
                             if (latestSentiment.entry_camera_Id) {
@@ -1357,22 +984,12 @@ class EventHandlerService {
                                   }
                                });
                             } catch (socketError) {
-                               Logger.error(`[EventHandlerService] Failed to emit socket event for exit:`, socketError);
                             }
                          } else {
-                            Logger.warn(`[EventHandlerService] No matching entry record found for office exit sentiment analysis`, {
-                               office_Id,
-                               person_Id: searchPersonId,
-                               searchCriteria: {
-                                  office_Id,
-                                  person_Id: searchPersonId.toString(),
-                                  check_out_capture: null
-                               }
-                            });
+                          
                          }
                          
                          try {
-                            Logger.info(`[EventHandlerService] Checking for QMS record to update for office exit`);
                             
                             const latestQMSRecord = await db.qms_history.findFirst({
                                where: {
@@ -1385,7 +1002,6 @@ class EventHandlerService {
                             });
                             
                             if (latestQMSRecord) {
-                               Logger.info(`[EventHandlerService] Found QMS record to update: ${latestQMSRecord.visit_id}`);
                                
                                await db.qms_history.update({
                                   where: { visit_id: latestQMSRecord.visit_id },
@@ -1400,12 +1016,9 @@ class EventHandlerService {
                                   }
                                });
                                
-                               Logger.info(`[EventHandlerService] Successfully updated QMS record with exit sentiment: ${exitDetectedSentiment}`);
                             } else {
-                               Logger.info(`[EventHandlerService] No active QMS record found for visitor_id: ${searchPersonId}`);
                             }
                          } catch (qmsError: any) {
-                            Logger.error(`[EventHandlerService] Error updating QMS record for office exit:`, qmsError.message);
                          }
                       }
                       
@@ -1413,18 +1026,12 @@ class EventHandlerService {
                          const isGuest = await this.isGuestUser(person_Id);
                          
                          if (isGuest) {
-                            Logger.info(`[EventHandlerService] Skipping office entry attendance record for guest user`, {
-                               person_Id,
-                               office_Id,
-                               reason: "Guest users do not have attendance records"
-                            });
+                           
                          } else {
-                         Logger.info(`[EventHandlerService] Processing office entry attendance`);
                          
                          let entryImageUrl = null;
                          if (eventInfo.data?.alarmResult?.faces?.URL) {
                             try {
-                               Logger.info(`[EventHandlerService] Processing entry image for office attendance`);
                                const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
                                const imageDataResponse = await this.getImageData(faceDataUrl);
                                
@@ -1432,14 +1039,11 @@ class EventHandlerService {
                                   const base64Image = imageDataResponse;
                                   if (!imageUrl) {
                                      imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
-                                     Logger.info(`[EventHandlerService] Successfully saved entry image locally for office attendance`);
                                   } else {
-                                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office attendance entry: ${imageUrl}`);
                                   }
                                   entryImageUrl = imageUrl;
                                }
                             } catch (imageError: any) {
-                               Logger.error(`[EventHandlerService] Failed to process entry image for office attendance:`, imageError.message);
                             }
                          }
                          
@@ -1456,9 +1060,7 @@ class EventHandlerService {
                             data: officeAttendanceData
                          })
                          
-                         Logger.info(`[EventHandlerService] Successfully created office entry attendance record with ID: ${officeAttendanceRecord.Id}`);
 
-                         // Emit office attendance update via socket
                          try {
                             const userDetails = officeAttendanceRecord.person_Id ? await db.users.findUnique({
                                where: { Id: officeAttendanceRecord.person_Id },
@@ -1589,7 +1191,6 @@ class EventHandlerService {
 
                             SocketService.emitOfficeAttendanceUpdate(socketData);
                          } catch (socketError: any) {
-                            Logger.error(`[EventHandlerService] ❌ Failed to emit office attendance entry socket update:`, socketError.message);
                          }
                             
                             try {
@@ -1599,14 +1200,13 @@ class EventHandlerService {
                                });
                                
                                if (user && user.user_Id) {
-                                  Logger.info(`[EventHandlerService] Calling EmployeeEntryExitService API for office entry`);
                                   const secretKey = await this.fetchSecretFromAPI();
                                   
                                   const employeeEntryPayload = {
                                      SecretKey: secretKey,
                                      Lang: "en",
                                      UserID: user.user_Id,
-                                     Type: "1" // Entry
+                                     Type: "1"
                                   };
                                   
                                   const employeeEntryResponse = await axios.post(
@@ -1619,31 +1219,15 @@ class EventHandlerService {
                                      }
                                   );
                                   
-                                  Logger.info(`[EventHandlerService] EmployeeEntryExitService API response for office entry:`, {
-                                     status: employeeEntryResponse.status,
-                                     data: employeeEntryResponse.data
-                                  });
+                                  
                                } else {
-                                  Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${person_Id}`);
                                }
                             } catch (employeeApiError: any) {
-                               Logger.error(`[EventHandlerService] Failed to call EmployeeEntryExitService for office entry:`, employeeApiError.message);
-                               // Don't throw error - attendance record was created successfully
                             }
                          }
                       } else if(isExit){
-                         Logger.info(`[EventHandlerService] Processing office exit attendance`);
+                        
                          
-                         // Debug logging for exit event
-                         Logger.debug(`[EventHandlerService] Exit event details:`, {
-                            office_Id,
-                            person_Id,
-                            srcName: eventInfo.srcName,
-                            happenTime: eventInfo.sendTime,
-                            humanId: eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id
-                         });
-                         
-                         // If person_Id is null, try to find it using human_id from the event
                          let searchPersonId = person_Id;
                          if (!searchPersonId && eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id) {
                             const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
@@ -1653,13 +1237,11 @@ class EventHandlerService {
                                });
                                if (user) {
                                   searchPersonId = user.Id;
-                                  Logger.info(`[EventHandlerService] Found person_Id for exit event using human_id: ${searchPersonId}`);
                                }
                             }
                          }
                          
                          if (!searchPersonId) {
-                            Logger.warn(`[EventHandlerService] Cannot process exit event - no valid person_Id found`);
                             return;
                          }
                          
@@ -1675,40 +1257,27 @@ class EventHandlerService {
                          })
                          
                          if(latestAttendance){
-                            // Check if the person is a guest user
                             const isGuest = await this.isGuestUser(searchPersonId);
                             
                             if (isGuest) {
-                               Logger.info(`[EventHandlerService] Skipping office exit attendance update for guest user`, {
-                                  person_Id: searchPersonId,
-                                  office_Id,
-                                  attendanceRecordId: latestAttendance.Id,
-                                  reason: "Guest users do not have attendance records"
-                               });
+                               
                             } else {
-                            Logger.info(`[EventHandlerService] Updating office exit attendance for record ID: ${latestAttendance.Id}`);
                             
-                            // Process and upload exit image
                             let exitImageUrl = null;
                             if (eventInfo.data?.alarmResult?.faces?.URL) {
                                try {
-                                  Logger.info(`[EventHandlerService] Processing exit image for office attendance`);
                                   const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
                                   const imageDataResponse = await this.getImageData(faceDataUrl);
                                   
                                   if (imageDataResponse) {
                                      const base64Image = imageDataResponse;
-                                     // Use global imageUrl if available, otherwise upload
                                      if (!imageUrl) {
                                         imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
-                                        Logger.info(`[EventHandlerService] Successfully saved exit image locally for office attendance`);
                                      } else {
-                                        Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for office attendance exit: ${imageUrl}`);
                                      }
                                      exitImageUrl = imageUrl;
                                   }
                                } catch (imageError: any) {
-                                  Logger.error(`[EventHandlerService] Failed to process exit image for office attendance:`, imageError.message);
                                }
                             }
                             
@@ -1719,11 +1288,8 @@ class EventHandlerService {
                                   exit_image: exitImageUrl
                                }
                             })
-                            Logger.info(`[EventHandlerService] Successfully updated office exit attendance`);
 
-                            // Emit office attendance exit update via socket
                             try {
-                               // Get user details
                                const userDetails = updatedAttendanceRecord.person_Id ? await db.users.findUnique({
                                   where: { Id: updatedAttendanceRecord.person_Id },
                                   select: {
@@ -1741,7 +1307,6 @@ class EventHandlerService {
                                   }
                                }) : null;
 
-                               // Get office details
                                const officeDetails = updatedAttendanceRecord.office_Id ? await db.offices.findUnique({
                                   where: { Id: updatedAttendanceRecord.office_Id },
                                   select: {
@@ -1753,7 +1318,6 @@ class EventHandlerService {
                                   }
                                }) : null;
 
-                               // Format dates for frontend compatibility (same functions as entry)
                                const formatTimeToString = (timeValue: any): string => {
                                   if (!timeValue) return "--";
                                   
@@ -1842,12 +1406,10 @@ class EventHandlerService {
                                      ...updatedAttendanceRecord,
                                      user: userDetails,
                                      office: officeDetails,
-                                     // Add formatted date/time fields for frontend compatibility
                                      formattedEntryTime: formatTimeToString(updatedAttendanceRecord.entry_time),
                                      formattedExitTime: formatTimeToString(updatedAttendanceRecord.exit_time),
                                      formattedDate: formatDateForDisplay(formatDateToString(updatedAttendanceRecord.entry_time || updatedAttendanceRecord.createdAt)),
                                      rawDate: formatDateToString(updatedAttendanceRecord.entry_time || updatedAttendanceRecord.createdAt),
-                                     // Include processed images
                                      entry_image: updatedAttendanceRecord.entry_image ? `${this.API_CONFIG.baseUrl}${updatedAttendanceRecord.entry_image}` : null,
                                      exit_image: updatedAttendanceRecord.exit_image ? `${this.API_CONFIG.baseUrl}${updatedAttendanceRecord.exit_image}` : null,
                                      createdAt: new Date(),
@@ -1858,10 +1420,8 @@ class EventHandlerService {
 
                                SocketService.emitOfficeAttendanceUpdate(socketData);
                             } catch (socketError: any) {
-                               Logger.error(`[EventHandlerService] ❌ Failed to emit office attendance exit socket update:`, socketError.message);
                             }
                                
-                               // Call EmployeeEntryExitService API for exit
                                try {
                                   const user = await db.users.findUnique({
                                      where: { Id: searchPersonId },
@@ -1869,14 +1429,13 @@ class EventHandlerService {
                                   });
                                   
                                   if (user && user.user_Id) {
-                                     Logger.info(`[EventHandlerService] Calling EmployeeEntryExitService API for office exit`);
                                      const secretKey = await this.fetchSecretFromAPI();
                                      
                                      const employeeExitPayload = {
                                         SecretKey: secretKey,
                                         Lang: "en",
                                         UserID: user.user_Id,
-                                        Type: "2" // Exit
+                                        Type: "2"
                                      };
                                      
                                      const employeeExitResponse = await axios.post(
@@ -1889,34 +1448,19 @@ class EventHandlerService {
                                         }
                                      );
                                      
-                                     Logger.info(`[EventHandlerService] EmployeeEntryExitService API response for office exit:`, {
-                                        status: employeeExitResponse.status,
-                                        data: employeeExitResponse.data
-                                     });
+                                    
                          } else {
-                                     Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${searchPersonId}`);
                                   }
                                } catch (employeeApiError: any) {
-                                  Logger.error(`[EventHandlerService] Failed to call EmployeeEntryExitService for office exit:`, employeeApiError.message);
-                                  // Don't throw error - attendance record was updated successfully
                                }
                             }
                          } else {
-                            Logger.warn(`[EventHandlerService] No matching entry record found for office exit attendance`, {
-                               office_Id,
-                               person_Id: searchPersonId,
-                               searchCriteria: {
-                                  office_Id,
-                                  person_Id: searchPersonId,
-                                  exit_time: null
-                               }
-                            });
+                           
                          }
                       }
                    }
                 }
                 else if(isParkCamera){
-                   Logger.info(`[EventHandlerService] Processing park camera attendance`);
                    const parkCamera = await db.park_cameras.findFirst({
                       where: {
                          camera_Id: eventInfo.srcIndex
@@ -1924,134 +1468,73 @@ class EventHandlerService {
                    })
                    
                    if(parkCamera && parkCamera.park_Id){
-                      Logger.info(`[EventHandlerService] Found park camera:`, {
-                         cameraId: parkCamera.Id,
-                         parkId: parkCamera.park_Id,
-                         cameraIndex: eventInfo.srcIndex
-                      });
+                      
                       
                       const park_Id = parkCamera.park_Id
                       const isEntry = eventInfo.srcName.toLowerCase().includes("entry")
                       const isExit = eventInfo.srcName.toLowerCase().includes("exit")
-                      
-                      Logger.debug(`[EventHandlerService] Park attendance type:`, {
-                         srcName: eventInfo.srcName,
-                         isEntry,
-                         isExit
-                      });
+                     
                       
                       const genderValue = eventInfo.data.alarmResult.faces.gender.value
                       let ageGroup = eventInfo.data.alarmResult.faces.age.ageGroup
                       const genderName = gender_types.find(gt => gt.code === genderValue)?.name || 'Unknown'
-                      const isChild = ageGroup <= 2 // INFANT, KID, CHILD
+                      const isChild = ageGroup <= 2 
                       
                       const similarity = eventInfo.data.alarmResult.faces.identify.candidate.similarity
                       const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id
                       let faceData = null;
                       
-                      Logger.debug(`[EventHandlerService] Park face recognition details:`, {
-                         genderValue,
-                         ageGroup,
-                         genderName,
-                         isChild,
-                         similarity,
-                         humanId
-                      });
                       
-                      let person_Id = null; // Default fallback - use null for unknown persons
+                      
+                      let person_Id = null; 
                       if (humanId && similarity !== null && similarity !== undefined) {
                          const user = await db.users.findFirst({
                             where: { unique_id: humanId.toString() }
                          });
                          if (user) {
                             person_Id = user.Id;
-                            Logger.info(`[EventHandlerService] Identified employee for park attendance:`, {
-                               personId: person_Id,
-                               empId: humanId,
-                               similarity
-                            });
+                           
                          } else {
-                            Logger.warn(`[EventHandlerService] Employee not found in database for park attendance empId: ${humanId}`);
-                            Logger.info(`[EventHandlerService] 👤 Employee not found, creating guest user for park attendance`, {
-                               empId: humanId,
-                               similarity,
-                               gender: genderName
-                            });
+                           
                             
                             try {
                                let faceData = null;
                                let faceRect = null;
                                if (eventInfo.data?.alarmResult?.faces?.URL) {
                                   faceData = eventInfo.data.alarmResult.faces.URL;
-                                  Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for park guest user`, {
-                                     faceDataUrl: faceData
-                                  });
+                                 
                                   } else {
-                                  Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for park guest user creation`);
                                }
                                
                                if (eventInfo.data?.alarmResult?.faces?.faceRect) {
                                   faceRect = eventInfo.data.alarmResult.faces.faceRect;
-                                  Logger.debug(`[EventHandlerService] 📐 Extracted face rect for park guest cropping`, {
-                                     faceRect: faceRect
-                                  });
+                                 
                                }
                                
                                const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect);
                                person_Id = guestUser.Id;
                                
-                               Logger.info(`[EventHandlerService] ✅ Successfully created guest user for park attendance`, {
-                                  guestUserId: person_Id,
-                                  guestName: guestUser.emp__eng_name,
-                                  gender: genderName,
-                                  unique_id: guestUser.unique_id,
-                                  originalEmpId: humanId
-                               });
+                              
                             } catch (guestError: any) {
-                               Logger.error(`[EventHandlerService] ❌ Failed to create guest user for park attendance`, {
-                                  error: guestError.message,
-                                  empId: humanId,
-                                  gender: genderName,
-                                  hasFaceData: !!faceData
-                               });
+                               
                             }
                          }
                       } else {
-                         Logger.debug(`[EventHandlerService] No valid employee identification for park attendance (similarity: ${similarity}, humanId: ${humanId})`);
-                         Logger.info(`[EventHandlerService] 👤 Unknown person detected, creating guest user for park attendance`, {
-                            similarity,
-                            humanId,
-                            gender: genderName
-                         });
                          
                          try {
                             let faceData = null;
                             if (eventInfo.data?.alarmResult?.faces?.URL) {
                                faceData = eventInfo.data.alarmResult.faces.URL;
-                               Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for unknown park visitor`, {
-                                  faceDataUrl: faceData
-                               });
+                               
                                } else {
-                               Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for unknown park visitor guest creation`);
                             }
                             
                             const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
                                person_Id = guestUser.Id;
                             
-                            Logger.info(`[EventHandlerService] ✅ Successfully created guest user for unknown park visitor`, {
-                               guestUserId: person_Id,
-                                  guestName: guestUser.emp__eng_name,
-                               gender: genderName,
-                               unique_id: guestUser.unique_id,
-                               originalHumanId: humanId
-                               });
+                           
                             } catch (guestError: any) {
-                            Logger.error(`[EventHandlerService] ❌ Failed to create guest user for unknown park visitor`, {
-                               error: guestError.message,
-                               humanId,
-                               gender: genderName,
-                               hasFaceData: !!faceData
-                            });
+                            
                          }
                       }
                       
@@ -2065,12 +1548,9 @@ class EventHandlerService {
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
                                parkFootfallImage = await this.saveImageLocally(dataUrl, 'park-footfall', eventInfo.eventId);
-                               Logger.info(`[EventHandlerService] ✅ Successfully saved park footfall image locally: ${parkFootfallImage}`);
                             } else {
-                               Logger.warn(`[EventHandlerService] ⚠️ Failed to fetch image from URL: ${eventInfo.data.alarmResult.faces.URL}`);
                             }
                          } catch (imageError: any) {
-                            Logger.error(`[EventHandlerService] ❌ Error processing park footfall image:`, imageError.message);
                          }
                       }
                       const parkFootfallData = {
@@ -2086,20 +1566,11 @@ class EventHandlerService {
                       }
                       
                       if(isEntry){
-                         Logger.info(`[EventHandlerService] Creating park footfall record for entry:`, {
-                         parkId: parkFootfallData.park_Id,
-                         personId: parkFootfallData.person_Id,
-                         gender: parkFootfallData.gender,
-                         isChild: parkFootfallData.is_child,
-                         detectionId: parkFootfallData.detection_Id,
-                         image: parkFootfallData.image
-                      });
-                     
+                       
                         const parkFootfallRecord = await db.parks_footfall_analysis.create({
                            data: parkFootfallData
                         })
                         
-                        Logger.info(`[EventHandlerService] Successfully created park footfall record with ID: ${parkFootfallRecord.id}`);
 
                         try {
                            const userDetails = parkFootfallRecord.person_Id ? await db.users.findUnique({
@@ -2115,7 +1586,6 @@ class EventHandlerService {
                               }
                            }) : null;
 
-                           // Format image URL if userDetails exists
                            if (userDetails && userDetails.image) {
                               userDetails.image = `${this.API_CONFIG.baseUrl}${userDetails.image}`;
                            }
@@ -2154,10 +1624,8 @@ class EventHandlerService {
 
                            SocketService.emitParkFootfallUpdate(socketData);
                         } catch (socketError: any) {
-                           Logger.error(`[EventHandlerService] ❌ Failed to emit park footfall socket update:`, socketError.message);
                         }
                       } else {
-                         Logger.info(`[EventHandlerService] Skipping park footfall record creation for exit event`);
                       }
 
                       let sentimentImageUrl = null;
@@ -2165,7 +1633,6 @@ class EventHandlerService {
                       
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
-                            Logger.info(`[EventHandlerService] Processing sentiment analysis image for park`);
                             const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
                             const imageDataResponse = await this.getImageData(faceDataUrl);
                             
@@ -2174,17 +1641,13 @@ class EventHandlerService {
                                
                                if (!imageUrl) {
                                   imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
-                                  Logger.info(`[EventHandlerService] Successfully saved sentiment image locally for park`);
                                } else {
-                                  Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park sentiment: ${imageUrl}`);
                                }
                                sentimentImageUrl = imageUrl;
                                
                                if (sentimentImageUrl) {
                                   try {
-                                     // Construct full image URL
                                      const fullImageUrl = `${this.API_CONFIG.localHostUrl}${sentimentImageUrl}`;
-                                     Logger.info(`[EventHandlerService] Calling emotion detection API for park sentiment with full URL: ${fullImageUrl}`);
                                      const emotionResponse = await axios.post(this.API_CONFIG.emotionDetectionUrl, {
                                         image_url: fullImageUrl
                                      }, {
@@ -2194,27 +1657,23 @@ class EventHandlerService {
                                      
                                      if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
                                         detectedSentiment = emotionResponse.data.faces[0].emotion;
-                                        Logger.info(`[EventHandlerService] Detected park sentiment: ${detectedSentiment}`, {
-                                           confidence: emotionResponse.data.faces[0].confidence,
-                                           processingTime: emotionResponse.data.processing_time
-                                        });
+                                       
                                      } else {
-                                        Logger.warn(`[EventHandlerService] No emotion detected for park image, using default: neutral`);
+                                       
                                      }
                                   } catch (emotionError: any) {
                                      if (emotionError.code === 'ECONNREFUSED') {
-                                        Logger.warn(`[EventHandlerService] Emotion detection service is not available (ECONNREFUSED). Using default sentiment: neutral`);
+                                       
                                      } else if (emotionError.code === 'ETIMEDOUT') {
-                                        Logger.warn(`[EventHandlerService] Emotion detection service timed out. Using default sentiment: neutral`);
+                                       
                                      } else {
-                                        Logger.error(`[EventHandlerService] Failed to detect emotion for park image:`, emotionError.message);
-                                        Logger.info(`[EventHandlerService] Using default sentiment: neutral`);
+                                       
                                      }
                                   }
                                }
                             }
                          } catch (imageError: any) {
-                            Logger.error(`[EventHandlerService] Failed to process park sentiment image:`, imageError);
+                           
                          }
                       }
 
@@ -2269,11 +1728,7 @@ class EventHandlerService {
                                updatedAt: user.updatedAt
                             };
                             
-                            Logger.debug(`[EventHandlerService] Park sentiment analysis user details:`, {
-                               personName,
-                               sentimentOf,
-                               hasPersonImage: !!personImage
-                            });
+                           
                          }
                       }
 
@@ -2300,20 +1755,12 @@ class EventHandlerService {
                       }
                    
                       if(isEntry){
-                         Logger.info(`[EventHandlerService] Creating park sentiment analysis record for entry:`, {
-                            parkId: parkSentimentData.park_Id,
-                            personId: parkSentimentData.person_Id,
-                            personName: parkSentimentData.person_name,
-                            sentimentOf: parkSentimentData.sentiment_of,
-                            hasImage: !!sentimentImageUrl,
-                            age_group: parkSentimentData.age_group,
-                         });
+                        
                          
                          const parkSentimentRecord = await db.parks_sentiment_analysis.create({
                             data: parkSentimentData
                          });
                          
-                         Logger.info(`[EventHandlerService] Successfully created park sentiment analysis record with ID: ${parkSentimentRecord.Id}`);
                          
                          try {
                             SocketService.emitParkSentimentUpdate({
@@ -2352,17 +1799,17 @@ class EventHandlerService {
                                }
                             });
                          } catch (socketError) {
-                            Logger.error(`[EventHandlerService] Failed to emit park sentiment socket event:`, socketError);
+                           
                          }
                       } else if(isExit){
-                         Logger.info(`[EventHandlerService] Processing park exit sentiment analysis`);
+                        
                          
                          let exitSentimentImageUrl = null;
                          let exitDetectedSentiment = 'neutral'; 
                          
                          if (eventInfo.data?.alarmResult?.faces?.URL) {
                             try {
-                               Logger.info(`[EventHandlerService] Processing exit sentiment analysis image for park`);
+                              
                                const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
                                const imageDataResponse = await this.getImageData(faceDataUrl);
                                
@@ -2371,15 +1818,12 @@ class EventHandlerService {
                                   
                                   if (!imageUrl) {
                                      imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
-                                     Logger.info(`[EventHandlerService] Successfully saved exit sentiment image locally for park`);
                                   } else {
-                                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park exit sentiment: ${imageUrl}`);
                                   }
                                   exitSentimentImageUrl = imageUrl;
                                   
                                   if (exitSentimentImageUrl) {
                                      try {
-                                        Logger.info(`[EventHandlerService] Calling emotion detection API for park exit sentiment`);
                                         const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
                                            image_url: exitSentimentImageUrl
                                         }, {
@@ -2389,27 +1833,19 @@ class EventHandlerService {
                                         
                                         if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
                                            exitDetectedSentiment = emotionResponse.data.faces[0].emotion;
-                                           Logger.info(`[EventHandlerService] Detected park exit sentiment: ${exitDetectedSentiment}`, {
-                                              confidence: emotionResponse.data.faces[0].confidence,
-                                              processingTime: emotionResponse.data.processing_time
-                                           });
+
                                         } else {
-                                           Logger.warn(`[EventHandlerService] No emotion detected for park exit image, using default: neutral`);
                                         }
                                      } catch (emotionError: any) {
                                         if (emotionError.code === 'ECONNREFUSED') {
-                                           Logger.warn(`[EventHandlerService] Emotion detection service is not available (ECONNREFUSED). Using default exit sentiment: neutral`);
                                         } else if (emotionError.code === 'ETIMEDOUT') {
-                                           Logger.warn(`[EventHandlerService] Emotion detection service timed out. Using default exit sentiment: neutral`);
                                         } else {
-                                           Logger.error(`[EventHandlerService] Failed to detect emotion for park exit image:`, emotionError.message);
-                                           Logger.info(`[EventHandlerService] Using default exit sentiment: neutral`);
+                                          
                                         }
                                      }
                                   }
                                }
                             } catch (imageError: any) {
-                               Logger.error(`[EventHandlerService] Failed to process park exit sentiment image:`, imageError);
                             }
                          }
                          
@@ -2422,13 +1858,11 @@ class EventHandlerService {
                                });
                                if (user) {
                                   searchPersonId = user.Id;
-                                  Logger.info(`[EventHandlerService] Found person_Id for park exit sentiment using human_id: ${searchPersonId}`);
                                }
                             }
                          }
                          
                          if (!searchPersonId) {
-                            Logger.warn(`[EventHandlerService] Cannot process park exit sentiment - no valid person_Id found`);
                             return;
                          }
                          
@@ -2436,7 +1870,7 @@ class EventHandlerService {
                             where: {
                                park_Id: park_Id,
                                person_Id: searchPersonId.toString(),
-                               check_out_capture: null // Find record without exit data
+                               check_out_capture: null 
                             },
                             orderBy: {
                                check_in_date: 'desc'
@@ -2444,7 +1878,6 @@ class EventHandlerService {
                          });
                          
                          if(latestSentiment){
-                            Logger.info(`[EventHandlerService] Updating park exit sentiment analysis for record ID: ${latestSentiment.Id}`);
                             await db.parks_sentiment_analysis.update({
                                where: { Id: latestSentiment.Id },
                                data: {
@@ -2455,7 +1888,6 @@ class EventHandlerService {
                                   exit_camera_Id: parkSentimentData.exit_camera_Id
                                }
                             });
-                            Logger.info(`[EventHandlerService] Successfully updated park exit sentiment analysis`);
                             
                             let entryCameraDetails = null;
                             if (latestSentiment.entry_camera_Id) {
@@ -2504,18 +1936,9 @@ class EventHandlerService {
                                   }
                                });
                             } catch (socketError) {
-                               Logger.error(`[EventHandlerService] Failed to emit park sentiment socket event for exit:`, socketError);
                             }
                          } else {
-                            Logger.warn(`[EventHandlerService] No matching entry record found for park exit sentiment analysis`, {
-                               park_Id,
-                               person_Id: searchPersonId,
-                               searchCriteria: {
-                                  park_Id,
-                                  person_Id: searchPersonId.toString(),
-                                  check_out_capture: null
-                               }
-                            });
+                           
                          }
                       }
                       
@@ -2523,18 +1946,14 @@ class EventHandlerService {
                          const isGuest = await this.isGuestUser(person_Id);
                          
                          if (isGuest) {
-                            Logger.info(`[EventHandlerService] Skipping park entry attendance record for guest user`, {
-                               person_Id,
-                               park_Id,
-                               reason: "Guest users do not have attendance records"
-                            });
+                           
                          } else {
-                         Logger.info(`[EventHandlerService] Processing park entry attendance`);
+                         
                          
                          let entryImageUrl = null;
                          if (eventInfo.data?.alarmResult?.faces?.URL) {
                             try {
-                               Logger.info(`[EventHandlerService] Processing entry image for park attendance`);
+                             
                                const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
                                const imageDataResponse = await this.getImageData(faceDataUrl);
                                
@@ -2542,14 +1961,11 @@ class EventHandlerService {
                                   const base64Image = imageDataResponse;
                                   if (!imageUrl) {
                                      imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
-                                     Logger.info(`[EventHandlerService] Successfully saved entry image locally for park attendance`);
                                   } else {
-                                     Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park attendance entry: ${imageUrl}`);
                                   }
                                   entryImageUrl = imageUrl;
                                }
                             } catch (imageError: any) {
-                               Logger.error(`[EventHandlerService] Failed to process entry image for park attendance:`, imageError.message);
                             }
                          }
                          
@@ -2566,7 +1982,6 @@ class EventHandlerService {
                             data: parkAttendanceData
                          })
                          
-                         Logger.info(`[EventHandlerService] Successfully created park entry attendance record with ID: ${parkAttendanceRecord.Id}`);
                             
                             try {
                                const user = await db.users.findUnique({
@@ -2575,14 +1990,13 @@ class EventHandlerService {
                                });
                                
                                if (user && user.user_Id) {
-                                  Logger.info(`[EventHandlerService] Calling EmployeeEntryExitService API for park entry`);
                                   const secretKey = await this.fetchSecretFromAPI();
                                   
                                   const employeeEntryPayload = {
                                      SecretKey: secretKey,
                                      Lang: "en",
                                      UserID: user.user_Id,
-                                     Type: "1" // Entry
+                                     Type: "1" 
                                   };
                                   
                                   const employeeEntryResponse = await axios.post(
@@ -2595,31 +2009,13 @@ class EventHandlerService {
                                      }
                                   );
                                   
-                                  Logger.info(`[EventHandlerService] EmployeeEntryExitService API response for park entry:`, {
-                                     status: employeeEntryResponse.status,
-                                     data: employeeEntryResponse.data
-                                  });
-                               } else {
-                                  Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${person_Id}`);
+                                 } else {
                                }
                             } catch (employeeApiError: any) {
-                               Logger.error(`[EventHandlerService] Failed to call EmployeeEntryExitService for park entry:`, employeeApiError.message);
-                               // Don't throw error - attendance record was created successfully
                             }
                          }
                       } else if(isExit){
-                         Logger.info(`[EventHandlerService] Processing park exit attendance`);
-                         
-                         // Debug logging for exit event
-                         Logger.debug(`[EventHandlerService] Park exit event details:`, {
-                            park_Id,
-                            person_Id,
-                            srcName: eventInfo.srcName,
-                            happenTime: eventInfo.sendTime,
-                            humanId: eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id
-                         });
-                         
-                         // If person_Id is null, try to find it using human_id from the event
+                              
                          let searchPersonId = person_Id;
                          if (!searchPersonId && eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id) {
                             const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
@@ -2629,13 +2025,11 @@ class EventHandlerService {
                                });
                                if (user) {
                                   searchPersonId = user.Id;
-                                  Logger.info(`[EventHandlerService] Found person_Id for park exit event using human_id: ${searchPersonId}`);
                                }
                             }
                          }
                          
-                         if (!searchPersonId) {
-                            Logger.warn(`[EventHandlerService] Cannot process park exit event - no valid person_Id found`);
+                           if (!searchPersonId) {
                             return;
                          }
                          
@@ -2651,40 +2045,27 @@ class EventHandlerService {
                          })
                          
                          if(latestAttendance){
-                            // Check if the person is a guest user
                             const isGuest = await this.isGuestUser(searchPersonId);
                             
                             if (isGuest) {
-                               Logger.info(`[EventHandlerService] Skipping park exit attendance update for guest user`, {
-                                  person_Id: searchPersonId,
-                                  park_Id,
-                                  attendanceRecordId: latestAttendance.Id,
-                                  reason: "Guest users do not have attendance records"
-                               });
+                               
                             } else {
-                            Logger.info(`[EventHandlerService] Updating park exit attendance for record ID: ${latestAttendance.Id}`);
                             
-                            // Process and upload exit image
                             let exitImageUrl = null;
                             if (eventInfo.data?.alarmResult?.faces?.URL) {
                                try {
-                                  Logger.info(`[EventHandlerService] Processing exit image for park attendance`);
                                   const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
                                   const imageDataResponse = await this.getImageData(faceDataUrl);
                                   
                                   if (imageDataResponse) {
                                      const base64Image = imageDataResponse;
-                                     // Use global imageUrl if available, otherwise upload
                                      if (!imageUrl) {
                                         imageUrl = await this.saveImageLocally(base64Image, 'attendance', eventInfo.eventId);
-                                        Logger.info(`[EventHandlerService] Successfully saved exit image locally for park attendance`);
                                      } else {
-                                        Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for park attendance exit: ${imageUrl}`);
                                      }
                                      exitImageUrl = imageUrl;
                                   }
                                } catch (imageError: any) {
-                                  Logger.error(`[EventHandlerService] Failed to process exit image for park attendance:`, imageError.message);
                                }
                             }
                             
@@ -2695,9 +2076,7 @@ class EventHandlerService {
                                   exit_image: exitImageUrl
                                }
                             })
-                            Logger.info(`[EventHandlerService] Successfully updated park exit attendance`);
                                
-                               // Call EmployeeEntryExitService API for exit
                                try {
                                   const user = await db.users.findUnique({
                                      where: { Id: searchPersonId },
@@ -2705,14 +2084,13 @@ class EventHandlerService {
                                   });
                                   
                                   if (user && user.user_Id) {
-                                     Logger.info(`[EventHandlerService] Calling EmployeeEntryExitService API for park exit`);
                                      const secretKey = await this.fetchSecretFromAPI();
                                      
                                      const employeeExitPayload = {
                                         SecretKey: secretKey,
                                         Lang: "en",
                                         UserID: user.user_Id,
-                                        Type: "2" // Exit
+                                        Type: "2" 
                                      };
                                      
                                      const employeeExitResponse = await axios.post(
@@ -2725,40 +2103,24 @@ class EventHandlerService {
                                         }
                                      );
                                      
-                                     Logger.info(`[EventHandlerService] EmployeeEntryExitService API response for park exit:`, {
-                                        status: employeeExitResponse.status,
-                                        data: employeeExitResponse.data
-                                     });
-                         } else {
-                                     Logger.warn(`[EventHandlerService] Cannot call EmployeeEntryExitService - user_Id not found for person_Id: ${searchPersonId}`);
+                                     
+                                  } else {
                                   }
                                } catch (employeeApiError: any) {
-                                  Logger.error(`[EventHandlerService] Failed to call EmployeeEntryExitService for park exit:`, employeeApiError.message);
-                                  // Don't throw error - attendance record was updated successfully
-                               }
+                                  }
                             }
                          } else {
-                            Logger.warn(`[EventHandlerService] No matching entry record found for park exit attendance`, {
-                               park_Id,
-                               person_Id: searchPersonId,
-                               searchCriteria: {
-                                  park_Id,
-                                  person_Id: searchPersonId,
-                                  exit_time: null
-                               }
-                            });
+                           
                          }
                       }
                    }
                 }
              }
              else if(bevaviour_code.includes(eventType)){
-                Logger.info(`[EventHandlerService] Processing behavior detection event for camera: ${eventInfo.srcIndex}`);
                 
                const isParkCamera = park_cameras.includes(eventInfo.srcIndex.toString())
                
                if(isParkCamera){
-                  Logger.info(`[EventHandlerService] Behavior detection on park camera`);
                   const parkCamera = await db.park_cameras.findFirst({
                      where: {
                         camera_Id: eventInfo.srcIndex.toString()
@@ -2766,94 +2128,58 @@ class EventHandlerService {
                   })
                   
                   if(parkCamera){
-                     Logger.info(`[EventHandlerService] Found park camera for behavior detection:`, {
-                        cameraId: parkCamera.Id,
-                        parkId: parkCamera.park_Id,
-                        cameraIndex: eventInfo.srcIndex
-                     });
                      
                      let imageUrl = null;
                      
                      try {
                         const eventIndexCode = eventInfo.eventId;
-                        Logger.debug(`[EventHandlerService] Attempting to retrieve image for behavior event: ${eventIndexCode}`);
                         
                         const eventRecordsResponse = await this.getEventRecords(eventIndexCode);
                         
                         if (eventRecordsResponse && eventRecordsResponse.code === '0' && eventRecordsResponse.data?.list?.length > 0) {
                            const eventRecord = eventRecordsResponse.data.list[0];
                            const eventPicUri = eventRecord.eventPicUri;
-                           Logger.debug(`[EventHandlerService] Found behavior event record with picUri: ${eventPicUri ? 'Yes' : 'No'}`);
                            
                            if (eventPicUri) {
                               const imageDataResponse = await this.getImageData(eventPicUri);
                               
                               if (imageDataResponse) {
-                                 // The response is directly the base64 string, not wrapped in a data object
                                  const base64Image = imageDataResponse;
                                  
-                                 // Use global imageUrl if available, otherwise upload
                                  if (!imageUrl) {
                                     imageUrl = await this.saveImageLocally(base64Image, 'behavior', eventIndexCode);
-                                    Logger.info(`[EventHandlerService] Successfully saved behavior image locally`);
-                                 } else {
-                                    Logger.info(`[EventHandlerService] 🎯 Reusing global imageUrl for behavior detection: ${imageUrl}`);
+                                    } else {
                                  }
                               } else {
-                                 Logger.warn(`[EventHandlerService] No image data received for behavior event`);
-                              }
+                                 }
                            } else {
-                              Logger.warn(`[EventHandlerService] No eventPicUri found for behavior event`);
-                           }
+                                 }
                         } else {
-                           Logger.warn(`[EventHandlerService] No valid event records found for behavior event`);
-                        }
+                                 }
                      } catch (imageError: any) {
-                        Logger.error(`[EventHandlerService] Failed to process behavior image:`, imageError);
-                     }
+                        }
 
-                     // Determine person_Id using face recognition data (same logic as attendance)
-                     let person_Id = null; // Default fallback - use empty string for unknown persons
+                     let person_Id = null; 
                      let faceData = null;
                      
                      if (eventInfo.data?.alarmResult?.faces) {
-                        Logger.debug(`[EventHandlerService] Processing face recognition data for behavior detection`);
                         const similarity = eventInfo.data.alarmResult.faces.identify.candidate.similarity
                         const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id
-                        
-                        Logger.debug(`[EventHandlerService] Behavior face recognition details:`, {
-                           similarity,
-                           humanId
-                        });
-                        
+
                         if (humanId && similarity !== null && similarity !== undefined) {
                            const user = await db.users.findFirst({
                               where: { unique_id: humanId.toString() }
                            });
                            if (user) {
                               person_Id = user.Id.toString();
-                              Logger.info(`[EventHandlerService] Identified employee for behavior detection:`, {
-                                 personId: person_Id,
-                                 empId: humanId,
-                                 similarity
-                              });
+                             
                            } else {
-                              Logger.warn(`[EventHandlerService] Employee not found in database for behavior detection empId: ${humanId}`);
-                              Logger.info(`[EventHandlerService] 👤 Employee not found, creating guest user for behavior detection`, {
-                                 empId: humanId,
-                                 similarity
-                              });
-                              
+                             
                               try {
-                                 // Get faceData URL from event data
                                  let faceData = null;
                                  if (eventInfo.data?.alarmResult?.faces?.URL) {
                                     faceData = eventInfo.data.alarmResult.faces.URL;
-                                    Logger.debug(`[EventHandlerService] 📸 Extracted face data URL for behavior guest user`, {
-                                       faceDataUrl: faceData
-                                    });
                                     } else {
-                                    Logger.warn(`[EventHandlerService] ⚠️ No face data URL available for behavior guest user creation`);
                                  }
                                  
                                  const genderValue = eventInfo.data.alarmResult.faces.gender.value
@@ -2862,26 +2188,15 @@ class EventHandlerService {
                                  const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
                                  person_Id = guestUser.Id.toString();
                                  
-                                 Logger.info(`[EventHandlerService] ✅ Successfully created guest user for behavior detection`, {
-                                    guestUserId: person_Id,
-                                    guestName: guestUser.emp__eng_name,
-                                    gender: genderName,
-                                    unique_id: guestUser.unique_id,
-                                    originalEmpId: humanId
-                                 });
                               } catch (guestError: any) {
-                                 Logger.error(`[EventHandlerService] ❌ Failed to create guest user for behavior detection`, {
-                                    error: guestError.message,
-                                    empId: humanId,
-                                    hasFaceData: !!faceData
-                                 });
+                                
                               }
                            }
                         } else {
-                           Logger.debug(`[EventHandlerService] No valid employee identification for behavior detection (similarity: ${similarity}, humanId: ${humanId})`);
+                          
                         }
                      } else {
-                        Logger.debug(`[EventHandlerService] No face recognition data available for behavior detection`);
+                       
                      }
       
                      const detectedBehaviour = eventType===bevaviour_code[0]?'People Gathering Alarm':eventType===bevaviour_code[1]?'Fall Down':eventType===bevaviour_code[2]?'Fast Moving':eventType===bevaviour_code[3]?'Physical Conflict':eventType===bevaviour_code[4]?'Violent Motion Detection':eventType===bevaviour_code[5]?'Fire and Smoke Detection':'Other';
@@ -2900,16 +2215,8 @@ class EventHandlerService {
                         description: `Behavior detected at ${eventInfo.srcName} camera`
                      }
                      
-                     Logger.info(`[EventHandlerService] Creating behavior alert record:`, {
-                        parkId: behaviourData.park_Id,
-                        cameraId: behaviourData.camera_Id,
-                        detectionId: behaviourData.detection_Id,
-                        detectionCode: behaviourData.detection_code,
-                        detectedBehaviour: behaviourData.detected_behaviour,
-                        hasImage: !!imageUrl
-                     });
                      
-                     // Check if behavior alert with same detection_Id already exists
+                     
                      const existingBehaviour = await db.parks_behaviour_alerts.findFirst({
                         where: {
                            detection_Id: behaviourData.detection_Id
@@ -2917,7 +2224,7 @@ class EventHandlerService {
                      });
                      
                      if (existingBehaviour) {
-                        Logger.warn(`[EventHandlerService] Behavior alert with detection_Id ${behaviourData.detection_Id} already exists. Skipping duplicate creation.`);
+                        
                         return;
                      }
                      
@@ -2925,22 +2232,19 @@ class EventHandlerService {
                         data: behaviourData
                      });
                      
-                     Logger.info(`[EventHandlerService] Successfully created behavior alert record with ID: ${newBehaviourAlert.Id}`);
                      
                   } else {
-                     Logger.error(`[EventHandlerService] Park camera not found for behavior detection camera index: ${eventInfo.srcIndex}`);
+                    
                   }
                  
              } else {
-                Logger.warn(`[EventHandlerService] Behavior detection event not on park camera: ${eventInfo.srcIndex}`);
+
              }
           } else {
-             Logger.warn(`[EventHandlerService] No event data provided`);
           }
          }
          
          const duration = Date.now() - startTime;
-         Logger.info(`[EventHandlerService] Event processing completed successfully in ${duration}ms`);
          
          return {
             success: true,
@@ -2950,7 +2254,6 @@ class EventHandlerService {
 
       } catch (error: any) {
          const duration = Date.now() - startTime;
-         Logger.error(`[EventHandlerService] Event processing failed after ${duration}ms`, error);
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to process event");
       }
    }
@@ -3009,14 +2312,9 @@ class EventHandlerService {
 
    private static async createGuestUserAndUploadToHikVision(gender: string, faceData: string, faceRect?: FaceRect): Promise<any> {
       const startTime = Date.now();
-      Logger.info(`[EventHandlerService] 🚀 Starting guest user creation process`, {
-         gender,
-         hasFaceData: !!faceData,
-         faceDataLength: faceData ? faceData.length : 0
-      });
+      
 
       try {
-         Logger.debug(`[EventHandlerService] 🔍 Finding last guest user to determine next number`);
          const lastGuest = await db.users.findFirst({
             where: {
                emp__eng_name: {
@@ -3033,22 +2331,13 @@ class EventHandlerService {
             const match = lastGuest.emp__eng_name.match(/Guest(\d+)/);
             if (match) {
                guestNumber = parseInt(match[1]) + 1;
-               Logger.debug(`[EventHandlerService] 📊 Found last guest: ${lastGuest.emp__eng_name}, next number: ${guestNumber}`);
             } else {
-               Logger.debug(`[EventHandlerService] 📊 Found guest with non-standard name: ${lastGuest.emp__eng_name}, using number: ${guestNumber}`);
             }
          } else {
-            Logger.debug(`[EventHandlerService] 📊 No existing guests found, using first number: ${guestNumber}`);
          }
 
          const guestName = `Guest${guestNumber}`;
-         Logger.info(`[EventHandlerService] 🏷️ Generated guest name: ${guestName}`);
-
-         Logger.info(`[EventHandlerService] 💾 Creating guest user in database`, {
-            guestName,
-            gender,
-            guestNumber
-         });
+         
 
          const guestUser = await db.users.create({
             data: {
@@ -3077,55 +2366,33 @@ class EventHandlerService {
             }
          });
 
-         Logger.info(`[EventHandlerService] ✅ Successfully created guest user in database`, {
-            guestUserId: guestUser.Id,
-            guestName: guestUser.emp__eng_name,
-            gender: guestUser.gender,
-            createdAt: guestUser.createdAt
-         });
+         
 
-         // Get base64 image data from faceData URL using getImageData API
          let base64ImageData = null;
          if (faceData) {
-            Logger.info(`[EventHandlerService] 📸 Fetching base64 image data from faceData URL: ${faceData}`);
             try {
                const imageDataResponse = await this.getImageData(faceData);
             
             if (imageDataResponse) {
                   base64ImageData = imageDataResponse;
-                  Logger.info(`[EventHandlerService] ✅ Successfully retrieved base64 image data, length: ${base64ImageData.length}`);
                   
                   if (faceRect && base64ImageData) {
-                     Logger.info(`[EventHandlerService] ✂️ Applying face cropping with 40% margin`, {
-                        faceRect: {
-                           x: faceRect.x,
-                           y: faceRect.y,
-                           width: faceRect.width,
-                           height: faceRect.height
-                        }
-                     });
+                     
                      
                      try {
                         const croppedImage = await cropFaceWithMargin(base64ImageData, faceRect);
                         base64ImageData = croppedImage;
-                        Logger.info(`[EventHandlerService] ✅ Successfully cropped face image, new length: ${base64ImageData.length}`);
                      } catch (cropError: any) {
-                        Logger.error(`[EventHandlerService] ❌ Failed to crop face image, using original:`, cropError.message);
                      }
                   } else if (faceRect) {
-                     Logger.warn(`[EventHandlerService] ⚠️ Face rect provided but no base64 image data available for cropping`);
                   }
             } else {
-                  Logger.warn(`[EventHandlerService] ⚠️ No image data received for faceData URL: ${faceData}`);
                }
             } catch (imageError: any) {
-               Logger.error(`[EventHandlerService] ❌ Failed to fetch image data from faceData URL:`, imageError.message);
             }
          } else {
-            Logger.warn(`[EventHandlerService] ⚠️ No faceData URL provided for image retrieval`);
          }
 
-         // Remove base64 prefix from image data before sending to HikVision API
          const cleanFaceData = base64ImageData ? base64ImageData.replace(/^data:image\/[a-z]+;base64,/, '') : null;
          const hikVisionPayload = {
             personCode: `${guestUser.Id.toString()}`,
@@ -3136,17 +2403,7 @@ class EventHandlerService {
             faces: cleanFaceData ? [{ faceData: cleanFaceData }] : []
          };
 
-         Logger.info(`[EventHandlerService] 📤 Preparing HIK Vision upload`, {
-            personCode: hikVisionPayload.personCode,
-            personFamilyName: hikVisionPayload.personFamilyName,
-            personGivenName: hikVisionPayload.personGivenName,
-            gender: hikVisionPayload.gender,
-            orgIndexCode: hikVisionPayload.orgIndexCode,
-            hasFaceData: !!base64ImageData,
-            faceDataLength: base64ImageData ? base64ImageData.length : 0
-         });
-
-         Logger.debug(`[EventHandlerService] 🔄 Calling HIK Vision API for guest user upload`);
+         
          const hikVisionResponse = await this.callHikVisionAPI(
             this.HIK_CONFIG.baseURL,
             '/artemis/api/resource/v1/person/single/add',
@@ -3155,30 +2412,19 @@ class EventHandlerService {
             hikVisionPayload
          );
 
-         Logger.debug(`[EventHandlerService] 📥 Received HIK Vision response`, {
-            code: hikVisionResponse?.code,
-            msg: hikVisionResponse?.msg,
-            hasData: !!hikVisionResponse?.data,
-            dataValue: hikVisionResponse?.data
-         });
-
+        
          if (hikVisionResponse && hikVisionResponse.code === '0' && hikVisionResponse.data) {
-            Logger.info(`[EventHandlerService] 🎉 HIK Vision upload successful, updating guest user with unique_id`);
             
             let imageUrl = null;
             if (base64ImageData) {
                try {
-                  Logger.info(`[EventHandlerService] 📤 Saving guest user image locally`);
-                  // Check if base64ImageData already has data URL prefix (from cropping)
                   let dataUrl = base64ImageData;
                   if (!base64ImageData.startsWith('data:')) {
                      dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
                   }
                   
                   imageUrl = await this.saveImageLocally(dataUrl, 'guest-users', guestUser.Id.toString());
-                  Logger.info(`[EventHandlerService] ✅ Successfully saved guest user image locally: ${imageUrl}`);
                } catch (imageError: any) {
-                  Logger.error(`[EventHandlerService] ❌ Failed to save guest user image locally:`, imageError.message);
                }
             }
             
@@ -3190,15 +2436,12 @@ class EventHandlerService {
                }
             });
 
-            // Add face information to guest group (group 5)
             try {
-               Logger.info(`[EventHandlerService] 📸 Adding face information to guest group`);
                const faceAdditionPayload = {
                   personIndexCode: hikVisionResponse.data, 
                   faceGroupIndexCode: "5" 
                };
 
-               Logger.debug(`[EventHandlerService] Face addition payload:`, faceAdditionPayload);
 
                const faceAdditionResponse = await this.callHikVisionAPI(
                   this.HIK_CONFIG.baseURL,
@@ -3209,70 +2452,39 @@ class EventHandlerService {
                );
 
                if (faceAdditionResponse && faceAdditionResponse.code === '0') {
-                  Logger.info(`[EventHandlerService] ✅ Face information added to guest group successfully`, {
-                     personIndexCode: faceAdditionPayload.personIndexCode,
-                     faceGroupIndexCode: faceAdditionPayload.faceGroupIndexCode
-                  });
+                 
                } else {
-                  Logger.warn(`[EventHandlerService] ⚠️ Face addition API returned error:`, faceAdditionResponse);
                }
             } catch (faceAdditionError: any) {
-               Logger.error(`[EventHandlerService] ❌ Failed to add face information to guest group:`, faceAdditionError.message);
-               // Don't throw error here as the main guest creation was successful
             }
 
             const duration = Date.now() - startTime;
-            Logger.info(`[EventHandlerService] ✅ Guest user creation and HIK Vision upload completed successfully`, {
-               guestUserId: guestUser.Id,
-               guestName: guestName,
-               hikVisionId: hikVisionResponse.data,
-               unique_id: updatedGuestUser.unique_id,
-               duration: `${duration}ms`,
-               gender: gender,
-               hasFaceData: !!base64ImageData
-            });
-
+          
             return updatedGuestUser;
          } else {
-            // Even if HIK Vision upload fails, try to save the image if available
             let imageUrl = null;
             if (base64ImageData) {
                try {
-                  Logger.info(`[EventHandlerService] 📤 Saving guest user image locally (HIK Vision failed)`);
-                  // Check if base64ImageData already has data URL prefix (from cropping)
                   let dataUrl = base64ImageData;
                   if (!base64ImageData.startsWith('data:')) {
-                     // If it's plain base64, add the data URL prefix
                      dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
                   }
                   
                   imageUrl = await this.saveImageLocally(dataUrl, 'guest-users', guestUser.Id.toString());
-                  Logger.info(`[EventHandlerService] ✅ Successfully saved guest user image locally: ${imageUrl}`);
                   
-                  // Update guest user with image even if HIK Vision failed
                   const updatedGuestUser = await db.users.update({
                      where: { Id: guestUser.Id },
                      data: { 
                         image: imageUrl
                      }
                   });
-                  Logger.info(`[EventHandlerService] ✅ Updated guest user with image URL: ${imageUrl}`);
                } catch (imageError: any) {
-                  Logger.error(`[EventHandlerService] ❌ Failed to save guest user image locally:`, imageError.message);
                }
             }
             
             const duration = Date.now() - startTime;
-            Logger.error(`[EventHandlerService] ❌ HIK Vision API returned error for guest user`, {
-               guestUserId: guestUser.Id,
-               guestName: guestName,
-               hikVisionResponse,
-               duration: `${duration}ms`,
-               error: hikVisionResponse?.msg || 'Unknown error'
-            });
-            Logger.warn(`[EventHandlerService] ⚠️ Returning guest user without HIK Vision ID due to upload failure`);
+           
             
-            // Return updated guest user with image if it was saved, otherwise return original
             if (imageUrl) {
                const guestUserWithImage = await db.users.findUnique({
                   where: { Id: guestUser.Id }
@@ -3284,24 +2496,7 @@ class EventHandlerService {
 
       } catch (error: any) {
          const duration = Date.now() - startTime;
-         Logger.error(`[EventHandlerService] 💥 Failed to create guest user and upload to HIK Vision`, {
-            error: error.message,
-            stack: error.stack,
-            duration: `${duration}ms`,
-            gender,
-            hasFaceData: !!faceData
-         });
-         if (error.code === 'ETIMEDOUT') {
-            Logger.error(`[EventHandlerService] 🌐 Network timeout error - HIK Vision server may be unreachable`);
-         } else if (error.response) {
-            Logger.error(`[EventHandlerService] 📡 HTTP error response`, {
-               status: error.response.status,
-               statusText: error.response.statusText,
-               responseData: error.response.data
-            });
-         } else if (error.code === 'ECONNREFUSED') {
-            Logger.error(`[EventHandlerService] 🔌 Connection refused - HIK Vision server may be down`);
-         }
+        
          
          throw error;
       }
@@ -3359,7 +2554,7 @@ class EventHandlerService {
                camera_Id: true
             },
             where: {
-               status: true // Only get active cameras
+               status: true 
             }
          });
          
@@ -3367,8 +2562,6 @@ class EventHandlerService {
             .map(camera => camera.camera_Id)
             .filter((id): id is string => id !== null);
       } catch (error) {
-         Logger.error(`[EventHandlerService] Error fetching office camera IDs:`, error);
-         // Return empty array as fallback
          return [];
       }
    }
@@ -3384,7 +2577,7 @@ class EventHandlerService {
                camera_Id: true
             },
             where: {
-               status: true // Only get active cameras
+               status: true 
             }
          });
          
@@ -3392,8 +2585,6 @@ class EventHandlerService {
             .map(camera => camera.camera_Id)
             .filter((id): id is string => id !== null);
       } catch (error) {
-         Logger.error(`[EventHandlerService] Error fetching park camera IDs:`, error);
-         // Return empty array as fallback
          return [];
       }
    }
@@ -3405,10 +2596,8 @@ class EventHandlerService {
     */
    private static async isGuestUser(personId: number | null | undefined): Promise<boolean> {
       try {
-         // Handle null or undefined personId
          if (!personId || personId === null || personId === undefined) {
-            Logger.warn(`[EventHandlerService] personId is null or undefined, treating as guest`);
-            return true; // Treat as guest if no personId provided
+            return true;
          }
 
          const user = await db.users.findUnique({
@@ -3421,31 +2610,17 @@ class EventHandlerService {
          });
          
          if (!user) {
-            Logger.warn(`[EventHandlerService] User not found for personId: ${personId}`);
-            return true; // Treat as guest if user not found
+            return true; 
          }
-         
-         // A user is considered a guest if:
-         // 1. emp_Id is null or empty AND
-         // 2. emp_code is null or empty AND  
-         // 3. is_attendance_user is false
-         // Only if ALL three conditions are true, then they are a guest
+
          const isGuest = (!user.emp_Id || user.emp_Id.trim() === '') && 
                         (!user.emp_code || user.emp_code.trim() === '') && 
                         !user.user_Id;
          
-         Logger.debug(`[EventHandlerService] User type check:`, {
-            personId,
-            emp_Id: user.emp_Id,
-            emp_code: user.emp_code,
-            user_Id: user.user_Id,
-            isGuest
-         });
-         
+
          return isGuest;
       } catch (error) {
-         Logger.error(`[EventHandlerService] Error checking if user is guest:`, error);
-         return true; // Treat as guest on error to be safe
+         return true; 
       }
    }
 }

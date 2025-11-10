@@ -73,18 +73,14 @@ class QMSService {
           try {
             const guestUser = await this.createGuestUser(gender, faceImageUrl);
             personId = guestUser.Id;
-            console.log(`[QMSService] Created guest user: ${guestUser.emp__eng_name} (ID: ${personId})`);
           } catch (error: any) {
-            console.error('[QMSService] Failed to create guest user:', error.message);
           }
         }
       } else {
         try {
           const guestUser = await this.createGuestUser(gender, faceImageUrl);
           personId = guestUser.Id;
-          console.log(`[QMSService] Created guest user for unknown person: ${guestUser.emp__eng_name} (ID: ${personId})`);
         } catch (error: any) {
-          console.error('[QMSService] Failed to create guest user for unknown person:', error.message);
         }
       }
 
@@ -134,9 +130,7 @@ class QMSService {
       if (cloudinaryUrl) {
         try {
           entrySentiment = await this.analyzeSentimentFromImage(cloudinaryUrl);
-          console.log(`[QMSService] Entry sentiment analyzed: ${entrySentiment}`);
         } catch (error: any) {
-          console.error(`[QMSService] Error analyzing entry sentiment:`, error.message);
           entrySentiment = eventData?.mood || 'neutral';
         }
       } else {
@@ -216,7 +210,6 @@ class QMSService {
 
       return updatedVisit;
     } catch (error: any) {
-      console.log(error);
 
       if (error instanceof HttpException) {
         throw error;
@@ -434,9 +427,6 @@ class QMSService {
         })
       );
 
-      console.log('🔍 [QMSService] Query results count:', results.length);
-      console.log('🔍 [QMSService] Total count:', totalCount);
-
       const totalPages = Math.ceil(totalCount / limit);
       const hasNextPage = page < totalPages;
       const hasPreviousPage = page > 1;
@@ -503,16 +493,10 @@ class QMSService {
       ) {
         return response.data;
       } else {
-        console.warn(
-          `[QMSService] HIK Vision API returned unsuccessful response for camera: ${this.CAMERA_ID}`
-        );
+       
         return null;
       }
     } catch (error: any) {
-      console.error(
-        `[QMSService] Failed to get camera image for camera: ${this.CAMERA_ID}`,
-        error.message
-      );
       throw error;
     }
   }
@@ -580,7 +564,6 @@ class QMSService {
 
       return response.data;
     } catch (error: any) {
-      console.error(`[QMSService] HikVision API call failed:`, error.message);
       throw error;
     }
   }
@@ -602,17 +585,12 @@ class QMSService {
 
       return result.secure_url;
     } catch (error: any) {
-      console.error(
-        `[QMSService] Error uploading image to Cloudinary:`,
-        error.message
-      );
       return null;
     }
   }
 
   private static async analyzeSentimentFromImage(imageUrl: string): Promise<string> {
     try {
-      console.log(`[QMSService] Analyzing sentiment from image: ${imageUrl}`);
       
       const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
         image_url: imageUrl
@@ -623,17 +601,11 @@ class QMSService {
       
       if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
         const detectedSentiment = emotionResponse.data.faces[0].emotion;
-        console.log(`[QMSService] Detected sentiment: ${detectedSentiment}`, {
-          confidence: emotionResponse.data.faces[0].confidence,
-          imageUrl: imageUrl
-        });
         return detectedSentiment;
       } else {
-        console.warn(`[QMSService] No sentiment detected from image: ${imageUrl}`);
         return 'neutral';
       }
     } catch (error: any) {
-      console.error(`[QMSService] Error analyzing sentiment from image: ${imageUrl}`, error.message);
       return 'neutral';
     }
   }
@@ -690,7 +662,6 @@ class QMSService {
 
       return guestUser;
     } catch (error: any) {
-      console.error('[QMSService] Error creating guest user:', error.message);
       throw error;
     }
   }
@@ -737,10 +708,6 @@ class QMSService {
 
       return null;
     } catch (error: any) {
-      console.error(
-        `[QMSService] Error fetching sentiment analysis events:`,
-        error
-      );
       return null;
     }
   }

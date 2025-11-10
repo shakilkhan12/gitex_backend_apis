@@ -98,7 +98,6 @@ class LitterDetectionService {
    }) => {
 
       try {
-         // If no pagination params provided, return all data (backward compatibility)
          if (!paginationParams) {
             const results = await db.parks_litter_detection.findMany({
                include: {
@@ -215,10 +214,8 @@ class LitterDetectionService {
             return resultsWithIntranetHistory;
          }
 
-         // Build where clause for filtering
          const whereClause: any = {};
          
-         // Search functionality
          if (paginationParams.search) {
             whereClause.OR = [
                { case_Id: { contains: paginationParams.search, mode: 'insensitive' } },
@@ -229,12 +226,10 @@ class LitterDetectionService {
             ];
          }
 
-         // Status filtering
          if (paginationParams.status) {
             whereClause.status = paginationParams.status;
          }
 
-         // Date range filtering
          if (paginationParams.startDate || paginationParams.endDate) {
             whereClause.occurrence_date = {};
             
@@ -243,24 +238,19 @@ class LitterDetectionService {
             }
             
             if (paginationParams.endDate) {
-               // Set end date to end of day
                const endDate = new Date(paginationParams.endDate);
                endDate.setHours(23, 59, 59, 999);
                whereClause.occurrence_date.lte = endDate;
             }
          }
 
-         // Build orderBy clause
          const orderByClause: any = {};
          orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
 
-         // Calculate pagination
          const skip = (paginationParams.page - 1) * paginationParams.limit;
 
-         // Get total count for pagination metadata
          const totalCount = await db.parks_litter_detection.count({ where: whereClause });
 
-         // Get paginated results
          const results = await db.parks_litter_detection.findMany({
             where: whereClause,
             include: {
@@ -374,12 +364,10 @@ class LitterDetectionService {
             intranet_posting_history: intranetHistoryMap.get(litterDetection.Id.toString()) || []
          }));
 
-         // Calculate pagination metadata
          const totalPages = Math.ceil(totalCount / paginationParams.limit);
          const hasNextPage = paginationParams.page < totalPages;
          const hasPreviousPage = paginationParams.page > 1;
 
-         // Calculate stats from ALL data (not just current page) for cards
          const allDataForStats = await db.parks_litter_detection.findMany({
             where: whereClause,
             select: {
@@ -517,7 +505,6 @@ class LitterDetectionService {
             }
          });
          
-         console.log('📋 Litter detection found:', litterDetection ? 'YES' : 'NO', litterDetection);
          
          if (!litterDetection) {
             throw new HttpException(STATUS.NOT_FOUND, "Litter detection record not found");
@@ -537,7 +524,6 @@ class LitterDetectionService {
          let verificationResult = null;
          if (litterDetection.park_cameras?.camera_Id) {
             try {
-               console.log('🔍 Calling cleanup verification API for camera:', litterDetection.park_cameras.camera_Id);
                
                const verificationResponse = await axios.post('http://localhost:5000/verify-cleanup', {
                   camera_id: litterDetection.park_cameras.camera_Id,
@@ -549,18 +535,15 @@ class LitterDetectionService {
                   timeout: 30000 
                });
 
-               verificationResult = verificationResponse.data;
-               console.log('✅ Cleanup verification response:', verificationResult);
+               verificationResult = verificationResponse.data; 
 
             } catch (verificationError: any) {
-               console.error('❌ Cleanup verification API error:', verificationError.message);
                verificationResult = null;
             }
          }
 
          if (verificationResult && verificationResult.success) {
             if (verificationResult.status === "True") {
-               console.log('✅ Cleanup verification successful, marking as completed');
                
          const updatedLitterDetection = await db.parks_litter_detection.update({
             where: { Id: litterDetection.Id },
@@ -611,7 +594,6 @@ class LitterDetectionService {
                };
 
             } else if (verificationResult.status === "Incomplete") {
-               console.log('⚠️ Cleanup verification incomplete, creating AI Verification Failed ticket');
                
                const ticketDetails = await db.ticket_details_table.create({
                   data: {
@@ -636,7 +618,6 @@ class LitterDetectionService {
             }
          }
       } catch (error) {
-         console.error('❌ Error completing litter detection:', error);
          if (error instanceof HttpException) {
             throw error;
          }
