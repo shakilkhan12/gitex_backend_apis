@@ -850,8 +850,9 @@ class EventHandlerService {
                                   
                                   if (exitSentimentImageUrl) {
                                      try {
-                                        const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
-                                           image_url: exitSentimentImageUrl
+                                        const fullImageUrl = `${this.API_CONFIG.localHostUrl}${exitSentimentImageUrl}`;
+                                        const emotionResponse = await axios.post(this.API_CONFIG.emotionDetectionUrl, {
+                                           image_url: fullImageUrl
                                         }, {
                                            timeout: 10000,
                                            headers: { 'Content-Type': 'application/json' }
@@ -1824,8 +1825,9 @@ class EventHandlerService {
                                   
                                   if (exitSentimentImageUrl) {
                                      try {
-                                        const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
-                                           image_url: exitSentimentImageUrl
+                                        const fullImageUrl = `${this.API_CONFIG.localHostUrl}${exitSentimentImageUrl}`;
+                                        const emotionResponse = await axios.post(this.API_CONFIG.emotionDetectionUrl, {
+                                           image_url: fullImageUrl
                                         }, {
                                            timeout: 10000,
                                            headers: { 'Content-Type': 'application/json' }
