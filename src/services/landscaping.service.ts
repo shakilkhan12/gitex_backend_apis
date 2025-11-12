@@ -6,7 +6,7 @@ import https from "https";
 import * as nodeCrypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import { formatImageUrl } from "@/utils/imageUrl.utils";
+import { formatImageUrl, formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 class LandscapingService {
    private static readonly HIK_CONFIG = {
@@ -131,7 +131,23 @@ class LandscapingService {
                }
             });
 
-            return results;
+            // Format image URLs in the results
+            const imageFields = ['image'];
+            const formattedResults = formatImageUrlsInArray(results, imageFields);
+
+            // Format image URLs in nested landscaping_history arrays
+            const formattedResultsWithHistory = formattedResults.map(item => {
+              if (item.landscaping_history && Array.isArray(item.landscaping_history)) {
+                const formattedHistory = formatImageUrlsInArray(item.landscaping_history, ['image']);
+                return {
+                  ...item,
+                  landscaping_history: formattedHistory
+                };
+              }
+              return item;
+            });
+
+            return formattedResultsWithHistory;
          }
 
          const whereClause: any = {};
@@ -242,9 +258,22 @@ class LandscapingService {
             total: allDataForStats.length
          };
 
+         const imageFields = ['image'];
+         const formattedResults = formatImageUrlsInArray(results, imageFields);
+
+         const formattedResultsWithHistory = formattedResults.map(item => {
+            if (item.landscaping_history && Array.isArray(item.landscaping_history)) {
+               const formattedHistory = formatImageUrlsInArray(item.landscaping_history, ['image']);
+               return {
+                  ...item,
+                  landscaping_history: formattedHistory
+               };
+            }
+            return item;
+         });
 
          return {
-            data: results,
+            data: formattedResultsWithHistory,
             pagination: {
                currentPage: paginationParams.page,
                totalPages,
@@ -336,6 +365,25 @@ class LandscapingService {
             throw new HttpException(STATUS.NOT_FOUND, "Landscaping case not found");
          }
 
+         let savedImageUrl = null;
+         
+         if (completionData.image) {
+            try {
+               if (completionData.image.startsWith('/uploads/')) {
+                  savedImageUrl = completionData.image;
+               } else if (completionData.image.startsWith('data:image/') || completionData.image.startsWith('data:image%2F')) {
+                  const eventId = `completion_${completionData.landscapingId}_${Date.now()}`;
+                  savedImageUrl = await this.saveImageLocally(completionData.image, eventId);
+               } else {
+                  const dataUrl = `data:image/jpeg;base64,${completionData.image}`;
+                  const eventId = `completion_${completionData.landscapingId}_${Date.now()}`;
+                  savedImageUrl = await this.saveImageLocally(dataUrl, eventId);
+               }
+            } catch (imageError: any) {
+               savedImageUrl = null;
+            }
+         }
+
          await db.landscaping.update({
             where: { id: completionData.landscapingId },
             data: { current_status: 'Completed' }
@@ -347,7 +395,7 @@ class LandscapingService {
                user_Id: completionData.userId, 
                title: completionData.title,
                comments: completionData.comments,
-               image: completionData.image,
+               image: savedImageUrl,
                createdAt: new Date(),
                updatedAt: new Date()
             }
@@ -650,7 +698,7 @@ class LandscapingService {
       }
    }
 
-   private static async saveImageLocally(base64Image: string, cameraId: string): Promise<string | null> {
+   private static async saveImageLocally(base64Image: string, eventId: string): Promise<string | null> {
       try {
          const uploadDir = path.join(process.cwd(), 'uploads', 'landscaping');
 
@@ -665,7 +713,7 @@ class LandscapingService {
          }
          
          const imageFormat = this.detectImageFormat(base64Image);
-         const fileName = `landscaping_${cameraId}_${Date.now()}.${imageFormat}`;
+         const fileName = `${eventId}.${imageFormat}`;
          const filePath = path.join(uploadDir, fileName);
          
          if (!fs.existsSync(uploadDir)) {

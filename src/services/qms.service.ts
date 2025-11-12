@@ -7,23 +7,23 @@ import {
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import axios from "axios";
-import { v2 as cloudinary } from "cloudinary";
 import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 import https from "https";
 import * as nodeCrypto from "crypto";
+import * as fs from "fs";
+import * as path from "path";
 import EventBufferService from "./event-buffer.service";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 class QMSService {
   private static readonly HIK_CONFIG = {
     baseURL: "https://10.70.90.183:443",
     appKey: "59315117",
     appSecret: "YuWS8qCb61xbD8fEbwFJ",
+  };
+
+  private static readonly API_CONFIG = {
+    emotionDetectionUrl: process.env.EMOTION_DETECTION_URL as string,
+    localHostUrl: process.env.LOCAL_HOST_API as string
   };
 
   private static readonly CAMERA_ID = "360";
@@ -41,10 +41,6 @@ class QMSService {
         return null;
       }
 
-      // const faceData = event.data?.dataType === 'faceMatch' 
-      //   ? event.data.alarmResult?.faces 
-      //   : null;
-      
       const faceData = event.data?.alarmResult?.faces 
 
       if (!faceData) {
@@ -115,21 +111,51 @@ class QMSService {
       }
 
       const base64Image = await this.captureCameraImage();
-      let cloudinaryUrl = null;
+      let imageUrl = null;
 
       if (base64Image) {
-        cloudinaryUrl = await this.uploadImageToCloudinary(base64Image);
-        if (!cloudinaryUrl) {
-          cloudinaryUrl = eventData?.check_in_image || null;
+        try {
+          const eventId = `qms_${Date.now()}`;
+          imageUrl = await this.saveImageLocally(base64Image, 'qms', eventId);
+        } catch (error: any) {
+          if (eventData?.check_in_image) {
+            try {
+              const imageResponse = await axios.get(eventData.check_in_image, {
+                responseType: 'arraybuffer',
+                timeout: 10000
+              });
+              if (imageResponse.status === 200) {
+                const base64ImageData = Buffer.from(imageResponse.data).toString('base64');
+                const dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
+                const eventId = `qms_${Date.now()}`;
+                imageUrl = await this.saveImageLocally(dataUrl, 'qms', eventId);
+              }
+            } catch (fetchError: any) {
+              imageUrl = null;
+            }
+          }
         }
-      } else {
-        cloudinaryUrl = eventData?.check_in_image || null;
+      } else if (eventData?.check_in_image) {
+        try {
+          const imageResponse = await axios.get(eventData.check_in_image, {
+            responseType: 'arraybuffer',
+            timeout: 10000
+          });
+          if (imageResponse.status === 200) {
+            const base64ImageData = Buffer.from(imageResponse.data).toString('base64');
+            const dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
+            const eventId = `qms_${Date.now()}`;
+            imageUrl = await this.saveImageLocally(dataUrl, 'qms', eventId);
+          }
+        } catch (fetchError: any) {
+          imageUrl = null;
+        }
       }
 
       let entrySentiment = 'neutral';
-      if (cloudinaryUrl) {
+      if (imageUrl) {
         try {
-          entrySentiment = await this.analyzeSentimentFromImage(cloudinaryUrl);
+          entrySentiment = await this.analyzeSentimentFromImage(imageUrl);
         } catch (error: any) {
           entrySentiment = eventData?.mood || 'neutral';
         }
@@ -142,7 +168,7 @@ class QMSService {
           visitor_id: eventData?.person_id || 123,
           gender: eventData?.gender,
           age_group: eventData?.age_group || "7",
-          entry_image: cloudinaryUrl,
+          entry_image: imageUrl,
           entry_camera: this.CAMERA_ID,
           entry_mode: entrySentiment,
           entry_date:
@@ -177,7 +203,6 @@ class QMSService {
     updateData: QMSUpdateType
   ) => {
     try {
-      // Find the existing visit record
       const existingVisit = await db.qms_history.findUnique({
         where: { visit_id: updateData.visit_id },
       });
@@ -186,7 +211,6 @@ class QMSService {
         throw new HttpException(STATUS.NOT_FOUND, "Visit record not found");
       }
 
-      // Update the visit record with ticket details
       const updatedVisit = await db.qms_history.update({
         where: { visit_id: updateData.visit_id },
         data: {
@@ -232,15 +256,12 @@ class QMSService {
     status?: string;
   }) => {
     try {
-      // Set default values
       const page = filters?.page || 1;
       const limit = filters?.limit || 10;
       const skip = (page - 1) * limit;
 
-      // Build where clause for filtering
       const whereClause: any = {};
 
-      // Search filter
       if (filters?.search) {
         whereClause.OR = [
           { ticket_number: { contains: filters.search, mode: 'insensitive' } },
@@ -251,7 +272,6 @@ class QMSService {
         ];
       }
 
-      // Date range filter
       if (filters?.fromDateTime || filters?.toDateTime) {
         whereClause.entry_date = {};
         if (filters.fromDateTime) {
@@ -262,32 +282,22 @@ class QMSService {
         }
       }
 
-      // Entry mode filter
       if (filters?.entryMode && filters.entryMode !== 'All') {
         whereClause.entry_mode = filters.entryMode;
       }
 
-      // Exit mode filter
       if (filters?.exitMode && filters.exitMode !== 'All') {
         whereClause.exit_mode = filters.exitMode;
       }
 
-      // Service filter
       if (filters?.service && filters.service !== 'All') {
         whereClause.service_english_name = filters.service;
       }
 
-      // if (filters?.status && filters.status !== 'All' && filters.status !== '') {
-      //   whereClause.status = filters.status;
-      // } else {
-      //   whereClause.status = 'Completed';
-      // }
-
-      // Build order by clause
       const orderByClause: any = {};
       if (filters?.sortBy) {
         const sortField = filters.sortBy === 'createdAt' ? 'createdAt' : 
-                         filters.sortBy === 'id' ? 'createdAt' : // Map 'id' to 'createdAt' for proper ordering
+                         filters.sortBy === 'id' ? 'createdAt' : 
                          filters.sortBy === 'entry_date' ? 'entry_date' :
                          filters.sortBy === 'exit_date' ? 'exit_date' :
                          filters.sortBy === 'ticket_number' ? 'ticket_number' :
@@ -315,14 +325,12 @@ class QMSService {
         db.qms_history.count({
           where: whereClause,
         }),
-        // Total customers (unique visit_id count)
         db.qms_history
           .groupBy({
             by: ["visit_id"],
             where: whereClause,
           })
           .then((groups) => groups.length),
-        // In customers (Active status - unique visit_id count)
         db.qms_history
           .groupBy({
             by: ["visit_id"],
@@ -332,7 +340,6 @@ class QMSService {
             },
           })
           .then((groups) => groups.length),
-        // Out customers (Completed status - unique visit_id count)
         db.qms_history
           .groupBy({
             by: ["visit_id"],
@@ -342,7 +349,6 @@ class QMSService {
             },
           })
           .then((groups) => groups.length),
-        // Unique services
         db.qms_history.findMany({
           where: {
             ...whereClause,
@@ -355,7 +361,6 @@ class QMSService {
           },
           distinct: ["service_english_name"],
         }),
-        // Service counts for most highlighted service
         db.qms_history.groupBy({
           by: ["service_english_name"],
           where: {
@@ -375,7 +380,6 @@ class QMSService {
         }),
       ]);
 
-      // Fetch camera details for each result
       const resultsWithCameraDetails = await Promise.all(
         results.map(async (record) => {
           let entryCamera = {
@@ -389,7 +393,6 @@ class QMSService {
             camera_arabic_name: null as string | null
           };
 
-          // Fetch entry camera details if entry_camera exists
           if (record.entry_camera) {
             const entryCam = await db.offices_cameras.findFirst({
               where: { camera_Id: record.entry_camera },
@@ -404,7 +407,6 @@ class QMSService {
             }
           }
 
-          // Fetch exit camera details if exit_camera exists
           if (record.exit_camera) {
             const exitCam = await db.offices_cameras.findFirst({
               where: { camera_Id: record.exit_camera },
@@ -445,10 +447,8 @@ class QMSService {
         previousPage: hasPreviousPage ? page - 1 : null
       };
 
-      // Format image URLs in the results
       const imageFields = ['entry_image', 'exit_image'];
       const formattedResultsWithImages = formatImageUrlsInArray(resultsWithCameraDetails, imageFields);
-
       return {
         success: true,
         data: formattedResultsWithImages,
@@ -568,32 +568,81 @@ class QMSService {
     }
   }
 
-  private static async uploadImageToCloudinary(
-    base64Image: string
-  ): Promise<string | null> {
+  private static detectImageFormat(base64Image: string): string {
     try {
-      const publicId = `qms/visitor-entry/${this.CAMERA_ID}_${Date.now()}`;
-
-      const result = await cloudinary.uploader.upload(base64Image, {
-        public_id: publicId,
-        resource_type: "image",
-        format: "jpg",
-        quality: "auto",
-        fetch_format: "auto",
-        folder: "qms",
-      });
-
-      return result.secure_url;
+      const base64Data = base64Image.includes(',') ? base64Image.split(',')[1] : base64Image;
+      
+      const buffer = Buffer.from(base64Data, 'base64');
+      
+      if (buffer.length >= 4) {
+        if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+          return 'jpg';
+        }
+        if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+          return 'png';
+        }
+        if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x38) {
+          return 'gif';
+        }
+        if (buffer[0] === 0x42 && buffer[1] === 0x4D) {
+          return 'bmp';
+        }
+        if (buffer.length >= 12 && 
+            buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+            buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) {
+          return 'webp';
+        }
+      }
+      
+      return 'jpg';
     } catch (error: any) {
-      return null;
+      return 'jpg'; 
+    }
+  }
+
+  private static async saveImageLocally(base64Image: string, eventType: string, eventId: string): Promise<string> {
+    try {
+      const uploadDir = path.join(process.cwd(), 'uploads', eventType);
+      
+      let cleanBase64 = base64Image.trim();
+      
+      if (cleanBase64.includes(',')) {
+        cleanBase64 = cleanBase64.split(',')[1];
+      }
+      
+      if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
+        throw new Error('Invalid base64 format detected');
+      }
+      
+      const imageFormat = this.detectImageFormat(cleanBase64);
+      const fileName = `${eventId}_${Date.now()}.${imageFormat}`;
+      const filePath = path.join(uploadDir, fileName);
+      
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      
+      const imageBuffer = Buffer.from(cleanBase64, 'base64');
+      
+      if (imageBuffer.length === 0) {
+        throw new Error('Empty image buffer after base64 decoding');
+      }
+      
+      fs.writeFileSync(filePath, imageBuffer);
+      
+      const imageUrl = `/uploads/${eventType}/${fileName}`;
+      
+      return imageUrl;
+    } catch (error: any) {
+      throw error;
     }
   }
 
   private static async analyzeSentimentFromImage(imageUrl: string): Promise<string> {
     try {
-      
-      const emotionResponse = await axios.post('http://127.0.0.1:8001/api/emotion-detection', {
-        image_url: imageUrl
+      const fullImageUrl = `${this.API_CONFIG.localHostUrl}${imageUrl}`;
+      const emotionResponse = await axios.post(this.API_CONFIG.emotionDetectionUrl, {
+        image_url: fullImageUrl
       }, {
         timeout: 10000,
         headers: { 'Content-Type': 'application/json' }

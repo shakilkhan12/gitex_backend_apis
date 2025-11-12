@@ -16,6 +16,23 @@ class OfficesService {
   private static isGuest = (item: any): boolean => {
     return !OfficesService.isEmployee(item);
   };
+
+  private static mapAgeGroupToResponse(ageGroup: number | null): 'child' | 'adult' | 'middle_age' | 'elderly' | 'unknown' {
+    if (ageGroup === null || ageGroup === undefined) return 'unknown';
+    
+    // Age group mapping rules:
+    // child: 1, 2, 3, 4 (INFANT, KID, CHILD, TEENAGER, adolescent)
+    // adult: 5, 6 (YOUNG/Youth, PRIME/Adult)
+    // middle_age: 7 (MIDDLE)
+    // elderly: 8, 9 (MIDDLEAGED/Middle to old age, OLD/Elderly)
+    // unknown: 0 (UNKNOWN)
+    
+    if (ageGroup >= 1 && ageGroup <= 4) return 'child';
+    if (ageGroup >= 5 && ageGroup <= 6) return 'adult';
+    if (ageGroup === 7) return 'middle_age';
+    if (ageGroup >= 8 && ageGroup <= 9) return 'elderly';
+    return 'unknown';
+  }
    protected static addOfficeService = async (office: OfficeType) => {
       const result = await db.offices.create({
       data: {...office, createdAt: new Date()},
@@ -221,7 +238,18 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
 
          const footfallData = await db.offices_footfall_analysis.findMany({
             where: whereClause,
-            include: {
+            select: {
+               id: true,
+               office_Id: true,
+               detection_Id: true,
+               person_Id: true,
+               gender: true,
+               age_group: true,
+               is_child: true,
+               detected_camera_Id: true,
+               detected_camera_name: true,
+               time: true,
+               image: true,
                person: {
                   select: {
                      Id: true,
@@ -284,6 +312,13 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                   guestFemaleCount: 0,
                   guestChildrenCount: 0
                },
+               age_group: {
+                  child: 0,
+                  adult: 0,
+                  middle_age: 0,
+                  elderly: 0,
+                  unknown: 0
+               },
                employees: [],
                guests: [],
                hourlyDistribution: {},
@@ -325,6 +360,18 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          }).length;
          const guestChildrenCount = guestData.filter(item => item.is_child === true).length;
          
+         const ageGroupCounts = {
+            child: 0,
+            adult: 0,
+            middle_age: 0,
+            elderly: 0,
+            unknown: 0
+         };
+
+         footfallData.forEach(item => {
+            const ageGroupKey = OfficesService.mapAgeGroupToResponse(item.age_group);
+            ageGroupCounts[ageGroupKey]++;
+         });
       
          const uniqueEmployees = footfallData
             .filter(item => OfficesService.isEmployee(item))
@@ -437,6 +484,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                guestFemaleCount,
                guestChildrenCount
             },
+            age_group: ageGroupCounts,
             employees: formattedEmployees,
             guests: formattedGuests,
             hourlyDistribution,

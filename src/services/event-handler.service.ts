@@ -574,14 +574,14 @@ class EventHandlerService {
                       let officeFootfallImage = null;
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
-                            const imageResponse = await fetch(eventInfo.data.alarmResult.faces.URL);
-                            if (imageResponse.ok) {
-                               const imageBuffer = await imageResponse.arrayBuffer();
-                               const base64Image = Buffer.from(imageBuffer).toString('base64');
+                            const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                            const imageDataResponse = await this.getImageData(faceDataUrl);
+                            
+                            if (imageDataResponse) {
+                               const base64Image = imageDataResponse;
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
                                officeFootfallImage = await this.saveImageLocally(dataUrl, 'office-footfall', eventInfo.eventId);
-                            } else {
                             }
                          } catch (imageError: any) {
                          }
@@ -705,6 +705,28 @@ class EventHandlerService {
                                }
                             }
                          } catch (imageError: any) {
+                         }
+                      }
+
+                      if (person_Id && sentimentImageUrl) {
+                         try {
+                            const user = await db.users.findUnique({
+                               where: { Id: person_Id },
+                               select: { user_Id: true, emp_Id: true, image: true }
+                            });
+                            
+                            if (user) {
+                               const isGuest = (!user.user_Id || user.user_Id.trim() === '') && 
+                                             (!user.emp_Id || user.emp_Id.trim() === '');
+                               
+                               if (isGuest && (!user.image || user.image.trim() === '')) {
+                                  await db.users.update({
+                                     where: { Id: person_Id },
+                                     data: { image: sentimentImageUrl }
+                                  });
+                               }
+                            }
+                         } catch (updateError: any) {
                          }
                       }
 
@@ -876,6 +898,28 @@ class EventHandlerService {
                             }
                          }
                          
+                         if (person_Id && exitSentimentImageUrl) {
+                            try {
+                               const user = await db.users.findUnique({
+                                  where: { Id: person_Id },
+                                  select: { user_Id: true, emp_Id: true, image: true }
+                               });
+                               
+                               if (user) {
+                                  const isGuest = (!user.user_Id || user.user_Id.trim() === '') && 
+                                                (!user.emp_Id || user.emp_Id.trim() === '');
+                                  
+                                  if (isGuest && (!user.image || user.image.trim() === '')) {
+                                     await db.users.update({
+                                        where: { Id: person_Id },
+                                        data: { image: exitSentimentImageUrl }
+                                     });
+                                  }
+                               }
+                            } catch (updateError: any) {
+                            }
+                         }
+                         
                          let searchPersonId = person_Id;
                         
                          
@@ -884,13 +928,29 @@ class EventHandlerService {
                             
                             if (humanId && humanId !== "-1") {
                                const user = await db.users.findFirst({
-                                  where: { unique_id: humanId.toString() }
+                                  where: { unique_id: humanId.toString() },
+                                  select: { Id: true, user_Id: true, emp_Id: true, image: true }
                                });
                                
                               
                                
                                if (user) {
                                   searchPersonId = user.Id;
+                                  
+                                  if (exitSentimentImageUrl) {
+                                     try {
+                                        const isGuest = (!user.user_Id || user.user_Id.trim() === '') && 
+                                                      (!user.emp_Id || user.emp_Id.trim() === '');
+                                        
+                                        if (isGuest && (!user.image || user.image.trim() === '')) {
+                                           await db.users.update({
+                                              where: { Id: user.Id },
+                                              data: { image: exitSentimentImageUrl }
+                                           });
+                                        }
+                                     } catch (updateError: any) {
+                                     }
+                                  }
                                }
                             }
                          }
@@ -1542,14 +1602,14 @@ class EventHandlerService {
                       let parkFootfallImage = null;
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
-                            const imageResponse = await fetch(eventInfo.data.alarmResult.faces.URL);
-                            if (imageResponse.ok) {
-                               const imageBuffer = await imageResponse.arrayBuffer();
-                               const base64Image = Buffer.from(imageBuffer).toString('base64');
+                            const faceDataUrl = eventInfo.data.alarmResult.faces.URL;
+                            const imageDataResponse = await this.getImageData(faceDataUrl);
+                            
+                            if (imageDataResponse) {
+                               const base64Image = imageDataResponse;
                                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
                                
                                parkFootfallImage = await this.saveImageLocally(dataUrl, 'park-footfall', eventInfo.eventId);
-                            } else {
                             }
                          } catch (imageError: any) {
                          }
@@ -1563,7 +1623,8 @@ class EventHandlerService {
                          time: eventInfo.sendTime,
                          detected_camera_Id: eventInfo.srcIndex,
                          detected_camera_name: eventInfo.srcName,
-                         image: parkFootfallImage
+                         image: parkFootfallImage,
+                         age_group: ageGroup,
                       }
                       
                       if(isEntry){
@@ -1675,6 +1736,28 @@ class EventHandlerService {
                             }
                          } catch (imageError: any) {
                            
+                         }
+                      }
+
+                      if (person_Id && sentimentImageUrl) {
+                         try {
+                            const user = await db.users.findUnique({
+                               where: { Id: person_Id },
+                               select: { user_Id: true, emp_Id: true, image: true }
+                            });
+                            
+                            if (user) {
+                               const isGuest = (!user.user_Id || user.user_Id.trim() === '') && 
+                                             (!user.emp_Id || user.emp_Id.trim() === '');
+                               
+                               if (isGuest && (!user.image || user.image.trim() === '')) {
+                                  await db.users.update({
+                                     where: { Id: person_Id },
+                                     data: { image: sentimentImageUrl }
+                                  });
+                               }
+                            }
+                         } catch (updateError: any) {
                          }
                       }
 
@@ -1851,15 +1934,53 @@ class EventHandlerService {
                             }
                          }
                          
+                         if (person_Id && exitSentimentImageUrl) {
+                            try {
+                               const user = await db.users.findUnique({
+                                  where: { Id: person_Id },
+                                  select: { user_Id: true, emp_Id: true, image: true }
+                               });
+                               
+                               if (user) {
+                                  const isGuest = (!user.user_Id || user.user_Id.trim() === '') && 
+                                                (!user.emp_Id || user.emp_Id.trim() === '');
+                                  
+                                  if (isGuest && (!user.image || user.image.trim() === '')) {
+                                     await db.users.update({
+                                        where: { Id: person_Id },
+                                        data: { image: exitSentimentImageUrl }
+                                     });
+                                  }
+                               }
+                            } catch (updateError: any) {
+                            }
+                         }
+                         
                          let searchPersonId = person_Id;
                          if (!searchPersonId && eventInfo.data?.alarmResult?.faces?.identify?.candidate?.human_id) {
                             const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
                             if (humanId && humanId !== "-1") {
                                const user = await db.users.findFirst({
-                                  where: { unique_id: humanId.toString() }
+                                  where: { unique_id: humanId.toString() },
+                                  select: { Id: true, user_Id: true, emp_Id: true, image: true }
                                });
                                if (user) {
                                   searchPersonId = user.Id;
+                                  
+                                  if (exitSentimentImageUrl) {
+                                     try {
+                                        const isGuest = (!user.user_Id || user.user_Id.trim() === '') && 
+                                                      (!user.emp_Id || user.emp_Id.trim() === '');
+                                        
+                                        if (isGuest && (!user.image || user.image.trim() === '')) {
+                                           await db.users.update({
+                                              where: { Id: user.Id },
+                                              data: { image: exitSentimentImageUrl }
+                                           });
+                                        }
+                                     } catch (updateError: any) {
+                                     }
+                                  }
                                }
                             }
                          }
