@@ -63,6 +63,7 @@ userRouter.post('/login', userLoginValidations, UserController.login)
 
 userRouter.get('/get',UserController.getUsers)
 userRouter.get('/filters', UserController.getUsersFilters)
+userRouter.get('/visitors', UserController.getVisitors)
 
 /**
  * @swagger

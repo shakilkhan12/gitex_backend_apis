@@ -35,6 +35,12 @@ export async function urlToBase64(url: string): Promise<string | string> {
 }
 
 class UserService {
+   private static readonly HIK_CONFIG = {
+      baseURL: 'https://10.70.90.183:443',
+      appKey: '59315117',
+      appSecret: 'YuWS8qCb61xbD8fEbwFJ',
+   };
+
    private static detectImageFormat(buffer: Buffer): string {
       try {
          if (buffer.length >= 4) {
@@ -398,6 +404,168 @@ class UserService {
          };
       } catch (error) {
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to fetch users filters");
+      }
+   }
+
+   public static getVisitorsService = async (filters: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+      gender?: string;
+   } = {}) => {
+      try {
+         const page = filters?.page || 1;
+         const limit = filters?.limit || 10;
+         const skip = (page - 1) * limit;
+
+         const whereClause: any = {
+            AND: [
+               {
+                  OR: [
+                     { user_Id: null },
+                     { user_Id: '' }
+                  ]
+               },
+               {
+                  OR: [
+                     { emp_Id: null },
+                     { emp_Id: '' }
+                  ]
+               }
+            ]
+         };
+
+         if (filters?.search) {
+            whereClause.AND.push({
+               OR: [
+                  { emp__eng_name: { contains: filters.search } },
+                  { emp__arabic_name: { contains: filters.search } },
+                  { unique_id: { contains: filters.search } }
+               ]
+            });
+         }
+
+         if (filters?.gender) {
+            whereClause.AND.push({ gender: filters.gender });
+         }
+
+         const orderByClause: any = {};
+         if (filters?.sortBy) {
+            const sortField = filters.sortBy === 'emp__eng_name' ? 'emp__eng_name' :
+                            filters.sortBy === 'emp__arabic_name' ? 'emp__arabic_name' :
+                            filters.sortBy === 'gender' ? 'gender' :
+                            filters.sortBy === 'createdAt' ? 'createdAt' :
+                            filters.sortBy === 'updatedAt' ? 'updatedAt' : 'createdAt';
+            orderByClause[sortField] = filters.sortOrder === 'desc' ? 'desc' : 'asc';
+         } else {
+            orderByClause.createdAt = 'desc';
+         }
+
+         const [visitors, totalCount] = await Promise.all([
+            db.users.findMany({
+               where: whereClause,
+               select: {
+                  Id: true,
+                  unique_id: true,
+                  gender: true,
+                  image: true,
+                  emp__eng_name: true,
+                  emp__arabic_name: true,
+                  createdAt: true,
+                  updatedAt: true
+               },
+               orderBy: orderByClause,
+               skip,
+               take: limit
+            }),
+            db.users.count({
+               where: whereClause
+            })
+         ]);
+
+         const totalPages = Math.ceil(totalCount / limit);
+         const hasNextPage = page < totalPages;
+         const hasPreviousPage = page > 1;
+
+         // Calculate statistics for each visitor
+         const visitorsWithStats = await Promise.all(
+            visitors.map(async (visitor) => {
+               const visitorIdStr = visitor.Id.toString();
+               
+               // Count sentiment analysis (office + park) where person_Id matches and sentiment_of is 'visitor'
+               const [officeSentimentCount, parkSentimentCount] = await Promise.all([
+                  db.offices_sentiment_analysis.count({
+                     where: {
+                        person_Id: visitorIdStr,
+                        sentiment_of: 'visitor'
+                     }
+                  }),
+                  db.parks_sentiment_analysis.count({
+                     where: {
+                        person_Id: visitorIdStr,
+                        sentiment_of: 'visitor'
+                     }
+                  })
+               ]);
+
+               // Count behaviour alerts (parks only) where person_Id matches visitor Id or unique_id
+               const behaviourAlertsCount = await db.parks_behaviour_alerts.count({
+                  where: {
+                     OR: [
+                        { person_Id: visitorIdStr },
+                        { person_Id: visitor.unique_id || '' }
+                     ],
+                     is_employee: false
+                  }
+               });
+
+               // Count footfall (office + park) where person_Id matches visitor.Id
+               const [officeFootfallCount, parkFootfallCount] = await Promise.all([
+                  db.offices_footfall_analysis.count({
+                     where: {
+                        person_Id: visitor.Id
+                     }
+                  }),
+                  db.parks_footfall_analysis.count({
+                     where: {
+                        person_Id: visitor.Id
+                     }
+                  })
+               ]);
+
+               return {
+                  ...visitor,
+                  totalSentiment: officeSentimentCount + parkSentimentCount,
+                  totalBehaviourAlerts: behaviourAlertsCount,
+                  totalFootfall: officeFootfallCount + parkFootfallCount
+               };
+            })
+         );
+
+         const imageFields = ['image'];
+         const formattedVisitors = formatImageUrlsInArray(visitorsWithStats, imageFields);
+
+         const paginationData = {
+            currentPage: page,
+            totalPages,
+            totalCount,
+            limit: limit,
+            hasNextPage,
+            hasPreviousPage,
+            nextPage: hasNextPage ? page + 1 : null,
+            previousPage: hasPreviousPage ? page - 1 : null
+         };
+
+         return {
+            success: true,
+            data: formattedVisitors,
+            pagination: paginationData
+         };
+
+      } catch (error: any) {
+         throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to fetch visitors");
       }
    }
 
@@ -819,19 +987,100 @@ class UserService {
                };
 
                if (existingUser) {
-                  await db.users.update({
+                  const updatedUser = await db.users.update({
                      where: { Id: existingUser.Id },
                      data: userDataToProcess
                   });
 
+                  // Update face image in HikVision if image changed and user has unique_id
+                  if (apiImageUrl && apiImageUrl !== existingUser.actuall_image && updatedUser.unique_id) {
+                     try {
+                        const base64Image = await urlToBase64(apiImageUrl);
+                        if (base64Image && typeof base64Image === 'string') {
+                           const cleanFaceData = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
+                           
+                           const faceUpdatePayload = {
+                              personId: updatedUser.unique_id,
+                              faceData: cleanFaceData
+                           };
+
+                           await UserService.callHikVisionAPI(
+                              UserService.HIK_CONFIG.baseURL,
+                              '/artemis/api/resource/v1/person/face/update',
+                              UserService.HIK_CONFIG.appKey,
+                              UserService.HIK_CONFIG.appSecret,
+                              faceUpdatePayload
+                           );
+                        }
+                     } catch (hikVisionError: any) {
+                     }
+                  }
+
                   successCount++;
                } else {
-                  await db.users.create({
+                  const newUser = await db.users.create({
                      data: {
                         ...userDataToProcess,
                         createdAt: new Date()
                      }
                   });
+
+                  // Upload new user to HikVision
+                  if (apiImageUrl) {
+                     try {
+                        const base64Image = await urlToBase64(apiImageUrl);
+                        if (base64Image && typeof base64Image === 'string') {
+                           const cleanFaceData = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
+                           
+                           const nameParts = userData.Name ? userData.Name.trim().split(' ') : [];
+                           const personGivenName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : '';
+                           const personFamilyName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : userData.Name || '';
+
+                           const hikVisionPayload = {
+                              personCode: userData.EmpCode,
+                              personFamilyName: personFamilyName,
+                              personGivenName: personGivenName,
+                              gender: userData.Gender === "M" ? 1 : 2,
+                              orgIndexCode: "2",
+                              faces: cleanFaceData ? [{ faceData: cleanFaceData }] : []
+                           };
+
+                           const hikVisionResponse = await UserService.callHikVisionAPI(
+                              UserService.HIK_CONFIG.baseURL,
+                              '/artemis/api/resource/v1/person/single/add',
+                              UserService.HIK_CONFIG.appKey,
+                              UserService.HIK_CONFIG.appSecret,
+                              hikVisionPayload
+                           );
+
+                           if (hikVisionResponse && hikVisionResponse.code === '0' && hikVisionResponse.data) {
+                              await db.users.update({
+                                 where: { Id: newUser.Id },
+                                 data: { unique_id: hikVisionResponse.data }
+                              });
+
+                              // Add face to face group
+                              try {
+                                 const faceAdditionPayload = {
+                                    personIndexCode: hikVisionResponse.data,
+                                    faceGroupIndexCode: "5"
+                                 };
+
+                                 await UserService.callHikVisionAPI(
+                                    UserService.HIK_CONFIG.baseURL,
+                                    '/artemis/api/frs/v1/face/single/addition',
+                                    UserService.HIK_CONFIG.appKey,
+                                    UserService.HIK_CONFIG.appSecret,
+                                    faceAdditionPayload
+                                 );
+                              } catch (faceAdditionError: any) {
+                                 // Continue even if face addition fails
+                              }
+                           }
+                        }
+                     } catch (hikVisionError: any) {
+                     }
+                  }
 
                   successCount++;
                }

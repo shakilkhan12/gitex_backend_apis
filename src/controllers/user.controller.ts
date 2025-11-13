@@ -149,6 +149,26 @@ class UserController extends UserService {
       }
    }
 
+   public static getVisitors = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const { page, limit, search, sortBy, sortOrder, gender } = req.query;
+         
+         const filters = {
+            page: page ? parseInt(page as string) : undefined,
+            limit: limit ? parseInt(limit as string) : undefined,
+            search: search as string,
+            sortBy: sortBy as string,
+            sortOrder: sortOrder as 'asc' | 'desc',
+            gender: gender as string
+         };
+
+         const result = await UserService.getVisitorsService(filters);
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
+      }
+   }
+
    public static fetchAndStoreEmployeeListingWithProgress = async (req: Request, res: Response, next: NextFunction) => {
       try {
          // Set headers for SSE

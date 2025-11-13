@@ -80,14 +80,17 @@ class FootfallAnalyticsService {
       const start = startOfDay(new Date(fromDate));
       const end = endOfDay(new Date(toDate));
 
-      console.log('🔄 Fetching footfall analytics data...', { fromDate, toDate, start, end });
-
-      // Query offices footfall data
+      // Query offices footfall data (exclude exit cameras to match getOfficeFootfallAnalysisService behavior)
       const officesData = await db.offices_footfall_analysis.findMany({
         where: {
           time: {
             gte: start,
             lte: end
+          },
+          detected_camera_name: {
+            not: {
+              contains: 'exit'
+            }
           }
         },
         select: {
@@ -96,23 +99,23 @@ class FootfallAnalyticsService {
         }
       });
 
-      // Query parks footfall data
+      // Query parks footfall data (exclude exit cameras to match getParkFootfallAnalysisService behavior)
       const parksData = await db.parks_footfall_analysis.findMany({
         where: {
           time: {
             gte: start,
             lte: end
+          },
+          detected_camera_name: {
+            not: {
+              contains: 'exit'
+            }
           }
         },
         select: {
           gender: true,
           age_group: true
         }
-      });
-
-      console.log('✅ Footfall data fetched', { 
-        officesCount: officesData.length, 
-        parksCount: parksData.length 
       });
 
       // Aggregate data for each location type
@@ -136,8 +139,6 @@ class FootfallAnalyticsService {
         }
       };
 
-      console.log('📊 Analytics data aggregated', { total: total.total });
-
       return {
         status: "success",
         message: "Footfall data fetched successfully.",
@@ -149,7 +150,6 @@ class FootfallAnalyticsService {
       };
 
     } catch (error: any) {
-      console.error('❌ Error fetching footfall analytics:', error);
       throw new Error(`Failed to fetch footfall analytics: ${error.message}`);
     }
   };
