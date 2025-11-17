@@ -665,6 +665,7 @@ class EventHandlerService {
 
                       let sentimentImageUrl = null;
                       let detectedSentiment = 'neutral'; 
+                      let base64Image = null;
                       
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
@@ -672,7 +673,7 @@ class EventHandlerService {
                             const imageDataResponse = await this.getImageData(faceDataUrl);
                             
                             if (imageDataResponse) {
-                               const base64Image = imageDataResponse;
+                               base64Image = imageDataResponse;
                                
                                if (!imageUrl) {
                                   imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
@@ -720,10 +721,26 @@ class EventHandlerService {
                                              (!user.emp_Id || user.emp_Id.trim() === '');
                                
                                if (isGuest && (!user.image || user.image.trim() === '')) {
-                                  await db.users.update({
-                                     where: { Id: person_Id },
-                                     data: { image: sentimentImageUrl }
-                                  });
+                                  let guestImageUrl = null;
+                                  
+                                  if (eventInfo.data?.alarmResult?.faces?.faceRect && base64Image) {
+                                     try {
+                                        const faceRect = eventInfo.data.alarmResult.faces.faceRect;
+                                        const croppedImage = await cropFaceWithMargin(base64Image, faceRect);
+                                        guestImageUrl = await this.saveImageLocally(croppedImage, 'guest-users', person_Id.toString());
+                                     } catch (cropError: any) {
+                                        guestImageUrl = sentimentImageUrl;
+                                     }
+                                  } else {
+                                     guestImageUrl = sentimentImageUrl;
+                                  }
+                                  
+                                  if (guestImageUrl) {
+                                     await db.users.update({
+                                        where: { Id: person_Id },
+                                        data: { image: guestImageUrl }
+                                     });
+                                  }
                                }
                             }
                          } catch (updateError: any) {
@@ -753,7 +770,7 @@ class EventHandlerService {
                             
                             const isEmployee = (user.emp_Id && user.emp_Id.trim() !== '') ||
                                              (user.emp_code && user.emp_code.trim() !== '') ||
-                                             user.is_attendance_user === true;
+                             user.is_attendance_user === true;
                             sentimentOf = isEmployee ? 'employee' : 'visitor';
                             
                             userDetails = {
@@ -855,6 +872,7 @@ class EventHandlerService {
                          
                          let exitSentimentImageUrl = null;
                          let exitDetectedSentiment = 'neutral'; 
+                         let base64Image = null;
                          
                          if (eventInfo.data?.alarmResult?.faces?.URL) {
                             try {
@@ -862,7 +880,7 @@ class EventHandlerService {
                                const imageDataResponse = await this.getImageData(faceDataUrl);
                                
                                if (imageDataResponse) {
-                                  const base64Image = imageDataResponse;
+                                  base64Image = imageDataResponse;
                                   
                                   if (!imageUrl) {
                                      imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
@@ -910,10 +928,26 @@ class EventHandlerService {
                                                 (!user.emp_Id || user.emp_Id.trim() === '');
                                   
                                   if (isGuest && (!user.image || user.image.trim() === '')) {
-                                     await db.users.update({
-                                        where: { Id: person_Id },
-                                        data: { image: exitSentimentImageUrl }
-                                     });
+                                     let guestImageUrl = null;
+                                     
+                                     if (eventInfo.data?.alarmResult?.faces?.faceRect && base64Image) {
+                                        try {
+                                           const faceRect = eventInfo.data.alarmResult.faces.faceRect;
+                                           const croppedImage = await cropFaceWithMargin(base64Image, faceRect);
+                                           guestImageUrl = await this.saveImageLocally(croppedImage, 'guest-users', person_Id.toString());
+                                        } catch (cropError: any) {
+                                           guestImageUrl = exitSentimentImageUrl;
+                                        }
+                                     } else {
+                                        guestImageUrl = exitSentimentImageUrl;
+                                     }
+                                     
+                                     if (guestImageUrl) {
+                                        await db.users.update({
+                                           where: { Id: person_Id },
+                                           data: { image: guestImageUrl }
+                                        });
+                                     }
                                   }
                                }
                             } catch (updateError: any) {
@@ -943,10 +977,26 @@ class EventHandlerService {
                                                       (!user.emp_Id || user.emp_Id.trim() === '');
                                         
                                         if (isGuest && (!user.image || user.image.trim() === '')) {
-                                           await db.users.update({
-                                              where: { Id: user.Id },
-                                              data: { image: exitSentimentImageUrl }
-                                           });
+                                           let guestImageUrl = null;
+                                           
+                                           if (eventInfo.data?.alarmResult?.faces?.faceRect && base64Image) {
+                                              try {
+                                                 const faceRect = eventInfo.data.alarmResult.faces.faceRect;
+                                                 const croppedImage = await cropFaceWithMargin(base64Image, faceRect);
+                                                 guestImageUrl = await this.saveImageLocally(croppedImage, 'guest-users', user.Id.toString());
+                                              } catch (cropError: any) {
+                                                 guestImageUrl = exitSentimentImageUrl;
+                                              }
+                                           } else {
+                                              guestImageUrl = exitSentimentImageUrl;
+                                           }
+                                           
+                                           if (guestImageUrl) {
+                                              await db.users.update({
+                                                 where: { Id: user.Id },
+                                                 data: { image: guestImageUrl }
+                                              });
+                                           }
                                         }
                                      } catch (updateError: any) {
                                      }
@@ -1692,6 +1742,7 @@ class EventHandlerService {
 
                       let sentimentImageUrl = null;
                       let detectedSentiment = 'neutral'; 
+                      let base64Image = null;
                       
                       if (eventInfo.data?.alarmResult?.faces?.URL) {
                          try {
@@ -1699,7 +1750,7 @@ class EventHandlerService {
                             const imageDataResponse = await this.getImageData(faceDataUrl);
                             
                             if (imageDataResponse) {
-                               const base64Image = imageDataResponse;
+                               base64Image = imageDataResponse;
                                
                                if (!imageUrl) {
                                   imageUrl = await this.saveImageLocally(base64Image, 'sentiment', eventInfo.eventId);
@@ -1751,10 +1802,26 @@ class EventHandlerService {
                                              (!user.emp_Id || user.emp_Id.trim() === '');
                                
                                if (isGuest && (!user.image || user.image.trim() === '')) {
-                                  await db.users.update({
-                                     where: { Id: person_Id },
-                                     data: { image: sentimentImageUrl }
-                                  });
+                                  let guestImageUrl = null;
+                                  
+                                  if (eventInfo.data?.alarmResult?.faces?.faceRect && base64Image) {
+                                     try {
+                                        const faceRect = eventInfo.data.alarmResult.faces.faceRect;
+                                        const croppedImage = await cropFaceWithMargin(base64Image, faceRect);
+                                        guestImageUrl = await this.saveImageLocally(croppedImage, 'guest-users', person_Id.toString());
+                                     } catch (cropError: any) {
+                                        guestImageUrl = sentimentImageUrl;
+                                     }
+                                  } else {
+                                     guestImageUrl = sentimentImageUrl;
+                                  }
+                                  
+                                  if (guestImageUrl) {
+                                     await db.users.update({
+                                        where: { Id: person_Id },
+                                        data: { image: guestImageUrl }
+                                     });
+                                  }
                                }
                             }
                          } catch (updateError: any) {
@@ -1946,10 +2013,26 @@ class EventHandlerService {
                                                 (!user.emp_Id || user.emp_Id.trim() === '');
                                   
                                   if (isGuest && (!user.image || user.image.trim() === '')) {
-                                     await db.users.update({
-                                        where: { Id: person_Id },
-                                        data: { image: exitSentimentImageUrl }
-                                     });
+                                     let guestImageUrl = null;
+                                     
+                                     if (eventInfo.data?.alarmResult?.faces?.faceRect && base64Image) {
+                                        try {
+                                           const faceRect = eventInfo.data.alarmResult.faces.faceRect;
+                                           const croppedImage = await cropFaceWithMargin(base64Image, faceRect);
+                                           guestImageUrl = await this.saveImageLocally(croppedImage, 'guest-users', person_Id.toString());
+                                        } catch (cropError: any) {
+                                           guestImageUrl = exitSentimentImageUrl;
+                                        }
+                                     } else {
+                                        guestImageUrl = exitSentimentImageUrl;
+                                     }
+                                     
+                                     if (guestImageUrl) {
+                                        await db.users.update({
+                                           where: { Id: person_Id },
+                                           data: { image: guestImageUrl }
+                                        });
+                                     }
                                   }
                                }
                             } catch (updateError: any) {
@@ -1973,10 +2056,26 @@ class EventHandlerService {
                                                       (!user.emp_Id || user.emp_Id.trim() === '');
                                         
                                         if (isGuest && (!user.image || user.image.trim() === '')) {
-                                           await db.users.update({
-                                              where: { Id: user.Id },
-                                              data: { image: exitSentimentImageUrl }
-                                           });
+                                           let guestImageUrl = null;
+                                           
+                                           if (eventInfo.data?.alarmResult?.faces?.faceRect && base64Image) {
+                                              try {
+                                                 const faceRect = eventInfo.data.alarmResult.faces.faceRect;
+                                                 const croppedImage = await cropFaceWithMargin(base64Image, faceRect);
+                                                 guestImageUrl = await this.saveImageLocally(croppedImage, 'guest-users', user.Id.toString());
+                                              } catch (cropError: any) {
+                                                 guestImageUrl = exitSentimentImageUrl;
+                                              }
+                                           } else {
+                                              guestImageUrl = exitSentimentImageUrl;
+                                           }
+                                           
+                                           if (guestImageUrl) {
+                                              await db.users.update({
+                                                 where: { Id: user.Id },
+                                                 data: { image: guestImageUrl }
+                                              });
+                                           }
                                         }
                                      } catch (updateError: any) {
                                      }
@@ -2367,7 +2466,6 @@ class EventHandlerService {
           }
          }
          
-         const duration = Date.now() - startTime;
          
          return {
             success: true,
@@ -2376,7 +2474,6 @@ class EventHandlerService {
          };
 
       } catch (error: any) {
-         const duration = Date.now() - startTime;
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to process event");
       }
    }
@@ -2581,7 +2678,6 @@ class EventHandlerService {
             } catch (faceAdditionError: any) {
             }
 
-            const duration = Date.now() - startTime;
           
             return updatedGuestUser;
          } else {

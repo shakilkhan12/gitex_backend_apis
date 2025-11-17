@@ -565,12 +565,11 @@ class UserService {
       }
    }
 
-   protected static deleteVisitorUserAndRecords= async(userId: number)=>{
-
+   protected static deleteVisitorUserAndRecords = async (userId: number) => {
       try {
-         const user=await db.users.findFirst({
-            where:{
-               Id:userId
+         const user = await db.users.findFirst({
+            where: {
+               Id: userId
             }
          })
 
@@ -578,51 +577,93 @@ class UserService {
             throw new HttpException(STATUS.NOT_FOUND, "User not found");
          }
 
-         db.offices_footfall_analysis.deleteMany({
-            where:{
-               person_Id:userId
-            }
-         })
-         db.parks_footfall_analysis.deleteMany({
-            where:{
-               person_Id:userId
-            }
-         })
+         const userIdStr = userId.toString();
 
-         db.parks_behaviour_alerts.deleteMany({
-            where:{
-               person_Id:user.unique_id
+         // Delete footfall records (using person_Id as number)
+         await db.offices_footfall_analysis.deleteMany({
+            where: {
+               person_Id: userId
+            }
+         })
+         await db.parks_footfall_analysis.deleteMany({
+            where: {
+               person_Id: userId
             }
          })
 
-         db.parks_sentiment_analysis.deleteMany({
-               where:{
-                  person_Id:user.unique_id
-               }
+         // Delete behaviour alerts (can use both person_Id as string or unique_id)
+         await db.parks_behaviour_alerts.deleteMany({
+            where: {
+               OR: [
+                  { person_Id: userIdStr },
+                  ...(user.unique_id ? [{ person_Id: user.unique_id }] : [])
+               ],
+               is_employee: false
+            }
          })
 
-         db.offices_sentiment_analysis.deleteMany({
-            where:{
-               person_Id:user.unique_id
+         await db.parks_sentiment_analysis.deleteMany({
+            where: {
+               OR: [
+                  { person_Id: userIdStr },
+                  ...(user.unique_id ? [{ person_Id: user.unique_id }] : [])
+               ],
+               sentiment_of: 'visitor'
             }
-      })
+         })
 
-      const userToDelete = {
-         personId: user.unique_id,
-      };
-      await UserService.callHikVisionAPI(
-         UserService.HIK_CONFIG.baseURL,
-         '/artemis/api/resource/v1/person/single/delete',
-         UserService.HIK_CONFIG.appKey,
-         UserService.HIK_CONFIG.appSecret,
-         userToDelete
-      );
+         await db.offices_sentiment_analysis.deleteMany({
+            where: {
+               OR: [
+                  { person_Id: userIdStr },
+                  ...(user.unique_id ? [{ person_Id: user.unique_id }] : [])
+               ],
+               sentiment_of: 'visitor'
+            }
+         })
+
+         // Delete from HikVision only if unique_id exists
+         if (user.unique_id) {
+            try {
+               const userToDelete = {
+                  personId: user.unique_id,
+               };
+               const deleteFromHikVisionResponse = await UserService.callHikVisionAPI(
+                  UserService.HIK_CONFIG.baseURL,
+                  '/artemis/api/resource/v1/person/single/delete',
+                  UserService.HIK_CONFIG.appKey,
+                  UserService.HIK_CONFIG.appSecret,
+                  userToDelete
+               );
+               console.log('deleteFromHikVisionResponse', deleteFromHikVisionResponse)
+               if (deleteFromHikVisionResponse && deleteFromHikVisionResponse.code === '0') {
+                  console.log('User deleted from HikVision successfully');
+               } else {
+                  console.log('Failed to delete user from HikVision');
+               }  
+            } catch (hikVisionError: any) {
+               console.log('Error deleting user from HikVision', hikVisionError);
+            }
+         }
+
+         // Finally, delete the user record
+         await db.users.delete({
+            where: {
+               Id: userId
+            }
+         })
+
+         return {
+            status: STATUS.SUCCESS,
+            message: "User and its corresponding records deleted successfully"
+         };
 
       } catch (error) {
-         console.log('error',error)
-            throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Unable to delete the user and its corresponding records!");
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Unable to delete the user and its corresponding records!");
       }
-
    }
 
 
@@ -1059,16 +1100,18 @@ class UserService {
                               personId: updatedUser.unique_id,
                               faceData: cleanFaceData
                            };
-
-                           await UserService.callHikVisionAPI(
+                           const updatedUserResponse = await UserService.callHikVisionAPI(
                               UserService.HIK_CONFIG.baseURL,
                               '/artemis/api/resource/v1/person/face/update',
                               UserService.HIK_CONFIG.appKey,
                               UserService.HIK_CONFIG.appSecret,
                               faceUpdatePayload
                            );
+                           console.log('updatedUserResponse', updatedUserResponse)  
+
                         }
                      } catch (hikVisionError: any) {
+                        console.log('hikVisionError', hikVisionError)
                      }
                   }
 

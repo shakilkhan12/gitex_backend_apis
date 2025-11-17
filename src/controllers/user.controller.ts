@@ -158,7 +158,7 @@ class UserController extends UserService {
       }
    }
 
-   public static deleteVisitorUser = async (req: Request, res: Response, next: NextFunction)=>{
+   public static deleteVisitorUser = async (req: Request, res: Response, next: NextFunction) => {
       try {
          const { userId } = req.body;
          if (!userId) {
@@ -166,12 +166,19 @@ class UserController extends UserService {
                error: "User ID is required" 
             });
          }
-         const deleteResult = await UserService.deleteVisitorUserAndRecords(userId);
+         
+         const userIdNumber = Number(userId);
+         if (isNaN(userIdNumber)) {
+            return res.status(STATUS.BAD_REQUEST).json({ 
+               error: "Invalid User ID format" 
+            });
+         }
+         
+         const deleteResult = await UserService.deleteVisitorUserAndRecords(userIdNumber);
          return res.status(STATUS.SUCCESS).json(deleteResult);
       
       } catch (error) {
          next(error);
-         
       }
    }
 

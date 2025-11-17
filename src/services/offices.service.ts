@@ -183,7 +183,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
            } else {
             throw new HttpException(STATUS.NOT_FOUND, `No functionalities found with the given ID`);
            }
-   }  
+   }
    protected static updateOfficeImageService = async (data: {Id: number, image: string}) => {
       const {Id, image} = data;
       const result = await db.offices.update({
@@ -471,7 +471,7 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
          const formattedEmployees = formatImageUrlsInArray(uniqueEmployees, imageFields);
          const formattedGuests = formatImageUrlsInArray(uniqueGuests, imageFields);
          const formattedRawData = formatImageUrlsInArray(enhancedRawData, imageFields);
-         
+
          return {
             summary: {
                totalFootfall,
