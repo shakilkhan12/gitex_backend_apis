@@ -27,7 +27,7 @@ export async function urlToBase64(url: string): Promise<string | string> {
 
 
     return base64;
-  } catch (error: unknown) {
+   } catch (error: unknown) {
     if (error instanceof Error) {
     }
     return "";
@@ -489,12 +489,10 @@ class UserService {
          const hasNextPage = page < totalPages;
          const hasPreviousPage = page > 1;
 
-         // Calculate statistics for each visitor
          const visitorsWithStats = await Promise.all(
             visitors.map(async (visitor) => {
                const visitorIdStr = visitor.Id.toString();
                
-               // Count sentiment analysis (office + park) where person_Id matches and sentiment_of is 'visitor'
                const [officeSentimentCount, parkSentimentCount] = await Promise.all([
                   db.offices_sentiment_analysis.count({
                      where: {
@@ -510,7 +508,6 @@ class UserService {
                   })
                ]);
 
-               // Count behaviour alerts (parks only) where person_Id matches visitor Id or unique_id
                const behaviourAlertsCount = await db.parks_behaviour_alerts.count({
                   where: {
                      OR: [
@@ -521,7 +518,6 @@ class UserService {
                   }
                });
 
-               // Count footfall (office + park) where person_Id matches visitor.Id
                const [officeFootfallCount, parkFootfallCount] = await Promise.all([
                   db.offices_footfall_analysis.count({
                      where: {
@@ -568,6 +564,67 @@ class UserService {
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to fetch visitors");
       }
    }
+
+   protected static deleteVisitorUserAndRecords= async(userId: number)=>{
+
+      try {
+         const user=await db.users.findFirst({
+            where:{
+               Id:userId
+            }
+         })
+
+         if (!user) {
+            throw new HttpException(STATUS.NOT_FOUND, "User not found");
+         }
+
+         db.offices_footfall_analysis.deleteMany({
+            where:{
+               person_Id:userId
+            }
+         })
+         db.parks_footfall_analysis.deleteMany({
+            where:{
+               person_Id:userId
+            }
+         })
+
+         db.parks_behaviour_alerts.deleteMany({
+            where:{
+               person_Id:user.unique_id
+            }
+         })
+
+         db.parks_sentiment_analysis.deleteMany({
+               where:{
+                  person_Id:user.unique_id
+               }
+         })
+
+         db.offices_sentiment_analysis.deleteMany({
+            where:{
+               person_Id:user.unique_id
+            }
+      })
+
+      const userToDelete = {
+         personId: user.unique_id,
+      };
+      await UserService.callHikVisionAPI(
+         UserService.HIK_CONFIG.baseURL,
+         '/artemis/api/resource/v1/person/single/delete',
+         UserService.HIK_CONFIG.appKey,
+         UserService.HIK_CONFIG.appSecret,
+         userToDelete
+      );
+
+      } catch (error) {
+         console.log('error',error)
+            throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Unable to delete the user and its corresponding records!");
+      }
+
+   }
+
 
    protected static getUserDetailsByUserIdService = async (emp_Id: string) => {
       try {
@@ -992,7 +1049,6 @@ class UserService {
                      data: userDataToProcess
                   });
 
-                  // Update face image in HikVision if image changed and user has unique_id
                   if (apiImageUrl && apiImageUrl !== existingUser.actuall_image && updatedUser.unique_id) {
                      try {
                         const base64Image = await urlToBase64(apiImageUrl);
@@ -1025,7 +1081,6 @@ class UserService {
                      }
                   });
 
-                  // Upload new user to HikVision
                   if (apiImageUrl) {
                      try {
                         const base64Image = await urlToBase64(apiImageUrl);
@@ -1059,7 +1114,6 @@ class UserService {
                                  data: { unique_id: hikVisionResponse.data }
                               });
 
-                              // Add face to face group
                               try {
                                  const faceAdditionPayload = {
                                     personIndexCode: hikVisionResponse.data,
@@ -1074,7 +1128,6 @@ class UserService {
                                     faceAdditionPayload
                                  );
                               } catch (faceAdditionError: any) {
-                                 // Continue even if face addition fails
                               }
                            }
                         }

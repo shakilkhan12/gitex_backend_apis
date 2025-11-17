@@ -46,7 +46,6 @@ class UserController extends UserService {
       try {
          const { emp_Id } = req.body;
          
-         console.log(`[UserController] getUserDetails called with user_Id: ${emp_Id}`);
          
          if (!emp_Id) {
             return res.status(STATUS.BAD_REQUEST).json({ 
@@ -57,11 +56,7 @@ class UserController extends UserService {
          const userDetails = await UserService.getUserDetailsByUserIdService(emp_Id);
          return res.status(STATUS.SUCCESS).json(userDetails);
       } catch (error) {
-         console.error(`[UserController] Error in getUserDetails:`, {
-            error: error instanceof Error ? error.message : 'Unknown error',
-            stack: error instanceof Error ? error.stack : undefined,
-            user_Id: req.body?.user_Id
-         });
+        
          next(error);
       }
    }
@@ -91,7 +86,6 @@ class UserController extends UserService {
           });
         }
 
-        // Prepare supervisor access data
         const supervisorAccess = {
           landscapingAccess: landscapingAccess !== undefined ? Boolean(landscapingAccess) : undefined,
           plantDiseaseAccess: plantDiseaseAccess !== undefined ? Boolean(plantDiseaseAccess) : undefined,
@@ -107,10 +101,8 @@ class UserController extends UserService {
 
     public static fetchAndStoreEmployeeListing = async (req: Request, res: Response, next: NextFunction) => {
       try {
-        console.log('[UserController] Starting fetchAndStoreEmployeeListing');
         
         const result = await UserService.fetchAndStoreEmployeeListingService();
-        console.log('[UserController] Service result received:', result);
         
         const response = {
           success: true,
@@ -118,12 +110,9 @@ class UserController extends UserService {
           data: result.summary
         };
         
-        console.log('[UserController] Sending response:', response);
         res.status(STATUS.SUCCESS).json(response);
-        console.log('[UserController] Response sent successfully');
         return;
       } catch (error) {
-        console.error('[UserController] Error in fetchAndStoreEmployeeListing:', error);
         next(error);
       }
     }
@@ -169,31 +158,42 @@ class UserController extends UserService {
       }
    }
 
+   public static deleteVisitorUser = async (req: Request, res: Response, next: NextFunction)=>{
+      try {
+         const { userId } = req.body;
+         if (!userId) {
+            return res.status(STATUS.BAD_REQUEST).json({ 
+               error: "User ID is required" 
+            });
+         }
+         const deleteResult = await UserService.deleteVisitorUserAndRecords(userId);
+         return res.status(STATUS.SUCCESS).json(deleteResult);
+      
+      } catch (error) {
+         next(error);
+         
+      }
+   }
+
    public static fetchAndStoreEmployeeListingWithProgress = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         // Set headers for SSE
          res.setHeader('Content-Type', 'text/event-stream');
          res.setHeader('Cache-Control', 'no-cache');
          res.setHeader('Connection', 'keep-alive');
-         res.setHeader('X-Accel-Buffering', 'no'); // Disable buffering in nginx
+         res.setHeader('X-Accel-Buffering', 'no');
 
-         // Send initial connection message immediately
          res.write(`data: ${JSON.stringify({ type: 'connected', message: 'Connection established' })}\n\n`);
          
-         // Force flush to send data immediately (if available)
          if (typeof (res as any).flush === 'function') {
             (res as any).flush();
          }
 
-         // Send status update - fetching secret key
          res.write(`data: ${JSON.stringify({ type: 'status', message: 'Fetching authentication...', current: 0, total: 0 })}\n\n`);
          
-         // Force flush again
          if (typeof (res as any).flush === 'function') {
             (res as any).flush();
          }
 
-         // Progress callback function
          const onProgress = (progress: { current: number; total: number; processed: number; errors: number }) => {
             try {
                const progressData = {
@@ -205,16 +205,13 @@ class UserController extends UserService {
                   message: `${progress.processed}/${progress.total} employees synced`
                };
                res.write(`data: ${JSON.stringify(progressData)}\n\n`);
-               // Force flush for immediate delivery
                if (typeof (res as any).flush === 'function') {
                   (res as any).flush();
                }
             } catch (error) {
-               console.error('[UserController] Error sending progress update:', error);
             }
          };
 
-         // Status callback for intermediate steps
          const onStatus = (status: { message: string; current?: number; total?: number }) => {
             try {
                const statusData = {
@@ -224,19 +221,15 @@ class UserController extends UserService {
                   total: status.total || 0
                };
                res.write(`data: ${JSON.stringify(statusData)}\n\n`);
-               // Force flush for immediate delivery
                if (typeof (res as any).flush === 'function') {
                   (res as any).flush();
                }
             } catch (error) {
-               console.error('[UserController] Error sending status update:', error);
             }
          };
 
-         // Execute the service with progress callback
          UserService.fetchAndStoreEmployeeListingServiceWithProgress(onProgress, onStatus)
             .then((result) => {
-               // Send completion message
                const completionData = {
                   type: 'complete',
                   success: true,
@@ -247,7 +240,6 @@ class UserController extends UserService {
                res.end();
             })
             .catch((error) => {
-               // Send error message
                const errorData = {
                   type: 'error',
                   success: false,
@@ -257,7 +249,6 @@ class UserController extends UserService {
                res.end();
             });
       } catch (error) {
-         console.error('[UserController] Error in fetchAndStoreEmployeeListingWithProgress:', error);
          next(error);
       }
    }
