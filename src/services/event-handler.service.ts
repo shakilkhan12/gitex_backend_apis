@@ -2671,10 +2671,7 @@ class EventHandlerService {
                   faceAdditionPayload
                );
 
-               if (faceAdditionResponse && faceAdditionResponse.code === '0') {
-                 
-               } else {
-               }
+               
             } catch (faceAdditionError: any) {
             }
 

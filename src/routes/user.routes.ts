@@ -13,5 +13,6 @@ userRouter.put('/update/role/:userId',UserController.updateUserRole)
 userRouter.post('/fetch-employees', UserController.fetchAndStoreEmployeeListing);
 userRouter.post('/fetch-employees-progress', UserController.fetchAndStoreEmployeeListingWithProgress);
 userRouter.post('/add', addUserValidations, UserController.addUser)
+userRouter.post('/sync-to-hikvision', UserController.syncUsersWithoutUniqueIdToHikVision)
 
 export default userRouter;

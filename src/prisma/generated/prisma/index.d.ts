@@ -29684,6 +29684,8 @@ export namespace Prisma {
     Id: number | null
     role_Id: number | null
     dashboard_view: boolean | null
+    live_stream_view: boolean | null
+    visitors_view: boolean | null
     role_permission_view: boolean | null
     role_permission_add: boolean | null
     role_permission_update: boolean | null
@@ -29747,6 +29749,8 @@ export namespace Prisma {
     Id: number | null
     role_Id: number | null
     dashboard_view: boolean | null
+    live_stream_view: boolean | null
+    visitors_view: boolean | null
     role_permission_view: boolean | null
     role_permission_add: boolean | null
     role_permission_update: boolean | null
@@ -29810,6 +29814,8 @@ export namespace Prisma {
     Id: number
     role_Id: number
     dashboard_view: number
+    live_stream_view: number
+    visitors_view: number
     role_permission_view: number
     role_permission_add: number
     role_permission_update: number
@@ -29885,6 +29891,8 @@ export namespace Prisma {
     Id?: true
     role_Id?: true
     dashboard_view?: true
+    live_stream_view?: true
+    visitors_view?: true
     role_permission_view?: true
     role_permission_add?: true
     role_permission_update?: true
@@ -29948,6 +29956,8 @@ export namespace Prisma {
     Id?: true
     role_Id?: true
     dashboard_view?: true
+    live_stream_view?: true
+    visitors_view?: true
     role_permission_view?: true
     role_permission_add?: true
     role_permission_update?: true
@@ -30011,6 +30021,8 @@ export namespace Prisma {
     Id?: true
     role_Id?: true
     dashboard_view?: true
+    live_stream_view?: true
+    visitors_view?: true
     role_permission_view?: true
     role_permission_add?: true
     role_permission_update?: true
@@ -30161,6 +30173,8 @@ export namespace Prisma {
     Id: number
     role_Id: number | null
     dashboard_view: boolean | null
+    live_stream_view: boolean | null
+    visitors_view: boolean | null
     role_permission_view: boolean | null
     role_permission_add: boolean | null
     role_permission_update: boolean | null
@@ -30243,6 +30257,8 @@ export namespace Prisma {
     Id?: boolean
     role_Id?: boolean
     dashboard_view?: boolean
+    live_stream_view?: boolean
+    visitors_view?: boolean
     role_permission_view?: boolean
     role_permission_add?: boolean
     role_permission_update?: boolean
@@ -30309,6 +30325,8 @@ export namespace Prisma {
     Id?: boolean
     role_Id?: boolean
     dashboard_view?: boolean
+    live_stream_view?: boolean
+    visitors_view?: boolean
     role_permission_view?: boolean
     role_permission_add?: boolean
     role_permission_update?: boolean
@@ -30368,7 +30386,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type users_permissionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "role_Id" | "dashboard_view" | "role_permission_view" | "role_permission_add" | "role_permission_update" | "offices_view" | "offices_add" | "offices_update" | "parks_view" | "parks_add" | "parks_update" | "system_report_view" | "alerts_view" | "office_attendance_view" | "office_attendance_add" | "office_attendance_update" | "office_footfall_view" | "office_footfall_add" | "office_footfall_update" | "office_sentimental_view" | "office_sentimental_add" | "office_sentimental_update" | "park_attendance_view" | "park_attendance_add" | "park_attendance_update" | "park_footfall_view" | "park_footfall_add" | "park_footfall_update" | "park_sentimental_view" | "park_sentimental_add" | "park_sentimental_update" | "park_irrigation_view" | "park_irrigation_add" | "park_irrigation_update" | "park_landscaping_view" | "park_landscaping_add" | "park_landscaping_update" | "park_litter_detection_view" | "park_litter_detection_add" | "park_litter_detection_update" | "park_intrusion_detection_view" | "park_intrusion_detection_add" | "park_intrusion_detection_update" | "park_smoking_detection_view" | "park_smoking_detection_add" | "park_smoking_detection_update" | "my_account_view" | "settings_view" | "office_queue_management_view" | "office_queue_management_add" | "office_queue_management_update" | "park_plant_inspection_view" | "park_plant_inspection_add" | "park_plant_inspection_update" | "park_plant_disease_view" | "park_plant_disease_add" | "park_plant_disease_update" | "createdAt" | "updatedAt", ExtArgs["result"]["users_permissions"]>
+  export type users_permissionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "role_Id" | "dashboard_view" | "live_stream_view" | "visitors_view" | "role_permission_view" | "role_permission_add" | "role_permission_update" | "offices_view" | "offices_add" | "offices_update" | "parks_view" | "parks_add" | "parks_update" | "system_report_view" | "alerts_view" | "office_attendance_view" | "office_attendance_add" | "office_attendance_update" | "office_footfall_view" | "office_footfall_add" | "office_footfall_update" | "office_sentimental_view" | "office_sentimental_add" | "office_sentimental_update" | "park_attendance_view" | "park_attendance_add" | "park_attendance_update" | "park_footfall_view" | "park_footfall_add" | "park_footfall_update" | "park_sentimental_view" | "park_sentimental_add" | "park_sentimental_update" | "park_irrigation_view" | "park_irrigation_add" | "park_irrigation_update" | "park_landscaping_view" | "park_landscaping_add" | "park_landscaping_update" | "park_litter_detection_view" | "park_litter_detection_add" | "park_litter_detection_update" | "park_intrusion_detection_view" | "park_intrusion_detection_add" | "park_intrusion_detection_update" | "park_smoking_detection_view" | "park_smoking_detection_add" | "park_smoking_detection_update" | "my_account_view" | "settings_view" | "office_queue_management_view" | "office_queue_management_add" | "office_queue_management_update" | "park_plant_inspection_view" | "park_plant_inspection_add" | "park_plant_inspection_update" | "park_plant_disease_view" | "park_plant_disease_add" | "park_plant_disease_update" | "createdAt" | "updatedAt", ExtArgs["result"]["users_permissions"]>
   export type users_permissionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users_roles?: boolean | users_permissions$users_rolesArgs<ExtArgs>
   }
@@ -30382,6 +30400,8 @@ export namespace Prisma {
       Id: number
       role_Id: number | null
       dashboard_view: boolean | null
+      live_stream_view: boolean | null
+      visitors_view: boolean | null
       role_permission_view: boolean | null
       role_permission_add: boolean | null
       role_permission_update: boolean | null
@@ -30812,6 +30832,8 @@ export namespace Prisma {
     readonly Id: FieldRef<"users_permissions", 'Int'>
     readonly role_Id: FieldRef<"users_permissions", 'Int'>
     readonly dashboard_view: FieldRef<"users_permissions", 'Boolean'>
+    readonly live_stream_view: FieldRef<"users_permissions", 'Boolean'>
+    readonly visitors_view: FieldRef<"users_permissions", 'Boolean'>
     readonly role_permission_view: FieldRef<"users_permissions", 'Boolean'>
     readonly role_permission_add: FieldRef<"users_permissions", 'Boolean'>
     readonly role_permission_update: FieldRef<"users_permissions", 'Boolean'>
@@ -41183,6 +41205,8 @@ export namespace Prisma {
     Id: 'Id',
     role_Id: 'role_Id',
     dashboard_view: 'dashboard_view',
+    live_stream_view: 'live_stream_view',
+    visitors_view: 'visitors_view',
     role_permission_view: 'role_permission_view',
     role_permission_add: 'role_permission_add',
     role_permission_update: 'role_permission_update',
@@ -44304,6 +44328,8 @@ export namespace Prisma {
     Id?: IntFilter<"users_permissions"> | number
     role_Id?: IntNullableFilter<"users_permissions"> | number | null
     dashboard_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    live_stream_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    visitors_view?: BoolNullableFilter<"users_permissions"> | boolean | null
     role_permission_view?: BoolNullableFilter<"users_permissions"> | boolean | null
     role_permission_add?: BoolNullableFilter<"users_permissions"> | boolean | null
     role_permission_update?: BoolNullableFilter<"users_permissions"> | boolean | null
@@ -44368,6 +44394,8 @@ export namespace Prisma {
     Id?: SortOrder
     role_Id?: SortOrderInput | SortOrder
     dashboard_view?: SortOrderInput | SortOrder
+    live_stream_view?: SortOrderInput | SortOrder
+    visitors_view?: SortOrderInput | SortOrder
     role_permission_view?: SortOrderInput | SortOrder
     role_permission_add?: SortOrderInput | SortOrder
     role_permission_update?: SortOrderInput | SortOrder
@@ -44435,6 +44463,8 @@ export namespace Prisma {
     NOT?: users_permissionsWhereInput | users_permissionsWhereInput[]
     role_Id?: IntNullableFilter<"users_permissions"> | number | null
     dashboard_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    live_stream_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    visitors_view?: BoolNullableFilter<"users_permissions"> | boolean | null
     role_permission_view?: BoolNullableFilter<"users_permissions"> | boolean | null
     role_permission_add?: BoolNullableFilter<"users_permissions"> | boolean | null
     role_permission_update?: BoolNullableFilter<"users_permissions"> | boolean | null
@@ -44499,6 +44529,8 @@ export namespace Prisma {
     Id?: SortOrder
     role_Id?: SortOrderInput | SortOrder
     dashboard_view?: SortOrderInput | SortOrder
+    live_stream_view?: SortOrderInput | SortOrder
+    visitors_view?: SortOrderInput | SortOrder
     role_permission_view?: SortOrderInput | SortOrder
     role_permission_add?: SortOrderInput | SortOrder
     role_permission_update?: SortOrderInput | SortOrder
@@ -44570,6 +44602,8 @@ export namespace Prisma {
     Id?: IntWithAggregatesFilter<"users_permissions"> | number
     role_Id?: IntNullableWithAggregatesFilter<"users_permissions"> | number | null
     dashboard_view?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    live_stream_view?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
+    visitors_view?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
     role_permission_view?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
     role_permission_add?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
     role_permission_update?: BoolNullableWithAggregatesFilter<"users_permissions"> | boolean | null
@@ -48148,6 +48182,8 @@ export namespace Prisma {
 
   export type users_permissionsCreateInput = {
     dashboard_view?: boolean | null
+    live_stream_view?: boolean | null
+    visitors_view?: boolean | null
     role_permission_view?: boolean | null
     role_permission_add?: boolean | null
     role_permission_update?: boolean | null
@@ -48212,6 +48248,8 @@ export namespace Prisma {
     Id?: number
     role_Id?: number | null
     dashboard_view?: boolean | null
+    live_stream_view?: boolean | null
+    visitors_view?: boolean | null
     role_permission_view?: boolean | null
     role_permission_add?: boolean | null
     role_permission_update?: boolean | null
@@ -48273,6 +48311,8 @@ export namespace Prisma {
 
   export type users_permissionsUpdateInput = {
     dashboard_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    live_stream_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    visitors_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -48337,6 +48377,8 @@ export namespace Prisma {
     Id?: IntFieldUpdateOperationsInput | number
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
     dashboard_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    live_stream_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    visitors_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -48400,6 +48442,8 @@ export namespace Prisma {
     Id?: number
     role_Id?: number | null
     dashboard_view?: boolean | null
+    live_stream_view?: boolean | null
+    visitors_view?: boolean | null
     role_permission_view?: boolean | null
     role_permission_add?: boolean | null
     role_permission_update?: boolean | null
@@ -48461,6 +48505,8 @@ export namespace Prisma {
 
   export type users_permissionsUpdateManyMutationInput = {
     dashboard_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    live_stream_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    visitors_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -48524,6 +48570,8 @@ export namespace Prisma {
     Id?: IntFieldUpdateOperationsInput | number
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
     dashboard_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    live_stream_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    visitors_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -51525,6 +51573,8 @@ export namespace Prisma {
     Id?: SortOrder
     role_Id?: SortOrder
     dashboard_view?: SortOrder
+    live_stream_view?: SortOrder
+    visitors_view?: SortOrder
     role_permission_view?: SortOrder
     role_permission_add?: SortOrder
     role_permission_update?: SortOrder
@@ -51593,6 +51643,8 @@ export namespace Prisma {
     Id?: SortOrder
     role_Id?: SortOrder
     dashboard_view?: SortOrder
+    live_stream_view?: SortOrder
+    visitors_view?: SortOrder
     role_permission_view?: SortOrder
     role_permission_add?: SortOrder
     role_permission_update?: SortOrder
@@ -51656,6 +51708,8 @@ export namespace Prisma {
     Id?: SortOrder
     role_Id?: SortOrder
     dashboard_view?: SortOrder
+    live_stream_view?: SortOrder
+    visitors_view?: SortOrder
     role_permission_view?: SortOrder
     role_permission_add?: SortOrder
     role_permission_update?: SortOrder
@@ -63020,6 +63074,8 @@ export namespace Prisma {
 
   export type users_permissionsCreateWithoutUsers_rolesInput = {
     dashboard_view?: boolean | null
+    live_stream_view?: boolean | null
+    visitors_view?: boolean | null
     role_permission_view?: boolean | null
     role_permission_add?: boolean | null
     role_permission_update?: boolean | null
@@ -63082,6 +63138,8 @@ export namespace Prisma {
   export type users_permissionsUncheckedCreateWithoutUsers_rolesInput = {
     Id?: number
     dashboard_view?: boolean | null
+    live_stream_view?: boolean | null
+    visitors_view?: boolean | null
     role_permission_view?: boolean | null
     role_permission_add?: boolean | null
     role_permission_update?: boolean | null
@@ -63233,6 +63291,8 @@ export namespace Prisma {
     Id?: IntFilter<"users_permissions"> | number
     role_Id?: IntNullableFilter<"users_permissions"> | number | null
     dashboard_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    live_stream_view?: BoolNullableFilter<"users_permissions"> | boolean | null
+    visitors_view?: BoolNullableFilter<"users_permissions"> | boolean | null
     role_permission_view?: BoolNullableFilter<"users_permissions"> | boolean | null
     role_permission_add?: BoolNullableFilter<"users_permissions"> | boolean | null
     role_permission_update?: BoolNullableFilter<"users_permissions"> | boolean | null
@@ -67461,6 +67521,8 @@ export namespace Prisma {
   export type users_permissionsCreateManyUsers_rolesInput = {
     Id?: number
     dashboard_view?: boolean | null
+    live_stream_view?: boolean | null
+    visitors_view?: boolean | null
     role_permission_view?: boolean | null
     role_permission_add?: boolean | null
     role_permission_update?: boolean | null
@@ -67656,6 +67718,8 @@ export namespace Prisma {
 
   export type users_permissionsUpdateWithoutUsers_rolesInput = {
     dashboard_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    live_stream_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    visitors_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -67718,6 +67782,8 @@ export namespace Prisma {
   export type users_permissionsUncheckedUpdateWithoutUsers_rolesInput = {
     Id?: IntFieldUpdateOperationsInput | number
     dashboard_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    live_stream_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    visitors_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_update?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -67780,6 +67846,8 @@ export namespace Prisma {
   export type users_permissionsUncheckedUpdateManyWithoutUsers_rolesInput = {
     Id?: IntFieldUpdateOperationsInput | number
     dashboard_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    live_stream_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    visitors_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_view?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_add?: NullableBoolFieldUpdateOperationsInput | boolean | null
     role_permission_update?: NullableBoolFieldUpdateOperationsInput | boolean | null

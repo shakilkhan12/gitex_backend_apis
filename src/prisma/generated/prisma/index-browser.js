@@ -495,6 +495,8 @@ exports.Prisma.Users_permissionsScalarFieldEnum = {
   Id: 'Id',
   role_Id: 'role_Id',
   dashboard_view: 'dashboard_view',
+  live_stream_view: 'live_stream_view',
+  visitors_view: 'visitors_view',
   role_permission_view: 'role_permission_view',
   role_permission_add: 'role_permission_add',
   role_permission_update: 'role_permission_update',

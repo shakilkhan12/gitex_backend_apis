@@ -719,6 +719,8 @@ class UserService {
                      users_permissions: {
                         select: {
                            dashboard_view: true,
+                           live_stream_view: true,
+                           visitors_view:true,
                            role_permission_view: true,
                            role_permission_add: true,
                            role_permission_update: true,
@@ -1100,18 +1102,16 @@ class UserService {
                               personId: updatedUser.unique_id,
                               faceData: cleanFaceData
                            };
-                           const updatedUserResponse = await UserService.callHikVisionAPI(
+                           
+                           await UserService.callHikVisionAPI(
                               UserService.HIK_CONFIG.baseURL,
                               '/artemis/api/resource/v1/person/face/update',
                               UserService.HIK_CONFIG.appKey,
                               UserService.HIK_CONFIG.appSecret,
                               faceUpdatePayload
                            );
-                           console.log('updatedUserResponse', updatedUserResponse)  
-
                         }
                      } catch (hikVisionError: any) {
-                        console.log('hikVisionError', hikVisionError)
                      }
                   }
 
@@ -1546,6 +1546,260 @@ class UserService {
          throw new HttpException(
             STATUS.INTERNAL_SERVER_ERROR,
             `Failed to upload first two users to HIK Vision: ${error.message}`
+         );
+      }
+   }
+
+   public static syncUsersWithoutUniqueIdToHikVisionService = async () => {
+      try {
+         const usersWithoutUniqueId = await db.users.findMany({
+            where: {
+               AND: [
+                  {
+                     OR: [
+                        { emp_Id: { not: null } },
+                        { emp_Id: { not: '' } }
+                     ]
+                  },
+                  {
+                     OR: [
+                        { unique_id: null },
+                        { unique_id: '' }
+                     ]
+                  }
+               ]
+            },
+            select: {
+               Id: true,
+               emp_Id: true,
+               emp__eng_name: true,
+               emp__arabic_name: true,
+               gender: true,
+               image: true
+            }
+         });
+
+         if (usersWithoutUniqueId.length === 0) {
+            return {
+               success: true,
+               message: "All users with emp_Id already have unique_id",
+               data: {
+                  total: 0,
+                  processed: 0,
+                  success: 0,
+                  failed: 0,
+                  errors: []
+               }
+            };
+         }
+
+         const results = {
+            total: usersWithoutUniqueId.length,
+            processed: 0,
+            success: 0,
+            failed: 0,
+            errors: [] as any[]
+         };
+
+         for (const user of usersWithoutUniqueId) {
+            try {
+               let faceData = null;
+               
+               if (user.image) {
+                  try {
+                     let imageUrl: string;
+                     
+                     if (user.image.startsWith('http')) {
+                        imageUrl = user.image;
+                     } else if (user.image.startsWith('/uploads/')) {
+                        const filePath = path.join(process.cwd(), user.image.replace(/^\//, ''));
+                        if (fs.existsSync(filePath)) {
+                           const imageBuffer = fs.readFileSync(filePath);
+                           const base64String = imageBuffer.toString('base64');
+                           faceData = base64String;
+                        } else {
+                           imageUrl = `http://10.160.133.77:5000${user.image}`;
+                           const base64Image = await urlToBase64(imageUrl);
+                           if (base64Image && typeof base64Image === 'string') {
+                              faceData = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
+                           }
+                        }
+                     } else {
+                        imageUrl = `http://10.160.133.77:5000${user.image}`;
+                        const base64Image = await urlToBase64(imageUrl);
+                        if (base64Image && typeof base64Image === 'string') {
+                           faceData = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
+                        }
+                     }
+                  } catch (imageError: any) {
+                  }
+               }
+
+               const trimmedEmpId = user.emp_Id ? user.emp_Id.trim() : '';
+               if (!trimmedEmpId) {
+                  results.failed++;
+                  results.processed++;
+                  results.errors.push({
+                     userId: user.Id,
+                     emp_Id: user.emp_Id,
+                     error: 'Employee ID is empty or invalid'
+                  });
+                  continue;
+               }
+
+               const sanitizeName = (name: string): string => {
+                  if (!name) return '';
+                  return name
+                     .replace(/[\/\\]/g, ' ') 
+                     .replace(/[^\w\s\-'.,]/g, ' ') 
+                     .replace(/\s+/g, ' ') 
+                     .trim();
+               };
+
+               let personGivenName = '';
+               let personFamilyName = '';
+
+               if (user.emp__eng_name && user.emp__eng_name.trim()) {
+                  const cleanName = sanitizeName(user.emp__eng_name);
+                  const nameParts = cleanName.split(' ').filter(part => part.trim().length > 0);
+                  
+                  if (nameParts.length > 1) {
+                     personGivenName = nameParts[nameParts.length - 1].trim();
+                     personFamilyName = nameParts.slice(0, -1).join(' ').trim();
+                  } else if (nameParts.length === 1) {
+                     personGivenName = nameParts[0].trim();
+                     personFamilyName = nameParts[0].trim();
+                  }
+               }
+
+               if (!personGivenName || personGivenName.length === 0) {
+                  personGivenName = trimmedEmpId;
+               }
+               if (!personFamilyName || personFamilyName.length === 0) {
+                  personFamilyName = trimmedEmpId;
+               }
+
+               if (personFamilyName === trimmedEmpId && personGivenName === trimmedEmpId) {
+                  personGivenName = 'Employee';
+               }
+
+               const finalPersonFamilyName = sanitizeName(personFamilyName);
+               const finalPersonGivenName = sanitizeName(personGivenName);
+
+               const hikVisionPayload = {
+                  personCode: trimmedEmpId,
+                  personFamilyName: finalPersonFamilyName,
+                  personGivenName: finalPersonGivenName,
+                  gender: user.gender === "M" ? 1 : 2,
+                  orgIndexCode: "2",
+                  faces: faceData ? [{ faceData: faceData }] : []
+               };
+
+               const hikVisionResponse = await UserService.callHikVisionAPI(
+                  UserService.HIK_CONFIG.baseURL,
+                  '/artemis/api/resource/v1/person/single/add',
+                  UserService.HIK_CONFIG.appKey,
+                  UserService.HIK_CONFIG.appSecret,
+                  hikVisionPayload
+               );
+
+               if (hikVisionResponse && hikVisionResponse.code === '0' && hikVisionResponse.data) {
+                  await db.users.update({
+                     where: { Id: user.Id },
+                     data: { unique_id: hikVisionResponse.data }
+                  });
+
+                  try {
+                     const faceAdditionPayload = {
+                        personIndexCode: hikVisionResponse.data,
+                        faceGroupIndexCode: "5"
+                     };
+
+                     await UserService.callHikVisionAPI(
+                        UserService.HIK_CONFIG.baseURL,
+                        '/artemis/api/frs/v1/face/single/addition',
+                        UserService.HIK_CONFIG.appKey,
+                        UserService.HIK_CONFIG.appSecret,
+                        faceAdditionPayload
+                     );
+                  } catch (faceAdditionError: any) {
+                  }
+
+                  results.success++;
+                  results.processed++;
+               } else {
+                  const errorMsg = hikVisionResponse?.msg || 'Unknown error';
+                  
+                  if (errorMsg.includes('already exists') || errorMsg.includes('person code already exists')) {
+                     try {
+                        const searchPayload = {
+                           pageNo: 1,
+                           pageSize: 1,
+                           personCode: trimmedEmpId
+                        };
+                        
+                        const searchResponse = await UserService.callHikVisionAPI(
+                           UserService.HIK_CONFIG.baseURL,
+                           '/artemis/api/resource/v1/person/advance/personList',
+                           UserService.HIK_CONFIG.appKey,
+                           UserService.HIK_CONFIG.appSecret,
+                           searchPayload
+                        );
+
+                        if (searchResponse && searchResponse.code === '0' && searchResponse.data) {
+                           const personList = searchResponse.data.list || [];
+                           if (personList.length > 0) {
+                              const existingPerson = personList.find((p: any) => p.personCode === trimmedEmpId) || personList[0];
+                              const existingPersonId = existingPerson.personIndexCode || existingPerson.personId;
+                              
+                              if (existingPersonId) {
+                                 await db.users.update({
+                                    where: { Id: user.Id },
+                                    data: { unique_id: existingPersonId }
+                                 });
+                                 results.success++;
+                                 results.processed++;
+                                 continue;
+                              }
+                           }
+                        }
+                     } catch (searchError: any) {
+                     }
+                  }
+                  
+                  results.failed++;
+                  results.processed++;
+                  results.errors.push({
+                     userId: user.Id,
+                     emp_Id: trimmedEmpId,
+                     error: `HIK Vision API error: ${errorMsg}`
+                  });
+               }
+            } catch (error: any) {
+               results.failed++;
+               results.processed++;
+               results.errors.push({
+                  userId: user.Id,
+                  emp_Id: user.emp_Id,
+                  error: error.message || 'Unknown error'
+               });
+            }
+         }
+
+         return {
+            success: results.failed === 0,
+            message: `Processed ${results.processed} users. ${results.success} successful, ${results.failed} failed.`,
+            data: results
+         };
+
+      } catch (error: any) {
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         
+         throw new HttpException(
+            STATUS.INTERNAL_SERVER_ERROR,
+            `Failed to sync users to HIK Vision: ${error.message}`
          );
       }
    }

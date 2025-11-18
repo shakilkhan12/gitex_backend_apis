@@ -5,6 +5,8 @@ import { HttpException } from "@/utils/HttpException.utils";
 class UserRolesService {
   private static readonly VALID_PERMISSION_FIELDS = [
     'dashboard_view',
+    'live_stream_view',
+    'visitors_view',
     'role_permission_view', 'role_permission_add', 'role_permission_update',
     'offices_view', 'offices_add', 'offices_update',
     'parks_view', 'parks_add', 'parks_update',

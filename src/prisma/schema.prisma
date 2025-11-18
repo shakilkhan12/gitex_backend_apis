@@ -542,6 +542,8 @@ model users_permissions {
   Id                              Int          @id @default(autoincrement())
   role_Id                         Int?
   dashboard_view                  Boolean?     @default(false)
+  live_stream_view                Boolean?     @default(false)
+  visitors_view                   Boolean?     @default(false)
   role_permission_view            Boolean?     @default(false)
   role_permission_add             Boolean?     @default(false)
   role_permission_update          Boolean?     @default(false)
