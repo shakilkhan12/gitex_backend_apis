@@ -173,6 +173,11 @@ export type qms_history = $Result.DefaultSelection<Prisma.$qms_historyPayload>
  * 
  */
 export type testing_modules = $Result.DefaultSelection<Prisma.$testing_modulesPayload>
+/**
+ * Model notications
+ * 
+ */
+export type notications = $Result.DefaultSelection<Prisma.$noticationsPayload>
 
 /**
  * Enums
@@ -640,6 +645,16 @@ export class PrismaClient<
     * ```
     */
   get testing_modules(): Prisma.testing_modulesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.notications`: Exposes CRUD operations for the **notications** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Notications
+    * const notications = await prisma.notications.findMany()
+    * ```
+    */
+  get notications(): Prisma.noticationsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1111,7 +1126,8 @@ export namespace Prisma {
     landscaping: 'landscaping',
     landscaping_history: 'landscaping_history',
     qms_history: 'qms_history',
-    testing_modules: 'testing_modules'
+    testing_modules: 'testing_modules',
+    notications: 'notications'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1130,7 +1146,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "access_secret" | "live_stream_favourites" | "office_streams" | "offices" | "offices_attendance" | "offices_cameras" | "offices_sentiment_analysis" | "park_cameras" | "park_streams" | "park_zones" | "parks_zones_job_history" | "parks" | "parks_attendance" | "parks_behaviour_alerts" | "parks_intrusion_detection" | "parks_irrigation_job_history" | "parks_litter_detection" | "ticket_details_table" | "parks_sentiment_analysis" | "parks_smoking_detection" | "intranet_posting_history" | "users" | "users_permissions" | "users_roles" | "parks_footfall_analysis" | "offices_footfall_analysis" | "termsPrivacy" | "fAQ" | "landscaping" | "landscaping_history" | "qms_history" | "testing_modules"
+      modelProps: "access_secret" | "live_stream_favourites" | "office_streams" | "offices" | "offices_attendance" | "offices_cameras" | "offices_sentiment_analysis" | "park_cameras" | "park_streams" | "park_zones" | "parks_zones_job_history" | "parks" | "parks_attendance" | "parks_behaviour_alerts" | "parks_intrusion_detection" | "parks_irrigation_job_history" | "parks_litter_detection" | "ticket_details_table" | "parks_sentiment_analysis" | "parks_smoking_detection" | "intranet_posting_history" | "users" | "users_permissions" | "users_roles" | "parks_footfall_analysis" | "offices_footfall_analysis" | "termsPrivacy" | "fAQ" | "landscaping" | "landscaping_history" | "qms_history" | "testing_modules" | "notications"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3246,6 +3262,72 @@ export namespace Prisma {
           }
         }
       }
+      notications: {
+        payload: Prisma.$noticationsPayload<ExtArgs>
+        fields: Prisma.noticationsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.noticationsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$noticationsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.noticationsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$noticationsPayload>
+          }
+          findFirst: {
+            args: Prisma.noticationsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$noticationsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.noticationsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$noticationsPayload>
+          }
+          findMany: {
+            args: Prisma.noticationsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$noticationsPayload>[]
+          }
+          create: {
+            args: Prisma.noticationsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$noticationsPayload>
+          }
+          createMany: {
+            args: Prisma.noticationsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.noticationsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$noticationsPayload>
+          }
+          update: {
+            args: Prisma.noticationsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$noticationsPayload>
+          }
+          deleteMany: {
+            args: Prisma.noticationsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.noticationsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.noticationsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$noticationsPayload>
+          }
+          aggregate: {
+            args: Prisma.NoticationsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotications>
+          }
+          groupBy: {
+            args: Prisma.noticationsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NoticationsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.noticationsCountArgs<ExtArgs>
+            result: $Utils.Optional<NoticationsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3374,6 +3456,7 @@ export namespace Prisma {
     landscaping_history?: landscaping_historyOmit
     qms_history?: qms_historyOmit
     testing_modules?: testing_modulesOmit
+    notications?: noticationsOmit
   }
 
   /* Types for Logging */
@@ -40751,6 +40834,944 @@ export namespace Prisma {
 
 
   /**
+   * Model notications
+   */
+
+  export type AggregateNotications = {
+    _count: NoticationsCountAggregateOutputType | null
+    _avg: NoticationsAvgAggregateOutputType | null
+    _sum: NoticationsSumAggregateOutputType | null
+    _min: NoticationsMinAggregateOutputType | null
+    _max: NoticationsMaxAggregateOutputType | null
+  }
+
+  export type NoticationsAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type NoticationsSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type NoticationsMinAggregateOutputType = {
+    id: number | null
+    type: string | null
+    title: string | null
+    description: string | null
+    is_read: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NoticationsMaxAggregateOutputType = {
+    id: number | null
+    type: string | null
+    title: string | null
+    description: string | null
+    is_read: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NoticationsCountAggregateOutputType = {
+    id: number
+    type: number
+    title: number
+    description: number
+    is_read: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type NoticationsAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type NoticationsSumAggregateInputType = {
+    id?: true
+  }
+
+  export type NoticationsMinAggregateInputType = {
+    id?: true
+    type?: true
+    title?: true
+    description?: true
+    is_read?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NoticationsMaxAggregateInputType = {
+    id?: true
+    type?: true
+    title?: true
+    description?: true
+    is_read?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NoticationsCountAggregateInputType = {
+    id?: true
+    type?: true
+    title?: true
+    description?: true
+    is_read?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type NoticationsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which notications to aggregate.
+     */
+    where?: noticationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of notications to fetch.
+     */
+    orderBy?: noticationsOrderByWithRelationInput | noticationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: noticationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` notications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` notications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned notications
+    **/
+    _count?: true | NoticationsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: NoticationsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: NoticationsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NoticationsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NoticationsMaxAggregateInputType
+  }
+
+  export type GetNoticationsAggregateType<T extends NoticationsAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotications]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotications[P]>
+      : GetScalarType<T[P], AggregateNotications[P]>
+  }
+
+
+
+
+  export type noticationsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: noticationsWhereInput
+    orderBy?: noticationsOrderByWithAggregationInput | noticationsOrderByWithAggregationInput[]
+    by: NoticationsScalarFieldEnum[] | NoticationsScalarFieldEnum
+    having?: noticationsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NoticationsCountAggregateInputType | true
+    _avg?: NoticationsAvgAggregateInputType
+    _sum?: NoticationsSumAggregateInputType
+    _min?: NoticationsMinAggregateInputType
+    _max?: NoticationsMaxAggregateInputType
+  }
+
+  export type NoticationsGroupByOutputType = {
+    id: number
+    type: string
+    title: string
+    description: string
+    is_read: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: NoticationsCountAggregateOutputType | null
+    _avg: NoticationsAvgAggregateOutputType | null
+    _sum: NoticationsSumAggregateOutputType | null
+    _min: NoticationsMinAggregateOutputType | null
+    _max: NoticationsMaxAggregateOutputType | null
+  }
+
+  type GetNoticationsGroupByPayload<T extends noticationsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NoticationsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NoticationsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NoticationsGroupByOutputType[P]>
+            : GetScalarType<T[P], NoticationsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type noticationsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    title?: boolean
+    description?: boolean
+    is_read?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["notications"]>
+
+
+
+  export type noticationsSelectScalar = {
+    id?: boolean
+    type?: boolean
+    title?: boolean
+    description?: boolean
+    is_read?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type noticationsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "title" | "description" | "is_read" | "createdAt" | "updatedAt", ExtArgs["result"]["notications"]>
+
+  export type $noticationsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "notications"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      type: string
+      title: string
+      description: string
+      is_read: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["notications"]>
+    composites: {}
+  }
+
+  type noticationsGetPayload<S extends boolean | null | undefined | noticationsDefaultArgs> = $Result.GetResult<Prisma.$noticationsPayload, S>
+
+  type noticationsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<noticationsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NoticationsCountAggregateInputType | true
+    }
+
+  export interface noticationsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['notications'], meta: { name: 'notications' } }
+    /**
+     * Find zero or one Notications that matches the filter.
+     * @param {noticationsFindUniqueArgs} args - Arguments to find a Notications
+     * @example
+     * // Get one Notications
+     * const notications = await prisma.notications.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends noticationsFindUniqueArgs>(args: SelectSubset<T, noticationsFindUniqueArgs<ExtArgs>>): Prisma__noticationsClient<$Result.GetResult<Prisma.$noticationsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Notications that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {noticationsFindUniqueOrThrowArgs} args - Arguments to find a Notications
+     * @example
+     * // Get one Notications
+     * const notications = await prisma.notications.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends noticationsFindUniqueOrThrowArgs>(args: SelectSubset<T, noticationsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__noticationsClient<$Result.GetResult<Prisma.$noticationsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {noticationsFindFirstArgs} args - Arguments to find a Notications
+     * @example
+     * // Get one Notications
+     * const notications = await prisma.notications.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends noticationsFindFirstArgs>(args?: SelectSubset<T, noticationsFindFirstArgs<ExtArgs>>): Prisma__noticationsClient<$Result.GetResult<Prisma.$noticationsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notications that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {noticationsFindFirstOrThrowArgs} args - Arguments to find a Notications
+     * @example
+     * // Get one Notications
+     * const notications = await prisma.notications.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends noticationsFindFirstOrThrowArgs>(args?: SelectSubset<T, noticationsFindFirstOrThrowArgs<ExtArgs>>): Prisma__noticationsClient<$Result.GetResult<Prisma.$noticationsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Notications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {noticationsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Notications
+     * const notications = await prisma.notications.findMany()
+     * 
+     * // Get first 10 Notications
+     * const notications = await prisma.notications.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const noticationsWithIdOnly = await prisma.notications.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends noticationsFindManyArgs>(args?: SelectSubset<T, noticationsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$noticationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Notications.
+     * @param {noticationsCreateArgs} args - Arguments to create a Notications.
+     * @example
+     * // Create one Notications
+     * const Notications = await prisma.notications.create({
+     *   data: {
+     *     // ... data to create a Notications
+     *   }
+     * })
+     * 
+     */
+    create<T extends noticationsCreateArgs>(args: SelectSubset<T, noticationsCreateArgs<ExtArgs>>): Prisma__noticationsClient<$Result.GetResult<Prisma.$noticationsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Notications.
+     * @param {noticationsCreateManyArgs} args - Arguments to create many Notications.
+     * @example
+     * // Create many Notications
+     * const notications = await prisma.notications.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends noticationsCreateManyArgs>(args?: SelectSubset<T, noticationsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Notications.
+     * @param {noticationsDeleteArgs} args - Arguments to delete one Notications.
+     * @example
+     * // Delete one Notications
+     * const Notications = await prisma.notications.delete({
+     *   where: {
+     *     // ... filter to delete one Notications
+     *   }
+     * })
+     * 
+     */
+    delete<T extends noticationsDeleteArgs>(args: SelectSubset<T, noticationsDeleteArgs<ExtArgs>>): Prisma__noticationsClient<$Result.GetResult<Prisma.$noticationsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Notications.
+     * @param {noticationsUpdateArgs} args - Arguments to update one Notications.
+     * @example
+     * // Update one Notications
+     * const notications = await prisma.notications.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends noticationsUpdateArgs>(args: SelectSubset<T, noticationsUpdateArgs<ExtArgs>>): Prisma__noticationsClient<$Result.GetResult<Prisma.$noticationsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Notications.
+     * @param {noticationsDeleteManyArgs} args - Arguments to filter Notications to delete.
+     * @example
+     * // Delete a few Notications
+     * const { count } = await prisma.notications.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends noticationsDeleteManyArgs>(args?: SelectSubset<T, noticationsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {noticationsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Notications
+     * const notications = await prisma.notications.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends noticationsUpdateManyArgs>(args: SelectSubset<T, noticationsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Notications.
+     * @param {noticationsUpsertArgs} args - Arguments to update or create a Notications.
+     * @example
+     * // Update or create a Notications
+     * const notications = await prisma.notications.upsert({
+     *   create: {
+     *     // ... data to create a Notications
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Notications we want to update
+     *   }
+     * })
+     */
+    upsert<T extends noticationsUpsertArgs>(args: SelectSubset<T, noticationsUpsertArgs<ExtArgs>>): Prisma__noticationsClient<$Result.GetResult<Prisma.$noticationsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Notications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {noticationsCountArgs} args - Arguments to filter Notications to count.
+     * @example
+     * // Count the number of Notications
+     * const count = await prisma.notications.count({
+     *   where: {
+     *     // ... the filter for the Notications we want to count
+     *   }
+     * })
+    **/
+    count<T extends noticationsCountArgs>(
+      args?: Subset<T, noticationsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NoticationsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Notications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoticationsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NoticationsAggregateArgs>(args: Subset<T, NoticationsAggregateArgs>): Prisma.PrismaPromise<GetNoticationsAggregateType<T>>
+
+    /**
+     * Group by Notications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {noticationsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends noticationsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: noticationsGroupByArgs['orderBy'] }
+        : { orderBy?: noticationsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, noticationsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNoticationsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the notications model
+   */
+  readonly fields: noticationsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for notications.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__noticationsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the notications model
+   */
+  interface noticationsFieldRefs {
+    readonly id: FieldRef<"notications", 'Int'>
+    readonly type: FieldRef<"notications", 'String'>
+    readonly title: FieldRef<"notications", 'String'>
+    readonly description: FieldRef<"notications", 'String'>
+    readonly is_read: FieldRef<"notications", 'Boolean'>
+    readonly createdAt: FieldRef<"notications", 'DateTime'>
+    readonly updatedAt: FieldRef<"notications", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * notications findUnique
+   */
+  export type noticationsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+    /**
+     * Filter, which notications to fetch.
+     */
+    where: noticationsWhereUniqueInput
+  }
+
+  /**
+   * notications findUniqueOrThrow
+   */
+  export type noticationsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+    /**
+     * Filter, which notications to fetch.
+     */
+    where: noticationsWhereUniqueInput
+  }
+
+  /**
+   * notications findFirst
+   */
+  export type noticationsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+    /**
+     * Filter, which notications to fetch.
+     */
+    where?: noticationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of notications to fetch.
+     */
+    orderBy?: noticationsOrderByWithRelationInput | noticationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for notications.
+     */
+    cursor?: noticationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` notications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` notications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of notications.
+     */
+    distinct?: NoticationsScalarFieldEnum | NoticationsScalarFieldEnum[]
+  }
+
+  /**
+   * notications findFirstOrThrow
+   */
+  export type noticationsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+    /**
+     * Filter, which notications to fetch.
+     */
+    where?: noticationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of notications to fetch.
+     */
+    orderBy?: noticationsOrderByWithRelationInput | noticationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for notications.
+     */
+    cursor?: noticationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` notications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` notications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of notications.
+     */
+    distinct?: NoticationsScalarFieldEnum | NoticationsScalarFieldEnum[]
+  }
+
+  /**
+   * notications findMany
+   */
+  export type noticationsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+    /**
+     * Filter, which notications to fetch.
+     */
+    where?: noticationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of notications to fetch.
+     */
+    orderBy?: noticationsOrderByWithRelationInput | noticationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing notications.
+     */
+    cursor?: noticationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` notications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` notications.
+     */
+    skip?: number
+    distinct?: NoticationsScalarFieldEnum | NoticationsScalarFieldEnum[]
+  }
+
+  /**
+   * notications create
+   */
+  export type noticationsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a notications.
+     */
+    data: XOR<noticationsCreateInput, noticationsUncheckedCreateInput>
+  }
+
+  /**
+   * notications createMany
+   */
+  export type noticationsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many notications.
+     */
+    data: noticationsCreateManyInput | noticationsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * notications update
+   */
+  export type noticationsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a notications.
+     */
+    data: XOR<noticationsUpdateInput, noticationsUncheckedUpdateInput>
+    /**
+     * Choose, which notications to update.
+     */
+    where: noticationsWhereUniqueInput
+  }
+
+  /**
+   * notications updateMany
+   */
+  export type noticationsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update notications.
+     */
+    data: XOR<noticationsUpdateManyMutationInput, noticationsUncheckedUpdateManyInput>
+    /**
+     * Filter which notications to update
+     */
+    where?: noticationsWhereInput
+    /**
+     * Limit how many notications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * notications upsert
+   */
+  export type noticationsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the notications to update in case it exists.
+     */
+    where: noticationsWhereUniqueInput
+    /**
+     * In case the notications found by the `where` argument doesn't exist, create a new notications with this data.
+     */
+    create: XOR<noticationsCreateInput, noticationsUncheckedCreateInput>
+    /**
+     * In case the notications was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<noticationsUpdateInput, noticationsUncheckedUpdateInput>
+  }
+
+  /**
+   * notications delete
+   */
+  export type noticationsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+    /**
+     * Filter which notications to delete.
+     */
+    where: noticationsWhereUniqueInput
+  }
+
+  /**
+   * notications deleteMany
+   */
+  export type noticationsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which notications to delete
+     */
+    where?: noticationsWhereInput
+    /**
+     * Limit how many notications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * notications without action
+   */
+  export type noticationsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notications
+     */
+    select?: noticationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notications
+     */
+    omit?: noticationsOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -41432,6 +42453,19 @@ export namespace Prisma {
   export type Testing_modulesScalarFieldEnum = (typeof Testing_modulesScalarFieldEnum)[keyof typeof Testing_modulesScalarFieldEnum]
 
 
+  export const NoticationsScalarFieldEnum: {
+    id: 'id',
+    type: 'type',
+    title: 'title',
+    description: 'description',
+    is_read: 'is_read',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type NoticationsScalarFieldEnum = (typeof NoticationsScalarFieldEnum)[keyof typeof NoticationsScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -41825,6 +42859,15 @@ export namespace Prisma {
   };
 
   export type testing_modulesOrderByRelevanceFieldEnum = (typeof testing_modulesOrderByRelevanceFieldEnum)[keyof typeof testing_modulesOrderByRelevanceFieldEnum]
+
+
+  export const noticationsOrderByRelevanceFieldEnum: {
+    type: 'type',
+    title: 'title',
+    description: 'description'
+  };
+
+  export type noticationsOrderByRelevanceFieldEnum = (typeof noticationsOrderByRelevanceFieldEnum)[keyof typeof noticationsOrderByRelevanceFieldEnum]
 
 
   /**
@@ -45509,6 +46552,71 @@ export namespace Prisma {
     rationale?: StringNullableWithAggregatesFilter<"testing_modules"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"testing_modules"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"testing_modules"> | Date | string
+  }
+
+  export type noticationsWhereInput = {
+    AND?: noticationsWhereInput | noticationsWhereInput[]
+    OR?: noticationsWhereInput[]
+    NOT?: noticationsWhereInput | noticationsWhereInput[]
+    id?: IntFilter<"notications"> | number
+    type?: StringFilter<"notications"> | string
+    title?: StringFilter<"notications"> | string
+    description?: StringFilter<"notications"> | string
+    is_read?: BoolFilter<"notications"> | boolean
+    createdAt?: DateTimeFilter<"notications"> | Date | string
+    updatedAt?: DateTimeFilter<"notications"> | Date | string
+  }
+
+  export type noticationsOrderByWithRelationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    is_read?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _relevance?: noticationsOrderByRelevanceInput
+  }
+
+  export type noticationsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: noticationsWhereInput | noticationsWhereInput[]
+    OR?: noticationsWhereInput[]
+    NOT?: noticationsWhereInput | noticationsWhereInput[]
+    type?: StringFilter<"notications"> | string
+    title?: StringFilter<"notications"> | string
+    description?: StringFilter<"notications"> | string
+    is_read?: BoolFilter<"notications"> | boolean
+    createdAt?: DateTimeFilter<"notications"> | Date | string
+    updatedAt?: DateTimeFilter<"notications"> | Date | string
+  }, "id">
+
+  export type noticationsOrderByWithAggregationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    is_read?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: noticationsCountOrderByAggregateInput
+    _avg?: noticationsAvgOrderByAggregateInput
+    _max?: noticationsMaxOrderByAggregateInput
+    _min?: noticationsMinOrderByAggregateInput
+    _sum?: noticationsSumOrderByAggregateInput
+  }
+
+  export type noticationsScalarWhereWithAggregatesInput = {
+    AND?: noticationsScalarWhereWithAggregatesInput | noticationsScalarWhereWithAggregatesInput[]
+    OR?: noticationsScalarWhereWithAggregatesInput[]
+    NOT?: noticationsScalarWhereWithAggregatesInput | noticationsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"notications"> | number
+    type?: StringWithAggregatesFilter<"notications"> | string
+    title?: StringWithAggregatesFilter<"notications"> | string
+    description?: StringWithAggregatesFilter<"notications"> | string
+    is_read?: BoolWithAggregatesFilter<"notications"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"notications"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"notications"> | Date | string
   }
 
   export type access_secretCreateInput = {
@@ -49560,6 +50668,73 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type noticationsCreateInput = {
+    type: string
+    title: string
+    description: string
+    is_read?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type noticationsUncheckedCreateInput = {
+    id?: number
+    type: string
+    title: string
+    description: string
+    is_read?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type noticationsUpdateInput = {
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type noticationsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type noticationsCreateManyInput = {
+    id?: number
+    type: string
+    title: string
+    description: string
+    is_read?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type noticationsUpdateManyMutationInput = {
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type noticationsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -52398,6 +53573,50 @@ export namespace Prisma {
   }
 
   export type testing_modulesSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type noticationsOrderByRelevanceInput = {
+    fields: noticationsOrderByRelevanceFieldEnum | noticationsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type noticationsCountOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    is_read?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type noticationsAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type noticationsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    is_read?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type noticationsMinOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    is_read?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type noticationsSumOrderByAggregateInput = {
     id?: SortOrder
   }
 

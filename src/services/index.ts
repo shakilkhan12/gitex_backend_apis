@@ -26,3 +26,4 @@ export { default as FootfallAnalyticsService } from "@/services/footfall-analyti
 export { default as PlantDiseaseService } from "@/services/plant-disease.service"
 export { default as LandscapingDashboardService } from "@/services/landscaping-dashboard.service"
 export { default as DailyLogsDashboardService } from "@/services/daily-logs-dashboard.service"
+export { default as NotificationService } from "@/services/notification.service"

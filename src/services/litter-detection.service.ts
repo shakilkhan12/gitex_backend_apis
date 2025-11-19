@@ -3,6 +3,8 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import axios from "axios";
 import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
+import NotificationService from "./notification.service";
+import SocketService from "./socket.service";
 
 class LitterDetectionService {
    protected static addLitterDetectionService = async (litterDetection: LitterDetectionType) => {
@@ -78,6 +80,23 @@ class LitterDetectionService {
             }
          });
 
+         // Create notification for new litter detection
+         try {
+            const notification = await NotificationService.createNotificationService({
+               type: 'litter_detection',
+               title: 'New Litter Detection',
+               description: `Litter detected at ${litterDetection.location}${parkExists.park_english_name ? ` in ${parkExists.park_english_name}` : ''}. Case ID: ${litterDetection.case_Id}`
+            });
+
+            // Emit notification via socket
+            SocketService.emitNotificationUpdate({
+               type: 'new_notification',
+               data: notification
+            });
+         } catch (notificationError) {
+            // Don't fail the main operation if notification creation fails
+            console.error('Failed to create notification:', notificationError);
+         }
 
          return result;
 

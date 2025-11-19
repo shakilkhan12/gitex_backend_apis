@@ -692,6 +692,16 @@ exports.Prisma.Testing_modulesScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.NoticationsScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  title: 'title',
+  description: 'description',
+  is_read: 'is_read',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -990,6 +1000,12 @@ exports.Prisma.testing_modulesOrderByRelevanceFieldEnum = {
   confidence_score: 'confidence_score',
   rationale: 'rationale'
 };
+
+exports.Prisma.noticationsOrderByRelevanceFieldEnum = {
+  type: 'type',
+  title: 'title',
+  description: 'description'
+};
 exports.offices_sentiment_analysis_sentiment_of = exports.$Enums.offices_sentiment_analysis_sentiment_of = {
   employee: 'employee',
   visitor: 'visitor'
@@ -1032,7 +1048,8 @@ exports.Prisma.ModelName = {
   landscaping: 'landscaping',
   landscaping_history: 'landscaping_history',
   qms_history: 'qms_history',
-  testing_modules: 'testing_modules'
+  testing_modules: 'testing_modules',
+  notications: 'notications'
 };
 
 /**

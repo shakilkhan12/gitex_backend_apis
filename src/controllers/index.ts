@@ -21,3 +21,4 @@ export { default as HandlingImagesController } from "@/controllers/handling-imag
 export { default as IntranetPostingHistoryController } from "@/controllers/intranet-posting-history.controller"
 export { default as CamerasController } from "@/controllers/cameras.controller"
 export { default as EventBufferController } from "@/controllers/event-buffer.controller"
+export { default as NotificationController } from "@/controllers/notification.controller"

@@ -788,3 +788,16 @@ model testing_modules {
 
   @@map("testing_modules")
 }
+
+model notications {
+  id Int @id @default(autoincrement())
+
+  type        String   @db.VarChar(255)
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  is_read     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("notications")
+}

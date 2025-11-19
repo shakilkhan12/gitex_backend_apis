@@ -58,6 +58,14 @@ class SocketService {
           socket.leave('office-attendance');
         });
 
+        socket.on('join-notifications', () => {
+          socket.join('notifications');
+        });
+
+        socket.on('leave-notifications', () => {
+          socket.leave('notifications');
+        });
+
         socket.on('test-office-footfall-event', () => {
           if (this.io) {
             const testData = {
@@ -87,7 +95,7 @@ class SocketService {
 
 
         socket.on('disconnect', () => {
-            console.log(`🔌 Client disconnected: ${socket.id}`);
+            // Client disconnected
         });
       });
     }
@@ -135,6 +143,13 @@ class SocketService {
       const roomSize = room ? room.size : 0;
       this.io.to('office-attendance').emit('office-attendance-update', data);
     } else {
+    }
+  }
+
+  public static emitNotificationUpdate(data: any): void {
+    if (this.io) {
+      // Emit only to the notifications room to avoid duplicates
+      this.io.to('notifications').emit('notification-update', data);
     }
   }
 

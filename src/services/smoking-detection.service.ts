@@ -4,6 +4,8 @@ import { HttpException } from "@/utils/HttpException.utils";
 import axios from "axios";
 import https from "https";
 import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
+import NotificationService from "./notification.service";
+import SocketService from "./socket.service";
 
 class SmokingDetectionService {
    protected static addSmokingDetectionService = async (smokingDetection: SmokingDetectionType) => {
@@ -93,12 +95,67 @@ class SmokingDetectionService {
                      updatedAt: new Date()
                   }
                });
+
+               // Create notification for new smoking detection
+               try {
+                  const notification = await NotificationService.createNotificationService({
+                     type: 'smoking_detection',
+                     title: 'New Smoking Detection',
+                     description: `Smoking activity detected at ${smokingDetection.location}${parkExists.park_english_name ? ` in ${parkExists.park_english_name}` : ''}. Detection ID: ${smokingDetection.detection_Id}`
+                  });
+
+                  // Emit notification via socket
+                  SocketService.emitNotificationUpdate({
+                     type: 'new_notification',
+                     data: notification
+                  });
+               } catch (notificationError) {
+                  // Don't fail the main operation if notification creation fails
+                  console.error('Failed to create notification:', notificationError);
+               }
+
                return updatedResult;
             } else {
+               // Create notification for new smoking detection even if intranet posting failed
+               try {
+                  const notification = await NotificationService.createNotificationService({
+                     type: 'smoking_detection',
+                     title: 'New Smoking Detection',
+                     description: `Smoking activity detected at ${smokingDetection.location}${parkExists.park_english_name ? ` in ${parkExists.park_english_name}` : ''}. Detection ID: ${smokingDetection.detection_Id}`
+                  });
+
+                  // Emit notification via socket
+                  SocketService.emitNotificationUpdate({
+                     type: 'new_notification',
+                     data: notification
+                  });
+               } catch (notificationError) {
+                  // Don't fail the main operation if notification creation fails
+                  console.error('Failed to create notification:', notificationError);
+               }
+
                return result;
             }
 
          } catch (historyError: any) {
+            // Create notification for new smoking detection even if history creation failed
+            try {
+               const notification = await NotificationService.createNotificationService({
+                  type: 'smoking_detection',
+                  title: 'New Smoking Detection',
+                  description: `Smoking activity detected at ${smokingDetection.location}${parkExists.park_english_name ? ` in ${parkExists.park_english_name}` : ''}. Detection ID: ${smokingDetection.detection_Id}`
+               });
+
+               // Emit notification via socket
+               SocketService.emitNotificationUpdate({
+                  type: 'new_notification',
+                  data: notification
+               });
+            } catch (notificationError) {
+               // Don't fail the main operation if notification creation fails
+               console.error('Failed to create notification:', notificationError);
+            }
+
             return result;
          }
 
