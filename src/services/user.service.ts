@@ -41,6 +41,10 @@ class UserService {
       appSecret: 'YuWS8qCb61xbD8fEbwFJ',
    };
 
+   // Test mode: Set to true to use static secret key instead of fetching from API
+   private static readonly USE_TEST_SECRET_KEY = false;
+   private static readonly TEST_SECRET_KEY = 'TWpBeU5TOHhNUzh5TkE9PQ==';
+
    private static detectImageFormat(buffer: Buffer): string {
       try {
          if (buffer.length >= 4) {
@@ -876,11 +880,23 @@ class UserService {
    }
 
    private static async fetchSecretFromAPI(): Promise<string> {
+         // Use static secret key for testing if enabled
+         if (this.USE_TEST_SECRET_KEY) {
+            console.log('[UserService] 🧪 Using static test secret key (bypassing API)');
+            return this.TEST_SECRET_KEY;
+         }
+         
          const maxRetries = 3;
          const baseTimeout = 20000; 
       
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
          try {
+            if (attempt > 1) {
+               console.log(`[UserService] 🔄 Retrying secret key fetch (attempt ${attempt}/${maxRetries})...`);
+            } else {
+               console.log('[UserService] 🔑 Fetching secret key from API...');
+            }
+            
             const response = await axios.post(
                "https://192.168.164.7/middleware/?action=Secretkey&class=general",
                {
@@ -895,9 +911,11 @@ class UserService {
             );
             
             if (response.data?.SecretKey) {
+               console.log('[UserService] ✅ Secret key fetched successfully');
                return response.data.SecretKey;
             }
 
+            console.error('[UserService] ❌ Secret key not found in API response');
             throw new HttpException(
                STATUS.BAD_REQUEST,
                "Secret key not found in API response"
@@ -906,29 +924,39 @@ class UserService {
             
             if (axios.isAxiosError(error)) {
                if (error.code === 'ECONNABORTED') {
+                  console.warn(`[UserService] ⚠️ Secret key API request timed out (attempt ${attempt}/${maxRetries})`);
                   if (attempt === maxRetries) {
+                     console.error('[UserService] ❌ Secret key API request timed out after all retries');
                      throw new HttpException(STATUS.BAD_REQUEST, `Secret key API request timed out after ${maxRetries} attempts`);
                   }
                   continue; 
                } else if (error.code === 'ECONNREFUSED') {
+                  console.error('[UserService] ❌ Unable to connect to secret key API');
                   throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to secret key API");
                   } else if (error.response) {
+                  console.error('[UserService] ❌ Secret key API error:', {
+                     status: error.response.status,
+                     statusText: error.response.statusText
+                  });
                   throw new HttpException(STATUS.BAD_REQUEST, `Secret key API error: ${error.response.status} - ${error.response.statusText}`);
                }
             }
             
             if (attempt === maxRetries) {
+               console.error(`[UserService] ❌ Failed to fetch secret from API after ${maxRetries} attempts:`, error.message);
                throw new HttpException(
                   STATUS.BAD_REQUEST,
                   `Failed to fetch secret from API after ${maxRetries} attempts: ${error.message}`
                );
             }
             
-            const waitTime = Math.pow(2, attempt) * 1000; 
+            const waitTime = Math.pow(2, attempt) * 1000;
+            console.log(`[UserService] ⏳ Waiting ${waitTime}ms before retry...`);
             await new Promise(resolve => setTimeout(resolve, waitTime));
          }
       }
       
+      console.error('[UserService] ❌ Failed to fetch secret key after all retry attempts');
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
    }
 
@@ -947,25 +975,41 @@ class UserService {
       onProgress?: (progress: { current: number; total: number; processed: number; errors: number }) => void,
       onStatus?: (status: { message: string; current?: number; total?: number }) => void
    ) => {
+      const startTime = Date.now();
+      const syncStartTime = new Date();
+      
       try {
+         console.log('[UserService] 🔄 Starting user sync process...');
+         console.log('[UserService] Sync started at:', syncStartTime.toLocaleString());
          
          if (onStatus) {
             onStatus({ message: 'Authenticating...' });
          }
          
+         console.log('[UserService] 🔐 Authenticating with secret key API...');
          const secretKey = await this.fetchSecretFromAPI();
+         console.log('[UserService] ✅ Authentication successful');
 
          if (onStatus) {
             onStatus({ message: 'Fetching employee data from intranet...' });
          }
 
+         console.log('[UserService] 📡 Fetching employee listing from intranet API...');
          const payload = {
             SecretKey: `${secretKey}`,
             Lang: "en"
          };
 
          const endpoint = "https://khormun.gov.ae/middleware/?class=general&action=EmployeeListingUpdated";
+         const requestTimeout = 90000; // 90 seconds timeout for slow API
 
+         console.log('[UserService] 📤 Request details:', {
+            endpoint,
+            payload: { ...payload, SecretKey: '***hidden***' },
+            timeout: `${requestTimeout}ms (${requestTimeout / 1000}s)`
+         });
+
+         const requestStartTime = Date.now();
          const response = await axios.post(
             endpoint,
             payload,
@@ -973,26 +1017,67 @@ class UserService {
                headers: {
                   'Content-Type': 'application/json',
                },
-               timeout: 30000, 
+               timeout: requestTimeout, 
                httpsAgent: new https.Agent({
                   rejectUnauthorized: false
                })
             }
          )
+         
+         const requestDuration = ((Date.now() - requestStartTime) / 1000).toFixed(2);
+         console.log(`[UserService] ⏱️ Request completed in ${requestDuration}s`);
+
+         // Log the full response for debugging
+         console.log('[UserService] 📥 Intranet API Response received:', {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+            dataKeys: response.data ? Object.keys(response.data) : 'no data',
+            hasData: !!response.data,
+            hasDataData: !!response.data?.data,
+            hasUserListing: !!response.data?.data?.UserListing,
+            isUserListingArray: Array.isArray(response.data?.data?.UserListing),
+            userListingLength: Array.isArray(response.data?.data?.UserListing) ? response.data.data.UserListing.length : 'N/A',
+            fullResponse: JSON.stringify(response.data, null, 2)
+         });
 
          if (!response.data?.data?.UserListing || !Array.isArray(response.data.data.UserListing)) {
+            console.error('[UserService] ❌ Response validation failed. Response structure:', {
+               hasResponseData: !!response.data,
+               hasDataProperty: !!response.data?.data,
+               hasUserListing: !!response.data?.data?.UserListing,
+               userListingType: typeof response.data?.data?.UserListing,
+               isArray: Array.isArray(response.data?.data?.UserListing),
+               responseDataStructure: response.data ? {
+                  topLevelKeys: Object.keys(response.data),
+                  dataKeys: response.data.data ? Object.keys(response.data.data) : 'data property missing',
+                  error: response.data.error,
+                  status: response.data.status,
+                  code: response.data.code,
+                  message: response.data.message
+               } : 'No response data'
+            });
+            
             if (response.data?.error) {
+               console.error('[UserService] ❌ API Error:', response.data.error);
                throw new HttpException(STATUS.BAD_REQUEST, `API Error: ${response.data.error}`);
             }
             
+            console.error('[UserService] ❌ Invalid response format from third-party API');
             throw new HttpException(STATUS.BAD_REQUEST, "Invalid response format from third-party API");
          }
 
          const userListing = response.data.data.UserListing;
+         console.log('[UserService] ✅ Received employee listing:', {
+            totalEmployees: userListing.length,
+            responseTime: `${((Date.now() - startTime) / 1000).toFixed(2)}s`
+         });
 
          let successCount = 0;
          let errorCount = 0;
          let deletedCount = 0;
+         let updatedCount = 0;
+         let createdCount = 0;
 
          if (onProgress) {
             onProgress({
@@ -1006,8 +1091,11 @@ class UserService {
          if (onStatus) {
             onStatus({ message: `Starting sync of ${userListing.length} employees...`, total: userListing.length });
          }
+
+         console.log('[UserService] 🔄 Starting to process', userListing.length, 'employees...');
   
          let currentIndex = 0;
+         const processStartTime = Date.now();
          for (const userData of userListing) {
             currentIndex++;
             try {
@@ -1112,9 +1200,11 @@ class UserService {
                            );
                         }
                      } catch (hikVisionError: any) {
+                        console.warn(`[UserService] ⚠️ Failed to update HikVision face for user ${userData.EmpCode}:`, hikVisionError.message);
                      }
                   }
 
+                  updatedCount++;
                   successCount++;
                } else {
                   const newUser = await db.users.create({
@@ -1171,14 +1261,27 @@ class UserService {
                                     faceAdditionPayload
                                  );
                               } catch (faceAdditionError: any) {
+                                 console.warn(`[UserService] ⚠️ Failed to add face to HikVision group for user ${userData.EmpCode}:`, faceAdditionError.message);
                               }
                            }
                         }
                      } catch (hikVisionError: any) {
+                        console.warn(`[UserService] ⚠️ Failed to upload user ${userData.EmpCode} to HikVision:`, hikVisionError.message);
                      }
                   }
 
+                  createdCount++;
                   successCount++;
+               }
+
+               // Log progress every 50 users or at milestones
+               if (currentIndex % 50 === 0 || currentIndex === userListing.length) {
+                  const progressPercent = ((currentIndex / userListing.length) * 100).toFixed(1);
+                  const elapsedTime = ((Date.now() - processStartTime) / 1000).toFixed(2);
+                  const avgTimePerUser = (parseFloat(elapsedTime) / currentIndex).toFixed(3);
+                  const estimatedRemaining = ((userListing.length - currentIndex) * parseFloat(avgTimePerUser)).toFixed(0);
+                  
+                  console.log(`[UserService] 📊 Progress: ${currentIndex}/${userListing.length} (${progressPercent}%) | Success: ${successCount} | Errors: ${errorCount} | Updated: ${updatedCount} | Created: ${createdCount} | Elapsed: ${elapsedTime}s | Avg: ${avgTimePerUser}s/user | ETA: ${estimatedRemaining}s`);
                }
 
                if (onProgress && (currentIndex % 10 === 0 || currentIndex === userListing.length)) {
@@ -1190,8 +1293,13 @@ class UserService {
                   });
                }
 
-            } catch (userError) {
+            } catch (userError: any) {
                errorCount++;
+               console.error(`[UserService] ❌ Error processing user ${userData?.EmpCode || 'unknown'} (${currentIndex}/${userListing.length}):`, {
+                  empCode: userData?.EmpCode,
+                  error: userError.message,
+                  stack: userError.stack
+               });
                
                if (onProgress) {
                   onProgress({
@@ -1204,13 +1312,32 @@ class UserService {
             }
          }
 
+         const totalDuration = ((Date.now() - startTime) / 1000).toFixed(2);
+         const processDuration = ((Date.now() - processStartTime) / 1000).toFixed(2);
+         
          const summary = {
             total: userListing.length,
             processed: successCount,
             errors: errorCount,
-            deleted: deletedCount
+            deleted: deletedCount,
+            updated: updatedCount,
+            created: createdCount
          };
 
+         console.log('[UserService] ✅ User sync completed successfully!');
+         console.log('[UserService] 📈 Summary:', {
+            totalEmployees: summary.total,
+            successfullyProcessed: summary.processed,
+            updated: summary.updated,
+            created: summary.created,
+            errors: summary.errors,
+            deleted: summary.deleted,
+            successRate: `${((summary.processed / summary.total) * 100).toFixed(2)}%`,
+            totalDuration: `${totalDuration}s`,
+            processingDuration: `${processDuration}s`,
+            averageTimePerUser: `${(parseFloat(processDuration) / summary.total).toFixed(3)}s`
+         });
+         console.log('[UserService] Sync completed at:', new Date().toLocaleString());
          
          const result = {
             message: "Employee listing fetch and store completed - existing users updated, new users created, obsolete users deleted (excluding EMP001)",
@@ -1219,22 +1346,70 @@ class UserService {
          
          return result;
 
-      } catch (error) {
+      } catch (error: any) {
+         const totalDuration = ((Date.now() - startTime) / 1000).toFixed(2);
+         console.error('[UserService] ❌ User sync failed:', {
+            error: error.message,
+            stack: error.stack,
+            duration: `${totalDuration}s`,
+            failedAt: new Date().toLocaleString()
+         });
          
          if (error instanceof HttpException) {
-               throw error;
+            console.error('[UserService] ❌ HttpException:', error.message);
+            throw error;
          }
          
          if (axios.isAxiosError(error)) { 
-            if (error.code === 'ECONNREFUSED') {
+            // Handle timeout errors specifically
+            if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+               console.error('[UserService] ❌ Request timeout to third-party API:', {
+                  code: error.code,
+                  message: error.message,
+                  timeout: error.config?.timeout,
+                  url: error.config?.url
+               });
+               throw new HttpException(STATUS.BAD_REQUEST, `Request to intranet API timed out after ${error.config?.timeout || 30000}ms. The API may be slow or unavailable.`);
+            } else if (error.code === 'ECONNREFUSED') {
+               console.error('[UserService] ❌ Connection refused to third-party API');
                throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to third-party API");
             } else if (error.response) {
+               console.error('[UserService] ❌ Third-party API error response:', {
+                  status: error.response.status,
+                  statusText: error.response.statusText,
+                  headers: error.response.headers,
+                  data: error.response.data,
+                  dataStringified: JSON.stringify(error.response.data, null, 2)
+               });
                throw new HttpException(STATUS.BAD_REQUEST, `Third-party API error: ${error.response.status} - ${error.response.statusText}`);
             } else if (error.request) {
+               // Only treat as "already up to date" if it's not a timeout
+               if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
+                  console.error('[UserService] ❌ Request timeout (no response received):', {
+                     code: error.code,
+                     message: error.message,
+                     url: error.config?.url
+                  });
+                  throw new HttpException(STATUS.BAD_REQUEST, `Request to intranet API timed out. The API may be slow or unavailable.`);
+               }
+               
+               console.error('[UserService] ❌ Request made but no response received:', {
+                  code: error.code,
+                  message: error.message,
+                  url: error.config?.url
+               });
+               console.warn('[UserService] ⚠️ No response from API, assuming users are already up to date');
                throw new HttpException(STATUS.SUCCESS, "Users are already upto date!");
+            } else {
+               console.error('[UserService] ❌ Axios error (no response or request):', {
+                  message: error.message,
+                  code: error.code,
+                  config: error.config
+               });
             }
          }
          
+         console.error('[UserService] ❌ Unexpected error during user sync:', error);
          throw new HttpException(
             STATUS.BAD_REQUEST,
             (error as Error).message || "Failed to fetch and store employee listing"

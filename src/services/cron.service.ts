@@ -189,7 +189,7 @@ class CronService {
          }, this.JOB_TIMEOUT);
 
          try {
-            const result = await UserService.fetchAndStoreEmployeeListingService();
+            const result: any = await UserService.fetchAndStoreEmployeeListingService();
             const duration = ((Date.now() - startTime) / 1000).toFixed(2);
             console.log('[CronService] ✅ User sync completed successfully:', {
                success: result.message || 'Completed',
@@ -412,7 +412,7 @@ class CronService {
          console.log('[CronService] Irrigation after-image update test result:', irrigationAfterImageResult);
          
          console.log('[CronService] Testing user sync...');
-         const userSyncResult = await UserService.fetchAndStoreEmployeeListingService();
+         const userSyncResult: any = await UserService.fetchAndStoreEmployeeListingService();
          console.log('[CronService] User sync test result:', userSyncResult);
          
          return { success: true, grassResult, irrigationResult, irrigationAfterImageResult, userSyncResult };
