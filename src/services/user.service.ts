@@ -43,7 +43,7 @@ class UserService {
 
    // Test mode: Set to true to use static secret key instead of fetching from API
    private static readonly USE_TEST_SECRET_KEY = false;
-   private static readonly TEST_SECRET_KEY = 'TWpBeU5TOHhNUzh5TkE9PQ==';
+   private static readonly TEST_SECRET_KEY = 'TWpBeU5TOHhNUzh5Tmc9PQ==';
 
    private static detectImageFormat(buffer: Buffer): string {
       try {
@@ -1000,8 +1000,8 @@ class UserService {
             Lang: "en"
          };
 
-         const endpoint = "https://khormun.gov.ae/middleware/?class=general&action=EmployeeListingUpdated";
-         const requestTimeout = 90000; // 90 seconds timeout for slow API
+         const endpoint = "https://192.168.164.7/middleware/?class=general&action=EmployeeListingUpdated";
+         const requestTimeout = 90000; 
 
          console.log('[UserService] 📤 Request details:', {
             endpoint,
@@ -1027,49 +1027,28 @@ class UserService {
          const requestDuration = ((Date.now() - requestStartTime) / 1000).toFixed(2);
          console.log(`[UserService] ⏱️ Request completed in ${requestDuration}s`);
 
-         // Log the full response for debugging
-         console.log('[UserService] 📥 Intranet API Response received:', {
+         // Log the full response from HikVision API endpoint
+         console.log('[UserService] 📥 HikVision API Response:', {
             status: response.status,
             statusText: response.statusText,
-            headers: response.headers,
-            dataKeys: response.data ? Object.keys(response.data) : 'no data',
-            hasData: !!response.data,
-            hasDataData: !!response.data?.data,
-            hasUserListing: !!response.data?.data?.UserListing,
-            isUserListingArray: Array.isArray(response.data?.data?.UserListing),
-            userListingLength: Array.isArray(response.data?.data?.UserListing) ? response.data.data.UserListing.length : 'N/A',
+            responseData: {
+               status: response.data?.status,
+               code: response.data?.code,
+               userListingCount: response.data?.data?.UserListing?.length || 0,
+               hasUserListing: !!response.data?.data?.UserListing,
+               isUserListingArray: Array.isArray(response.data?.data?.UserListing)
+            },
             fullResponse: JSON.stringify(response.data, null, 2)
          });
 
-         if (!response.data?.data?.UserListing || !Array.isArray(response.data.data.UserListing)) {
-            console.error('[UserService] ❌ Response validation failed. Response structure:', {
-               hasResponseData: !!response.data,
-               hasDataProperty: !!response.data?.data,
-               hasUserListing: !!response.data?.data?.UserListing,
-               userListingType: typeof response.data?.data?.UserListing,
-               isArray: Array.isArray(response.data?.data?.UserListing),
-               responseDataStructure: response.data ? {
-                  topLevelKeys: Object.keys(response.data),
-                  dataKeys: response.data.data ? Object.keys(response.data.data) : 'data property missing',
-                  error: response.data.error,
-                  status: response.data.status,
-                  code: response.data.code,
-                  message: response.data.message
-               } : 'No response data'
-            });
-            
-            if (response.data?.error) {
-               console.error('[UserService] ❌ API Error:', response.data.error);
-               throw new HttpException(STATUS.BAD_REQUEST, `API Error: ${response.data.error}`);
-            }
-            
-            console.error('[UserService] ❌ Invalid response format from third-party API');
-            throw new HttpException(STATUS.BAD_REQUEST, "Invalid response format from third-party API");
-         }
-
-         const userListing = response.data.data.UserListing;
+         // Handle response - use empty array if UserListing is missing or not an array
+         const userListing = Array.isArray(response.data?.data?.UserListing) 
+            ? response.data.data.UserListing 
+            : [];
          console.log('[UserService] ✅ Received employee listing:', {
             totalEmployees: userListing.length,
+            responseStatus: response.data?.status,
+            responseCode: response.data?.code,
             responseTime: `${((Date.now() - startTime) / 1000).toFixed(2)}s`
          });
 
@@ -1295,11 +1274,7 @@ class UserService {
 
             } catch (userError: any) {
                errorCount++;
-               console.error(`[UserService] ❌ Error processing user ${userData?.EmpCode || 'unknown'} (${currentIndex}/${userListing.length}):`, {
-                  empCode: userData?.EmpCode,
-                  error: userError.message,
-                  stack: userError.stack
-               });
+               // Error logging removed - only counting errors
                
                if (onProgress) {
                   onProgress({
@@ -1332,10 +1307,10 @@ class UserService {
             created: summary.created,
             errors: summary.errors,
             deleted: summary.deleted,
-            successRate: `${((summary.processed / summary.total) * 100).toFixed(2)}%`,
+            successRate: summary.total > 0 ? `${((summary.processed / summary.total) * 100).toFixed(2)}%` : 'N/A',
             totalDuration: `${totalDuration}s`,
             processingDuration: `${processDuration}s`,
-            averageTimePerUser: `${(parseFloat(processDuration) / summary.total).toFixed(3)}s`
+            averageTimePerUser: summary.total > 0 ? `${(parseFloat(processDuration) / summary.total).toFixed(3)}s` : 'N/A'
          });
          console.log('[UserService] Sync completed at:', new Date().toLocaleString());
          
@@ -1347,73 +1322,36 @@ class UserService {
          return result;
 
       } catch (error: any) {
+         // Log error response if it's an axios error with response data
+         if (axios.isAxiosError(error) && error.response) {
+            console.log('[UserService] 📥 Error Response from API:', {
+               status: error.response.status,
+               statusText: error.response.statusText,
+               data: error.response.data,
+               fullResponse: JSON.stringify(error.response.data, null, 2)
+            });
+         } else {
+            // Log other errors without throwing
+            console.log('[UserService] ⚠️ Error occurred:', {
+               message: error.message,
+               type: error.constructor.name
+            });
+         }
+         
+         // Return success response even on error since we're only logging
          const totalDuration = ((Date.now() - startTime) / 1000).toFixed(2);
-         console.error('[UserService] ❌ User sync failed:', {
-            error: error.message,
-            stack: error.stack,
-            duration: `${totalDuration}s`,
-            failedAt: new Date().toLocaleString()
-         });
-         
-         if (error instanceof HttpException) {
-            console.error('[UserService] ❌ HttpException:', error.message);
-            throw error;
-         }
-         
-         if (axios.isAxiosError(error)) { 
-            // Handle timeout errors specifically
-            if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
-               console.error('[UserService] ❌ Request timeout to third-party API:', {
-                  code: error.code,
-                  message: error.message,
-                  timeout: error.config?.timeout,
-                  url: error.config?.url
-               });
-               throw new HttpException(STATUS.BAD_REQUEST, `Request to intranet API timed out after ${error.config?.timeout || 30000}ms. The API may be slow or unavailable.`);
-            } else if (error.code === 'ECONNREFUSED') {
-               console.error('[UserService] ❌ Connection refused to third-party API');
-               throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to third-party API");
-            } else if (error.response) {
-               console.error('[UserService] ❌ Third-party API error response:', {
-                  status: error.response.status,
-                  statusText: error.response.statusText,
-                  headers: error.response.headers,
-                  data: error.response.data,
-                  dataStringified: JSON.stringify(error.response.data, null, 2)
-               });
-               throw new HttpException(STATUS.BAD_REQUEST, `Third-party API error: ${error.response.status} - ${error.response.statusText}`);
-            } else if (error.request) {
-               // Only treat as "already up to date" if it's not a timeout
-               if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
-                  console.error('[UserService] ❌ Request timeout (no response received):', {
-                     code: error.code,
-                     message: error.message,
-                     url: error.config?.url
-                  });
-                  throw new HttpException(STATUS.BAD_REQUEST, `Request to intranet API timed out. The API may be slow or unavailable.`);
-               }
-               
-               console.error('[UserService] ❌ Request made but no response received:', {
-                  code: error.code,
-                  message: error.message,
-                  url: error.config?.url
-               });
-               console.warn('[UserService] ⚠️ No response from API, assuming users are already up to date');
-               throw new HttpException(STATUS.SUCCESS, "Users are already upto date!");
-            } else {
-               console.error('[UserService] ❌ Axios error (no response or request):', {
-                  message: error.message,
-                  code: error.code,
-                  config: error.config
-               });
-            }
-         }
-         
-         console.error('[UserService] ❌ Unexpected error during user sync:', error);
-         throw new HttpException(
-            STATUS.BAD_REQUEST,
-            (error as Error).message || "Failed to fetch and store employee listing"
-         );
+         return {
+            message: "Response logged (error occurred but not thrown)",
+            summary: {
+               total: 0,
+               processed: 0,
+               errors: 1,
+               deleted: 0,
+               updated: 0,
+               created: 0
+            },
+            duration: `${totalDuration}s`
+         };
       }
    }
 

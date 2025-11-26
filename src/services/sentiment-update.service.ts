@@ -62,18 +62,32 @@ class SentimentUpdateService {
     }
   }> {
     try {
-      // Find all parks sentiment analysis records with images starting with '/uploads'
+      // Date range: October 10, 2025 to November 25, 2025
+      const startDate = new Date('2025-10-10T00:00:00.000Z')
+      const endDate = new Date('2025-11-25T23:59:59.999Z')
+
+      // Find all parks sentiment analysis records with images starting with '/uploads' and createdAt between dates
       const records = await db.parks_sentiment_analysis.findMany({
         where: {
-          OR: [
+          AND: [
             {
-              check_in_image: {
-                startsWith: '/uploads'
-              }
+              OR: [
+                {
+                  check_in_image: {
+                    startsWith: '/uploads'
+                  }
+                },
+                {
+                  check_out_capture: {
+                    startsWith: '/uploads'
+                  }
+                }
+              ]
             },
             {
-              check_out_capture: {
-                startsWith: '/uploads'
+              createdAt: {
+                gte: startDate,
+                lte: endDate
               }
             }
           ]
@@ -86,8 +100,6 @@ class SentimentUpdateService {
           check_out_sentiment: true
         }
       })
-
-      console.log(`[SentimentUpdateService] Found ${records.length} parks sentiment analysis records to process`)
 
       const results = {
         totalRecords: records.length,
@@ -206,18 +218,32 @@ class SentimentUpdateService {
     }
   }> {
     try {
-      // Find all offices sentiment analysis records with images starting with '/uploads'
+      // Date range: October 10, 2025 to November 25, 2025
+      const startDate = new Date('2025-10-10T00:00:00.000Z')
+      const endDate = new Date('2025-11-25T23:59:59.999Z')
+
+      // Find all offices sentiment analysis records with images starting with '/uploads' and createdAt between dates
       const records = await db.offices_sentiment_analysis.findMany({
         where: {
-          OR: [
+          AND: [
             {
-              check_in_image: {
-                startsWith: '/uploads'
-              }
+              OR: [
+                {
+                  check_in_image: {
+                    startsWith: '/uploads'
+                  }
+                },
+                {
+                  check_out_capture: {
+                    startsWith: '/uploads'
+                  }
+                }
+              ]
             },
             {
-              check_out_capture: {
-                startsWith: '/uploads'
+              createdAt: {
+                gte: startDate,
+                lte: endDate
               }
             }
           ]
@@ -230,9 +256,7 @@ class SentimentUpdateService {
           check_out_sentiment: true
         }
       })
-
-      console.log(`[SentimentUpdateService] Found ${records.length} offices sentiment analysis records to process`)
-
+      
       const results = {
         totalRecords: records.length,
         processedRecords: 0,
