@@ -66,40 +66,26 @@ class SentimentUpdateService {
       const startDate = new Date('2025-10-10T00:00:00.000Z')
       const endDate = new Date('2025-11-25T23:59:59.999Z')
 
-      // Find all parks sentiment analysis records with images starting with '/uploads' and createdAt between dates
+      console.log(`[SentimentUpdateService] Searching parks records with updatedAt between ${startDate.toISOString()} and ${endDate.toISOString()}`)
+
       const records = await db.parks_sentiment_analysis.findMany({
         where: {
-          AND: [
-            {
-              OR: [
-                {
-                  check_in_image: {
-                    startsWith: '/uploads'
-                  }
-                },
-                {
-                  check_out_capture: {
-                    startsWith: '/uploads'
-                  }
-                }
-              ]
-            },
-            {
-              createdAt: {
-                gte: startDate,
-                lte: endDate
-              }
-            }
-          ]
+          updatedAt: {
+            gte: startDate,
+            lte: endDate
+          }
         },
         select: {
           Id: true,
           check_in_image: true,
           check_out_capture: true,
           check_in_sentiment: true,
-          check_out_sentiment: true
+          check_out_sentiment: true,
+          updatedAt: true
         }
       })
+
+      console.log(`[SentimentUpdateService] Found ${records.length} parks records matching criteria`)
 
       const results = {
         totalRecords: records.length,
@@ -222,40 +208,26 @@ class SentimentUpdateService {
       const startDate = new Date('2025-10-10T00:00:00.000Z')
       const endDate = new Date('2025-11-25T23:59:59.999Z')
 
-      // Find all offices sentiment analysis records with images starting with '/uploads' and createdAt between dates
+      console.log(`[SentimentUpdateService] Searching offices records with updatedAt between ${startDate.toISOString()} and ${endDate.toISOString()}`)
+
       const records = await db.offices_sentiment_analysis.findMany({
         where: {
-          AND: [
-            {
-              OR: [
-                {
-                  check_in_image: {
-                    startsWith: '/uploads'
-                  }
-                },
-                {
-                  check_out_capture: {
-                    startsWith: '/uploads'
-                  }
-                }
-              ]
-            },
-            {
-              createdAt: {
-                gte: startDate,
-                lte: endDate
-              }
-            }
-          ]
+          updatedAt: {
+            gte: startDate,
+            lte: endDate
+          }
         },
         select: {
           Id: true,
           check_in_image: true,
           check_out_capture: true,
           check_in_sentiment: true,
-          check_out_sentiment: true
+          check_out_sentiment: true,
+          updatedAt: true
         }
       })
+
+      console.log(`[SentimentUpdateService] Found ${records.length} offices records matching criteria`)
       
       const results = {
         totalRecords: records.length,
