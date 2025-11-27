@@ -268,6 +268,23 @@ class UserController extends UserService {
          next(error);
       }
    }
+
+   public static updateUserImageOnHikVision = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const { empId } = req.body;
+         
+         if (!empId) {
+            return res.status(STATUS.BAD_REQUEST).json({ 
+               error: "empId is required" 
+            });
+         }
+
+         const result = await UserService.updateUserImageOnHikVisionService(empId);
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
+      }
+   }
 }
 
 export default UserController;

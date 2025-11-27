@@ -1916,6 +1916,217 @@ class UserService {
          );
       }
    }
+
+   public static updateUserImageOnHikVisionService = async (empId: string) => {
+      try {
+         const user = await db.users.findFirst({
+            where: {
+               emp_Id: empId
+            },
+            select: {
+               Id: true,
+               emp_Id: true,
+               emp__eng_name: true,
+               unique_id: true,
+               actuall_image: true,
+               image: true,
+               gender: true
+            }
+         });
+
+         if (!user) {
+            throw new HttpException(STATUS.NOT_FOUND, `User with emp_Id ${empId} not found`);
+         }
+
+         if (!user.unique_id) {
+            throw new HttpException(STATUS.BAD_REQUEST, `User with emp_Id ${empId} does not have a unique_id. Please sync to HikVision first.`);
+         }
+
+         if (!user.image) {
+            throw new HttpException(STATUS.BAD_REQUEST, `User with emp_Id ${empId} does not have an image`);
+         }
+
+         // Get face data from user.image (can be HTTP URL, local file path, etc.)
+         let faceData: string | null = null;
+         let lastError: string | null = null;
+
+         try {
+            // First, always try local file path if it's a relative path
+            if (!user.image.startsWith('http')) {
+               const filePath = path.join(process.cwd(), user.image.replace(/^\//, ''));
+               console.log(`[UserService] Checking local file path: ${filePath}`);
+               
+               if (fs.existsSync(filePath)) {
+                  console.log(`[UserService] ✅ Local file exists, reading...`);
+                  try {
+                     const imageBuffer = fs.readFileSync(filePath);
+                     if (imageBuffer && imageBuffer.length > 0) {
+                        faceData = imageBuffer.toString('base64');
+                        console.log(`[UserService] ✅ Successfully read local file and converted to base64 (length: ${faceData.length})`);
+                     } else {
+                        lastError = 'Local file is empty';
+                        console.log(`[UserService] ❌ ${lastError}`);
+                     }
+                  } catch (fileError: any) {
+                     lastError = `Failed to read local file: ${fileError.message}`;
+                     console.log(`[UserService] ❌ ${lastError}`);
+                  }
+               } else {
+                  console.log(`[UserService] Local file not found at: ${filePath}`);
+               }
+            }
+
+            // If local file didn't work, try as URL
+            if (!faceData) {
+               let imageUrl: string;
+               
+               if (user.image.startsWith('http')) {
+                  imageUrl = user.image;
+               } else {
+                  const apiBaseUrl = process.env.API_BASE_URL || 'http://10.160.133.77:5000';
+                  imageUrl = `${apiBaseUrl}${user.image}`;
+               }
+               
+               console.log(`[UserService] Trying to fetch image from URL: ${imageUrl}`);
+               
+               try {
+                  console.log(`[UserService] Fetching image from: ${imageUrl}`);
+                  
+                  // Use axios for more reliable HTTP requests
+                  const response = await axios.get(imageUrl, {
+                     responseType: 'arraybuffer',
+                     timeout: 30000,
+                     httpsAgent: imageUrl.startsWith('https') 
+                        ? new https.Agent({ rejectUnauthorized: false })
+                        : undefined
+                  });
+
+                  if (response.data && response.data.length > 0) {
+                     faceData = Buffer.from(response.data).toString('base64');
+                     console.log(`[UserService] ✅ Successfully fetched image from URL and converted to base64 (length: ${faceData.length})`);
+                  } else {
+                     throw new Error('Response body is empty');
+                  }
+               } catch (urlError: any) {
+                  lastError = `Failed to fetch image from URL ${imageUrl}: ${urlError.message || urlError.response?.statusText || 'Unknown error'}`;
+                  console.log(`[UserService] ❌ ${lastError}`);
+               }
+            }
+         } catch (imageError: any) {
+            lastError = imageError.message || 'Unknown error';
+            console.log(`[UserService] ❌ Error processing image: ${lastError}`);
+            throw new HttpException(STATUS.BAD_REQUEST, `Failed to process image: ${lastError}. Image path: ${user.image}`);
+         }
+
+         if (!faceData || faceData.length === 0) {
+            const errorMessage = lastError 
+               ? `Failed to convert image to base64 for user ${empId}. ${lastError}. Image path: ${user.image}`
+               : `Failed to convert image to base64 for user ${empId}. Image path: ${user.image}`;
+            throw new HttpException(STATUS.BAD_REQUEST, errorMessage);
+         }
+
+         // First, verify the person exists in HikVision and get the correct personId
+         let actualPersonId = user.unique_id;
+         
+         try {
+            const searchPayload = {
+               pageNo: 1,
+               pageSize: 1,
+               personCode: user.emp_Id
+            };
+            
+            console.log('[UserService] Searching for person in HikVision...');
+            const searchResponse = await UserService.callHikVisionAPI(
+               UserService.HIK_CONFIG.baseURL,
+               '/artemis/api/resource/v1/person/advance/personList',
+               UserService.HIK_CONFIG.appKey,
+               UserService.HIK_CONFIG.appSecret,
+               searchPayload
+            );
+
+            if (searchResponse && searchResponse.code === '0' && searchResponse.data) {
+               const personList = searchResponse.data.list || [];
+               if (personList.length > 0) {
+                  const foundPerson = personList.find((p: any) => p.personCode === user.emp_Id) || personList[0];
+                  actualPersonId = foundPerson.personIndexCode || foundPerson.personId || user.unique_id;
+                  console.log(`[UserService] Found person in HikVision with personId: ${actualPersonId}`);
+                  
+                  // Update unique_id in database if it's different
+                  if (actualPersonId !== user.unique_id) {
+                     await db.users.update({
+                        where: { Id: user.Id },
+                        data: { unique_id: actualPersonId }
+                     });
+                     console.log(`[UserService] Updated unique_id in database from ${user.unique_id} to ${actualPersonId}`);
+                  }
+               } else {
+                  throw new HttpException(STATUS.NOT_FOUND, `Person with emp_Id ${empId} not found in HikVision. Please sync the person first.`);
+               }
+            } else {
+               throw new HttpException(STATUS.NOT_FOUND, `Person with emp_Id ${empId} not found in HikVision. Please sync the person first.`);
+            }
+         } catch (searchError: any) {
+            if (searchError instanceof HttpException) {
+               throw searchError;
+            }
+            console.log(`[UserService] ⚠️ Could not search for person, using stored unique_id: ${user.unique_id}`);
+         }
+
+         // Parse name for person data
+         const nameParts = user.emp__eng_name ? user.emp__eng_name.trim().split(' ') : [];
+         const personGivenName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : '';
+         const personFamilyName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : user.emp__eng_name || '';
+
+         // Use person update endpoint with face data (face update endpoint is not supported)
+         const personUpdatePayload = {
+            personId: actualPersonId,
+            personCode: user.emp_Id,
+            personFamilyName: personFamilyName,
+            personGivenName: personGivenName,
+            gender: user.gender === "M" ? 1 : 2,
+            orgIndexCode: "2",
+            faces: [{ faceData: faceData }]
+         };
+
+         console.log('[UserService] Updating person with face data using person update endpoint...');
+
+         const hikVisionResponse = await UserService.callHikVisionAPI(
+            UserService.HIK_CONFIG.baseURL,
+            '/artemis/api/resource/v1/person/single/update',
+            UserService.HIK_CONFIG.appKey,
+            UserService.HIK_CONFIG.appSecret,
+            personUpdatePayload
+         );
+
+         if (hikVisionResponse && hikVisionResponse.code === '0') {
+            console.log('[UserService] ✅ Success with person update endpoint');
+            return {
+               success: true,
+               message: `Successfully updated image on HikVision for user with emp_Id ${empId}`,
+               data: {
+                  userId: user.Id,
+                  emp_Id: user.emp_Id,
+                  emp__eng_name: user.emp__eng_name,
+                  unique_id: actualPersonId
+               }
+            };
+         } else {
+            const errorMsg = hikVisionResponse?.msg || 'Unknown error';
+            console.log(`[UserService] ❌ Face update failed: ${errorMsg}`);
+            throw new HttpException(STATUS.BAD_REQUEST, `HikVision API error: ${errorMsg}`);
+         }
+
+      } catch (error: any) {
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         
+         throw new HttpException(
+            STATUS.INTERNAL_SERVER_ERROR,
+            `Failed to update user image on HikVision: ${error.message}`
+         );
+      }
+   }
 }
 
 export default UserService;

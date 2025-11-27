@@ -59,7 +59,7 @@ class QMSController extends QMSService {
 
    public static viewQMSHistory = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMode, exitMode, service, status } = req.query;
+         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMode, exitMode, service, agent, ticketNumber, status } = req.query;
 
          const filters = {
             page: page ? parseInt(page as string) : undefined,
@@ -72,6 +72,8 @@ class QMSController extends QMSService {
             entryMode: entryMode as string,
             exitMode: exitMode as string,
             service: service as string,
+            agent: agent as string,
+            ticketNumber: ticketNumber as string,
             status: status as string
          };
 

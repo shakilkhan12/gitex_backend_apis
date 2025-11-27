@@ -537,7 +537,8 @@ class EventHandlerService {
                                      
                                   }
                                   
-                                  const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect);
+                                  const orgIndexCode = await this.getOrgIndexCodeForGuest(null, true);
+                                  const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect, orgIndexCode);
                                   person_Id = guestUser.Id;
                                  
                                } catch (guestError: any) {
@@ -561,7 +562,8 @@ class EventHandlerService {
                                   
                                }
                                
-                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect);
+                               const orgIndexCode = await this.getOrgIndexCodeForGuest(null, true);
+                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect, orgIndexCode);
                                   person_Id = guestUser.Id;
                                
                                } catch (guestError: any) {
@@ -1613,16 +1615,17 @@ class EventHandlerService {
                                let faceRect = null;
                                if (eventInfo.data?.alarmResult?.faces?.URL) {
                                   faceData = eventInfo.data.alarmResult.faces.URL;
-                                 
+                                  
                                   } else {
                                }
                                
                                if (eventInfo.data?.alarmResult?.faces?.faceRect) {
                                   faceRect = eventInfo.data.alarmResult.faces.faceRect;
-                                 
+                                  
                                }
                                
-                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect);
+                               const orgIndexCode = await this.getOrgIndexCodeForGuest(park_Id, false);
+                               const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, faceRect, orgIndexCode);
                                person_Id = guestUser.Id;
                                
                               
@@ -1640,12 +1643,13 @@ class EventHandlerService {
                                } else {
                             }
                             
-                            const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
+                            const orgIndexCode = await this.getOrgIndexCodeForGuest(park_Id, false);
+                            const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, undefined, orgIndexCode);
                                person_Id = guestUser.Id;
                             
                            
                             } catch (guestError: any) {
-                            
+                             
                          }
                       }
                       
@@ -1682,8 +1686,6 @@ class EventHandlerService {
                         const parkFootfallRecord = await db.parks_footfall_analysis.create({
                            data: parkFootfallData
                         })
-                        
-
                         try {
                            const userDetails = parkFootfallRecord.person_Id ? await db.users.findUnique({
                               where: { Id: parkFootfallRecord.person_Id },
@@ -2407,7 +2409,8 @@ class EventHandlerService {
                                  const genderValue = eventInfo.data.alarmResult.faces.gender.value
                                  const genderName = gender_types.find(gt => gt.code === genderValue)?.name || 'Unknown'
                                  
-                                 const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData);
+                                 const orgIndexCode = await this.getOrgIndexCodeForGuest(parkCamera?.park_Id || null, false);
+                                 const guestUser = await this.createGuestUserAndUploadToHikVision(genderName, faceData, undefined, orgIndexCode);
                                  person_Id = guestUser.Id.toString();
                                  
                               } catch (guestError: any) {
@@ -2530,7 +2533,47 @@ class EventHandlerService {
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
    }
 
-   private static async createGuestUserAndUploadToHikVision(gender: string, faceData: string, faceRect?: FaceRect): Promise<any> {
+   /**
+    * Get orgIndexCode for guest users based on park name or office context
+    * @param parkId Optional park ID to check park name
+    * @param isOfficeEvent Whether this is an office event
+    * @returns Promise<string> The orgIndexCode ("5" for Shees, "6" for Lulaya, "7" for Main Building/Office, "8" for Others)
+    */
+   private static async getOrgIndexCodeForGuest(parkId: number | null = null, isOfficeEvent: boolean = false): Promise<string> {
+      // For office events, always return "7" (Main Building Guests)
+      if (isOfficeEvent) {
+         return "7";
+      }
+
+      // For park events, check the park name
+      if (parkId) {
+         try {
+            const park = await db.parks.findUnique({
+               where: { Id: parkId },
+               select: { park_english_name: true, park_arabic_name: true }
+            });
+
+            if (park) {
+               const parkName = (park.park_english_name || park.park_arabic_name || "").toLowerCase();
+               
+               if (parkName.includes("shees")) {
+                  return "5"; 
+               } else if (parkName.includes("lulaya")) {
+                  return "6";
+               } else if (parkName.includes("main building")) {
+                  return "7"; 
+               }
+            }
+         } catch (error) {
+            // If error occurs, default to "8"
+         }
+      }
+
+      // Default to "8" for Others
+      return "8";
+   }
+
+   private static async createGuestUserAndUploadToHikVision(gender: string, faceData: string, faceRect?: FaceRect, orgIndexCode: string = "8"): Promise<any> {
       const startTime = Date.now();
       
 
@@ -2597,8 +2640,6 @@ class EventHandlerService {
                   base64ImageData = imageDataResponse;
                   
                   if (faceRect && base64ImageData) {
-                     
-                     
                      try {
                         const croppedImage = await cropFaceWithMargin(base64ImageData, faceRect);
                         base64ImageData = croppedImage;
@@ -2619,7 +2660,7 @@ class EventHandlerService {
             personFamilyName: guestNumber.toString(),
             personGivenName: "Guest",
             gender: gender === "Male" ? 1 : 2,
-            orgIndexCode: "3",
+            orgIndexCode: orgIndexCode,
             faces: cleanFaceData ? [{ faceData: cleanFaceData }] : []
          };
 

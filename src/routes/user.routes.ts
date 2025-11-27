@@ -14,5 +14,6 @@ userRouter.post('/fetch-employees', UserController.fetchAndStoreEmployeeListing)
 userRouter.post('/fetch-employees-progress', UserController.fetchAndStoreEmployeeListingWithProgress);
 userRouter.post('/add', addUserValidations, UserController.addUser)
 userRouter.post('/sync-to-hikvision', UserController.syncUsersWithoutUniqueIdToHikVision)
+userRouter.post('/update-image-hikvision', UserController.updateUserImageOnHikVision)
 
 export default userRouter;

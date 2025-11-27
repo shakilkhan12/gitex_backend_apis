@@ -7,7 +7,7 @@ import {
 import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import axios from "axios";
-import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
+import { formatImageUrlsInArray, formatImageUrl } from "@/utils/imageUrl.utils";
 import https from "https";
 import * as nodeCrypto from "crypto";
 import * as fs from "fs";
@@ -253,6 +253,8 @@ class QMSService {
     entryMode?: string;
     exitMode?: string;
     service?: string;
+    agent?: string;
+    ticketNumber?: string;
     status?: string;
   }) => {
     try {
@@ -261,15 +263,16 @@ class QMSService {
       const skip = (page - 1) * limit;
 
       const whereClause: any = {};
+      const orConditions: any[] = [];
 
       if (filters?.search) {
-        whereClause.OR = [
-          { ticket_number: { contains: filters.search, mode: 'insensitive' } },
-          { service_english_name: { contains: filters.search, mode: 'insensitive' } },
-          { service_arabic_name: { contains: filters.search, mode: 'insensitive' } },
-          { agent_english_name: { contains: filters.search, mode: 'insensitive' } },
-          { agent_arabic_name: { contains: filters.search, mode: 'insensitive' } }
-        ];
+        orConditions.push(
+          { ticket_number: { contains: filters.search } },
+          { service_english_name: { contains: filters.search } },
+          { service_arabic_name: { contains: filters.search } },
+          { agent_english_name: { contains: filters.search } },
+          { agent_arabic_name: { contains: filters.search } }
+        );
       }
 
       if (filters?.fromDateTime || filters?.toDateTime) {
@@ -292,6 +295,21 @@ class QMSService {
 
       if (filters?.service && filters.service !== 'All') {
         whereClause.service_english_name = filters.service;
+      }
+
+      if (filters?.agent && filters.agent !== 'All') {
+        orConditions.push(
+          { agent_english_name: { contains: filters.agent } },
+          { agent_arabic_name: { contains: filters.agent } }
+        );
+      }
+
+      if (filters?.ticketNumber && filters.ticketNumber.trim() !== '') {
+        whereClause.ticket_number = { contains: filters.ticketNumber };
+      }
+
+      if (orConditions.length > 0) {
+        whereClause.OR = orConditions;
       }
 
       const orderByClause: any = {};
@@ -421,10 +439,37 @@ class QMSService {
             }
           }
 
+          // Fetch visitor/user details
+          let visitor = null;
+          if (record.visitor_id) {
+            const visitorData = await db.users.findUnique({
+              where: { Id: record.visitor_id },
+              select: {
+                Id: true,
+                emp__eng_name: true,
+                emp__arabic_name: true,
+                emp_Id: true,
+                image: true,
+                gender: true,
+                dep_eng_name: true,
+                dep_arabic_name: true
+              }
+            });
+            if (visitorData) {
+              // Format visitor image URL
+              const formattedImage = formatImageUrl(visitorData.image);
+              visitor = {
+                ...visitorData,
+                image: formattedImage
+              };
+            }
+          }
+
           return {
             ...record,
             entryCamera,
-            exitCamera
+            exitCamera,
+            visitor
           };
         })
       );
