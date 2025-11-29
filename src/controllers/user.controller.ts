@@ -285,6 +285,15 @@ class UserController extends UserService {
          next(error);
       }
    }
+
+   public static uploadAllUsersWithEmpIdToHikVision = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const result = await UserService.uploadAllUsersWithEmpIdToHikVisionService();
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
+      }
+   }
 }
 
 export default UserController;

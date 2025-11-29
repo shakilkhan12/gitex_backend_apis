@@ -2127,6 +2127,255 @@ class UserService {
          );
       }
    }
+
+   /**
+    * Upload all users with emp_Id to HikVision API
+    * Gets all users where emp_Id is not empty, prepares payload and uploads to HikVision
+    * Updates user.unique_id with the response from HikVision API on success
+    * @returns Promise with upload results
+    */
+   public static uploadAllUsersWithEmpIdToHikVisionService = async () => {
+      try {
+         console.log('[UserService] 🔄 Starting upload of all users with emp_Id to HikVision...');
+
+         // Get all users where emp_Id is not empty
+         const usersWithEmpId = await db.users.findMany({
+            where: {
+               AND: [
+                  {
+                     OR: [
+                        { emp_Id: { not: null } },
+                        { emp_Id: { not: '' } }
+                     ]
+                  }
+               ]
+            },
+            select: {
+               Id: true,
+               emp_Id: true,
+               emp__eng_name: true,
+               emp__arabic_name: true,
+               gender: true,
+               image: true,
+               unique_id: true
+            }
+         });
+
+         if (usersWithEmpId.length === 0) {
+            return {
+               success: true,
+               message: "No users with emp_Id found to upload",
+               data: {
+                  total: 0,
+                  processed: 0,
+                  success: 0,
+                  failed: 0,
+                  errors: []
+               }
+            };
+         }
+
+         console.log(`[UserService] 📊 Found ${usersWithEmpId.length} users with emp_Id to upload`);
+
+         const results = {
+            total: usersWithEmpId.length,
+            processed: 0,
+            success: 0,
+            failed: 0,
+            errors: [] as any[]
+         };
+
+         for (const user of usersWithEmpId) {
+            try {
+               // Get face data from user image
+               let faceData: string | null = null;
+
+               if (user.image) {
+                  try {
+                     let imageUrl: string;
+                     
+                     if (user.image.startsWith('http')) {
+                        imageUrl = user.image;
+                     } else if (user.image.startsWith('/uploads/')) {
+                        const filePath = path.join(process.cwd(), user.image.replace(/^\//, ''));
+                        if (fs.existsSync(filePath)) {
+                           const imageBuffer = fs.readFileSync(filePath);
+                           faceData = imageBuffer.toString('base64');
+                        } else {
+                           const apiBaseUrl = process.env.API_BASE_URL
+                           imageUrl = `${apiBaseUrl}${user.image}`;
+                           const base64Image = await urlToBase64(imageUrl);
+                           if (base64Image && typeof base64Image === 'string') {
+                              faceData = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
+                           }
+                        }
+                     } else {
+                        const apiBaseUrl = process.env.API_BASE_URL
+                        imageUrl = `${apiBaseUrl}${user.image}`;
+                        const base64Image = await urlToBase64(imageUrl);
+                        if (base64Image && typeof base64Image === 'string') {
+                           faceData = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
+                        }
+                     }
+                  } catch (imageError: any) {
+                     console.warn(`[UserService] ⚠️ Failed to process image for user ${user.emp_Id}:`, imageError.message);
+                  }
+               }
+
+               const trimmedEmpId = user.emp_Id ? user.emp_Id.trim() : '';
+               if (!trimmedEmpId) {
+                  results.failed++;
+                  results.processed++;
+                  results.errors.push({
+                     userId: user.Id,
+                     emp_Id: user.emp_Id,
+                     error: 'Employee ID is empty or invalid'
+                  });
+                  continue;
+               }
+
+               // Prepare name parts
+               const nameParts = user.emp__eng_name ? user.emp__eng_name.trim().split(' ') : [];
+               const personGivenName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : '';
+               const personFamilyName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : user.emp__eng_name || '';
+
+               // If name is empty, use emp_Id as fallback
+               const finalPersonGivenName = personGivenName || trimmedEmpId;
+               const finalPersonFamilyName = personFamilyName || trimmedEmpId;
+
+               const hikVisionPayload = {
+                  personCode: trimmedEmpId,
+                  personFamilyName: finalPersonFamilyName,
+                  personGivenName: finalPersonGivenName,
+                  gender: user.gender === "M" ? 1 : 2,
+                  orgIndexCode: "2",
+                  faces: faceData ? [{ faceData: faceData }] : []
+               };
+
+               const hikVisionResponse = await UserService.callHikVisionAPI(
+                  UserService.HIK_CONFIG.baseURL,
+                  '/artemis/api/resource/v1/person/single/add',
+                  UserService.HIK_CONFIG.appKey,
+                  UserService.HIK_CONFIG.appSecret,
+                  hikVisionPayload
+               );
+
+               if (hikVisionResponse && hikVisionResponse.code === '0' && hikVisionResponse.data) {
+                  await db.users.update({
+                     where: { Id: user.Id },
+                     data: { unique_id: hikVisionResponse.data }
+                  });
+
+                  try {
+                     const faceAdditionPayload = {
+                        personIndexCode: hikVisionResponse.data,
+                        faceGroupIndexCode: "5"
+                     };
+
+                     await UserService.callHikVisionAPI(
+                        UserService.HIK_CONFIG.baseURL,
+                        '/artemis/api/frs/v1/face/single/addition',
+                        UserService.HIK_CONFIG.appKey,
+                        UserService.HIK_CONFIG.appSecret,
+                        faceAdditionPayload
+                     );
+                  } catch (faceAdditionError: any) {
+                     console.warn(`[UserService] ⚠️ Failed to add face to HikVision group for user ${user.emp_Id}:`, faceAdditionError.message);
+                  }
+
+                  results.success++;
+                  results.processed++;
+                  console.log(`[UserService] ✅ Successfully uploaded user ${user.emp_Id} to HikVision`);
+               } else {
+                  const errorMsg = hikVisionResponse?.msg || 'Unknown error';
+                  
+                  // If person already exists, try to search and update unique_id
+                  if (errorMsg.includes('already exists') || errorMsg.includes('person code already exists')) {
+                     try {
+                        const searchPayload = {
+                           pageNo: 1,
+                           pageSize: 1,
+                           personCode: trimmedEmpId
+                        };
+                        
+                        const searchResponse = await UserService.callHikVisionAPI(
+                           UserService.HIK_CONFIG.baseURL,
+                           '/artemis/api/resource/v1/person/advance/personList',
+                           UserService.HIK_CONFIG.appKey,
+                           UserService.HIK_CONFIG.appSecret,
+                           searchPayload
+                        );
+
+                        if (searchResponse && searchResponse.code === '0' && searchResponse.data) {
+                           const personList = searchResponse.data.list || [];
+                           if (personList.length > 0) {
+                              const existingPerson = personList.find((p: any) => p.personCode === trimmedEmpId) || personList[0];
+                              const existingPersonId = existingPerson.personIndexCode || existingPerson.personId;
+                              
+                              if (existingPersonId) {
+                                 await db.users.update({
+                                    where: { Id: user.Id },
+                                    data: { unique_id: existingPersonId }
+                                 });
+                                 results.success++;
+                                 results.processed++;
+                                 console.log(`[UserService] ✅ Found existing person in HikVision and updated unique_id for user ${user.emp_Id}`);
+                                 continue;
+                              }
+                           }
+                        }
+                     } catch (searchError: any) {
+                        console.warn(`[UserService] ⚠️ Failed to search for existing person ${user.emp_Id}:`, searchError.message);
+                     }
+                  }
+                  
+                  results.failed++;
+                  results.processed++;
+                  results.errors.push({
+                     userId: user.Id,
+                     emp_Id: trimmedEmpId,
+                     error: `HIK Vision API error: ${errorMsg}`
+                  });
+                  console.warn(`[UserService] ❌ Failed to upload user ${user.emp_Id}: ${errorMsg}`);
+               }
+            } catch (error: any) {
+               results.failed++;
+               results.processed++;
+               results.errors.push({
+                  userId: user.Id,
+                  emp_Id: user.emp_Id,
+                  error: error.message || 'Unknown error'
+               });
+               console.error(`[UserService] ❌ Error processing user ${user.emp_Id}:`, error.message);
+            }
+         }
+
+         console.log('[UserService] ✅ Upload process completed!');
+         console.log('[UserService] 📈 Summary:', {
+            total: results.total,
+            processed: results.processed,
+            success: results.success,
+            failed: results.failed,
+            successRate: results.total > 0 ? `${((results.success / results.total) * 100).toFixed(2)}%` : 'N/A'
+         });
+
+         return {
+            success: results.failed === 0,
+            message: `Processed ${results.processed} users. ${results.success} successful, ${results.failed} failed.`,
+            data: results
+         };
+
+      } catch (error: any) {
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         
+         throw new HttpException(
+            STATUS.INTERNAL_SERVER_ERROR,
+            `Failed to upload users to HikVision: ${error.message}`
+         );
+      }
+   }
 }
 
 export default UserService;
