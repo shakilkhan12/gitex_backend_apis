@@ -234,12 +234,15 @@ class UserService {
       department?: string;
       employeeId?: string;
       aiLogin?: string;
+      all?: boolean; // If true, skip pagination and return all users
    } = {}) => {
 
       try {
-         const page = filters?.page || 1;
-         const limit = filters?.limit || 10;
-         const skip = (page - 1) * limit;
+         // If all=true, skip pagination
+         const skipPagination = filters?.all === true;
+         const page = skipPagination ? 1 : (filters?.page || 1);
+         const limit = skipPagination ? undefined : (filters?.limit || 10);
+         const skip = skipPagination ? undefined : (page - 1) * (limit || 10);
 
          const whereClause: any = {
             user_Id: {
@@ -328,27 +331,45 @@ class UserService {
                   offices_footfall_analysis: false
                },
                orderBy: orderByClause,
-               skip,
-               take: limit
+               // Only apply pagination if not fetching all
+               ...(skipPagination ? {} : { skip, take: limit })
             }),
             db.users.count({
                where: whereClause
             })
          ]);
 
-         const totalPages = Math.ceil(totalCount / limit);
+         const imageFields = ['image'];
+         const formattedUsers = formatImageUrlsInArray(users, imageFields);
+
+         // If fetching all, return without pagination metadata
+         if (skipPagination) {
+            return {
+               success: true,
+               data: formattedUsers,
+               pagination: {
+                  currentPage: 1,
+                  totalPages: 1,
+                  totalCount,
+                  limit: totalCount,
+                  hasNextPage: false,
+                  hasPreviousPage: false,
+                  nextPage: null,
+                  previousPage: null
+               }
+            };
+         }
+
+         const actualLimit = limit || 10;
+         const totalPages = Math.ceil(totalCount / actualLimit);
          const hasNextPage = page < totalPages;
          const hasPreviousPage = page > 1;
-
-      const imageFields = ['image'];
-      const formattedUsers = formatImageUrlsInArray(users, imageFields);
-
 
          const paginationData = {
             currentPage: page,
             totalPages,
             totalCount,
-            limit: limit,
+            limit: actualLimit,
             hasNextPage,
             hasPreviousPage,
             nextPage: hasNextPage ? page + 1 : null,
