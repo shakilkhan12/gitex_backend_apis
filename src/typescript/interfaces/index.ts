@@ -210,12 +210,21 @@ export interface ParkZone extends ParkCombine {
   zone_english_name: string;
   zone_arabic_name: string;
   zone_Id: string;
-  camera_Id:number,
   device_ip: string;
   web_api: string;
   status: string;
   latitude: string;
   longitude: string;
+}
+
+export interface IrrigationSection {
+  zone_Id: number;
+  working_time: string;
+}
+
+export interface LandscapingSection {
+  area_name: string;
+  working_time: string;
 }
 
 export interface ParkCamera extends ParkCombine, SettingTypes {
@@ -227,6 +236,9 @@ export interface ParkCamera extends ParkCombine, SettingTypes {
   last_active_date: Date;
   last_active_time: string;
   status: boolean | string;
+  is_ptz_camera?: boolean;
+  irrigation_sections?: IrrigationSection[];
+  landscaping_sections?: LandscapingSection[];
   attendance?: boolean | undefined;
   footfall?: boolean | undefined;
   behaviour?: boolean | undefined;

@@ -540,6 +540,268 @@ class LandscapingService {
       }
    }
 
+   // New method to monitor landscaping sections based on working_time
+   public static monitorLandscapingSectionsService = async (workingTime: string) => {
+      const startTime = Date.now();
+      console.log(`[LandscapingService] 🌳 Starting landscaping monitoring for working time: ${workingTime}`);
+      
+      try {
+         const appKey = this.HIK_CONFIG.appKey;
+         const secretKey = this.HIK_CONFIG.appSecret;
+
+         console.log(`[LandscapingService] 📋 Fetching landscaping sections for time ${workingTime}...`);
+         // Get all landscaping sections with the specified working_time
+         const landscapingSections = await db.cameras_landscaping_section.findMany({
+            where: {
+               working_time: workingTime,
+               park_cameras: {
+                  status: true 
+               }
+            },
+            include: {
+               park_cameras: {
+                  select: {
+                     Id: true,
+                     camera_Id: true,
+                     park_Id: true,
+                     status: true,
+                     parks: {
+                        select: {
+                           Id: true,
+                           park_Id: true,
+                           park_english_name: true,
+                           park_arabic_name: true
+                        }
+                     }
+                  }
+               }
+            }
+         });
+
+         console.log(`[LandscapingService] 📊 Found ${landscapingSections.length} landscaping sections for time ${workingTime}`);
+
+         if (landscapingSections.length === 0) {
+            console.log(`[LandscapingService] ⚠️ No landscaping sections found for time ${workingTime}`);
+            return {
+               success: true,
+               message: `No landscaping sections found for time ${workingTime}`,
+               results: []
+            };
+         }
+
+         const results = [];
+         let processedCount = 0;
+         let successCount = 0;
+         let failureCount = 0;
+         let needsCuttingCount = 0;
+
+         for (const section of landscapingSections) {
+            processedCount++;
+            console.log(`[LandscapingService] 🔄 Processing section ${processedCount}/${landscapingSections.length} (Section ID: ${section.id}, Area: ${section.area_name || 'N/A'})`);
+            
+            try {
+               if (!section.park_cameras || !section.park_cameras.camera_Id) {
+                  console.log(`[LandscapingService] ❌ Section ${section.id}: Camera not found`);
+                  results.push({
+                     sectionId: section.id,
+                     areaName: section.area_name,
+                     success: false,
+                     error: "Camera not found for this section"
+                  });
+                  failureCount++;
+                  continue;
+               }
+
+               const camera = section.park_cameras;
+               if (!camera.camera_Id) {
+                  console.log(`[LandscapingService] ❌ Section ${section.id}: Camera ID not found`);
+                  results.push({
+                     sectionId: section.id,
+                     areaName: section.area_name,
+                     success: false,
+                     error: "Camera ID not found"
+                  });
+                  failureCount++;
+                  continue;
+               }
+
+               // Skip if camera is not active
+               if (camera.status === false || camera.status === null) {
+                  console.log(`[LandscapingService] ⚠️ Section ${section.id}: Camera ${camera.camera_Id} is not active, skipping`);
+                  results.push({
+                     sectionId: section.id,
+                     areaName: section.area_name,
+                     cameraId: camera.camera_Id,
+                     success: false,
+                     error: "Camera is not active"
+                  });
+                  failureCount++;
+                  continue;
+               }
+
+               console.log(`[LandscapingService] 📷 Section ${section.id}: Capturing image from camera ${camera.camera_Id} (Area: ${section.area_name || 'N/A'})...`);
+               const base64Image = await this.captureCameraImage(camera.camera_Id, appKey, secretKey);
+               
+               if (!base64Image) {
+                  console.log(`[LandscapingService] ❌ Section ${section.id}: Failed to capture image from camera ${camera.camera_Id}`);
+                  results.push({
+                     sectionId: section.id,
+                     areaName: section.area_name,
+                     cameraId: camera.camera_Id,
+                     success: false,
+                     error: "Failed to capture image"
+                  });
+                  failureCount++;
+                  continue;
+               }
+               console.log(`[LandscapingService] ✅ Section ${section.id}: Image captured successfully`);
+
+               const eventId = `landscaping_${section.id}_${Date.now()}`;
+               console.log(`[LandscapingService] 💾 Section ${section.id}: Saving image locally...`);
+               const imageUrl = await this.saveImageLocally(base64Image, eventId);
+               
+               if (!imageUrl) {
+                  console.log(`[LandscapingService] ❌ Section ${section.id}: Failed to save image locally`);
+                  results.push({
+                     sectionId: section.id,
+                     areaName: section.area_name,
+                     cameraId: camera.camera_Id,
+                     success: false,
+                     error: "Failed to save image"
+                  });
+                  failureCount++;
+                  continue;
+               }
+               console.log(`[LandscapingService] ✅ Section ${section.id}: Image saved at ${imageUrl}`);
+
+               console.log(`[LandscapingService] 🤖 Section ${section.id}: Analyzing image with Gemini...`);
+               const geminiResponse = await this.analyzeImageWithGemini(imageUrl);
+               
+               if (!geminiResponse) {
+                  console.log(`[LandscapingService] ❌ Section ${section.id}: Failed to analyze image with Gemini`);
+                  results.push({
+                     sectionId: section.id,
+                     areaName: section.area_name,
+                     cameraId: camera.camera_Id,
+                     success: false,
+                     error: "Failed to analyze image"
+                  });
+                  failureCount++;
+                  continue;
+               }
+               console.log(`[LandscapingService] ✅ Section ${section.id}: Image analyzed successfully`);
+
+               console.log(`[LandscapingService] 💾 Section ${section.id}: Creating grass monitoring record...`);
+               try {
+                  const landscapingRecord = await this.createGrassMonitoringRecord({
+                     parkId: camera.park_Id || undefined,
+                     cameraId: camera.camera_Id!,
+                     imageUrl: imageUrl,
+                     geminiResponse: geminiResponse
+                  });
+
+                  if (landscapingRecord.id) {
+                     console.log(`[LandscapingService] ✅ Section ${section.id}: Record stored - grass needs cutting (ID: ${landscapingRecord.id})`);
+                     needsCuttingCount++;
+                     successCount++;
+                     results.push({
+                        sectionId: section.id,
+                        areaName: section.area_name,
+                        cameraId: camera.camera_Id,
+                        parkId: camera.park_Id,
+                        success: true,
+                        landscapingId: landscapingRecord.id,
+                        message: "Record stored - grass needs cutting",
+                        needs_cutting: true
+                     });
+                  } else {
+                     console.log(`[LandscapingService] ℹ️ Section ${section.id}: Record not stored - grass does not need cutting`);
+                     successCount++;
+                     results.push({
+                        sectionId: section.id,
+                        areaName: section.area_name,
+                        cameraId: camera.camera_Id,
+                        parkId: camera.park_Id,
+                        success: true,
+                        message: landscapingRecord.message || "Record not stored - grass does not need cutting",
+                        needs_cutting: false,
+                        estimated_height: landscapingRecord.estimated_height
+                     });
+                  }
+               } catch (dbError: any) {
+                  console.error(`[LandscapingService] ❌ Section ${section.id}: Database record creation failed:`, dbError.message);
+                  failureCount++;
+                  results.push({
+                     sectionId: section.id,
+                     areaName: section.area_name,
+                     cameraId: camera.camera_Id,
+                     parkId: camera.park_Id,
+                     success: false,
+                     error: "Database record creation failed",
+                     message: dbError.message
+                  });
+               }
+
+            } catch (error: any) {
+               console.error(`[LandscapingService] ❌ Section ${section.id}: Unexpected error:`, error.message);
+               failureCount++;
+               results.push({
+                  sectionId: section.id,
+                  areaName: section.area_name,
+                  success: false,
+                  error: error.message
+               });
+            }
+         }
+
+         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+         console.log(`[LandscapingService] 📊 Summary for ${workingTime}:`);
+         console.log(`[LandscapingService]   - Total sections: ${landscapingSections.length}`);
+         console.log(`[LandscapingService]   - Processed: ${processedCount}`);
+         console.log(`[LandscapingService]   - Successful: ${successCount}`);
+         console.log(`[LandscapingService]   - Failed: ${failureCount}`);
+         console.log(`[LandscapingService]   - Needs cutting: ${needsCuttingCount}`);
+         console.log(`[LandscapingService]   - Duration: ${duration}s`);
+         console.log(`[LandscapingService] ✅ Completed landscaping monitoring for ${workingTime}`);
+
+         return {
+            success: true,
+            message: `Processed ${results.length} landscaping sections for time ${workingTime}`,
+            workingTime: workingTime,
+            results: results
+         };
+
+      } catch (error: any) {
+         throw new HttpException(STATUS.BAD_REQUEST, `Failed to monitor landscaping sections for time ${workingTime}: ${error.message}`);
+      }
+   }
+
+   // Get all unique working times from landscaping sections (only for active cameras)
+   public static getAllLandscapingWorkingTimes = async (): Promise<string[]> => {
+      try {
+         const sections = await db.cameras_landscaping_section.findMany({
+            where: {
+               working_time: {
+                  not: null
+               },
+               park_cameras: {
+                  status: true // Only active cameras
+               }
+            },
+            select: {
+               working_time: true
+            },
+            distinct: ['working_time']
+         });
+
+         return sections
+            .map(s => s.working_time)
+            .filter((time): time is string => time !== null && time !== undefined && time.trim() !== '');
+      } catch (error: any) {
+         throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch landscaping working times");
+      }
+   }
+
 
    private static async fetchSecretFromAPI(): Promise<string> {
       const maxRetries = 3;

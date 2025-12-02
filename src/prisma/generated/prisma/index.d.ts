@@ -164,6 +164,16 @@ export type landscaping = $Result.DefaultSelection<Prisma.$landscapingPayload>
  */
 export type landscaping_history = $Result.DefaultSelection<Prisma.$landscaping_historyPayload>
 /**
+ * Model cameras_irrigation_section
+ * 
+ */
+export type cameras_irrigation_section = $Result.DefaultSelection<Prisma.$cameras_irrigation_sectionPayload>
+/**
+ * Model cameras_landscaping_section
+ * 
+ */
+export type cameras_landscaping_section = $Result.DefaultSelection<Prisma.$cameras_landscaping_sectionPayload>
+/**
  * Model qms_history
  * 
  */
@@ -627,6 +637,26 @@ export class PrismaClient<
   get landscaping_history(): Prisma.landscaping_historyDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.cameras_irrigation_section`: Exposes CRUD operations for the **cameras_irrigation_section** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Cameras_irrigation_sections
+    * const cameras_irrigation_sections = await prisma.cameras_irrigation_section.findMany()
+    * ```
+    */
+  get cameras_irrigation_section(): Prisma.cameras_irrigation_sectionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cameras_landscaping_section`: Exposes CRUD operations for the **cameras_landscaping_section** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Cameras_landscaping_sections
+    * const cameras_landscaping_sections = await prisma.cameras_landscaping_section.findMany()
+    * ```
+    */
+  get cameras_landscaping_section(): Prisma.cameras_landscaping_sectionDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.qms_history`: Exposes CRUD operations for the **qms_history** model.
     * Example usage:
     * ```ts
@@ -713,8 +743,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.16.2
-   * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+   * Prisma Client JS version: 6.19.0
+   * Query Engine version: 2ba551f319ab1df4bc874a89965d8b3641056773
    */
   export type PrismaVersion = {
     client: string
@@ -727,6 +757,7 @@ export namespace Prisma {
    */
 
 
+  export import Bytes = runtime.Bytes
   export import JsonObject = runtime.JsonObject
   export import JsonArray = runtime.JsonArray
   export import JsonValue = runtime.JsonValue
@@ -1125,6 +1156,8 @@ export namespace Prisma {
     FAQ: 'FAQ',
     landscaping: 'landscaping',
     landscaping_history: 'landscaping_history',
+    cameras_irrigation_section: 'cameras_irrigation_section',
+    cameras_landscaping_section: 'cameras_landscaping_section',
     qms_history: 'qms_history',
     testing_modules: 'testing_modules',
     notications: 'notications'
@@ -1146,7 +1179,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "access_secret" | "live_stream_favourites" | "office_streams" | "offices" | "offices_attendance" | "offices_cameras" | "offices_sentiment_analysis" | "park_cameras" | "park_streams" | "park_zones" | "parks_zones_job_history" | "parks" | "parks_attendance" | "parks_behaviour_alerts" | "parks_intrusion_detection" | "parks_irrigation_job_history" | "parks_litter_detection" | "ticket_details_table" | "parks_sentiment_analysis" | "parks_smoking_detection" | "intranet_posting_history" | "users" | "users_permissions" | "users_roles" | "parks_footfall_analysis" | "offices_footfall_analysis" | "termsPrivacy" | "fAQ" | "landscaping" | "landscaping_history" | "qms_history" | "testing_modules" | "notications"
+      modelProps: "access_secret" | "live_stream_favourites" | "office_streams" | "offices" | "offices_attendance" | "offices_cameras" | "offices_sentiment_analysis" | "park_cameras" | "park_streams" | "park_zones" | "parks_zones_job_history" | "parks" | "parks_attendance" | "parks_behaviour_alerts" | "parks_intrusion_detection" | "parks_irrigation_job_history" | "parks_litter_detection" | "ticket_details_table" | "parks_sentiment_analysis" | "parks_smoking_detection" | "intranet_posting_history" | "users" | "users_permissions" | "users_roles" | "parks_footfall_analysis" | "offices_footfall_analysis" | "termsPrivacy" | "fAQ" | "landscaping" | "landscaping_history" | "cameras_irrigation_section" | "cameras_landscaping_section" | "qms_history" | "testing_modules" | "notications"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3130,6 +3163,138 @@ export namespace Prisma {
           }
         }
       }
+      cameras_irrigation_section: {
+        payload: Prisma.$cameras_irrigation_sectionPayload<ExtArgs>
+        fields: Prisma.cameras_irrigation_sectionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.cameras_irrigation_sectionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_irrigation_sectionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.cameras_irrigation_sectionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_irrigation_sectionPayload>
+          }
+          findFirst: {
+            args: Prisma.cameras_irrigation_sectionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_irrigation_sectionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.cameras_irrigation_sectionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_irrigation_sectionPayload>
+          }
+          findMany: {
+            args: Prisma.cameras_irrigation_sectionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_irrigation_sectionPayload>[]
+          }
+          create: {
+            args: Prisma.cameras_irrigation_sectionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_irrigation_sectionPayload>
+          }
+          createMany: {
+            args: Prisma.cameras_irrigation_sectionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.cameras_irrigation_sectionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_irrigation_sectionPayload>
+          }
+          update: {
+            args: Prisma.cameras_irrigation_sectionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_irrigation_sectionPayload>
+          }
+          deleteMany: {
+            args: Prisma.cameras_irrigation_sectionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.cameras_irrigation_sectionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.cameras_irrigation_sectionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_irrigation_sectionPayload>
+          }
+          aggregate: {
+            args: Prisma.Cameras_irrigation_sectionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCameras_irrigation_section>
+          }
+          groupBy: {
+            args: Prisma.cameras_irrigation_sectionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Cameras_irrigation_sectionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.cameras_irrigation_sectionCountArgs<ExtArgs>
+            result: $Utils.Optional<Cameras_irrigation_sectionCountAggregateOutputType> | number
+          }
+        }
+      }
+      cameras_landscaping_section: {
+        payload: Prisma.$cameras_landscaping_sectionPayload<ExtArgs>
+        fields: Prisma.cameras_landscaping_sectionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.cameras_landscaping_sectionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_landscaping_sectionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.cameras_landscaping_sectionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_landscaping_sectionPayload>
+          }
+          findFirst: {
+            args: Prisma.cameras_landscaping_sectionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_landscaping_sectionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.cameras_landscaping_sectionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_landscaping_sectionPayload>
+          }
+          findMany: {
+            args: Prisma.cameras_landscaping_sectionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_landscaping_sectionPayload>[]
+          }
+          create: {
+            args: Prisma.cameras_landscaping_sectionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_landscaping_sectionPayload>
+          }
+          createMany: {
+            args: Prisma.cameras_landscaping_sectionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.cameras_landscaping_sectionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_landscaping_sectionPayload>
+          }
+          update: {
+            args: Prisma.cameras_landscaping_sectionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_landscaping_sectionPayload>
+          }
+          deleteMany: {
+            args: Prisma.cameras_landscaping_sectionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.cameras_landscaping_sectionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.cameras_landscaping_sectionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cameras_landscaping_sectionPayload>
+          }
+          aggregate: {
+            args: Prisma.Cameras_landscaping_sectionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCameras_landscaping_section>
+          }
+          groupBy: {
+            args: Prisma.cameras_landscaping_sectionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Cameras_landscaping_sectionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.cameras_landscaping_sectionCountArgs<ExtArgs>
+            result: $Utils.Optional<Cameras_landscaping_sectionCountAggregateOutputType> | number
+          }
+        }
+      }
       qms_history: {
         payload: Prisma.$qms_historyPayload<ExtArgs>
         fields: Prisma.qms_historyFieldRefs
@@ -3454,6 +3619,8 @@ export namespace Prisma {
     fAQ?: FAQOmit
     landscaping?: landscapingOmit
     landscaping_history?: landscaping_historyOmit
+    cameras_irrigation_section?: cameras_irrigation_sectionOmit
+    cameras_landscaping_section?: cameras_landscaping_sectionOmit
     qms_history?: qms_historyOmit
     testing_modules?: testing_modulesOmit
     notications?: noticationsOmit
@@ -3661,7 +3828,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras: number
     parks_smoking_detection: number
     parks_zones_job_history: number
-    park_zones: number
+    cameras_irrigation_section: number
+    cameras_landscaping_section: number
   }
 
   export type Park_camerasCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3673,7 +3841,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: boolean | Park_camerasCountOutputTypeCountParks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_camerasArgs
     parks_smoking_detection?: boolean | Park_camerasCountOutputTypeCountParks_smoking_detectionArgs
     parks_zones_job_history?: boolean | Park_camerasCountOutputTypeCountParks_zones_job_historyArgs
-    park_zones?: boolean | Park_camerasCountOutputTypeCountPark_zonesArgs
+    cameras_irrigation_section?: boolean | Park_camerasCountOutputTypeCountCameras_irrigation_sectionArgs
+    cameras_landscaping_section?: boolean | Park_camerasCountOutputTypeCountCameras_landscaping_sectionArgs
   }
 
   // Custom InputTypes
@@ -3746,8 +3915,15 @@ export namespace Prisma {
   /**
    * Park_camerasCountOutputType without action
    */
-  export type Park_camerasCountOutputTypeCountPark_zonesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: park_zonesWhereInput
+  export type Park_camerasCountOutputTypeCountCameras_irrigation_sectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: cameras_irrigation_sectionWhereInput
+  }
+
+  /**
+   * Park_camerasCountOutputType without action
+   */
+  export type Park_camerasCountOutputTypeCountCameras_landscaping_sectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: cameras_landscaping_sectionWhereInput
   }
 
 
@@ -3758,11 +3934,13 @@ export namespace Prisma {
   export type Park_zonesCountOutputType = {
     parks_irrigation_job_history: number
     parks_zones_job_history: number
+    cameras_irrigation_section: number
   }
 
   export type Park_zonesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     parks_irrigation_job_history?: boolean | Park_zonesCountOutputTypeCountParks_irrigation_job_historyArgs
     parks_zones_job_history?: boolean | Park_zonesCountOutputTypeCountParks_zones_job_historyArgs
+    cameras_irrigation_section?: boolean | Park_zonesCountOutputTypeCountCameras_irrigation_sectionArgs
   }
 
   // Custom InputTypes
@@ -3788,6 +3966,13 @@ export namespace Prisma {
    */
   export type Park_zonesCountOutputTypeCountParks_zones_job_historyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: parks_zones_job_historyWhereInput
+  }
+
+  /**
+   * Park_zonesCountOutputType without action
+   */
+  export type Park_zonesCountOutputTypeCountCameras_irrigation_sectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: cameras_irrigation_sectionWhereInput
   }
 
 
@@ -11854,6 +12039,7 @@ export namespace Prisma {
     last_active_date: Date | null
     last_active_time: Date | null
     status: boolean | null
+    is_ptz_camera: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11871,6 +12057,7 @@ export namespace Prisma {
     last_active_date: Date | null
     last_active_time: Date | null
     status: boolean | null
+    is_ptz_camera: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11888,6 +12075,7 @@ export namespace Prisma {
     last_active_date: number
     last_active_time: number
     status: number
+    is_ptz_camera: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -11921,6 +12109,7 @@ export namespace Prisma {
     last_active_date?: true
     last_active_time?: true
     status?: true
+    is_ptz_camera?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11938,6 +12127,7 @@ export namespace Prisma {
     last_active_date?: true
     last_active_time?: true
     status?: true
+    is_ptz_camera?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11955,6 +12145,7 @@ export namespace Prisma {
     last_active_date?: true
     last_active_time?: true
     status?: true
+    is_ptz_camera?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -12059,6 +12250,7 @@ export namespace Prisma {
     last_active_date: Date | null
     last_active_time: Date | null
     status: boolean | null
+    is_ptz_camera: boolean | null
     createdAt: Date | null
     updatedAt: Date
     _count: Park_camerasCountAggregateOutputType | null
@@ -12095,6 +12287,7 @@ export namespace Prisma {
     last_active_date?: boolean
     last_active_time?: boolean
     status?: boolean
+    is_ptz_camera?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     live_stream_favourites?: boolean | park_cameras$live_stream_favouritesArgs<ExtArgs>
@@ -12106,7 +12299,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: boolean | park_cameras$parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_camerasArgs<ExtArgs>
     parks_smoking_detection?: boolean | park_cameras$parks_smoking_detectionArgs<ExtArgs>
     parks_zones_job_history?: boolean | park_cameras$parks_zones_job_historyArgs<ExtArgs>
-    park_zones?: boolean | park_cameras$park_zonesArgs<ExtArgs>
+    cameras_irrigation_section?: boolean | park_cameras$cameras_irrigation_sectionArgs<ExtArgs>
+    cameras_landscaping_section?: boolean | park_cameras$cameras_landscaping_sectionArgs<ExtArgs>
     _count?: boolean | Park_camerasCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["park_cameras"]>
 
@@ -12125,11 +12319,12 @@ export namespace Prisma {
     last_active_date?: boolean
     last_active_time?: boolean
     status?: boolean
+    is_ptz_camera?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type park_camerasOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "camera_Id" | "camera_english_name" | "camera_arabic_name" | "latitude" | "longitude" | "ip_address" | "is_favorite" | "last_active_date" | "last_active_time" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["park_cameras"]>
+  export type park_camerasOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "camera_Id" | "camera_english_name" | "camera_arabic_name" | "latitude" | "longitude" | "ip_address" | "is_favorite" | "last_active_date" | "last_active_time" | "status" | "is_ptz_camera" | "createdAt" | "updatedAt", ExtArgs["result"]["park_cameras"]>
   export type park_camerasInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     live_stream_favourites?: boolean | park_cameras$live_stream_favouritesArgs<ExtArgs>
     parks?: boolean | park_cameras$parksArgs<ExtArgs>
@@ -12140,7 +12335,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: boolean | park_cameras$parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_camerasArgs<ExtArgs>
     parks_smoking_detection?: boolean | park_cameras$parks_smoking_detectionArgs<ExtArgs>
     parks_zones_job_history?: boolean | park_cameras$parks_zones_job_historyArgs<ExtArgs>
-    park_zones?: boolean | park_cameras$park_zonesArgs<ExtArgs>
+    cameras_irrigation_section?: boolean | park_cameras$cameras_irrigation_sectionArgs<ExtArgs>
+    cameras_landscaping_section?: boolean | park_cameras$cameras_landscaping_sectionArgs<ExtArgs>
     _count?: boolean | Park_camerasCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -12156,7 +12352,8 @@ export namespace Prisma {
       parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras: Prisma.$parks_sentiment_analysisPayload<ExtArgs>[]
       parks_smoking_detection: Prisma.$parks_smoking_detectionPayload<ExtArgs>[]
       parks_zones_job_history: Prisma.$parks_zones_job_historyPayload<ExtArgs>[]
-      park_zones: Prisma.$park_zonesPayload<ExtArgs>[]
+      cameras_irrigation_section: Prisma.$cameras_irrigation_sectionPayload<ExtArgs>[]
+      cameras_landscaping_section: Prisma.$cameras_landscaping_sectionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       Id: number
@@ -12171,6 +12368,7 @@ export namespace Prisma {
       last_active_date: Date | null
       last_active_time: Date | null
       status: boolean | null
+      is_ptz_camera: boolean | null
       createdAt: Date | null
       updatedAt: Date
     }, ExtArgs["result"]["park_cameras"]>
@@ -12522,7 +12720,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras<T extends park_cameras$parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_camerasArgs<ExtArgs> = {}>(args?: Subset<T, park_cameras$parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_camerasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_sentiment_analysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     parks_smoking_detection<T extends park_cameras$parks_smoking_detectionArgs<ExtArgs> = {}>(args?: Subset<T, park_cameras$parks_smoking_detectionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_smoking_detectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     parks_zones_job_history<T extends park_cameras$parks_zones_job_historyArgs<ExtArgs> = {}>(args?: Subset<T, park_cameras$parks_zones_job_historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_zones_job_historyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    park_zones<T extends park_cameras$park_zonesArgs<ExtArgs> = {}>(args?: Subset<T, park_cameras$park_zonesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$park_zonesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cameras_irrigation_section<T extends park_cameras$cameras_irrigation_sectionArgs<ExtArgs> = {}>(args?: Subset<T, park_cameras$cameras_irrigation_sectionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cameras_landscaping_section<T extends park_cameras$cameras_landscaping_sectionArgs<ExtArgs> = {}>(args?: Subset<T, park_cameras$cameras_landscaping_sectionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12564,6 +12763,7 @@ export namespace Prisma {
     readonly last_active_date: FieldRef<"park_cameras", 'DateTime'>
     readonly last_active_time: FieldRef<"park_cameras", 'DateTime'>
     readonly status: FieldRef<"park_cameras", 'Boolean'>
+    readonly is_ptz_camera: FieldRef<"park_cameras", 'Boolean'>
     readonly createdAt: FieldRef<"park_cameras", 'DateTime'>
     readonly updatedAt: FieldRef<"park_cameras", 'DateTime'>
   }
@@ -13120,27 +13320,51 @@ export namespace Prisma {
   }
 
   /**
-   * park_cameras.park_zones
+   * park_cameras.cameras_irrigation_section
    */
-  export type park_cameras$park_zonesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type park_cameras$cameras_irrigation_sectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the park_zones
+     * Select specific fields to fetch from the cameras_irrigation_section
      */
-    select?: park_zonesSelect<ExtArgs> | null
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the park_zones
+     * Omit specific fields from the cameras_irrigation_section
      */
-    omit?: park_zonesOmit<ExtArgs> | null
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: park_zonesInclude<ExtArgs> | null
-    where?: park_zonesWhereInput
-    orderBy?: park_zonesOrderByWithRelationInput | park_zonesOrderByWithRelationInput[]
-    cursor?: park_zonesWhereUniqueInput
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    where?: cameras_irrigation_sectionWhereInput
+    orderBy?: cameras_irrigation_sectionOrderByWithRelationInput | cameras_irrigation_sectionOrderByWithRelationInput[]
+    cursor?: cameras_irrigation_sectionWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: Park_zonesScalarFieldEnum | Park_zonesScalarFieldEnum[]
+    distinct?: Cameras_irrigation_sectionScalarFieldEnum | Cameras_irrigation_sectionScalarFieldEnum[]
+  }
+
+  /**
+   * park_cameras.cameras_landscaping_section
+   */
+  export type park_cameras$cameras_landscaping_sectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    where?: cameras_landscaping_sectionWhereInput
+    orderBy?: cameras_landscaping_sectionOrderByWithRelationInput | cameras_landscaping_sectionOrderByWithRelationInput[]
+    cursor?: cameras_landscaping_sectionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Cameras_landscaping_sectionScalarFieldEnum | Cameras_landscaping_sectionScalarFieldEnum[]
   }
 
   /**
@@ -14198,7 +14422,6 @@ export namespace Prisma {
     park_Id: number | null
     latitude: Decimal | null
     longitude: Decimal | null
-    camera_Id: number | null
   }
 
   export type Park_zonesSumAggregateOutputType = {
@@ -14206,7 +14429,6 @@ export namespace Prisma {
     park_Id: number | null
     latitude: Decimal | null
     longitude: Decimal | null
-    camera_Id: number | null
   }
 
   export type Park_zonesMinAggregateOutputType = {
@@ -14219,7 +14441,6 @@ export namespace Prisma {
     longitude: Decimal | null
     device_ip: string | null
     web_api: string | null
-    camera_Id: number | null
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -14235,7 +14456,6 @@ export namespace Prisma {
     longitude: Decimal | null
     device_ip: string | null
     web_api: string | null
-    camera_Id: number | null
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -14251,7 +14471,6 @@ export namespace Prisma {
     longitude: number
     device_ip: number
     web_api: number
-    camera_Id: number
     status: number
     createdAt: number
     updatedAt: number
@@ -14264,7 +14483,6 @@ export namespace Prisma {
     park_Id?: true
     latitude?: true
     longitude?: true
-    camera_Id?: true
   }
 
   export type Park_zonesSumAggregateInputType = {
@@ -14272,7 +14490,6 @@ export namespace Prisma {
     park_Id?: true
     latitude?: true
     longitude?: true
-    camera_Id?: true
   }
 
   export type Park_zonesMinAggregateInputType = {
@@ -14285,7 +14502,6 @@ export namespace Prisma {
     longitude?: true
     device_ip?: true
     web_api?: true
-    camera_Id?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -14301,7 +14517,6 @@ export namespace Prisma {
     longitude?: true
     device_ip?: true
     web_api?: true
-    camera_Id?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -14317,7 +14532,6 @@ export namespace Prisma {
     longitude?: true
     device_ip?: true
     web_api?: true
-    camera_Id?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -14420,7 +14634,6 @@ export namespace Prisma {
     longitude: Decimal | null
     device_ip: string | null
     web_api: string | null
-    camera_Id: number | null
     status: string | null
     createdAt: Date | null
     updatedAt: Date
@@ -14455,14 +14668,13 @@ export namespace Prisma {
     longitude?: boolean
     device_ip?: boolean
     web_api?: boolean
-    camera_Id?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     parks?: boolean | park_zones$parksArgs<ExtArgs>
     parks_irrigation_job_history?: boolean | park_zones$parks_irrigation_job_historyArgs<ExtArgs>
     parks_zones_job_history?: boolean | park_zones$parks_zones_job_historyArgs<ExtArgs>
-    camera?: boolean | park_zones$cameraArgs<ExtArgs>
+    cameras_irrigation_section?: boolean | park_zones$cameras_irrigation_sectionArgs<ExtArgs>
     _count?: boolean | Park_zonesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["park_zones"]>
 
@@ -14478,18 +14690,17 @@ export namespace Prisma {
     longitude?: boolean
     device_ip?: boolean
     web_api?: boolean
-    camera_Id?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type park_zonesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "zone_Id" | "zone_english_name" | "zone_arabic_name" | "latitude" | "longitude" | "device_ip" | "web_api" | "camera_Id" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["park_zones"]>
+  export type park_zonesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "park_Id" | "zone_Id" | "zone_english_name" | "zone_arabic_name" | "latitude" | "longitude" | "device_ip" | "web_api" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["park_zones"]>
   export type park_zonesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     parks?: boolean | park_zones$parksArgs<ExtArgs>
     parks_irrigation_job_history?: boolean | park_zones$parks_irrigation_job_historyArgs<ExtArgs>
     parks_zones_job_history?: boolean | park_zones$parks_zones_job_historyArgs<ExtArgs>
-    camera?: boolean | park_zones$cameraArgs<ExtArgs>
+    cameras_irrigation_section?: boolean | park_zones$cameras_irrigation_sectionArgs<ExtArgs>
     _count?: boolean | Park_zonesCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -14499,7 +14710,7 @@ export namespace Prisma {
       parks: Prisma.$parksPayload<ExtArgs> | null
       parks_irrigation_job_history: Prisma.$parks_irrigation_job_historyPayload<ExtArgs>[]
       parks_zones_job_history: Prisma.$parks_zones_job_historyPayload<ExtArgs>[]
-      camera: Prisma.$park_camerasPayload<ExtArgs> | null
+      cameras_irrigation_section: Prisma.$cameras_irrigation_sectionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       Id: number
@@ -14511,7 +14722,6 @@ export namespace Prisma {
       longitude: Prisma.Decimal | null
       device_ip: string | null
       web_api: string | null
-      camera_Id: number | null
       status: string | null
       createdAt: Date | null
       updatedAt: Date
@@ -14858,7 +15068,7 @@ export namespace Prisma {
     parks<T extends park_zones$parksArgs<ExtArgs> = {}>(args?: Subset<T, park_zones$parksArgs<ExtArgs>>): Prisma__parksClient<$Result.GetResult<Prisma.$parksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     parks_irrigation_job_history<T extends park_zones$parks_irrigation_job_historyArgs<ExtArgs> = {}>(args?: Subset<T, park_zones$parks_irrigation_job_historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_irrigation_job_historyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     parks_zones_job_history<T extends park_zones$parks_zones_job_historyArgs<ExtArgs> = {}>(args?: Subset<T, park_zones$parks_zones_job_historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$parks_zones_job_historyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    camera<T extends park_zones$cameraArgs<ExtArgs> = {}>(args?: Subset<T, park_zones$cameraArgs<ExtArgs>>): Prisma__park_camerasClient<$Result.GetResult<Prisma.$park_camerasPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    cameras_irrigation_section<T extends park_zones$cameras_irrigation_sectionArgs<ExtArgs> = {}>(args?: Subset<T, park_zones$cameras_irrigation_sectionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14897,7 +15107,6 @@ export namespace Prisma {
     readonly longitude: FieldRef<"park_zones", 'Decimal'>
     readonly device_ip: FieldRef<"park_zones", 'String'>
     readonly web_api: FieldRef<"park_zones", 'String'>
-    readonly camera_Id: FieldRef<"park_zones", 'Int'>
     readonly status: FieldRef<"park_zones", 'String'>
     readonly createdAt: FieldRef<"park_zones", 'DateTime'>
     readonly updatedAt: FieldRef<"park_zones", 'DateTime'>
@@ -15311,22 +15520,27 @@ export namespace Prisma {
   }
 
   /**
-   * park_zones.camera
+   * park_zones.cameras_irrigation_section
    */
-  export type park_zones$cameraArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type park_zones$cameras_irrigation_sectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the park_cameras
+     * Select specific fields to fetch from the cameras_irrigation_section
      */
-    select?: park_camerasSelect<ExtArgs> | null
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the park_cameras
+     * Omit specific fields from the cameras_irrigation_section
      */
-    omit?: park_camerasOmit<ExtArgs> | null
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: park_camerasInclude<ExtArgs> | null
-    where?: park_camerasWhereInput
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    where?: cameras_irrigation_sectionWhereInput
+    orderBy?: cameras_irrigation_sectionOrderByWithRelationInput | cameras_irrigation_sectionOrderByWithRelationInput[]
+    cursor?: cameras_irrigation_sectionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Cameras_irrigation_sectionScalarFieldEnum | Cameras_irrigation_sectionScalarFieldEnum[]
   }
 
   /**
@@ -38624,6 +38838,2027 @@ export namespace Prisma {
 
 
   /**
+   * Model cameras_irrigation_section
+   */
+
+  export type AggregateCameras_irrigation_section = {
+    _count: Cameras_irrigation_sectionCountAggregateOutputType | null
+    _avg: Cameras_irrigation_sectionAvgAggregateOutputType | null
+    _sum: Cameras_irrigation_sectionSumAggregateOutputType | null
+    _min: Cameras_irrigation_sectionMinAggregateOutputType | null
+    _max: Cameras_irrigation_sectionMaxAggregateOutputType | null
+  }
+
+  export type Cameras_irrigation_sectionAvgAggregateOutputType = {
+    id: number | null
+    camera_Id: number | null
+    zone_Id: number | null
+  }
+
+  export type Cameras_irrigation_sectionSumAggregateOutputType = {
+    id: number | null
+    camera_Id: number | null
+    zone_Id: number | null
+  }
+
+  export type Cameras_irrigation_sectionMinAggregateOutputType = {
+    id: number | null
+    working_time: string | null
+    camera_Id: number | null
+    zone_Id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Cameras_irrigation_sectionMaxAggregateOutputType = {
+    id: number | null
+    working_time: string | null
+    camera_Id: number | null
+    zone_Id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Cameras_irrigation_sectionCountAggregateOutputType = {
+    id: number
+    working_time: number
+    camera_Id: number
+    zone_Id: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type Cameras_irrigation_sectionAvgAggregateInputType = {
+    id?: true
+    camera_Id?: true
+    zone_Id?: true
+  }
+
+  export type Cameras_irrigation_sectionSumAggregateInputType = {
+    id?: true
+    camera_Id?: true
+    zone_Id?: true
+  }
+
+  export type Cameras_irrigation_sectionMinAggregateInputType = {
+    id?: true
+    working_time?: true
+    camera_Id?: true
+    zone_Id?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Cameras_irrigation_sectionMaxAggregateInputType = {
+    id?: true
+    working_time?: true
+    camera_Id?: true
+    zone_Id?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Cameras_irrigation_sectionCountAggregateInputType = {
+    id?: true
+    working_time?: true
+    camera_Id?: true
+    zone_Id?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type Cameras_irrigation_sectionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which cameras_irrigation_section to aggregate.
+     */
+    where?: cameras_irrigation_sectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cameras_irrigation_sections to fetch.
+     */
+    orderBy?: cameras_irrigation_sectionOrderByWithRelationInput | cameras_irrigation_sectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: cameras_irrigation_sectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cameras_irrigation_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cameras_irrigation_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned cameras_irrigation_sections
+    **/
+    _count?: true | Cameras_irrigation_sectionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Cameras_irrigation_sectionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Cameras_irrigation_sectionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Cameras_irrigation_sectionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Cameras_irrigation_sectionMaxAggregateInputType
+  }
+
+  export type GetCameras_irrigation_sectionAggregateType<T extends Cameras_irrigation_sectionAggregateArgs> = {
+        [P in keyof T & keyof AggregateCameras_irrigation_section]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCameras_irrigation_section[P]>
+      : GetScalarType<T[P], AggregateCameras_irrigation_section[P]>
+  }
+
+
+
+
+  export type cameras_irrigation_sectionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: cameras_irrigation_sectionWhereInput
+    orderBy?: cameras_irrigation_sectionOrderByWithAggregationInput | cameras_irrigation_sectionOrderByWithAggregationInput[]
+    by: Cameras_irrigation_sectionScalarFieldEnum[] | Cameras_irrigation_sectionScalarFieldEnum
+    having?: cameras_irrigation_sectionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Cameras_irrigation_sectionCountAggregateInputType | true
+    _avg?: Cameras_irrigation_sectionAvgAggregateInputType
+    _sum?: Cameras_irrigation_sectionSumAggregateInputType
+    _min?: Cameras_irrigation_sectionMinAggregateInputType
+    _max?: Cameras_irrigation_sectionMaxAggregateInputType
+  }
+
+  export type Cameras_irrigation_sectionGroupByOutputType = {
+    id: number
+    working_time: string | null
+    camera_Id: number | null
+    zone_Id: number | null
+    createdAt: Date
+    updatedAt: Date
+    _count: Cameras_irrigation_sectionCountAggregateOutputType | null
+    _avg: Cameras_irrigation_sectionAvgAggregateOutputType | null
+    _sum: Cameras_irrigation_sectionSumAggregateOutputType | null
+    _min: Cameras_irrigation_sectionMinAggregateOutputType | null
+    _max: Cameras_irrigation_sectionMaxAggregateOutputType | null
+  }
+
+  type GetCameras_irrigation_sectionGroupByPayload<T extends cameras_irrigation_sectionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Cameras_irrigation_sectionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Cameras_irrigation_sectionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Cameras_irrigation_sectionGroupByOutputType[P]>
+            : GetScalarType<T[P], Cameras_irrigation_sectionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type cameras_irrigation_sectionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    working_time?: boolean
+    camera_Id?: boolean
+    zone_Id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    park_cameras?: boolean | cameras_irrigation_section$park_camerasArgs<ExtArgs>
+    park_zones?: boolean | cameras_irrigation_section$park_zonesArgs<ExtArgs>
+  }, ExtArgs["result"]["cameras_irrigation_section"]>
+
+
+
+  export type cameras_irrigation_sectionSelectScalar = {
+    id?: boolean
+    working_time?: boolean
+    camera_Id?: boolean
+    zone_Id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type cameras_irrigation_sectionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "working_time" | "camera_Id" | "zone_Id" | "createdAt" | "updatedAt", ExtArgs["result"]["cameras_irrigation_section"]>
+  export type cameras_irrigation_sectionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    park_cameras?: boolean | cameras_irrigation_section$park_camerasArgs<ExtArgs>
+    park_zones?: boolean | cameras_irrigation_section$park_zonesArgs<ExtArgs>
+  }
+
+  export type $cameras_irrigation_sectionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "cameras_irrigation_section"
+    objects: {
+      park_cameras: Prisma.$park_camerasPayload<ExtArgs> | null
+      park_zones: Prisma.$park_zonesPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      working_time: string | null
+      camera_Id: number | null
+      zone_Id: number | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["cameras_irrigation_section"]>
+    composites: {}
+  }
+
+  type cameras_irrigation_sectionGetPayload<S extends boolean | null | undefined | cameras_irrigation_sectionDefaultArgs> = $Result.GetResult<Prisma.$cameras_irrigation_sectionPayload, S>
+
+  type cameras_irrigation_sectionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<cameras_irrigation_sectionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Cameras_irrigation_sectionCountAggregateInputType | true
+    }
+
+  export interface cameras_irrigation_sectionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['cameras_irrigation_section'], meta: { name: 'cameras_irrigation_section' } }
+    /**
+     * Find zero or one Cameras_irrigation_section that matches the filter.
+     * @param {cameras_irrigation_sectionFindUniqueArgs} args - Arguments to find a Cameras_irrigation_section
+     * @example
+     * // Get one Cameras_irrigation_section
+     * const cameras_irrigation_section = await prisma.cameras_irrigation_section.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends cameras_irrigation_sectionFindUniqueArgs>(args: SelectSubset<T, cameras_irrigation_sectionFindUniqueArgs<ExtArgs>>): Prisma__cameras_irrigation_sectionClient<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Cameras_irrigation_section that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {cameras_irrigation_sectionFindUniqueOrThrowArgs} args - Arguments to find a Cameras_irrigation_section
+     * @example
+     * // Get one Cameras_irrigation_section
+     * const cameras_irrigation_section = await prisma.cameras_irrigation_section.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends cameras_irrigation_sectionFindUniqueOrThrowArgs>(args: SelectSubset<T, cameras_irrigation_sectionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__cameras_irrigation_sectionClient<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Cameras_irrigation_section that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_irrigation_sectionFindFirstArgs} args - Arguments to find a Cameras_irrigation_section
+     * @example
+     * // Get one Cameras_irrigation_section
+     * const cameras_irrigation_section = await prisma.cameras_irrigation_section.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends cameras_irrigation_sectionFindFirstArgs>(args?: SelectSubset<T, cameras_irrigation_sectionFindFirstArgs<ExtArgs>>): Prisma__cameras_irrigation_sectionClient<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Cameras_irrigation_section that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_irrigation_sectionFindFirstOrThrowArgs} args - Arguments to find a Cameras_irrigation_section
+     * @example
+     * // Get one Cameras_irrigation_section
+     * const cameras_irrigation_section = await prisma.cameras_irrigation_section.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends cameras_irrigation_sectionFindFirstOrThrowArgs>(args?: SelectSubset<T, cameras_irrigation_sectionFindFirstOrThrowArgs<ExtArgs>>): Prisma__cameras_irrigation_sectionClient<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Cameras_irrigation_sections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_irrigation_sectionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Cameras_irrigation_sections
+     * const cameras_irrigation_sections = await prisma.cameras_irrigation_section.findMany()
+     * 
+     * // Get first 10 Cameras_irrigation_sections
+     * const cameras_irrigation_sections = await prisma.cameras_irrigation_section.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cameras_irrigation_sectionWithIdOnly = await prisma.cameras_irrigation_section.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends cameras_irrigation_sectionFindManyArgs>(args?: SelectSubset<T, cameras_irrigation_sectionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Cameras_irrigation_section.
+     * @param {cameras_irrigation_sectionCreateArgs} args - Arguments to create a Cameras_irrigation_section.
+     * @example
+     * // Create one Cameras_irrigation_section
+     * const Cameras_irrigation_section = await prisma.cameras_irrigation_section.create({
+     *   data: {
+     *     // ... data to create a Cameras_irrigation_section
+     *   }
+     * })
+     * 
+     */
+    create<T extends cameras_irrigation_sectionCreateArgs>(args: SelectSubset<T, cameras_irrigation_sectionCreateArgs<ExtArgs>>): Prisma__cameras_irrigation_sectionClient<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Cameras_irrigation_sections.
+     * @param {cameras_irrigation_sectionCreateManyArgs} args - Arguments to create many Cameras_irrigation_sections.
+     * @example
+     * // Create many Cameras_irrigation_sections
+     * const cameras_irrigation_section = await prisma.cameras_irrigation_section.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends cameras_irrigation_sectionCreateManyArgs>(args?: SelectSubset<T, cameras_irrigation_sectionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Cameras_irrigation_section.
+     * @param {cameras_irrigation_sectionDeleteArgs} args - Arguments to delete one Cameras_irrigation_section.
+     * @example
+     * // Delete one Cameras_irrigation_section
+     * const Cameras_irrigation_section = await prisma.cameras_irrigation_section.delete({
+     *   where: {
+     *     // ... filter to delete one Cameras_irrigation_section
+     *   }
+     * })
+     * 
+     */
+    delete<T extends cameras_irrigation_sectionDeleteArgs>(args: SelectSubset<T, cameras_irrigation_sectionDeleteArgs<ExtArgs>>): Prisma__cameras_irrigation_sectionClient<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Cameras_irrigation_section.
+     * @param {cameras_irrigation_sectionUpdateArgs} args - Arguments to update one Cameras_irrigation_section.
+     * @example
+     * // Update one Cameras_irrigation_section
+     * const cameras_irrigation_section = await prisma.cameras_irrigation_section.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends cameras_irrigation_sectionUpdateArgs>(args: SelectSubset<T, cameras_irrigation_sectionUpdateArgs<ExtArgs>>): Prisma__cameras_irrigation_sectionClient<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Cameras_irrigation_sections.
+     * @param {cameras_irrigation_sectionDeleteManyArgs} args - Arguments to filter Cameras_irrigation_sections to delete.
+     * @example
+     * // Delete a few Cameras_irrigation_sections
+     * const { count } = await prisma.cameras_irrigation_section.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends cameras_irrigation_sectionDeleteManyArgs>(args?: SelectSubset<T, cameras_irrigation_sectionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Cameras_irrigation_sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_irrigation_sectionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Cameras_irrigation_sections
+     * const cameras_irrigation_section = await prisma.cameras_irrigation_section.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends cameras_irrigation_sectionUpdateManyArgs>(args: SelectSubset<T, cameras_irrigation_sectionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Cameras_irrigation_section.
+     * @param {cameras_irrigation_sectionUpsertArgs} args - Arguments to update or create a Cameras_irrigation_section.
+     * @example
+     * // Update or create a Cameras_irrigation_section
+     * const cameras_irrigation_section = await prisma.cameras_irrigation_section.upsert({
+     *   create: {
+     *     // ... data to create a Cameras_irrigation_section
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Cameras_irrigation_section we want to update
+     *   }
+     * })
+     */
+    upsert<T extends cameras_irrigation_sectionUpsertArgs>(args: SelectSubset<T, cameras_irrigation_sectionUpsertArgs<ExtArgs>>): Prisma__cameras_irrigation_sectionClient<$Result.GetResult<Prisma.$cameras_irrigation_sectionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Cameras_irrigation_sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_irrigation_sectionCountArgs} args - Arguments to filter Cameras_irrigation_sections to count.
+     * @example
+     * // Count the number of Cameras_irrigation_sections
+     * const count = await prisma.cameras_irrigation_section.count({
+     *   where: {
+     *     // ... the filter for the Cameras_irrigation_sections we want to count
+     *   }
+     * })
+    **/
+    count<T extends cameras_irrigation_sectionCountArgs>(
+      args?: Subset<T, cameras_irrigation_sectionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Cameras_irrigation_sectionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Cameras_irrigation_section.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Cameras_irrigation_sectionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Cameras_irrigation_sectionAggregateArgs>(args: Subset<T, Cameras_irrigation_sectionAggregateArgs>): Prisma.PrismaPromise<GetCameras_irrigation_sectionAggregateType<T>>
+
+    /**
+     * Group by Cameras_irrigation_section.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_irrigation_sectionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends cameras_irrigation_sectionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: cameras_irrigation_sectionGroupByArgs['orderBy'] }
+        : { orderBy?: cameras_irrigation_sectionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, cameras_irrigation_sectionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCameras_irrigation_sectionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the cameras_irrigation_section model
+   */
+  readonly fields: cameras_irrigation_sectionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for cameras_irrigation_section.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__cameras_irrigation_sectionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    park_cameras<T extends cameras_irrigation_section$park_camerasArgs<ExtArgs> = {}>(args?: Subset<T, cameras_irrigation_section$park_camerasArgs<ExtArgs>>): Prisma__park_camerasClient<$Result.GetResult<Prisma.$park_camerasPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    park_zones<T extends cameras_irrigation_section$park_zonesArgs<ExtArgs> = {}>(args?: Subset<T, cameras_irrigation_section$park_zonesArgs<ExtArgs>>): Prisma__park_zonesClient<$Result.GetResult<Prisma.$park_zonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the cameras_irrigation_section model
+   */
+  interface cameras_irrigation_sectionFieldRefs {
+    readonly id: FieldRef<"cameras_irrigation_section", 'Int'>
+    readonly working_time: FieldRef<"cameras_irrigation_section", 'String'>
+    readonly camera_Id: FieldRef<"cameras_irrigation_section", 'Int'>
+    readonly zone_Id: FieldRef<"cameras_irrigation_section", 'Int'>
+    readonly createdAt: FieldRef<"cameras_irrigation_section", 'DateTime'>
+    readonly updatedAt: FieldRef<"cameras_irrigation_section", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * cameras_irrigation_section findUnique
+   */
+  export type cameras_irrigation_sectionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_irrigation_section to fetch.
+     */
+    where: cameras_irrigation_sectionWhereUniqueInput
+  }
+
+  /**
+   * cameras_irrigation_section findUniqueOrThrow
+   */
+  export type cameras_irrigation_sectionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_irrigation_section to fetch.
+     */
+    where: cameras_irrigation_sectionWhereUniqueInput
+  }
+
+  /**
+   * cameras_irrigation_section findFirst
+   */
+  export type cameras_irrigation_sectionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_irrigation_section to fetch.
+     */
+    where?: cameras_irrigation_sectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cameras_irrigation_sections to fetch.
+     */
+    orderBy?: cameras_irrigation_sectionOrderByWithRelationInput | cameras_irrigation_sectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for cameras_irrigation_sections.
+     */
+    cursor?: cameras_irrigation_sectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cameras_irrigation_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cameras_irrigation_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of cameras_irrigation_sections.
+     */
+    distinct?: Cameras_irrigation_sectionScalarFieldEnum | Cameras_irrigation_sectionScalarFieldEnum[]
+  }
+
+  /**
+   * cameras_irrigation_section findFirstOrThrow
+   */
+  export type cameras_irrigation_sectionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_irrigation_section to fetch.
+     */
+    where?: cameras_irrigation_sectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cameras_irrigation_sections to fetch.
+     */
+    orderBy?: cameras_irrigation_sectionOrderByWithRelationInput | cameras_irrigation_sectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for cameras_irrigation_sections.
+     */
+    cursor?: cameras_irrigation_sectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cameras_irrigation_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cameras_irrigation_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of cameras_irrigation_sections.
+     */
+    distinct?: Cameras_irrigation_sectionScalarFieldEnum | Cameras_irrigation_sectionScalarFieldEnum[]
+  }
+
+  /**
+   * cameras_irrigation_section findMany
+   */
+  export type cameras_irrigation_sectionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_irrigation_sections to fetch.
+     */
+    where?: cameras_irrigation_sectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cameras_irrigation_sections to fetch.
+     */
+    orderBy?: cameras_irrigation_sectionOrderByWithRelationInput | cameras_irrigation_sectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing cameras_irrigation_sections.
+     */
+    cursor?: cameras_irrigation_sectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cameras_irrigation_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cameras_irrigation_sections.
+     */
+    skip?: number
+    distinct?: Cameras_irrigation_sectionScalarFieldEnum | Cameras_irrigation_sectionScalarFieldEnum[]
+  }
+
+  /**
+   * cameras_irrigation_section create
+   */
+  export type cameras_irrigation_sectionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a cameras_irrigation_section.
+     */
+    data: XOR<cameras_irrigation_sectionCreateInput, cameras_irrigation_sectionUncheckedCreateInput>
+  }
+
+  /**
+   * cameras_irrigation_section createMany
+   */
+  export type cameras_irrigation_sectionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many cameras_irrigation_sections.
+     */
+    data: cameras_irrigation_sectionCreateManyInput | cameras_irrigation_sectionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * cameras_irrigation_section update
+   */
+  export type cameras_irrigation_sectionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a cameras_irrigation_section.
+     */
+    data: XOR<cameras_irrigation_sectionUpdateInput, cameras_irrigation_sectionUncheckedUpdateInput>
+    /**
+     * Choose, which cameras_irrigation_section to update.
+     */
+    where: cameras_irrigation_sectionWhereUniqueInput
+  }
+
+  /**
+   * cameras_irrigation_section updateMany
+   */
+  export type cameras_irrigation_sectionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update cameras_irrigation_sections.
+     */
+    data: XOR<cameras_irrigation_sectionUpdateManyMutationInput, cameras_irrigation_sectionUncheckedUpdateManyInput>
+    /**
+     * Filter which cameras_irrigation_sections to update
+     */
+    where?: cameras_irrigation_sectionWhereInput
+    /**
+     * Limit how many cameras_irrigation_sections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * cameras_irrigation_section upsert
+   */
+  export type cameras_irrigation_sectionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the cameras_irrigation_section to update in case it exists.
+     */
+    where: cameras_irrigation_sectionWhereUniqueInput
+    /**
+     * In case the cameras_irrigation_section found by the `where` argument doesn't exist, create a new cameras_irrigation_section with this data.
+     */
+    create: XOR<cameras_irrigation_sectionCreateInput, cameras_irrigation_sectionUncheckedCreateInput>
+    /**
+     * In case the cameras_irrigation_section was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<cameras_irrigation_sectionUpdateInput, cameras_irrigation_sectionUncheckedUpdateInput>
+  }
+
+  /**
+   * cameras_irrigation_section delete
+   */
+  export type cameras_irrigation_sectionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+    /**
+     * Filter which cameras_irrigation_section to delete.
+     */
+    where: cameras_irrigation_sectionWhereUniqueInput
+  }
+
+  /**
+   * cameras_irrigation_section deleteMany
+   */
+  export type cameras_irrigation_sectionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which cameras_irrigation_sections to delete
+     */
+    where?: cameras_irrigation_sectionWhereInput
+    /**
+     * Limit how many cameras_irrigation_sections to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * cameras_irrigation_section.park_cameras
+   */
+  export type cameras_irrigation_section$park_camerasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the park_cameras
+     */
+    select?: park_camerasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the park_cameras
+     */
+    omit?: park_camerasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: park_camerasInclude<ExtArgs> | null
+    where?: park_camerasWhereInput
+  }
+
+  /**
+   * cameras_irrigation_section.park_zones
+   */
+  export type cameras_irrigation_section$park_zonesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the park_zones
+     */
+    select?: park_zonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the park_zones
+     */
+    omit?: park_zonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: park_zonesInclude<ExtArgs> | null
+    where?: park_zonesWhereInput
+  }
+
+  /**
+   * cameras_irrigation_section without action
+   */
+  export type cameras_irrigation_sectionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_irrigation_section
+     */
+    select?: cameras_irrigation_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_irrigation_section
+     */
+    omit?: cameras_irrigation_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_irrigation_sectionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model cameras_landscaping_section
+   */
+
+  export type AggregateCameras_landscaping_section = {
+    _count: Cameras_landscaping_sectionCountAggregateOutputType | null
+    _avg: Cameras_landscaping_sectionAvgAggregateOutputType | null
+    _sum: Cameras_landscaping_sectionSumAggregateOutputType | null
+    _min: Cameras_landscaping_sectionMinAggregateOutputType | null
+    _max: Cameras_landscaping_sectionMaxAggregateOutputType | null
+  }
+
+  export type Cameras_landscaping_sectionAvgAggregateOutputType = {
+    id: number | null
+    camera_Id: number | null
+  }
+
+  export type Cameras_landscaping_sectionSumAggregateOutputType = {
+    id: number | null
+    camera_Id: number | null
+  }
+
+  export type Cameras_landscaping_sectionMinAggregateOutputType = {
+    id: number | null
+    area_name: string | null
+    working_time: string | null
+    camera_Id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Cameras_landscaping_sectionMaxAggregateOutputType = {
+    id: number | null
+    area_name: string | null
+    working_time: string | null
+    camera_Id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Cameras_landscaping_sectionCountAggregateOutputType = {
+    id: number
+    area_name: number
+    working_time: number
+    camera_Id: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type Cameras_landscaping_sectionAvgAggregateInputType = {
+    id?: true
+    camera_Id?: true
+  }
+
+  export type Cameras_landscaping_sectionSumAggregateInputType = {
+    id?: true
+    camera_Id?: true
+  }
+
+  export type Cameras_landscaping_sectionMinAggregateInputType = {
+    id?: true
+    area_name?: true
+    working_time?: true
+    camera_Id?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Cameras_landscaping_sectionMaxAggregateInputType = {
+    id?: true
+    area_name?: true
+    working_time?: true
+    camera_Id?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Cameras_landscaping_sectionCountAggregateInputType = {
+    id?: true
+    area_name?: true
+    working_time?: true
+    camera_Id?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type Cameras_landscaping_sectionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which cameras_landscaping_section to aggregate.
+     */
+    where?: cameras_landscaping_sectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cameras_landscaping_sections to fetch.
+     */
+    orderBy?: cameras_landscaping_sectionOrderByWithRelationInput | cameras_landscaping_sectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: cameras_landscaping_sectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cameras_landscaping_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cameras_landscaping_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned cameras_landscaping_sections
+    **/
+    _count?: true | Cameras_landscaping_sectionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Cameras_landscaping_sectionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Cameras_landscaping_sectionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Cameras_landscaping_sectionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Cameras_landscaping_sectionMaxAggregateInputType
+  }
+
+  export type GetCameras_landscaping_sectionAggregateType<T extends Cameras_landscaping_sectionAggregateArgs> = {
+        [P in keyof T & keyof AggregateCameras_landscaping_section]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCameras_landscaping_section[P]>
+      : GetScalarType<T[P], AggregateCameras_landscaping_section[P]>
+  }
+
+
+
+
+  export type cameras_landscaping_sectionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: cameras_landscaping_sectionWhereInput
+    orderBy?: cameras_landscaping_sectionOrderByWithAggregationInput | cameras_landscaping_sectionOrderByWithAggregationInput[]
+    by: Cameras_landscaping_sectionScalarFieldEnum[] | Cameras_landscaping_sectionScalarFieldEnum
+    having?: cameras_landscaping_sectionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Cameras_landscaping_sectionCountAggregateInputType | true
+    _avg?: Cameras_landscaping_sectionAvgAggregateInputType
+    _sum?: Cameras_landscaping_sectionSumAggregateInputType
+    _min?: Cameras_landscaping_sectionMinAggregateInputType
+    _max?: Cameras_landscaping_sectionMaxAggregateInputType
+  }
+
+  export type Cameras_landscaping_sectionGroupByOutputType = {
+    id: number
+    area_name: string | null
+    working_time: string | null
+    camera_Id: number | null
+    createdAt: Date
+    updatedAt: Date
+    _count: Cameras_landscaping_sectionCountAggregateOutputType | null
+    _avg: Cameras_landscaping_sectionAvgAggregateOutputType | null
+    _sum: Cameras_landscaping_sectionSumAggregateOutputType | null
+    _min: Cameras_landscaping_sectionMinAggregateOutputType | null
+    _max: Cameras_landscaping_sectionMaxAggregateOutputType | null
+  }
+
+  type GetCameras_landscaping_sectionGroupByPayload<T extends cameras_landscaping_sectionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Cameras_landscaping_sectionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Cameras_landscaping_sectionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Cameras_landscaping_sectionGroupByOutputType[P]>
+            : GetScalarType<T[P], Cameras_landscaping_sectionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type cameras_landscaping_sectionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    area_name?: boolean
+    working_time?: boolean
+    camera_Id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    park_cameras?: boolean | cameras_landscaping_section$park_camerasArgs<ExtArgs>
+  }, ExtArgs["result"]["cameras_landscaping_section"]>
+
+
+
+  export type cameras_landscaping_sectionSelectScalar = {
+    id?: boolean
+    area_name?: boolean
+    working_time?: boolean
+    camera_Id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type cameras_landscaping_sectionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "area_name" | "working_time" | "camera_Id" | "createdAt" | "updatedAt", ExtArgs["result"]["cameras_landscaping_section"]>
+  export type cameras_landscaping_sectionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    park_cameras?: boolean | cameras_landscaping_section$park_camerasArgs<ExtArgs>
+  }
+
+  export type $cameras_landscaping_sectionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "cameras_landscaping_section"
+    objects: {
+      park_cameras: Prisma.$park_camerasPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      area_name: string | null
+      working_time: string | null
+      camera_Id: number | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["cameras_landscaping_section"]>
+    composites: {}
+  }
+
+  type cameras_landscaping_sectionGetPayload<S extends boolean | null | undefined | cameras_landscaping_sectionDefaultArgs> = $Result.GetResult<Prisma.$cameras_landscaping_sectionPayload, S>
+
+  type cameras_landscaping_sectionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<cameras_landscaping_sectionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Cameras_landscaping_sectionCountAggregateInputType | true
+    }
+
+  export interface cameras_landscaping_sectionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['cameras_landscaping_section'], meta: { name: 'cameras_landscaping_section' } }
+    /**
+     * Find zero or one Cameras_landscaping_section that matches the filter.
+     * @param {cameras_landscaping_sectionFindUniqueArgs} args - Arguments to find a Cameras_landscaping_section
+     * @example
+     * // Get one Cameras_landscaping_section
+     * const cameras_landscaping_section = await prisma.cameras_landscaping_section.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends cameras_landscaping_sectionFindUniqueArgs>(args: SelectSubset<T, cameras_landscaping_sectionFindUniqueArgs<ExtArgs>>): Prisma__cameras_landscaping_sectionClient<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Cameras_landscaping_section that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {cameras_landscaping_sectionFindUniqueOrThrowArgs} args - Arguments to find a Cameras_landscaping_section
+     * @example
+     * // Get one Cameras_landscaping_section
+     * const cameras_landscaping_section = await prisma.cameras_landscaping_section.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends cameras_landscaping_sectionFindUniqueOrThrowArgs>(args: SelectSubset<T, cameras_landscaping_sectionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__cameras_landscaping_sectionClient<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Cameras_landscaping_section that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_landscaping_sectionFindFirstArgs} args - Arguments to find a Cameras_landscaping_section
+     * @example
+     * // Get one Cameras_landscaping_section
+     * const cameras_landscaping_section = await prisma.cameras_landscaping_section.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends cameras_landscaping_sectionFindFirstArgs>(args?: SelectSubset<T, cameras_landscaping_sectionFindFirstArgs<ExtArgs>>): Prisma__cameras_landscaping_sectionClient<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Cameras_landscaping_section that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_landscaping_sectionFindFirstOrThrowArgs} args - Arguments to find a Cameras_landscaping_section
+     * @example
+     * // Get one Cameras_landscaping_section
+     * const cameras_landscaping_section = await prisma.cameras_landscaping_section.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends cameras_landscaping_sectionFindFirstOrThrowArgs>(args?: SelectSubset<T, cameras_landscaping_sectionFindFirstOrThrowArgs<ExtArgs>>): Prisma__cameras_landscaping_sectionClient<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Cameras_landscaping_sections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_landscaping_sectionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Cameras_landscaping_sections
+     * const cameras_landscaping_sections = await prisma.cameras_landscaping_section.findMany()
+     * 
+     * // Get first 10 Cameras_landscaping_sections
+     * const cameras_landscaping_sections = await prisma.cameras_landscaping_section.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cameras_landscaping_sectionWithIdOnly = await prisma.cameras_landscaping_section.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends cameras_landscaping_sectionFindManyArgs>(args?: SelectSubset<T, cameras_landscaping_sectionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Cameras_landscaping_section.
+     * @param {cameras_landscaping_sectionCreateArgs} args - Arguments to create a Cameras_landscaping_section.
+     * @example
+     * // Create one Cameras_landscaping_section
+     * const Cameras_landscaping_section = await prisma.cameras_landscaping_section.create({
+     *   data: {
+     *     // ... data to create a Cameras_landscaping_section
+     *   }
+     * })
+     * 
+     */
+    create<T extends cameras_landscaping_sectionCreateArgs>(args: SelectSubset<T, cameras_landscaping_sectionCreateArgs<ExtArgs>>): Prisma__cameras_landscaping_sectionClient<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Cameras_landscaping_sections.
+     * @param {cameras_landscaping_sectionCreateManyArgs} args - Arguments to create many Cameras_landscaping_sections.
+     * @example
+     * // Create many Cameras_landscaping_sections
+     * const cameras_landscaping_section = await prisma.cameras_landscaping_section.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends cameras_landscaping_sectionCreateManyArgs>(args?: SelectSubset<T, cameras_landscaping_sectionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Cameras_landscaping_section.
+     * @param {cameras_landscaping_sectionDeleteArgs} args - Arguments to delete one Cameras_landscaping_section.
+     * @example
+     * // Delete one Cameras_landscaping_section
+     * const Cameras_landscaping_section = await prisma.cameras_landscaping_section.delete({
+     *   where: {
+     *     // ... filter to delete one Cameras_landscaping_section
+     *   }
+     * })
+     * 
+     */
+    delete<T extends cameras_landscaping_sectionDeleteArgs>(args: SelectSubset<T, cameras_landscaping_sectionDeleteArgs<ExtArgs>>): Prisma__cameras_landscaping_sectionClient<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Cameras_landscaping_section.
+     * @param {cameras_landscaping_sectionUpdateArgs} args - Arguments to update one Cameras_landscaping_section.
+     * @example
+     * // Update one Cameras_landscaping_section
+     * const cameras_landscaping_section = await prisma.cameras_landscaping_section.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends cameras_landscaping_sectionUpdateArgs>(args: SelectSubset<T, cameras_landscaping_sectionUpdateArgs<ExtArgs>>): Prisma__cameras_landscaping_sectionClient<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Cameras_landscaping_sections.
+     * @param {cameras_landscaping_sectionDeleteManyArgs} args - Arguments to filter Cameras_landscaping_sections to delete.
+     * @example
+     * // Delete a few Cameras_landscaping_sections
+     * const { count } = await prisma.cameras_landscaping_section.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends cameras_landscaping_sectionDeleteManyArgs>(args?: SelectSubset<T, cameras_landscaping_sectionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Cameras_landscaping_sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_landscaping_sectionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Cameras_landscaping_sections
+     * const cameras_landscaping_section = await prisma.cameras_landscaping_section.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends cameras_landscaping_sectionUpdateManyArgs>(args: SelectSubset<T, cameras_landscaping_sectionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Cameras_landscaping_section.
+     * @param {cameras_landscaping_sectionUpsertArgs} args - Arguments to update or create a Cameras_landscaping_section.
+     * @example
+     * // Update or create a Cameras_landscaping_section
+     * const cameras_landscaping_section = await prisma.cameras_landscaping_section.upsert({
+     *   create: {
+     *     // ... data to create a Cameras_landscaping_section
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Cameras_landscaping_section we want to update
+     *   }
+     * })
+     */
+    upsert<T extends cameras_landscaping_sectionUpsertArgs>(args: SelectSubset<T, cameras_landscaping_sectionUpsertArgs<ExtArgs>>): Prisma__cameras_landscaping_sectionClient<$Result.GetResult<Prisma.$cameras_landscaping_sectionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Cameras_landscaping_sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_landscaping_sectionCountArgs} args - Arguments to filter Cameras_landscaping_sections to count.
+     * @example
+     * // Count the number of Cameras_landscaping_sections
+     * const count = await prisma.cameras_landscaping_section.count({
+     *   where: {
+     *     // ... the filter for the Cameras_landscaping_sections we want to count
+     *   }
+     * })
+    **/
+    count<T extends cameras_landscaping_sectionCountArgs>(
+      args?: Subset<T, cameras_landscaping_sectionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Cameras_landscaping_sectionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Cameras_landscaping_section.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Cameras_landscaping_sectionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Cameras_landscaping_sectionAggregateArgs>(args: Subset<T, Cameras_landscaping_sectionAggregateArgs>): Prisma.PrismaPromise<GetCameras_landscaping_sectionAggregateType<T>>
+
+    /**
+     * Group by Cameras_landscaping_section.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cameras_landscaping_sectionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends cameras_landscaping_sectionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: cameras_landscaping_sectionGroupByArgs['orderBy'] }
+        : { orderBy?: cameras_landscaping_sectionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, cameras_landscaping_sectionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCameras_landscaping_sectionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the cameras_landscaping_section model
+   */
+  readonly fields: cameras_landscaping_sectionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for cameras_landscaping_section.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__cameras_landscaping_sectionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    park_cameras<T extends cameras_landscaping_section$park_camerasArgs<ExtArgs> = {}>(args?: Subset<T, cameras_landscaping_section$park_camerasArgs<ExtArgs>>): Prisma__park_camerasClient<$Result.GetResult<Prisma.$park_camerasPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the cameras_landscaping_section model
+   */
+  interface cameras_landscaping_sectionFieldRefs {
+    readonly id: FieldRef<"cameras_landscaping_section", 'Int'>
+    readonly area_name: FieldRef<"cameras_landscaping_section", 'String'>
+    readonly working_time: FieldRef<"cameras_landscaping_section", 'String'>
+    readonly camera_Id: FieldRef<"cameras_landscaping_section", 'Int'>
+    readonly createdAt: FieldRef<"cameras_landscaping_section", 'DateTime'>
+    readonly updatedAt: FieldRef<"cameras_landscaping_section", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * cameras_landscaping_section findUnique
+   */
+  export type cameras_landscaping_sectionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_landscaping_section to fetch.
+     */
+    where: cameras_landscaping_sectionWhereUniqueInput
+  }
+
+  /**
+   * cameras_landscaping_section findUniqueOrThrow
+   */
+  export type cameras_landscaping_sectionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_landscaping_section to fetch.
+     */
+    where: cameras_landscaping_sectionWhereUniqueInput
+  }
+
+  /**
+   * cameras_landscaping_section findFirst
+   */
+  export type cameras_landscaping_sectionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_landscaping_section to fetch.
+     */
+    where?: cameras_landscaping_sectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cameras_landscaping_sections to fetch.
+     */
+    orderBy?: cameras_landscaping_sectionOrderByWithRelationInput | cameras_landscaping_sectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for cameras_landscaping_sections.
+     */
+    cursor?: cameras_landscaping_sectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cameras_landscaping_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cameras_landscaping_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of cameras_landscaping_sections.
+     */
+    distinct?: Cameras_landscaping_sectionScalarFieldEnum | Cameras_landscaping_sectionScalarFieldEnum[]
+  }
+
+  /**
+   * cameras_landscaping_section findFirstOrThrow
+   */
+  export type cameras_landscaping_sectionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_landscaping_section to fetch.
+     */
+    where?: cameras_landscaping_sectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cameras_landscaping_sections to fetch.
+     */
+    orderBy?: cameras_landscaping_sectionOrderByWithRelationInput | cameras_landscaping_sectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for cameras_landscaping_sections.
+     */
+    cursor?: cameras_landscaping_sectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cameras_landscaping_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cameras_landscaping_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of cameras_landscaping_sections.
+     */
+    distinct?: Cameras_landscaping_sectionScalarFieldEnum | Cameras_landscaping_sectionScalarFieldEnum[]
+  }
+
+  /**
+   * cameras_landscaping_section findMany
+   */
+  export type cameras_landscaping_sectionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    /**
+     * Filter, which cameras_landscaping_sections to fetch.
+     */
+    where?: cameras_landscaping_sectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cameras_landscaping_sections to fetch.
+     */
+    orderBy?: cameras_landscaping_sectionOrderByWithRelationInput | cameras_landscaping_sectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing cameras_landscaping_sections.
+     */
+    cursor?: cameras_landscaping_sectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cameras_landscaping_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cameras_landscaping_sections.
+     */
+    skip?: number
+    distinct?: Cameras_landscaping_sectionScalarFieldEnum | Cameras_landscaping_sectionScalarFieldEnum[]
+  }
+
+  /**
+   * cameras_landscaping_section create
+   */
+  export type cameras_landscaping_sectionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a cameras_landscaping_section.
+     */
+    data: XOR<cameras_landscaping_sectionCreateInput, cameras_landscaping_sectionUncheckedCreateInput>
+  }
+
+  /**
+   * cameras_landscaping_section createMany
+   */
+  export type cameras_landscaping_sectionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many cameras_landscaping_sections.
+     */
+    data: cameras_landscaping_sectionCreateManyInput | cameras_landscaping_sectionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * cameras_landscaping_section update
+   */
+  export type cameras_landscaping_sectionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a cameras_landscaping_section.
+     */
+    data: XOR<cameras_landscaping_sectionUpdateInput, cameras_landscaping_sectionUncheckedUpdateInput>
+    /**
+     * Choose, which cameras_landscaping_section to update.
+     */
+    where: cameras_landscaping_sectionWhereUniqueInput
+  }
+
+  /**
+   * cameras_landscaping_section updateMany
+   */
+  export type cameras_landscaping_sectionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update cameras_landscaping_sections.
+     */
+    data: XOR<cameras_landscaping_sectionUpdateManyMutationInput, cameras_landscaping_sectionUncheckedUpdateManyInput>
+    /**
+     * Filter which cameras_landscaping_sections to update
+     */
+    where?: cameras_landscaping_sectionWhereInput
+    /**
+     * Limit how many cameras_landscaping_sections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * cameras_landscaping_section upsert
+   */
+  export type cameras_landscaping_sectionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the cameras_landscaping_section to update in case it exists.
+     */
+    where: cameras_landscaping_sectionWhereUniqueInput
+    /**
+     * In case the cameras_landscaping_section found by the `where` argument doesn't exist, create a new cameras_landscaping_section with this data.
+     */
+    create: XOR<cameras_landscaping_sectionCreateInput, cameras_landscaping_sectionUncheckedCreateInput>
+    /**
+     * In case the cameras_landscaping_section was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<cameras_landscaping_sectionUpdateInput, cameras_landscaping_sectionUncheckedUpdateInput>
+  }
+
+  /**
+   * cameras_landscaping_section delete
+   */
+  export type cameras_landscaping_sectionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+    /**
+     * Filter which cameras_landscaping_section to delete.
+     */
+    where: cameras_landscaping_sectionWhereUniqueInput
+  }
+
+  /**
+   * cameras_landscaping_section deleteMany
+   */
+  export type cameras_landscaping_sectionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which cameras_landscaping_sections to delete
+     */
+    where?: cameras_landscaping_sectionWhereInput
+    /**
+     * Limit how many cameras_landscaping_sections to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * cameras_landscaping_section.park_cameras
+   */
+  export type cameras_landscaping_section$park_camerasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the park_cameras
+     */
+    select?: park_camerasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the park_cameras
+     */
+    omit?: park_camerasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: park_camerasInclude<ExtArgs> | null
+    where?: park_camerasWhereInput
+  }
+
+  /**
+   * cameras_landscaping_section without action
+   */
+  export type cameras_landscaping_sectionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cameras_landscaping_section
+     */
+    select?: cameras_landscaping_sectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cameras_landscaping_section
+     */
+    omit?: cameras_landscaping_sectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cameras_landscaping_sectionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model qms_history
    */
 
@@ -41913,6 +44148,7 @@ export namespace Prisma {
     last_active_date: 'last_active_date',
     last_active_time: 'last_active_time',
     status: 'status',
+    is_ptz_camera: 'is_ptz_camera',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -41944,7 +44180,6 @@ export namespace Prisma {
     longitude: 'longitude',
     device_ip: 'device_ip',
     web_api: 'web_api',
-    camera_Id: 'camera_Id',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -42397,6 +44632,30 @@ export namespace Prisma {
   export type Landscaping_historyScalarFieldEnum = (typeof Landscaping_historyScalarFieldEnum)[keyof typeof Landscaping_historyScalarFieldEnum]
 
 
+  export const Cameras_irrigation_sectionScalarFieldEnum: {
+    id: 'id',
+    working_time: 'working_time',
+    camera_Id: 'camera_Id',
+    zone_Id: 'zone_Id',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type Cameras_irrigation_sectionScalarFieldEnum = (typeof Cameras_irrigation_sectionScalarFieldEnum)[keyof typeof Cameras_irrigation_sectionScalarFieldEnum]
+
+
+  export const Cameras_landscaping_sectionScalarFieldEnum: {
+    id: 'id',
+    area_name: 'area_name',
+    working_time: 'working_time',
+    camera_Id: 'camera_Id',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type Cameras_landscaping_sectionScalarFieldEnum = (typeof Cameras_landscaping_sectionScalarFieldEnum)[keyof typeof Cameras_landscaping_sectionScalarFieldEnum]
+
+
   export const Qms_historyScalarFieldEnum: {
     visit_id: 'visit_id',
     visitor_id: 'visitor_id',
@@ -42811,6 +45070,21 @@ export namespace Prisma {
   };
 
   export type landscaping_historyOrderByRelevanceFieldEnum = (typeof landscaping_historyOrderByRelevanceFieldEnum)[keyof typeof landscaping_historyOrderByRelevanceFieldEnum]
+
+
+  export const cameras_irrigation_sectionOrderByRelevanceFieldEnum: {
+    working_time: 'working_time'
+  };
+
+  export type cameras_irrigation_sectionOrderByRelevanceFieldEnum = (typeof cameras_irrigation_sectionOrderByRelevanceFieldEnum)[keyof typeof cameras_irrigation_sectionOrderByRelevanceFieldEnum]
+
+
+  export const cameras_landscaping_sectionOrderByRelevanceFieldEnum: {
+    area_name: 'area_name',
+    working_time: 'working_time'
+  };
+
+  export type cameras_landscaping_sectionOrderByRelevanceFieldEnum = (typeof cameras_landscaping_sectionOrderByRelevanceFieldEnum)[keyof typeof cameras_landscaping_sectionOrderByRelevanceFieldEnum]
 
 
   export const qms_historyOrderByRelevanceFieldEnum: {
@@ -43578,6 +45852,7 @@ export namespace Prisma {
     last_active_date?: DateTimeNullableFilter<"park_cameras"> | Date | string | null
     last_active_time?: DateTimeNullableFilter<"park_cameras"> | Date | string | null
     status?: BoolNullableFilter<"park_cameras"> | boolean | null
+    is_ptz_camera?: BoolNullableFilter<"park_cameras"> | boolean | null
     createdAt?: DateTimeNullableFilter<"park_cameras"> | Date | string | null
     updatedAt?: DateTimeFilter<"park_cameras"> | Date | string
     live_stream_favourites?: Live_stream_favouritesListRelationFilter
@@ -43589,7 +45864,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: Parks_sentiment_analysisListRelationFilter
     parks_smoking_detection?: Parks_smoking_detectionListRelationFilter
     parks_zones_job_history?: Parks_zones_job_historyListRelationFilter
-    park_zones?: Park_zonesListRelationFilter
+    cameras_irrigation_section?: Cameras_irrigation_sectionListRelationFilter
+    cameras_landscaping_section?: Cameras_landscaping_sectionListRelationFilter
   }
 
   export type park_camerasOrderByWithRelationInput = {
@@ -43605,6 +45881,7 @@ export namespace Prisma {
     last_active_date?: SortOrderInput | SortOrder
     last_active_time?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
+    is_ptz_camera?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     live_stream_favourites?: live_stream_favouritesOrderByRelationAggregateInput
@@ -43616,7 +45893,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisOrderByRelationAggregateInput
     parks_smoking_detection?: parks_smoking_detectionOrderByRelationAggregateInput
     parks_zones_job_history?: parks_zones_job_historyOrderByRelationAggregateInput
-    park_zones?: park_zonesOrderByRelationAggregateInput
+    cameras_irrigation_section?: cameras_irrigation_sectionOrderByRelationAggregateInput
+    cameras_landscaping_section?: cameras_landscaping_sectionOrderByRelationAggregateInput
     _relevance?: park_camerasOrderByRelevanceInput
   }
 
@@ -43636,6 +45914,7 @@ export namespace Prisma {
     last_active_date?: DateTimeNullableFilter<"park_cameras"> | Date | string | null
     last_active_time?: DateTimeNullableFilter<"park_cameras"> | Date | string | null
     status?: BoolNullableFilter<"park_cameras"> | boolean | null
+    is_ptz_camera?: BoolNullableFilter<"park_cameras"> | boolean | null
     createdAt?: DateTimeNullableFilter<"park_cameras"> | Date | string | null
     updatedAt?: DateTimeFilter<"park_cameras"> | Date | string
     live_stream_favourites?: Live_stream_favouritesListRelationFilter
@@ -43647,7 +45926,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: Parks_sentiment_analysisListRelationFilter
     parks_smoking_detection?: Parks_smoking_detectionListRelationFilter
     parks_zones_job_history?: Parks_zones_job_historyListRelationFilter
-    park_zones?: Park_zonesListRelationFilter
+    cameras_irrigation_section?: Cameras_irrigation_sectionListRelationFilter
+    cameras_landscaping_section?: Cameras_landscaping_sectionListRelationFilter
   }, "Id">
 
   export type park_camerasOrderByWithAggregationInput = {
@@ -43663,6 +45943,7 @@ export namespace Prisma {
     last_active_date?: SortOrderInput | SortOrder
     last_active_time?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
+    is_ptz_camera?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: park_camerasCountOrderByAggregateInput
@@ -43688,6 +45969,7 @@ export namespace Prisma {
     last_active_date?: DateTimeNullableWithAggregatesFilter<"park_cameras"> | Date | string | null
     last_active_time?: DateTimeNullableWithAggregatesFilter<"park_cameras"> | Date | string | null
     status?: BoolNullableWithAggregatesFilter<"park_cameras"> | boolean | null
+    is_ptz_camera?: BoolNullableWithAggregatesFilter<"park_cameras"> | boolean | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"park_cameras"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"park_cameras"> | Date | string
   }
@@ -43778,14 +46060,13 @@ export namespace Prisma {
     longitude?: DecimalNullableFilter<"park_zones"> | Decimal | DecimalJsLike | number | string | null
     device_ip?: StringNullableFilter<"park_zones"> | string | null
     web_api?: StringNullableFilter<"park_zones"> | string | null
-    camera_Id?: IntNullableFilter<"park_zones"> | number | null
     status?: StringNullableFilter<"park_zones"> | string | null
     createdAt?: DateTimeNullableFilter<"park_zones"> | Date | string | null
     updatedAt?: DateTimeFilter<"park_zones"> | Date | string
     parks?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
     parks_irrigation_job_history?: Parks_irrigation_job_historyListRelationFilter
     parks_zones_job_history?: Parks_zones_job_historyListRelationFilter
-    camera?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
+    cameras_irrigation_section?: Cameras_irrigation_sectionListRelationFilter
   }
 
   export type park_zonesOrderByWithRelationInput = {
@@ -43798,14 +46079,13 @@ export namespace Prisma {
     longitude?: SortOrderInput | SortOrder
     device_ip?: SortOrderInput | SortOrder
     web_api?: SortOrderInput | SortOrder
-    camera_Id?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     parks?: parksOrderByWithRelationInput
     parks_irrigation_job_history?: parks_irrigation_job_historyOrderByRelationAggregateInput
     parks_zones_job_history?: parks_zones_job_historyOrderByRelationAggregateInput
-    camera?: park_camerasOrderByWithRelationInput
+    cameras_irrigation_section?: cameras_irrigation_sectionOrderByRelationAggregateInput
     _relevance?: park_zonesOrderByRelevanceInput
   }
 
@@ -43822,14 +46102,13 @@ export namespace Prisma {
     longitude?: DecimalNullableFilter<"park_zones"> | Decimal | DecimalJsLike | number | string | null
     device_ip?: StringNullableFilter<"park_zones"> | string | null
     web_api?: StringNullableFilter<"park_zones"> | string | null
-    camera_Id?: IntNullableFilter<"park_zones"> | number | null
     status?: StringNullableFilter<"park_zones"> | string | null
     createdAt?: DateTimeNullableFilter<"park_zones"> | Date | string | null
     updatedAt?: DateTimeFilter<"park_zones"> | Date | string
     parks?: XOR<ParksNullableScalarRelationFilter, parksWhereInput> | null
     parks_irrigation_job_history?: Parks_irrigation_job_historyListRelationFilter
     parks_zones_job_history?: Parks_zones_job_historyListRelationFilter
-    camera?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
+    cameras_irrigation_section?: Cameras_irrigation_sectionListRelationFilter
   }, "Id">
 
   export type park_zonesOrderByWithAggregationInput = {
@@ -43842,7 +46121,6 @@ export namespace Prisma {
     longitude?: SortOrderInput | SortOrder
     device_ip?: SortOrderInput | SortOrder
     web_api?: SortOrderInput | SortOrder
-    camera_Id?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
@@ -43866,7 +46144,6 @@ export namespace Prisma {
     longitude?: DecimalNullableWithAggregatesFilter<"park_zones"> | Decimal | DecimalJsLike | number | string | null
     device_ip?: StringNullableWithAggregatesFilter<"park_zones"> | string | null
     web_api?: StringNullableWithAggregatesFilter<"park_zones"> | string | null
-    camera_Id?: IntNullableWithAggregatesFilter<"park_zones"> | number | null
     status?: StringNullableWithAggregatesFilter<"park_zones"> | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"park_zones"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"park_zones"> | Date | string
@@ -46274,6 +48551,135 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"landscaping_history"> | Date | string
   }
 
+  export type cameras_irrigation_sectionWhereInput = {
+    AND?: cameras_irrigation_sectionWhereInput | cameras_irrigation_sectionWhereInput[]
+    OR?: cameras_irrigation_sectionWhereInput[]
+    NOT?: cameras_irrigation_sectionWhereInput | cameras_irrigation_sectionWhereInput[]
+    id?: IntFilter<"cameras_irrigation_section"> | number
+    working_time?: StringNullableFilter<"cameras_irrigation_section"> | string | null
+    camera_Id?: IntNullableFilter<"cameras_irrigation_section"> | number | null
+    zone_Id?: IntNullableFilter<"cameras_irrigation_section"> | number | null
+    createdAt?: DateTimeFilter<"cameras_irrigation_section"> | Date | string
+    updatedAt?: DateTimeFilter<"cameras_irrigation_section"> | Date | string
+    park_cameras?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
+    park_zones?: XOR<Park_zonesNullableScalarRelationFilter, park_zonesWhereInput> | null
+  }
+
+  export type cameras_irrigation_sectionOrderByWithRelationInput = {
+    id?: SortOrder
+    working_time?: SortOrderInput | SortOrder
+    camera_Id?: SortOrderInput | SortOrder
+    zone_Id?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    park_cameras?: park_camerasOrderByWithRelationInput
+    park_zones?: park_zonesOrderByWithRelationInput
+    _relevance?: cameras_irrigation_sectionOrderByRelevanceInput
+  }
+
+  export type cameras_irrigation_sectionWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: cameras_irrigation_sectionWhereInput | cameras_irrigation_sectionWhereInput[]
+    OR?: cameras_irrigation_sectionWhereInput[]
+    NOT?: cameras_irrigation_sectionWhereInput | cameras_irrigation_sectionWhereInput[]
+    working_time?: StringNullableFilter<"cameras_irrigation_section"> | string | null
+    camera_Id?: IntNullableFilter<"cameras_irrigation_section"> | number | null
+    zone_Id?: IntNullableFilter<"cameras_irrigation_section"> | number | null
+    createdAt?: DateTimeFilter<"cameras_irrigation_section"> | Date | string
+    updatedAt?: DateTimeFilter<"cameras_irrigation_section"> | Date | string
+    park_cameras?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
+    park_zones?: XOR<Park_zonesNullableScalarRelationFilter, park_zonesWhereInput> | null
+  }, "id">
+
+  export type cameras_irrigation_sectionOrderByWithAggregationInput = {
+    id?: SortOrder
+    working_time?: SortOrderInput | SortOrder
+    camera_Id?: SortOrderInput | SortOrder
+    zone_Id?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: cameras_irrigation_sectionCountOrderByAggregateInput
+    _avg?: cameras_irrigation_sectionAvgOrderByAggregateInput
+    _max?: cameras_irrigation_sectionMaxOrderByAggregateInput
+    _min?: cameras_irrigation_sectionMinOrderByAggregateInput
+    _sum?: cameras_irrigation_sectionSumOrderByAggregateInput
+  }
+
+  export type cameras_irrigation_sectionScalarWhereWithAggregatesInput = {
+    AND?: cameras_irrigation_sectionScalarWhereWithAggregatesInput | cameras_irrigation_sectionScalarWhereWithAggregatesInput[]
+    OR?: cameras_irrigation_sectionScalarWhereWithAggregatesInput[]
+    NOT?: cameras_irrigation_sectionScalarWhereWithAggregatesInput | cameras_irrigation_sectionScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"cameras_irrigation_section"> | number
+    working_time?: StringNullableWithAggregatesFilter<"cameras_irrigation_section"> | string | null
+    camera_Id?: IntNullableWithAggregatesFilter<"cameras_irrigation_section"> | number | null
+    zone_Id?: IntNullableWithAggregatesFilter<"cameras_irrigation_section"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"cameras_irrigation_section"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"cameras_irrigation_section"> | Date | string
+  }
+
+  export type cameras_landscaping_sectionWhereInput = {
+    AND?: cameras_landscaping_sectionWhereInput | cameras_landscaping_sectionWhereInput[]
+    OR?: cameras_landscaping_sectionWhereInput[]
+    NOT?: cameras_landscaping_sectionWhereInput | cameras_landscaping_sectionWhereInput[]
+    id?: IntFilter<"cameras_landscaping_section"> | number
+    area_name?: StringNullableFilter<"cameras_landscaping_section"> | string | null
+    working_time?: StringNullableFilter<"cameras_landscaping_section"> | string | null
+    camera_Id?: IntNullableFilter<"cameras_landscaping_section"> | number | null
+    createdAt?: DateTimeFilter<"cameras_landscaping_section"> | Date | string
+    updatedAt?: DateTimeFilter<"cameras_landscaping_section"> | Date | string
+    park_cameras?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
+  }
+
+  export type cameras_landscaping_sectionOrderByWithRelationInput = {
+    id?: SortOrder
+    area_name?: SortOrderInput | SortOrder
+    working_time?: SortOrderInput | SortOrder
+    camera_Id?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    park_cameras?: park_camerasOrderByWithRelationInput
+    _relevance?: cameras_landscaping_sectionOrderByRelevanceInput
+  }
+
+  export type cameras_landscaping_sectionWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: cameras_landscaping_sectionWhereInput | cameras_landscaping_sectionWhereInput[]
+    OR?: cameras_landscaping_sectionWhereInput[]
+    NOT?: cameras_landscaping_sectionWhereInput | cameras_landscaping_sectionWhereInput[]
+    area_name?: StringNullableFilter<"cameras_landscaping_section"> | string | null
+    working_time?: StringNullableFilter<"cameras_landscaping_section"> | string | null
+    camera_Id?: IntNullableFilter<"cameras_landscaping_section"> | number | null
+    createdAt?: DateTimeFilter<"cameras_landscaping_section"> | Date | string
+    updatedAt?: DateTimeFilter<"cameras_landscaping_section"> | Date | string
+    park_cameras?: XOR<Park_camerasNullableScalarRelationFilter, park_camerasWhereInput> | null
+  }, "id">
+
+  export type cameras_landscaping_sectionOrderByWithAggregationInput = {
+    id?: SortOrder
+    area_name?: SortOrderInput | SortOrder
+    working_time?: SortOrderInput | SortOrder
+    camera_Id?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: cameras_landscaping_sectionCountOrderByAggregateInput
+    _avg?: cameras_landscaping_sectionAvgOrderByAggregateInput
+    _max?: cameras_landscaping_sectionMaxOrderByAggregateInput
+    _min?: cameras_landscaping_sectionMinOrderByAggregateInput
+    _sum?: cameras_landscaping_sectionSumOrderByAggregateInput
+  }
+
+  export type cameras_landscaping_sectionScalarWhereWithAggregatesInput = {
+    AND?: cameras_landscaping_sectionScalarWhereWithAggregatesInput | cameras_landscaping_sectionScalarWhereWithAggregatesInput[]
+    OR?: cameras_landscaping_sectionScalarWhereWithAggregatesInput[]
+    NOT?: cameras_landscaping_sectionScalarWhereWithAggregatesInput | cameras_landscaping_sectionScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"cameras_landscaping_section"> | number
+    area_name?: StringNullableWithAggregatesFilter<"cameras_landscaping_section"> | string | null
+    working_time?: StringNullableWithAggregatesFilter<"cameras_landscaping_section"> | string | null
+    camera_Id?: IntNullableWithAggregatesFilter<"cameras_landscaping_section"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"cameras_landscaping_section"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"cameras_landscaping_section"> | Date | string
+  }
+
   export type qms_historyWhereInput = {
     AND?: qms_historyWhereInput | qms_historyWhereInput[]
     OR?: qms_historyWhereInput[]
@@ -47289,6 +49695,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
@@ -47300,7 +49707,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateInput = {
@@ -47316,6 +49724,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -47326,7 +49735,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUpdateInput = {
@@ -47340,6 +49750,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
@@ -47351,7 +49762,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateInput = {
@@ -47367,6 +49779,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -47377,7 +49790,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasCreateManyInput = {
@@ -47393,6 +49807,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -47408,6 +49823,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47425,6 +49841,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47516,7 +49933,7 @@ export namespace Prisma {
     parks?: parksCreateNestedOneWithoutPark_zonesInput
     parks_irrigation_job_history?: parks_irrigation_job_historyCreateNestedManyWithoutPark_zonesInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_zonesInput
-    camera?: park_camerasCreateNestedOneWithoutPark_zonesInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_zonesInput
   }
 
   export type park_zonesUncheckedCreateInput = {
@@ -47529,12 +49946,12 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     device_ip?: string | null
     web_api?: string | null
-    camera_Id?: number | null
     status?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_zonesInput
   }
 
   export type park_zonesUpdateInput = {
@@ -47551,7 +49968,7 @@ export namespace Prisma {
     parks?: parksUpdateOneWithoutPark_zonesNestedInput
     parks_irrigation_job_history?: parks_irrigation_job_historyUpdateManyWithoutPark_zonesNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_zonesNestedInput
-    camera?: park_camerasUpdateOneWithoutPark_zonesNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_zonesNestedInput
   }
 
   export type park_zonesUncheckedUpdateInput = {
@@ -47564,12 +49981,12 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     device_ip?: NullableStringFieldUpdateOperationsInput | string | null
     web_api?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_zonesNestedInput
   }
 
   export type park_zonesCreateManyInput = {
@@ -47582,7 +49999,6 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     device_ip?: string | null
     web_api?: string | null
-    camera_Id?: number | null
     status?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
@@ -47611,7 +50027,6 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     device_ip?: NullableStringFieldUpdateOperationsInput | string | null
     web_api?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50324,6 +52739,123 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type cameras_irrigation_sectionCreateInput = {
+    working_time?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    park_cameras?: park_camerasCreateNestedOneWithoutCameras_irrigation_sectionInput
+    park_zones?: park_zonesCreateNestedOneWithoutCameras_irrigation_sectionInput
+  }
+
+  export type cameras_irrigation_sectionUncheckedCreateInput = {
+    id?: number
+    working_time?: string | null
+    camera_Id?: number | null
+    zone_Id?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type cameras_irrigation_sectionUpdateInput = {
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    park_cameras?: park_camerasUpdateOneWithoutCameras_irrigation_sectionNestedInput
+    park_zones?: park_zonesUpdateOneWithoutCameras_irrigation_sectionNestedInput
+  }
+
+  export type cameras_irrigation_sectionUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type cameras_irrigation_sectionCreateManyInput = {
+    id?: number
+    working_time?: string | null
+    camera_Id?: number | null
+    zone_Id?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type cameras_irrigation_sectionUpdateManyMutationInput = {
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type cameras_irrigation_sectionUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type cameras_landscaping_sectionCreateInput = {
+    area_name?: string | null
+    working_time?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    park_cameras?: park_camerasCreateNestedOneWithoutCameras_landscaping_sectionInput
+  }
+
+  export type cameras_landscaping_sectionUncheckedCreateInput = {
+    id?: number
+    area_name?: string | null
+    working_time?: string | null
+    camera_Id?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type cameras_landscaping_sectionUpdateInput = {
+    area_name?: NullableStringFieldUpdateOperationsInput | string | null
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    park_cameras?: park_camerasUpdateOneWithoutCameras_landscaping_sectionNestedInput
+  }
+
+  export type cameras_landscaping_sectionUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    area_name?: NullableStringFieldUpdateOperationsInput | string | null
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type cameras_landscaping_sectionCreateManyInput = {
+    id?: number
+    area_name?: string | null
+    working_time?: string | null
+    camera_Id?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type cameras_landscaping_sectionUpdateManyMutationInput = {
+    area_name?: NullableStringFieldUpdateOperationsInput | string | null
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type cameras_landscaping_sectionUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    area_name?: NullableStringFieldUpdateOperationsInput | string | null
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type qms_historyCreateInput = {
     visitor_id?: number | null
     gender?: string | null
@@ -51463,10 +53995,16 @@ export namespace Prisma {
     none?: parks_zones_job_historyWhereInput
   }
 
-  export type Park_zonesListRelationFilter = {
-    every?: park_zonesWhereInput
-    some?: park_zonesWhereInput
-    none?: park_zonesWhereInput
+  export type Cameras_irrigation_sectionListRelationFilter = {
+    every?: cameras_irrigation_sectionWhereInput
+    some?: cameras_irrigation_sectionWhereInput
+    none?: cameras_irrigation_sectionWhereInput
+  }
+
+  export type Cameras_landscaping_sectionListRelationFilter = {
+    every?: cameras_landscaping_sectionWhereInput
+    some?: cameras_landscaping_sectionWhereInput
+    none?: cameras_landscaping_sectionWhereInput
   }
 
   export type parks_behaviour_alertsOrderByRelationAggregateInput = {
@@ -51493,7 +54031,11 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type park_zonesOrderByRelationAggregateInput = {
+  export type cameras_irrigation_sectionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type cameras_landscaping_sectionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -51516,6 +54058,7 @@ export namespace Prisma {
     last_active_date?: SortOrder
     last_active_time?: SortOrder
     status?: SortOrder
+    is_ptz_camera?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51540,6 +54083,7 @@ export namespace Prisma {
     last_active_date?: SortOrder
     last_active_time?: SortOrder
     status?: SortOrder
+    is_ptz_camera?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51557,6 +54101,7 @@ export namespace Prisma {
     last_active_date?: SortOrder
     last_active_time?: SortOrder
     status?: SortOrder
+    is_ptz_camera?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51643,7 +54188,6 @@ export namespace Prisma {
     longitude?: SortOrder
     device_ip?: SortOrder
     web_api?: SortOrder
-    camera_Id?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -51654,7 +54198,6 @@ export namespace Prisma {
     park_Id?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
-    camera_Id?: SortOrder
   }
 
   export type park_zonesMaxOrderByAggregateInput = {
@@ -51667,7 +54210,6 @@ export namespace Prisma {
     longitude?: SortOrder
     device_ip?: SortOrder
     web_api?: SortOrder
-    camera_Id?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -51683,7 +54225,6 @@ export namespace Prisma {
     longitude?: SortOrder
     device_ip?: SortOrder
     web_api?: SortOrder
-    camera_Id?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -51694,7 +54235,6 @@ export namespace Prisma {
     park_Id?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
-    camera_Id?: SortOrder
   }
 
   export type Park_zonesNullableScalarRelationFilter = {
@@ -51794,6 +54334,12 @@ export namespace Prisma {
     none?: park_streamsWhereInput
   }
 
+  export type Park_zonesListRelationFilter = {
+    every?: park_zonesWhereInput
+    some?: park_zonesWhereInput
+    none?: park_zonesWhereInput
+  }
+
   export type Parks_attendanceListRelationFilter = {
     every?: parks_attendanceWhereInput
     some?: parks_attendanceWhereInput
@@ -51817,6 +54363,10 @@ export namespace Prisma {
   }
 
   export type park_streamsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type park_zonesOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -53396,6 +55946,94 @@ export namespace Prisma {
     user_Id?: SortOrder
   }
 
+  export type cameras_irrigation_sectionOrderByRelevanceInput = {
+    fields: cameras_irrigation_sectionOrderByRelevanceFieldEnum | cameras_irrigation_sectionOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type cameras_irrigation_sectionCountOrderByAggregateInput = {
+    id?: SortOrder
+    working_time?: SortOrder
+    camera_Id?: SortOrder
+    zone_Id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type cameras_irrigation_sectionAvgOrderByAggregateInput = {
+    id?: SortOrder
+    camera_Id?: SortOrder
+    zone_Id?: SortOrder
+  }
+
+  export type cameras_irrigation_sectionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    working_time?: SortOrder
+    camera_Id?: SortOrder
+    zone_Id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type cameras_irrigation_sectionMinOrderByAggregateInput = {
+    id?: SortOrder
+    working_time?: SortOrder
+    camera_Id?: SortOrder
+    zone_Id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type cameras_irrigation_sectionSumOrderByAggregateInput = {
+    id?: SortOrder
+    camera_Id?: SortOrder
+    zone_Id?: SortOrder
+  }
+
+  export type cameras_landscaping_sectionOrderByRelevanceInput = {
+    fields: cameras_landscaping_sectionOrderByRelevanceFieldEnum | cameras_landscaping_sectionOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type cameras_landscaping_sectionCountOrderByAggregateInput = {
+    id?: SortOrder
+    area_name?: SortOrder
+    working_time?: SortOrder
+    camera_Id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type cameras_landscaping_sectionAvgOrderByAggregateInput = {
+    id?: SortOrder
+    camera_Id?: SortOrder
+  }
+
+  export type cameras_landscaping_sectionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    area_name?: SortOrder
+    working_time?: SortOrder
+    camera_Id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type cameras_landscaping_sectionMinOrderByAggregateInput = {
+    id?: SortOrder
+    area_name?: SortOrder
+    working_time?: SortOrder
+    camera_Id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type cameras_landscaping_sectionSumOrderByAggregateInput = {
+    id?: SortOrder
+    camera_Id?: SortOrder
+  }
+
   export type qms_historyOrderByRelevanceInput = {
     fields: qms_historyOrderByRelevanceFieldEnum | qms_historyOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -54222,11 +56860,18 @@ export namespace Prisma {
     connect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
   }
 
-  export type park_zonesCreateNestedManyWithoutCameraInput = {
-    create?: XOR<park_zonesCreateWithoutCameraInput, park_zonesUncheckedCreateWithoutCameraInput> | park_zonesCreateWithoutCameraInput[] | park_zonesUncheckedCreateWithoutCameraInput[]
-    connectOrCreate?: park_zonesCreateOrConnectWithoutCameraInput | park_zonesCreateOrConnectWithoutCameraInput[]
-    createMany?: park_zonesCreateManyCameraInputEnvelope
-    connect?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
+  export type cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput = {
+    create?: XOR<cameras_irrigation_sectionCreateWithoutPark_camerasInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput> | cameras_irrigation_sectionCreateWithoutPark_camerasInput[] | cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput[]
+    connectOrCreate?: cameras_irrigation_sectionCreateOrConnectWithoutPark_camerasInput | cameras_irrigation_sectionCreateOrConnectWithoutPark_camerasInput[]
+    createMany?: cameras_irrigation_sectionCreateManyPark_camerasInputEnvelope
+    connect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+  }
+
+  export type cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput = {
+    create?: XOR<cameras_landscaping_sectionCreateWithoutPark_camerasInput, cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput> | cameras_landscaping_sectionCreateWithoutPark_camerasInput[] | cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput[]
+    connectOrCreate?: cameras_landscaping_sectionCreateOrConnectWithoutPark_camerasInput | cameras_landscaping_sectionCreateOrConnectWithoutPark_camerasInput[]
+    createMany?: cameras_landscaping_sectionCreateManyPark_camerasInputEnvelope
+    connect?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
   }
 
   export type live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput = {
@@ -54285,11 +56930,18 @@ export namespace Prisma {
     connect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
   }
 
-  export type park_zonesUncheckedCreateNestedManyWithoutCameraInput = {
-    create?: XOR<park_zonesCreateWithoutCameraInput, park_zonesUncheckedCreateWithoutCameraInput> | park_zonesCreateWithoutCameraInput[] | park_zonesUncheckedCreateWithoutCameraInput[]
-    connectOrCreate?: park_zonesCreateOrConnectWithoutCameraInput | park_zonesCreateOrConnectWithoutCameraInput[]
-    createMany?: park_zonesCreateManyCameraInputEnvelope
-    connect?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
+  export type cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput = {
+    create?: XOR<cameras_irrigation_sectionCreateWithoutPark_camerasInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput> | cameras_irrigation_sectionCreateWithoutPark_camerasInput[] | cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput[]
+    connectOrCreate?: cameras_irrigation_sectionCreateOrConnectWithoutPark_camerasInput | cameras_irrigation_sectionCreateOrConnectWithoutPark_camerasInput[]
+    createMany?: cameras_irrigation_sectionCreateManyPark_camerasInputEnvelope
+    connect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+  }
+
+  export type cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput = {
+    create?: XOR<cameras_landscaping_sectionCreateWithoutPark_camerasInput, cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput> | cameras_landscaping_sectionCreateWithoutPark_camerasInput[] | cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput[]
+    connectOrCreate?: cameras_landscaping_sectionCreateOrConnectWithoutPark_camerasInput | cameras_landscaping_sectionCreateOrConnectWithoutPark_camerasInput[]
+    createMany?: cameras_landscaping_sectionCreateManyPark_camerasInputEnvelope
+    connect?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
   }
 
   export type live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput = {
@@ -54414,18 +57066,32 @@ export namespace Prisma {
     deleteMany?: parks_zones_job_historyScalarWhereInput | parks_zones_job_historyScalarWhereInput[]
   }
 
-  export type park_zonesUpdateManyWithoutCameraNestedInput = {
-    create?: XOR<park_zonesCreateWithoutCameraInput, park_zonesUncheckedCreateWithoutCameraInput> | park_zonesCreateWithoutCameraInput[] | park_zonesUncheckedCreateWithoutCameraInput[]
-    connectOrCreate?: park_zonesCreateOrConnectWithoutCameraInput | park_zonesCreateOrConnectWithoutCameraInput[]
-    upsert?: park_zonesUpsertWithWhereUniqueWithoutCameraInput | park_zonesUpsertWithWhereUniqueWithoutCameraInput[]
-    createMany?: park_zonesCreateManyCameraInputEnvelope
-    set?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
-    disconnect?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
-    delete?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
-    connect?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
-    update?: park_zonesUpdateWithWhereUniqueWithoutCameraInput | park_zonesUpdateWithWhereUniqueWithoutCameraInput[]
-    updateMany?: park_zonesUpdateManyWithWhereWithoutCameraInput | park_zonesUpdateManyWithWhereWithoutCameraInput[]
-    deleteMany?: park_zonesScalarWhereInput | park_zonesScalarWhereInput[]
+  export type cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput = {
+    create?: XOR<cameras_irrigation_sectionCreateWithoutPark_camerasInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput> | cameras_irrigation_sectionCreateWithoutPark_camerasInput[] | cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput[]
+    connectOrCreate?: cameras_irrigation_sectionCreateOrConnectWithoutPark_camerasInput | cameras_irrigation_sectionCreateOrConnectWithoutPark_camerasInput[]
+    upsert?: cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_camerasInput | cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_camerasInput[]
+    createMany?: cameras_irrigation_sectionCreateManyPark_camerasInputEnvelope
+    set?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    disconnect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    delete?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    connect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    update?: cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_camerasInput | cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_camerasInput[]
+    updateMany?: cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_camerasInput | cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_camerasInput[]
+    deleteMany?: cameras_irrigation_sectionScalarWhereInput | cameras_irrigation_sectionScalarWhereInput[]
+  }
+
+  export type cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput = {
+    create?: XOR<cameras_landscaping_sectionCreateWithoutPark_camerasInput, cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput> | cameras_landscaping_sectionCreateWithoutPark_camerasInput[] | cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput[]
+    connectOrCreate?: cameras_landscaping_sectionCreateOrConnectWithoutPark_camerasInput | cameras_landscaping_sectionCreateOrConnectWithoutPark_camerasInput[]
+    upsert?: cameras_landscaping_sectionUpsertWithWhereUniqueWithoutPark_camerasInput | cameras_landscaping_sectionUpsertWithWhereUniqueWithoutPark_camerasInput[]
+    createMany?: cameras_landscaping_sectionCreateManyPark_camerasInputEnvelope
+    set?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
+    disconnect?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
+    delete?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
+    connect?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
+    update?: cameras_landscaping_sectionUpdateWithWhereUniqueWithoutPark_camerasInput | cameras_landscaping_sectionUpdateWithWhereUniqueWithoutPark_camerasInput[]
+    updateMany?: cameras_landscaping_sectionUpdateManyWithWhereWithoutPark_camerasInput | cameras_landscaping_sectionUpdateManyWithWhereWithoutPark_camerasInput[]
+    deleteMany?: cameras_landscaping_sectionScalarWhereInput | cameras_landscaping_sectionScalarWhereInput[]
   }
 
   export type live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput = {
@@ -54540,18 +57206,32 @@ export namespace Prisma {
     deleteMany?: parks_zones_job_historyScalarWhereInput | parks_zones_job_historyScalarWhereInput[]
   }
 
-  export type park_zonesUncheckedUpdateManyWithoutCameraNestedInput = {
-    create?: XOR<park_zonesCreateWithoutCameraInput, park_zonesUncheckedCreateWithoutCameraInput> | park_zonesCreateWithoutCameraInput[] | park_zonesUncheckedCreateWithoutCameraInput[]
-    connectOrCreate?: park_zonesCreateOrConnectWithoutCameraInput | park_zonesCreateOrConnectWithoutCameraInput[]
-    upsert?: park_zonesUpsertWithWhereUniqueWithoutCameraInput | park_zonesUpsertWithWhereUniqueWithoutCameraInput[]
-    createMany?: park_zonesCreateManyCameraInputEnvelope
-    set?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
-    disconnect?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
-    delete?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
-    connect?: park_zonesWhereUniqueInput | park_zonesWhereUniqueInput[]
-    update?: park_zonesUpdateWithWhereUniqueWithoutCameraInput | park_zonesUpdateWithWhereUniqueWithoutCameraInput[]
-    updateMany?: park_zonesUpdateManyWithWhereWithoutCameraInput | park_zonesUpdateManyWithWhereWithoutCameraInput[]
-    deleteMany?: park_zonesScalarWhereInput | park_zonesScalarWhereInput[]
+  export type cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput = {
+    create?: XOR<cameras_irrigation_sectionCreateWithoutPark_camerasInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput> | cameras_irrigation_sectionCreateWithoutPark_camerasInput[] | cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput[]
+    connectOrCreate?: cameras_irrigation_sectionCreateOrConnectWithoutPark_camerasInput | cameras_irrigation_sectionCreateOrConnectWithoutPark_camerasInput[]
+    upsert?: cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_camerasInput | cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_camerasInput[]
+    createMany?: cameras_irrigation_sectionCreateManyPark_camerasInputEnvelope
+    set?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    disconnect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    delete?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    connect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    update?: cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_camerasInput | cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_camerasInput[]
+    updateMany?: cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_camerasInput | cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_camerasInput[]
+    deleteMany?: cameras_irrigation_sectionScalarWhereInput | cameras_irrigation_sectionScalarWhereInput[]
+  }
+
+  export type cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput = {
+    create?: XOR<cameras_landscaping_sectionCreateWithoutPark_camerasInput, cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput> | cameras_landscaping_sectionCreateWithoutPark_camerasInput[] | cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput[]
+    connectOrCreate?: cameras_landscaping_sectionCreateOrConnectWithoutPark_camerasInput | cameras_landscaping_sectionCreateOrConnectWithoutPark_camerasInput[]
+    upsert?: cameras_landscaping_sectionUpsertWithWhereUniqueWithoutPark_camerasInput | cameras_landscaping_sectionUpsertWithWhereUniqueWithoutPark_camerasInput[]
+    createMany?: cameras_landscaping_sectionCreateManyPark_camerasInputEnvelope
+    set?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
+    disconnect?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
+    delete?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
+    connect?: cameras_landscaping_sectionWhereUniqueInput | cameras_landscaping_sectionWhereUniqueInput[]
+    update?: cameras_landscaping_sectionUpdateWithWhereUniqueWithoutPark_camerasInput | cameras_landscaping_sectionUpdateWithWhereUniqueWithoutPark_camerasInput[]
+    updateMany?: cameras_landscaping_sectionUpdateManyWithWhereWithoutPark_camerasInput | cameras_landscaping_sectionUpdateManyWithWhereWithoutPark_camerasInput[]
+    deleteMany?: cameras_landscaping_sectionScalarWhereInput | cameras_landscaping_sectionScalarWhereInput[]
   }
 
   export type parksCreateNestedOneWithoutPark_streamsInput = {
@@ -54590,10 +57270,11 @@ export namespace Prisma {
     connect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
   }
 
-  export type park_camerasCreateNestedOneWithoutPark_zonesInput = {
-    create?: XOR<park_camerasCreateWithoutPark_zonesInput, park_camerasUncheckedCreateWithoutPark_zonesInput>
-    connectOrCreate?: park_camerasCreateOrConnectWithoutPark_zonesInput
-    connect?: park_camerasWhereUniqueInput
+  export type cameras_irrigation_sectionCreateNestedManyWithoutPark_zonesInput = {
+    create?: XOR<cameras_irrigation_sectionCreateWithoutPark_zonesInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput> | cameras_irrigation_sectionCreateWithoutPark_zonesInput[] | cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput[]
+    connectOrCreate?: cameras_irrigation_sectionCreateOrConnectWithoutPark_zonesInput | cameras_irrigation_sectionCreateOrConnectWithoutPark_zonesInput[]
+    createMany?: cameras_irrigation_sectionCreateManyPark_zonesInputEnvelope
+    connect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
   }
 
   export type parks_irrigation_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput = {
@@ -54608,6 +57289,13 @@ export namespace Prisma {
     connectOrCreate?: parks_zones_job_historyCreateOrConnectWithoutPark_zonesInput | parks_zones_job_historyCreateOrConnectWithoutPark_zonesInput[]
     createMany?: parks_zones_job_historyCreateManyPark_zonesInputEnvelope
     connect?: parks_zones_job_historyWhereUniqueInput | parks_zones_job_historyWhereUniqueInput[]
+  }
+
+  export type cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_zonesInput = {
+    create?: XOR<cameras_irrigation_sectionCreateWithoutPark_zonesInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput> | cameras_irrigation_sectionCreateWithoutPark_zonesInput[] | cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput[]
+    connectOrCreate?: cameras_irrigation_sectionCreateOrConnectWithoutPark_zonesInput | cameras_irrigation_sectionCreateOrConnectWithoutPark_zonesInput[]
+    createMany?: cameras_irrigation_sectionCreateManyPark_zonesInputEnvelope
+    connect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
   }
 
   export type parksUpdateOneWithoutPark_zonesNestedInput = {
@@ -54648,14 +57336,18 @@ export namespace Prisma {
     deleteMany?: parks_zones_job_historyScalarWhereInput | parks_zones_job_historyScalarWhereInput[]
   }
 
-  export type park_camerasUpdateOneWithoutPark_zonesNestedInput = {
-    create?: XOR<park_camerasCreateWithoutPark_zonesInput, park_camerasUncheckedCreateWithoutPark_zonesInput>
-    connectOrCreate?: park_camerasCreateOrConnectWithoutPark_zonesInput
-    upsert?: park_camerasUpsertWithoutPark_zonesInput
-    disconnect?: park_camerasWhereInput | boolean
-    delete?: park_camerasWhereInput | boolean
-    connect?: park_camerasWhereUniqueInput
-    update?: XOR<XOR<park_camerasUpdateToOneWithWhereWithoutPark_zonesInput, park_camerasUpdateWithoutPark_zonesInput>, park_camerasUncheckedUpdateWithoutPark_zonesInput>
+  export type cameras_irrigation_sectionUpdateManyWithoutPark_zonesNestedInput = {
+    create?: XOR<cameras_irrigation_sectionCreateWithoutPark_zonesInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput> | cameras_irrigation_sectionCreateWithoutPark_zonesInput[] | cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput[]
+    connectOrCreate?: cameras_irrigation_sectionCreateOrConnectWithoutPark_zonesInput | cameras_irrigation_sectionCreateOrConnectWithoutPark_zonesInput[]
+    upsert?: cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_zonesInput | cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_zonesInput[]
+    createMany?: cameras_irrigation_sectionCreateManyPark_zonesInputEnvelope
+    set?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    disconnect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    delete?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    connect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    update?: cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_zonesInput | cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_zonesInput[]
+    updateMany?: cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_zonesInput | cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_zonesInput[]
+    deleteMany?: cameras_irrigation_sectionScalarWhereInput | cameras_irrigation_sectionScalarWhereInput[]
   }
 
   export type parks_irrigation_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput = {
@@ -54684,6 +57376,20 @@ export namespace Prisma {
     update?: parks_zones_job_historyUpdateWithWhereUniqueWithoutPark_zonesInput | parks_zones_job_historyUpdateWithWhereUniqueWithoutPark_zonesInput[]
     updateMany?: parks_zones_job_historyUpdateManyWithWhereWithoutPark_zonesInput | parks_zones_job_historyUpdateManyWithWhereWithoutPark_zonesInput[]
     deleteMany?: parks_zones_job_historyScalarWhereInput | parks_zones_job_historyScalarWhereInput[]
+  }
+
+  export type cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_zonesNestedInput = {
+    create?: XOR<cameras_irrigation_sectionCreateWithoutPark_zonesInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput> | cameras_irrigation_sectionCreateWithoutPark_zonesInput[] | cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput[]
+    connectOrCreate?: cameras_irrigation_sectionCreateOrConnectWithoutPark_zonesInput | cameras_irrigation_sectionCreateOrConnectWithoutPark_zonesInput[]
+    upsert?: cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_zonesInput | cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_zonesInput[]
+    createMany?: cameras_irrigation_sectionCreateManyPark_zonesInputEnvelope
+    set?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    disconnect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    delete?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    connect?: cameras_irrigation_sectionWhereUniqueInput | cameras_irrigation_sectionWhereUniqueInput[]
+    update?: cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_zonesInput | cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_zonesInput[]
+    updateMany?: cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_zonesInput | cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_zonesInput[]
+    deleteMany?: cameras_irrigation_sectionScalarWhereInput | cameras_irrigation_sectionScalarWhereInput[]
   }
 
   export type park_camerasCreateNestedOneWithoutParks_zones_job_historyInput = {
@@ -56402,6 +59108,54 @@ export namespace Prisma {
     update?: XOR<XOR<usersUpdateToOneWithWhereWithoutLandscaping_historyInput, usersUpdateWithoutLandscaping_historyInput>, usersUncheckedUpdateWithoutLandscaping_historyInput>
   }
 
+  export type park_camerasCreateNestedOneWithoutCameras_irrigation_sectionInput = {
+    create?: XOR<park_camerasCreateWithoutCameras_irrigation_sectionInput, park_camerasUncheckedCreateWithoutCameras_irrigation_sectionInput>
+    connectOrCreate?: park_camerasCreateOrConnectWithoutCameras_irrigation_sectionInput
+    connect?: park_camerasWhereUniqueInput
+  }
+
+  export type park_zonesCreateNestedOneWithoutCameras_irrigation_sectionInput = {
+    create?: XOR<park_zonesCreateWithoutCameras_irrigation_sectionInput, park_zonesUncheckedCreateWithoutCameras_irrigation_sectionInput>
+    connectOrCreate?: park_zonesCreateOrConnectWithoutCameras_irrigation_sectionInput
+    connect?: park_zonesWhereUniqueInput
+  }
+
+  export type park_camerasUpdateOneWithoutCameras_irrigation_sectionNestedInput = {
+    create?: XOR<park_camerasCreateWithoutCameras_irrigation_sectionInput, park_camerasUncheckedCreateWithoutCameras_irrigation_sectionInput>
+    connectOrCreate?: park_camerasCreateOrConnectWithoutCameras_irrigation_sectionInput
+    upsert?: park_camerasUpsertWithoutCameras_irrigation_sectionInput
+    disconnect?: park_camerasWhereInput | boolean
+    delete?: park_camerasWhereInput | boolean
+    connect?: park_camerasWhereUniqueInput
+    update?: XOR<XOR<park_camerasUpdateToOneWithWhereWithoutCameras_irrigation_sectionInput, park_camerasUpdateWithoutCameras_irrigation_sectionInput>, park_camerasUncheckedUpdateWithoutCameras_irrigation_sectionInput>
+  }
+
+  export type park_zonesUpdateOneWithoutCameras_irrigation_sectionNestedInput = {
+    create?: XOR<park_zonesCreateWithoutCameras_irrigation_sectionInput, park_zonesUncheckedCreateWithoutCameras_irrigation_sectionInput>
+    connectOrCreate?: park_zonesCreateOrConnectWithoutCameras_irrigation_sectionInput
+    upsert?: park_zonesUpsertWithoutCameras_irrigation_sectionInput
+    disconnect?: park_zonesWhereInput | boolean
+    delete?: park_zonesWhereInput | boolean
+    connect?: park_zonesWhereUniqueInput
+    update?: XOR<XOR<park_zonesUpdateToOneWithWhereWithoutCameras_irrigation_sectionInput, park_zonesUpdateWithoutCameras_irrigation_sectionInput>, park_zonesUncheckedUpdateWithoutCameras_irrigation_sectionInput>
+  }
+
+  export type park_camerasCreateNestedOneWithoutCameras_landscaping_sectionInput = {
+    create?: XOR<park_camerasCreateWithoutCameras_landscaping_sectionInput, park_camerasUncheckedCreateWithoutCameras_landscaping_sectionInput>
+    connectOrCreate?: park_camerasCreateOrConnectWithoutCameras_landscaping_sectionInput
+    connect?: park_camerasWhereUniqueInput
+  }
+
+  export type park_camerasUpdateOneWithoutCameras_landscaping_sectionNestedInput = {
+    create?: XOR<park_camerasCreateWithoutCameras_landscaping_sectionInput, park_camerasUncheckedCreateWithoutCameras_landscaping_sectionInput>
+    connectOrCreate?: park_camerasCreateOrConnectWithoutCameras_landscaping_sectionInput
+    upsert?: park_camerasUpsertWithoutCameras_landscaping_sectionInput
+    disconnect?: park_camerasWhereInput | boolean
+    delete?: park_camerasWhereInput | boolean
+    connect?: park_camerasWhereUniqueInput
+    update?: XOR<XOR<park_camerasUpdateToOneWithWhereWithoutCameras_landscaping_sectionInput, park_camerasUpdateWithoutCameras_landscaping_sectionInput>, park_camerasUncheckedUpdateWithoutCameras_landscaping_sectionInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -56792,6 +59546,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     parks?: parksCreateNestedOneWithoutPark_camerasInput
@@ -56802,7 +59557,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateWithoutLive_stream_favouritesInput = {
@@ -56818,6 +59574,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     parks_behaviour_alerts?: parks_behaviour_alertsUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -56827,7 +59584,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasCreateOrConnectWithoutLive_stream_favouritesInput = {
@@ -57005,6 +59763,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks?: parksUpdateOneWithoutPark_camerasNestedInput
@@ -57015,7 +59774,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateWithoutLive_stream_favouritesInput = {
@@ -57031,6 +59791,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks_behaviour_alerts?: parks_behaviour_alertsUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -57040,7 +59801,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type offices_camerasUpsertWithoutLive_stream_favouritesInput = {
@@ -58826,46 +61588,53 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type park_zonesCreateWithoutCameraInput = {
-    zone_Id?: string | null
-    zone_english_name?: string | null
-    zone_arabic_name?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
-    device_ip?: string | null
-    web_api?: string | null
-    status?: string | null
-    createdAt?: Date | string | null
+  export type cameras_irrigation_sectionCreateWithoutPark_camerasInput = {
+    working_time?: string | null
+    createdAt?: Date | string
     updatedAt?: Date | string
-    parks?: parksCreateNestedOneWithoutPark_zonesInput
-    parks_irrigation_job_history?: parks_irrigation_job_historyCreateNestedManyWithoutPark_zonesInput
-    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_zonesInput
+    park_zones?: park_zonesCreateNestedOneWithoutCameras_irrigation_sectionInput
   }
 
-  export type park_zonesUncheckedCreateWithoutCameraInput = {
-    Id?: number
-    park_Id?: number | null
-    zone_Id?: string | null
-    zone_english_name?: string | null
-    zone_arabic_name?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
-    device_ip?: string | null
-    web_api?: string | null
-    status?: string | null
-    createdAt?: Date | string | null
+  export type cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput = {
+    id?: number
+    working_time?: string | null
+    zone_Id?: number | null
+    createdAt?: Date | string
     updatedAt?: Date | string
-    parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
-    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
   }
 
-  export type park_zonesCreateOrConnectWithoutCameraInput = {
-    where: park_zonesWhereUniqueInput
-    create: XOR<park_zonesCreateWithoutCameraInput, park_zonesUncheckedCreateWithoutCameraInput>
+  export type cameras_irrigation_sectionCreateOrConnectWithoutPark_camerasInput = {
+    where: cameras_irrigation_sectionWhereUniqueInput
+    create: XOR<cameras_irrigation_sectionCreateWithoutPark_camerasInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput>
   }
 
-  export type park_zonesCreateManyCameraInputEnvelope = {
-    data: park_zonesCreateManyCameraInput | park_zonesCreateManyCameraInput[]
+  export type cameras_irrigation_sectionCreateManyPark_camerasInputEnvelope = {
+    data: cameras_irrigation_sectionCreateManyPark_camerasInput | cameras_irrigation_sectionCreateManyPark_camerasInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type cameras_landscaping_sectionCreateWithoutPark_camerasInput = {
+    area_name?: string | null
+    working_time?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput = {
+    id?: number
+    area_name?: string | null
+    working_time?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type cameras_landscaping_sectionCreateOrConnectWithoutPark_camerasInput = {
+    where: cameras_landscaping_sectionWhereUniqueInput
+    create: XOR<cameras_landscaping_sectionCreateWithoutPark_camerasInput, cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput>
+  }
+
+  export type cameras_landscaping_sectionCreateManyPark_camerasInputEnvelope = {
+    data: cameras_landscaping_sectionCreateManyPark_camerasInput | cameras_landscaping_sectionCreateManyPark_camerasInput[]
     skipDuplicates?: boolean
   }
 
@@ -59199,39 +61968,60 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"parks_zones_job_history"> | Date | string
   }
 
-  export type park_zonesUpsertWithWhereUniqueWithoutCameraInput = {
-    where: park_zonesWhereUniqueInput
-    update: XOR<park_zonesUpdateWithoutCameraInput, park_zonesUncheckedUpdateWithoutCameraInput>
-    create: XOR<park_zonesCreateWithoutCameraInput, park_zonesUncheckedCreateWithoutCameraInput>
+  export type cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_camerasInput = {
+    where: cameras_irrigation_sectionWhereUniqueInput
+    update: XOR<cameras_irrigation_sectionUpdateWithoutPark_camerasInput, cameras_irrigation_sectionUncheckedUpdateWithoutPark_camerasInput>
+    create: XOR<cameras_irrigation_sectionCreateWithoutPark_camerasInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_camerasInput>
   }
 
-  export type park_zonesUpdateWithWhereUniqueWithoutCameraInput = {
-    where: park_zonesWhereUniqueInput
-    data: XOR<park_zonesUpdateWithoutCameraInput, park_zonesUncheckedUpdateWithoutCameraInput>
+  export type cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_camerasInput = {
+    where: cameras_irrigation_sectionWhereUniqueInput
+    data: XOR<cameras_irrigation_sectionUpdateWithoutPark_camerasInput, cameras_irrigation_sectionUncheckedUpdateWithoutPark_camerasInput>
   }
 
-  export type park_zonesUpdateManyWithWhereWithoutCameraInput = {
-    where: park_zonesScalarWhereInput
-    data: XOR<park_zonesUpdateManyMutationInput, park_zonesUncheckedUpdateManyWithoutCameraInput>
+  export type cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_camerasInput = {
+    where: cameras_irrigation_sectionScalarWhereInput
+    data: XOR<cameras_irrigation_sectionUpdateManyMutationInput, cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasInput>
   }
 
-  export type park_zonesScalarWhereInput = {
-    AND?: park_zonesScalarWhereInput | park_zonesScalarWhereInput[]
-    OR?: park_zonesScalarWhereInput[]
-    NOT?: park_zonesScalarWhereInput | park_zonesScalarWhereInput[]
-    Id?: IntFilter<"park_zones"> | number
-    park_Id?: IntNullableFilter<"park_zones"> | number | null
-    zone_Id?: StringNullableFilter<"park_zones"> | string | null
-    zone_english_name?: StringNullableFilter<"park_zones"> | string | null
-    zone_arabic_name?: StringNullableFilter<"park_zones"> | string | null
-    latitude?: DecimalNullableFilter<"park_zones"> | Decimal | DecimalJsLike | number | string | null
-    longitude?: DecimalNullableFilter<"park_zones"> | Decimal | DecimalJsLike | number | string | null
-    device_ip?: StringNullableFilter<"park_zones"> | string | null
-    web_api?: StringNullableFilter<"park_zones"> | string | null
-    camera_Id?: IntNullableFilter<"park_zones"> | number | null
-    status?: StringNullableFilter<"park_zones"> | string | null
-    createdAt?: DateTimeNullableFilter<"park_zones"> | Date | string | null
-    updatedAt?: DateTimeFilter<"park_zones"> | Date | string
+  export type cameras_irrigation_sectionScalarWhereInput = {
+    AND?: cameras_irrigation_sectionScalarWhereInput | cameras_irrigation_sectionScalarWhereInput[]
+    OR?: cameras_irrigation_sectionScalarWhereInput[]
+    NOT?: cameras_irrigation_sectionScalarWhereInput | cameras_irrigation_sectionScalarWhereInput[]
+    id?: IntFilter<"cameras_irrigation_section"> | number
+    working_time?: StringNullableFilter<"cameras_irrigation_section"> | string | null
+    camera_Id?: IntNullableFilter<"cameras_irrigation_section"> | number | null
+    zone_Id?: IntNullableFilter<"cameras_irrigation_section"> | number | null
+    createdAt?: DateTimeFilter<"cameras_irrigation_section"> | Date | string
+    updatedAt?: DateTimeFilter<"cameras_irrigation_section"> | Date | string
+  }
+
+  export type cameras_landscaping_sectionUpsertWithWhereUniqueWithoutPark_camerasInput = {
+    where: cameras_landscaping_sectionWhereUniqueInput
+    update: XOR<cameras_landscaping_sectionUpdateWithoutPark_camerasInput, cameras_landscaping_sectionUncheckedUpdateWithoutPark_camerasInput>
+    create: XOR<cameras_landscaping_sectionCreateWithoutPark_camerasInput, cameras_landscaping_sectionUncheckedCreateWithoutPark_camerasInput>
+  }
+
+  export type cameras_landscaping_sectionUpdateWithWhereUniqueWithoutPark_camerasInput = {
+    where: cameras_landscaping_sectionWhereUniqueInput
+    data: XOR<cameras_landscaping_sectionUpdateWithoutPark_camerasInput, cameras_landscaping_sectionUncheckedUpdateWithoutPark_camerasInput>
+  }
+
+  export type cameras_landscaping_sectionUpdateManyWithWhereWithoutPark_camerasInput = {
+    where: cameras_landscaping_sectionScalarWhereInput
+    data: XOR<cameras_landscaping_sectionUpdateManyMutationInput, cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasInput>
+  }
+
+  export type cameras_landscaping_sectionScalarWhereInput = {
+    AND?: cameras_landscaping_sectionScalarWhereInput | cameras_landscaping_sectionScalarWhereInput[]
+    OR?: cameras_landscaping_sectionScalarWhereInput[]
+    NOT?: cameras_landscaping_sectionScalarWhereInput | cameras_landscaping_sectionScalarWhereInput[]
+    id?: IntFilter<"cameras_landscaping_section"> | number
+    area_name?: StringNullableFilter<"cameras_landscaping_section"> | string | null
+    working_time?: StringNullableFilter<"cameras_landscaping_section"> | string | null
+    camera_Id?: IntNullableFilter<"cameras_landscaping_section"> | number | null
+    createdAt?: DateTimeFilter<"cameras_landscaping_section"> | Date | string
+    updatedAt?: DateTimeFilter<"cameras_landscaping_section"> | Date | string
   }
 
   export type parksCreateWithoutPark_streamsInput = {
@@ -59486,58 +62276,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type park_camerasCreateWithoutPark_zonesInput = {
-    camera_Id?: string | null
-    camera_english_name?: string | null
-    camera_arabic_name?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
-    ip_address?: string | null
-    is_favorite?: boolean | null
-    last_active_date?: Date | string | null
-    last_active_time?: Date | string | null
-    status?: boolean | null
-    createdAt?: Date | string | null
+  export type cameras_irrigation_sectionCreateWithoutPark_zonesInput = {
+    working_time?: string | null
+    createdAt?: Date | string
     updatedAt?: Date | string
-    live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
-    parks?: parksCreateNestedOneWithoutPark_camerasInput
-    parks_behaviour_alerts?: parks_behaviour_alertsCreateNestedManyWithoutPark_camerasInput
-    parks_intrusion_detection?: parks_intrusion_detectionCreateNestedManyWithoutPark_camerasInput
-    parks_litter_detection?: parks_litter_detectionCreateNestedManyWithoutPark_camerasInput
-    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
-    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
-    parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
-    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
+    park_cameras?: park_camerasCreateNestedOneWithoutCameras_irrigation_sectionInput
   }
 
-  export type park_camerasUncheckedCreateWithoutPark_zonesInput = {
-    Id?: number
-    park_Id?: number | null
-    camera_Id?: string | null
-    camera_english_name?: string | null
-    camera_arabic_name?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
-    ip_address?: string | null
-    is_favorite?: boolean | null
-    last_active_date?: Date | string | null
-    last_active_time?: Date | string | null
-    status?: boolean | null
-    createdAt?: Date | string | null
+  export type cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput = {
+    id?: number
+    working_time?: string | null
+    camera_Id?: number | null
+    createdAt?: Date | string
     updatedAt?: Date | string
-    live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
-    parks_behaviour_alerts?: parks_behaviour_alertsUncheckedCreateNestedManyWithoutPark_camerasInput
-    parks_intrusion_detection?: parks_intrusion_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
-    parks_litter_detection?: parks_litter_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
-    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
-    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
-    parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
-    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
-  export type park_camerasCreateOrConnectWithoutPark_zonesInput = {
-    where: park_camerasWhereUniqueInput
-    create: XOR<park_camerasCreateWithoutPark_zonesInput, park_camerasUncheckedCreateWithoutPark_zonesInput>
+  export type cameras_irrigation_sectionCreateOrConnectWithoutPark_zonesInput = {
+    where: cameras_irrigation_sectionWhereUniqueInput
+    create: XOR<cameras_irrigation_sectionCreateWithoutPark_zonesInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput>
+  }
+
+  export type cameras_irrigation_sectionCreateManyPark_zonesInputEnvelope = {
+    data: cameras_irrigation_sectionCreateManyPark_zonesInput | cameras_irrigation_sectionCreateManyPark_zonesInput[]
+    skipDuplicates?: boolean
   }
 
   export type parksUpsertWithoutPark_zonesInput = {
@@ -59649,64 +62410,20 @@ export namespace Prisma {
     data: XOR<parks_zones_job_historyUpdateManyMutationInput, parks_zones_job_historyUncheckedUpdateManyWithoutPark_zonesInput>
   }
 
-  export type park_camerasUpsertWithoutPark_zonesInput = {
-    update: XOR<park_camerasUpdateWithoutPark_zonesInput, park_camerasUncheckedUpdateWithoutPark_zonesInput>
-    create: XOR<park_camerasCreateWithoutPark_zonesInput, park_camerasUncheckedCreateWithoutPark_zonesInput>
-    where?: park_camerasWhereInput
+  export type cameras_irrigation_sectionUpsertWithWhereUniqueWithoutPark_zonesInput = {
+    where: cameras_irrigation_sectionWhereUniqueInput
+    update: XOR<cameras_irrigation_sectionUpdateWithoutPark_zonesInput, cameras_irrigation_sectionUncheckedUpdateWithoutPark_zonesInput>
+    create: XOR<cameras_irrigation_sectionCreateWithoutPark_zonesInput, cameras_irrigation_sectionUncheckedCreateWithoutPark_zonesInput>
   }
 
-  export type park_camerasUpdateToOneWithWhereWithoutPark_zonesInput = {
-    where?: park_camerasWhereInput
-    data: XOR<park_camerasUpdateWithoutPark_zonesInput, park_camerasUncheckedUpdateWithoutPark_zonesInput>
+  export type cameras_irrigation_sectionUpdateWithWhereUniqueWithoutPark_zonesInput = {
+    where: cameras_irrigation_sectionWhereUniqueInput
+    data: XOR<cameras_irrigation_sectionUpdateWithoutPark_zonesInput, cameras_irrigation_sectionUncheckedUpdateWithoutPark_zonesInput>
   }
 
-  export type park_camerasUpdateWithoutPark_zonesInput = {
-    camera_Id?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_english_name?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    ip_address?: NullableStringFieldUpdateOperationsInput | string | null
-    is_favorite?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
-    parks?: parksUpdateOneWithoutPark_camerasNestedInput
-    parks_behaviour_alerts?: parks_behaviour_alertsUpdateManyWithoutPark_camerasNestedInput
-    parks_intrusion_detection?: parks_intrusion_detectionUpdateManyWithoutPark_camerasNestedInput
-    parks_litter_detection?: parks_litter_detectionUpdateManyWithoutPark_camerasNestedInput
-    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
-    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
-    parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
-    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-  }
-
-  export type park_camerasUncheckedUpdateWithoutPark_zonesInput = {
-    Id?: IntFieldUpdateOperationsInput | number
-    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
-    camera_Id?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_english_name?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    ip_address?: NullableStringFieldUpdateOperationsInput | string | null
-    is_favorite?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
-    parks_behaviour_alerts?: parks_behaviour_alertsUncheckedUpdateManyWithoutPark_camerasNestedInput
-    parks_intrusion_detection?: parks_intrusion_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
-    parks_litter_detection?: parks_litter_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
-    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
-    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
-    parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
-    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
+  export type cameras_irrigation_sectionUpdateManyWithWhereWithoutPark_zonesInput = {
+    where: cameras_irrigation_sectionScalarWhereInput
+    data: XOR<cameras_irrigation_sectionUpdateManyMutationInput, cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_zonesInput>
   }
 
   export type park_camerasCreateWithoutParks_zones_job_historyInput = {
@@ -59720,6 +62437,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
@@ -59730,7 +62448,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateWithoutParks_zones_job_historyInput = {
@@ -59746,6 +62465,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -59755,7 +62475,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasCreateOrConnectWithoutParks_zones_job_historyInput = {
@@ -59832,7 +62553,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     parks?: parksCreateNestedOneWithoutPark_zonesInput
     parks_irrigation_job_history?: parks_irrigation_job_historyCreateNestedManyWithoutPark_zonesInput
-    camera?: park_camerasCreateNestedOneWithoutPark_zonesInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_zonesInput
   }
 
   export type park_zonesUncheckedCreateWithoutParks_zones_job_historyInput = {
@@ -59845,11 +62566,11 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     device_ip?: string | null
     web_api?: string | null
-    camera_Id?: number | null
     status?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_zonesInput
   }
 
   export type park_zonesCreateOrConnectWithoutParks_zones_job_historyInput = {
@@ -59879,6 +62600,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
@@ -59889,7 +62611,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateWithoutParks_zones_job_historyInput = {
@@ -59905,6 +62628,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -59914,7 +62638,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type parksUpsertWithoutParks_zones_job_historyInput = {
@@ -60003,7 +62728,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks?: parksUpdateOneWithoutPark_zonesNestedInput
     parks_irrigation_job_history?: parks_irrigation_job_historyUpdateManyWithoutPark_zonesNestedInput
-    camera?: park_camerasUpdateOneWithoutPark_zonesNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_zonesNestedInput
   }
 
   export type park_zonesUncheckedUpdateWithoutParks_zones_job_historyInput = {
@@ -60016,11 +62741,11 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     device_ip?: NullableStringFieldUpdateOperationsInput | string | null
     web_api?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_zonesNestedInput
   }
 
   export type park_camerasCreateWithoutParksInput = {
@@ -60034,6 +62759,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
@@ -60044,7 +62770,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateWithoutParksInput = {
@@ -60059,6 +62786,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -60069,7 +62797,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasCreateOrConnectWithoutParksInput = {
@@ -60124,7 +62853,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     parks_irrigation_job_history?: parks_irrigation_job_historyCreateNestedManyWithoutPark_zonesInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_zonesInput
-    camera?: park_camerasCreateNestedOneWithoutPark_zonesInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_zonesInput
   }
 
   export type park_zonesUncheckedCreateWithoutParksInput = {
@@ -60136,12 +62865,12 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     device_ip?: string | null
     web_api?: string | null
-    camera_Id?: number | null
     status?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_zonesInput
   }
 
   export type park_zonesCreateOrConnectWithoutParksInput = {
@@ -60632,6 +63361,7 @@ export namespace Prisma {
     last_active_date?: DateTimeNullableFilter<"park_cameras"> | Date | string | null
     last_active_time?: DateTimeNullableFilter<"park_cameras"> | Date | string | null
     status?: BoolNullableFilter<"park_cameras"> | boolean | null
+    is_ptz_camera?: BoolNullableFilter<"park_cameras"> | boolean | null
     createdAt?: DateTimeNullableFilter<"park_cameras"> | Date | string | null
     updatedAt?: DateTimeFilter<"park_cameras"> | Date | string
   }
@@ -60680,6 +63410,24 @@ export namespace Prisma {
   export type park_zonesUpdateManyWithWhereWithoutParksInput = {
     where: park_zonesScalarWhereInput
     data: XOR<park_zonesUpdateManyMutationInput, park_zonesUncheckedUpdateManyWithoutParksInput>
+  }
+
+  export type park_zonesScalarWhereInput = {
+    AND?: park_zonesScalarWhereInput | park_zonesScalarWhereInput[]
+    OR?: park_zonesScalarWhereInput[]
+    NOT?: park_zonesScalarWhereInput | park_zonesScalarWhereInput[]
+    Id?: IntFilter<"park_zones"> | number
+    park_Id?: IntNullableFilter<"park_zones"> | number | null
+    zone_Id?: StringNullableFilter<"park_zones"> | string | null
+    zone_english_name?: StringNullableFilter<"park_zones"> | string | null
+    zone_arabic_name?: StringNullableFilter<"park_zones"> | string | null
+    latitude?: DecimalNullableFilter<"park_zones"> | Decimal | DecimalJsLike | number | string | null
+    longitude?: DecimalNullableFilter<"park_zones"> | Decimal | DecimalJsLike | number | string | null
+    device_ip?: StringNullableFilter<"park_zones"> | string | null
+    web_api?: StringNullableFilter<"park_zones"> | string | null
+    status?: StringNullableFilter<"park_zones"> | string | null
+    createdAt?: DateTimeNullableFilter<"park_zones"> | Date | string | null
+    updatedAt?: DateTimeFilter<"park_zones"> | Date | string
   }
 
   export type parks_attendanceUpsertWithWhereUniqueWithoutParkInput = {
@@ -61292,6 +64040,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
@@ -61302,7 +64051,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateWithoutParks_behaviour_alertsInput = {
@@ -61318,6 +64068,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -61327,7 +64078,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasCreateOrConnectWithoutParks_behaviour_alertsInput = {
@@ -61419,6 +64171,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
@@ -61429,7 +64182,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateWithoutParks_behaviour_alertsInput = {
@@ -61445,6 +64199,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -61454,7 +64209,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type intranet_posting_historyCreateWithoutIntrusionDetectionInput = {
@@ -61559,6 +64315,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
@@ -61569,7 +64326,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateWithoutParks_intrusion_detectionInput = {
@@ -61585,6 +64343,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -61594,7 +64353,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasCreateOrConnectWithoutParks_intrusion_detectionInput = {
@@ -61719,6 +64479,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
@@ -61729,7 +64490,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateWithoutParks_intrusion_detectionInput = {
@@ -61745,6 +64507,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -61754,7 +64517,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type parksCreateWithoutParks_irrigation_job_historyInput = {
@@ -61826,7 +64590,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     parks?: parksCreateNestedOneWithoutPark_zonesInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_zonesInput
-    camera?: park_camerasCreateNestedOneWithoutPark_zonesInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_zonesInput
   }
 
   export type park_zonesUncheckedCreateWithoutParks_irrigation_job_historyInput = {
@@ -61839,11 +64603,11 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     device_ip?: string | null
     web_api?: string | null
-    camera_Id?: number | null
     status?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_zonesInput
   }
 
   export type park_zonesCreateOrConnectWithoutParks_irrigation_job_historyInput = {
@@ -61937,7 +64701,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks?: parksUpdateOneWithoutPark_zonesNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_zonesNestedInput
-    camera?: park_camerasUpdateOneWithoutPark_zonesNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_zonesNestedInput
   }
 
   export type park_zonesUncheckedUpdateWithoutParks_irrigation_job_historyInput = {
@@ -61950,11 +64714,11 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     device_ip?: NullableStringFieldUpdateOperationsInput | string | null
     web_api?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_zonesNestedInput
   }
 
   export type parksCreateWithoutParks_litter_detectionInput = {
@@ -62024,6 +64788,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
@@ -62034,7 +64799,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateWithoutParks_litter_detectionInput = {
@@ -62050,6 +64816,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -62059,7 +64826,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasCreateOrConnectWithoutParks_litter_detectionInput = {
@@ -62292,6 +65060,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
@@ -62302,7 +65071,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateWithoutParks_litter_detectionInput = {
@@ -62318,6 +65088,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -62327,7 +65098,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type ticket_details_tableUpsertWithWhereUniqueWithoutParks_litter_detectionInput = {
@@ -62843,6 +65615,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
@@ -62853,7 +65626,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateWithoutParks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput = {
@@ -62869,6 +65643,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -62878,7 +65653,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasCreateOrConnectWithoutParks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput = {
@@ -62897,6 +65673,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
@@ -62907,7 +65684,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateWithoutParks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput = {
@@ -62923,6 +65701,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -62932,7 +65711,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasCreateOrConnectWithoutParks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput = {
@@ -63024,6 +65804,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
@@ -63034,7 +65815,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateWithoutParks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput = {
@@ -63050,6 +65832,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -63059,7 +65842,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUpsertWithoutParks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput = {
@@ -63084,6 +65868,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
@@ -63094,7 +65879,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateWithoutParks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput = {
@@ -63110,6 +65896,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -63119,7 +65906,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type intranet_posting_historyCreateWithoutSmokingDetectionInput = {
@@ -63224,6 +66012,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
@@ -63234,7 +66023,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasUncheckedCreateWithoutParks_smoking_detectionInput = {
@@ -63250,6 +66040,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
@@ -63259,7 +66050,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
-    park_zones?: park_zonesUncheckedCreateNestedManyWithoutCameraInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
   }
 
   export type park_camerasCreateOrConnectWithoutParks_smoking_detectionInput = {
@@ -63367,6 +66159,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
@@ -63377,7 +66170,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateWithoutParks_smoking_detectionInput = {
@@ -63393,6 +66187,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -63402,7 +66197,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type parks_intrusion_detectionCreateWithoutIntranet_posting_historyInput = {
@@ -65856,6 +68652,332 @@ export namespace Prisma {
     assigned_litter_detection?: parks_litter_detectionUncheckedUpdateManyWithoutAssignedUserNestedInput
   }
 
+  export type park_camerasCreateWithoutCameras_irrigation_sectionInput = {
+    camera_Id?: string | null
+    camera_english_name?: string | null
+    camera_arabic_name?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    ip_address?: string | null
+    is_favorite?: boolean | null
+    last_active_date?: Date | string | null
+    last_active_time?: Date | string | null
+    status?: boolean | null
+    is_ptz_camera?: boolean | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
+    parks?: parksCreateNestedOneWithoutPark_camerasInput
+    parks_behaviour_alerts?: parks_behaviour_alertsCreateNestedManyWithoutPark_camerasInput
+    parks_intrusion_detection?: parks_intrusion_detectionCreateNestedManyWithoutPark_camerasInput
+    parks_litter_detection?: parks_litter_detectionCreateNestedManyWithoutPark_camerasInput
+    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
+    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
+    parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionCreateNestedManyWithoutPark_camerasInput
+  }
+
+  export type park_camerasUncheckedCreateWithoutCameras_irrigation_sectionInput = {
+    Id?: number
+    park_Id?: number | null
+    camera_Id?: string | null
+    camera_english_name?: string | null
+    camera_arabic_name?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    ip_address?: string | null
+    is_favorite?: boolean | null
+    last_active_date?: Date | string | null
+    last_active_time?: Date | string | null
+    status?: boolean | null
+    is_ptz_camera?: boolean | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_behaviour_alerts?: parks_behaviour_alertsUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_intrusion_detection?: parks_intrusion_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_litter_detection?: parks_litter_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
+    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
+    parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+  }
+
+  export type park_camerasCreateOrConnectWithoutCameras_irrigation_sectionInput = {
+    where: park_camerasWhereUniqueInput
+    create: XOR<park_camerasCreateWithoutCameras_irrigation_sectionInput, park_camerasUncheckedCreateWithoutCameras_irrigation_sectionInput>
+  }
+
+  export type park_zonesCreateWithoutCameras_irrigation_sectionInput = {
+    zone_Id?: string | null
+    zone_english_name?: string | null
+    zone_arabic_name?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    device_ip?: string | null
+    web_api?: string | null
+    status?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    parks?: parksCreateNestedOneWithoutPark_zonesInput
+    parks_irrigation_job_history?: parks_irrigation_job_historyCreateNestedManyWithoutPark_zonesInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_zonesInput
+  }
+
+  export type park_zonesUncheckedCreateWithoutCameras_irrigation_sectionInput = {
+    Id?: number
+    park_Id?: number | null
+    zone_Id?: string | null
+    zone_english_name?: string | null
+    zone_arabic_name?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    device_ip?: string | null
+    web_api?: string | null
+    status?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_zonesInput
+  }
+
+  export type park_zonesCreateOrConnectWithoutCameras_irrigation_sectionInput = {
+    where: park_zonesWhereUniqueInput
+    create: XOR<park_zonesCreateWithoutCameras_irrigation_sectionInput, park_zonesUncheckedCreateWithoutCameras_irrigation_sectionInput>
+  }
+
+  export type park_camerasUpsertWithoutCameras_irrigation_sectionInput = {
+    update: XOR<park_camerasUpdateWithoutCameras_irrigation_sectionInput, park_camerasUncheckedUpdateWithoutCameras_irrigation_sectionInput>
+    create: XOR<park_camerasCreateWithoutCameras_irrigation_sectionInput, park_camerasUncheckedCreateWithoutCameras_irrigation_sectionInput>
+    where?: park_camerasWhereInput
+  }
+
+  export type park_camerasUpdateToOneWithWhereWithoutCameras_irrigation_sectionInput = {
+    where?: park_camerasWhereInput
+    data: XOR<park_camerasUpdateWithoutCameras_irrigation_sectionInput, park_camerasUncheckedUpdateWithoutCameras_irrigation_sectionInput>
+  }
+
+  export type park_camerasUpdateWithoutCameras_irrigation_sectionInput = {
+    camera_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    ip_address?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
+    parks?: parksUpdateOneWithoutPark_camerasNestedInput
+    parks_behaviour_alerts?: parks_behaviour_alertsUpdateManyWithoutPark_camerasNestedInput
+    parks_intrusion_detection?: parks_intrusion_detectionUpdateManyWithoutPark_camerasNestedInput
+    parks_litter_detection?: parks_litter_detectionUpdateManyWithoutPark_camerasNestedInput
+    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
+    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
+    parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
+  }
+
+  export type park_camerasUncheckedUpdateWithoutCameras_irrigation_sectionInput = {
+    Id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    camera_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    ip_address?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_behaviour_alerts?: parks_behaviour_alertsUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_intrusion_detection?: parks_intrusion_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_litter_detection?: parks_litter_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
+    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
+    parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+  }
+
+  export type park_zonesUpsertWithoutCameras_irrigation_sectionInput = {
+    update: XOR<park_zonesUpdateWithoutCameras_irrigation_sectionInput, park_zonesUncheckedUpdateWithoutCameras_irrigation_sectionInput>
+    create: XOR<park_zonesCreateWithoutCameras_irrigation_sectionInput, park_zonesUncheckedCreateWithoutCameras_irrigation_sectionInput>
+    where?: park_zonesWhereInput
+  }
+
+  export type park_zonesUpdateToOneWithWhereWithoutCameras_irrigation_sectionInput = {
+    where?: park_zonesWhereInput
+    data: XOR<park_zonesUpdateWithoutCameras_irrigation_sectionInput, park_zonesUncheckedUpdateWithoutCameras_irrigation_sectionInput>
+  }
+
+  export type park_zonesUpdateWithoutCameras_irrigation_sectionInput = {
+    zone_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    zone_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    zone_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    device_ip?: NullableStringFieldUpdateOperationsInput | string | null
+    web_api?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parks?: parksUpdateOneWithoutPark_zonesNestedInput
+    parks_irrigation_job_history?: parks_irrigation_job_historyUpdateManyWithoutPark_zonesNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_zonesNestedInput
+  }
+
+  export type park_zonesUncheckedUpdateWithoutCameras_irrigation_sectionInput = {
+    Id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    zone_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    zone_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    zone_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    device_ip?: NullableStringFieldUpdateOperationsInput | string | null
+    web_api?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
+  }
+
+  export type park_camerasCreateWithoutCameras_landscaping_sectionInput = {
+    camera_Id?: string | null
+    camera_english_name?: string | null
+    camera_arabic_name?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    ip_address?: string | null
+    is_favorite?: boolean | null
+    last_active_date?: Date | string | null
+    last_active_time?: Date | string | null
+    status?: boolean | null
+    is_ptz_camera?: boolean | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutPark_camerasInput
+    parks?: parksCreateNestedOneWithoutPark_camerasInput
+    parks_behaviour_alerts?: parks_behaviour_alertsCreateNestedManyWithoutPark_camerasInput
+    parks_intrusion_detection?: parks_intrusion_detectionCreateNestedManyWithoutPark_camerasInput
+    parks_litter_detection?: parks_litter_detectionCreateNestedManyWithoutPark_camerasInput
+    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
+    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
+    parks_smoking_detection?: parks_smoking_detectionCreateNestedManyWithoutPark_camerasInput
+    parks_zones_job_history?: parks_zones_job_historyCreateNestedManyWithoutPark_camerasInput
+    cameras_irrigation_section?: cameras_irrigation_sectionCreateNestedManyWithoutPark_camerasInput
+  }
+
+  export type park_camerasUncheckedCreateWithoutCameras_landscaping_sectionInput = {
+    Id?: number
+    park_Id?: number | null
+    camera_Id?: string | null
+    camera_english_name?: string | null
+    camera_arabic_name?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    ip_address?: string | null
+    is_favorite?: boolean | null
+    last_active_date?: Date | string | null
+    last_active_time?: Date | string | null
+    status?: boolean | null
+    is_ptz_camera?: boolean | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string
+    live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_behaviour_alerts?: parks_behaviour_alertsUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_intrusion_detection?: parks_intrusion_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_litter_detection?: parks_litter_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasInput
+    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedCreateNestedManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasInput
+    parks_smoking_detection?: parks_smoking_detectionUncheckedCreateNestedManyWithoutPark_camerasInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedCreateNestedManyWithoutPark_camerasInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedCreateNestedManyWithoutPark_camerasInput
+  }
+
+  export type park_camerasCreateOrConnectWithoutCameras_landscaping_sectionInput = {
+    where: park_camerasWhereUniqueInput
+    create: XOR<park_camerasCreateWithoutCameras_landscaping_sectionInput, park_camerasUncheckedCreateWithoutCameras_landscaping_sectionInput>
+  }
+
+  export type park_camerasUpsertWithoutCameras_landscaping_sectionInput = {
+    update: XOR<park_camerasUpdateWithoutCameras_landscaping_sectionInput, park_camerasUncheckedUpdateWithoutCameras_landscaping_sectionInput>
+    create: XOR<park_camerasCreateWithoutCameras_landscaping_sectionInput, park_camerasUncheckedCreateWithoutCameras_landscaping_sectionInput>
+    where?: park_camerasWhereInput
+  }
+
+  export type park_camerasUpdateToOneWithWhereWithoutCameras_landscaping_sectionInput = {
+    where?: park_camerasWhereInput
+    data: XOR<park_camerasUpdateWithoutCameras_landscaping_sectionInput, park_camerasUncheckedUpdateWithoutCameras_landscaping_sectionInput>
+  }
+
+  export type park_camerasUpdateWithoutCameras_landscaping_sectionInput = {
+    camera_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    ip_address?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
+    parks?: parksUpdateOneWithoutPark_camerasNestedInput
+    parks_behaviour_alerts?: parks_behaviour_alertsUpdateManyWithoutPark_camerasNestedInput
+    parks_intrusion_detection?: parks_intrusion_detectionUpdateManyWithoutPark_camerasNestedInput
+    parks_litter_detection?: parks_litter_detectionUpdateManyWithoutPark_camerasNestedInput
+    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
+    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
+    parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+  }
+
+  export type park_camerasUncheckedUpdateWithoutCameras_landscaping_sectionInput = {
+    Id?: IntFieldUpdateOperationsInput | number
+    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    camera_Id?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_english_name?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    ip_address?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_behaviour_alerts?: parks_behaviour_alertsUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_intrusion_detection?: parks_intrusion_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_litter_detection?: parks_litter_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_sentiment_analysis_parks_sentiment_analysis_entry_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_entry_camera_IdTopark_camerasNestedInput
+    parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
+    parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+  }
+
   export type office_streamsCreateManyOfficesInput = {
     Id?: number
     stream_url?: string | null
@@ -66525,18 +69647,19 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type park_zonesCreateManyCameraInput = {
-    Id?: number
-    park_Id?: number | null
-    zone_Id?: string | null
-    zone_english_name?: string | null
-    zone_arabic_name?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
-    device_ip?: string | null
-    web_api?: string | null
-    status?: string | null
-    createdAt?: Date | string | null
+  export type cameras_irrigation_sectionCreateManyPark_camerasInput = {
+    id?: number
+    working_time?: string | null
+    zone_Id?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type cameras_landscaping_sectionCreateManyPark_camerasInput = {
+    id?: number
+    area_name?: string | null
+    working_time?: string | null
+    createdAt?: Date | string
     updatedAt?: Date | string
   }
 
@@ -66979,51 +70102,49 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type park_zonesUpdateWithoutCameraInput = {
-    zone_Id?: NullableStringFieldUpdateOperationsInput | string | null
-    zone_english_name?: NullableStringFieldUpdateOperationsInput | string | null
-    zone_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    device_ip?: NullableStringFieldUpdateOperationsInput | string | null
-    web_api?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  export type cameras_irrigation_sectionUpdateWithoutPark_camerasInput = {
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    parks?: parksUpdateOneWithoutPark_zonesNestedInput
-    parks_irrigation_job_history?: parks_irrigation_job_historyUpdateManyWithoutPark_zonesNestedInput
-    parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_zonesNestedInput
+    park_zones?: park_zonesUpdateOneWithoutCameras_irrigation_sectionNestedInput
   }
 
-  export type park_zonesUncheckedUpdateWithoutCameraInput = {
-    Id?: IntFieldUpdateOperationsInput | number
-    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
-    zone_Id?: NullableStringFieldUpdateOperationsInput | string | null
-    zone_english_name?: NullableStringFieldUpdateOperationsInput | string | null
-    zone_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    device_ip?: NullableStringFieldUpdateOperationsInput | string | null
-    web_api?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  export type cameras_irrigation_sectionUncheckedUpdateWithoutPark_camerasInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
-    parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
   }
 
-  export type park_zonesUncheckedUpdateManyWithoutCameraInput = {
-    Id?: IntFieldUpdateOperationsInput | number
-    park_Id?: NullableIntFieldUpdateOperationsInput | number | null
-    zone_Id?: NullableStringFieldUpdateOperationsInput | string | null
-    zone_english_name?: NullableStringFieldUpdateOperationsInput | string | null
-    zone_arabic_name?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    device_ip?: NullableStringFieldUpdateOperationsInput | string | null
-    web_api?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  export type cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    zone_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type cameras_landscaping_sectionUpdateWithoutPark_camerasInput = {
+    area_name?: NullableStringFieldUpdateOperationsInput | string | null
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type cameras_landscaping_sectionUncheckedUpdateWithoutPark_camerasInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    area_name?: NullableStringFieldUpdateOperationsInput | string | null
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    area_name?: NullableStringFieldUpdateOperationsInput | string | null
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -67054,6 +70175,14 @@ export namespace Prisma {
     gallons_required_estimate?: string | null
     calculation_note?: string | null
     createdAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type cameras_irrigation_sectionCreateManyPark_zonesInput = {
+    id?: number
+    working_time?: string | null
+    camera_Id?: number | null
+    createdAt?: Date | string
     updatedAt?: Date | string
   }
 
@@ -67145,6 +70274,29 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type cameras_irrigation_sectionUpdateWithoutPark_zonesInput = {
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    park_cameras?: park_camerasUpdateOneWithoutCameras_irrigation_sectionNestedInput
+  }
+
+  export type cameras_irrigation_sectionUncheckedUpdateWithoutPark_zonesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_zonesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    working_time?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type park_camerasCreateManyParksInput = {
     Id?: number
     camera_Id?: string | null
@@ -67157,6 +70309,7 @@ export namespace Prisma {
     last_active_date?: Date | string | null
     last_active_time?: Date | string | null
     status?: boolean | null
+    is_ptz_camera?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -67180,7 +70333,6 @@ export namespace Prisma {
     longitude?: Decimal | DecimalJsLike | number | string | null
     device_ip?: string | null
     web_api?: string | null
-    camera_Id?: number | null
     status?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
@@ -67371,6 +70523,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutPark_camerasNestedInput
@@ -67381,7 +70534,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateWithoutParksInput = {
@@ -67396,6 +70550,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutPark_camerasNestedInput
@@ -67406,7 +70561,8 @@ export namespace Prisma {
     parks_sentiment_analysis_parks_sentiment_analysis_exit_camera_IdTopark_cameras?: parks_sentiment_analysisUncheckedUpdateManyWithoutPark_cameras_parks_sentiment_analysis_exit_camera_IdTopark_camerasNestedInput
     parks_smoking_detection?: parks_smoking_detectionUncheckedUpdateManyWithoutPark_camerasNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_camerasNestedInput
-    park_zones?: park_zonesUncheckedUpdateManyWithoutCameraNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
+    cameras_landscaping_section?: cameras_landscaping_sectionUncheckedUpdateManyWithoutPark_camerasNestedInput
   }
 
   export type park_camerasUncheckedUpdateManyWithoutParksInput = {
@@ -67421,6 +70577,7 @@ export namespace Prisma {
     last_active_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_active_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_ptz_camera?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -67467,7 +70624,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks_irrigation_job_history?: parks_irrigation_job_historyUpdateManyWithoutPark_zonesNestedInput
     parks_zones_job_history?: parks_zones_job_historyUpdateManyWithoutPark_zonesNestedInput
-    camera?: park_camerasUpdateOneWithoutPark_zonesNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUpdateManyWithoutPark_zonesNestedInput
   }
 
   export type park_zonesUncheckedUpdateWithoutParksInput = {
@@ -67479,12 +70636,12 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     device_ip?: NullableStringFieldUpdateOperationsInput | string | null
     web_api?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parks_irrigation_job_history?: parks_irrigation_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
     parks_zones_job_history?: parks_zones_job_historyUncheckedUpdateManyWithoutPark_zonesNestedInput
+    cameras_irrigation_section?: cameras_irrigation_sectionUncheckedUpdateManyWithoutPark_zonesNestedInput
   }
 
   export type park_zonesUncheckedUpdateManyWithoutParksInput = {
@@ -67496,7 +70653,6 @@ export namespace Prisma {
     longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     device_ip?: NullableStringFieldUpdateOperationsInput | string | null
     web_api?: NullableStringFieldUpdateOperationsInput | string | null
-    camera_Id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -4,6 +4,7 @@ import db from "@/prisma/client";
 import { HttpException } from "@/utils/HttpException.utils";
 import DatabaseUtils from "@/utils/database.utils";
 import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
+import CronService from "./cron.service";
 
 class ParkService {
   private static isEmployee = (item: any): boolean => {
@@ -71,8 +72,7 @@ class ParkService {
          park_Id: Number(park_Id)
       },
       include: {
-         parks: true,
-         camera: true
+         parks: true
       },
       orderBy: {
     Id: "desc",
@@ -87,9 +87,17 @@ class ParkService {
       where: {
          park_Id: Number(park_Id)
       },
+      include: {
+         cameras_irrigation_section: {
+            include: {
+               park_zones: true
+            }
+         },
+         cameras_landscaping_section: true
+      },
       orderBy: {
-    Id: "desc",
-  },
+         Id: "desc",
+      },
    });
    }
    protected static addParkZoneService = async (zoneData: ParkZone) => {
@@ -107,7 +115,8 @@ class ParkService {
       return result;
    }
    protected static addParCameraService = async (cameraData: ParkCamera) => {
-      const result = await db.park_cameras.create({
+      // Create the camera first
+      const camera = await db.park_cameras.create({
          data: {
             park_Id: Number(cameraData.park_Id),
             camera_Id: cameraData.camera_Id,
@@ -119,13 +128,69 @@ class ParkService {
             last_active_date: cameraData.last_active_date,
             last_active_time: cameraData.last_active_time,
             status: cameraData.status === 'active' || cameraData.status === true,
+            is_ptz_camera: cameraData.is_ptz_camera || false,
             createdAt: new Date()
          }
-      })
+      });
+
+      // If PTZ camera and has irrigation sections, create them
+      if (cameraData.is_ptz_camera && cameraData.irrigation_sections && cameraData.irrigation_sections.length > 0) {
+         await db.cameras_irrigation_section.createMany({
+            data: cameraData.irrigation_sections.map(section => ({
+               camera_Id: camera.Id,
+               zone_Id: Number(section.zone_Id),
+               working_time: section.working_time,
+               createdAt: new Date(),
+               updatedAt: new Date()
+            }))
+         });
+      }
+
+      // If PTZ camera and has landscaping sections, create them
+      if (cameraData.is_ptz_camera && cameraData.landscaping_sections && cameraData.landscaping_sections.length > 0) {
+         await db.cameras_landscaping_section.createMany({
+            data: cameraData.landscaping_sections.map(section => ({
+               camera_Id: camera.Id,
+               area_name: section.area_name,
+               working_time: section.working_time,
+               createdAt: new Date(),
+               updatedAt: new Date()
+            }))
+         });
+      }
+
+      // Return the camera with its sections
+      const result = await db.park_cameras.findUnique({
+         where: { Id: camera.Id },
+         include: {
+            cameras_irrigation_section: true,
+            cameras_landscaping_section: true
+         }
+      });
+
+      // Refresh landscaping section cron jobs if landscaping sections were added
+      if (cameraData.is_ptz_camera && cameraData.landscaping_sections && cameraData.landscaping_sections.length > 0) {
+         try {
+            await CronService.refreshLandscapingSectionCronJobs();
+         } catch (cronError: any) {
+            console.error('[ParkService] Failed to refresh landscaping cron jobs:', cronError.message);
+         }
+      }
+
+      // Refresh irrigation section cron jobs if irrigation sections were added
+      if (cameraData.is_ptz_camera && cameraData.irrigation_sections && cameraData.irrigation_sections.length > 0) {
+         try {
+            await CronService.refreshIrrigationSectionCronJobs();
+         } catch (cronError: any) {
+            console.error('[ParkService] Failed to refresh irrigation cron jobs:', cronError.message);
+         }
+      }
+
       return result;
    }
       protected static updateParkCameraService = async (cameraData: ParkCamera, id: number) => {
-      const result = await db.park_cameras.update({
+      // Update the camera
+      const camera = await db.park_cameras.update({
          where: {Id: Number(id)},
          data: {
             park_Id: cameraData.park_Id ? Number(cameraData.park_Id) : undefined,
@@ -138,9 +203,76 @@ class ParkService {
             last_active_date: cameraData.last_active_date,
             last_active_time: cameraData.last_active_time,
             status: cameraData.status === 'active' || cameraData.status === true,
+            is_ptz_camera: cameraData.is_ptz_camera ?? undefined,
             updatedAt: new Date()
          }
-      })
+      });
+
+      // If PTZ camera setting is explicitly provided, handle sections
+      if (cameraData.is_ptz_camera !== undefined) {
+         // Delete existing sections first
+         await db.cameras_irrigation_section.deleteMany({
+            where: { camera_Id: Number(id) }
+         });
+         await db.cameras_landscaping_section.deleteMany({
+            where: { camera_Id: Number(id) }
+         });
+
+         // If PTZ camera is enabled and has new sections, create them
+         if (cameraData.is_ptz_camera) {
+            if (cameraData.irrigation_sections && cameraData.irrigation_sections.length > 0) {
+               await db.cameras_irrigation_section.createMany({
+                  data: cameraData.irrigation_sections.map(section => ({
+                     camera_Id: Number(id),
+                     zone_Id: Number(section.zone_Id),
+                     working_time: section.working_time,
+                     createdAt: new Date(),
+                     updatedAt: new Date()
+                  }))
+               });
+            }
+
+            if (cameraData.landscaping_sections && cameraData.landscaping_sections.length > 0) {
+               await db.cameras_landscaping_section.createMany({
+                  data: cameraData.landscaping_sections.map(section => ({
+                     camera_Id: Number(id),
+                     area_name: section.area_name,
+                     working_time: section.working_time,
+                     createdAt: new Date(),
+                     updatedAt: new Date()
+                  }))
+               });
+            }
+         }
+      }
+
+      // Return the camera with its sections
+      const result = await db.park_cameras.findUnique({
+         where: { Id: Number(id) },
+         include: {
+            cameras_irrigation_section: true,
+            cameras_landscaping_section: true
+         }
+      });
+
+      // Refresh landscaping section cron jobs if sections were modified
+      if (cameraData.is_ptz_camera !== undefined) {
+         try {
+            await CronService.refreshLandscapingSectionCronJobs();
+         } catch (cronError: any) {
+            console.error('[ParkService] Failed to refresh landscaping cron jobs:', cronError.message);
+         }
+      }
+
+      // Refresh irrigation section cron jobs if sections were modified
+      if (cameraData.is_ptz_camera !== undefined) {
+         try {
+            await CronService.refreshIrrigationSectionCronJobs();
+         } catch (cronError: any) {
+            console.error('[ParkService] Failed to refresh irrigation cron jobs:', cronError.message);
+         }
+      }
+
       return result;
    }
    protected static changeParkCameraFunctionalityService = async ({fieldName, fieldValue, camera_Id}: {fieldName: string, fieldValue: any, camera_Id: string}) => {

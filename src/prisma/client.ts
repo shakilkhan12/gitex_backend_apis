@@ -29,12 +29,9 @@ if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('connection_l
 }
 
 // Enhanced Prisma client configuration with connection pool management
+// Note: In Prisma 7, URL is read from schema.prisma env("DATABASE_URL")
+// The DATABASE_URL is modified above with connection pool parameters
 const db = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
   log: ['error'],
   errorFormat: 'pretty',
 });

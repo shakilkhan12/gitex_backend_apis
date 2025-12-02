@@ -109,16 +109,24 @@ const startServer = async () => {
   try {
     SocketService.initializeSocket(server);
     
-    CronService.initializeCronJobs();
+    await CronService.initializeCronJobs();
     
     EventBufferService.initialize();
     
     server.listen(PORT, () => {
+      const cronStatus = CronService.getCronStatus();
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
       console.log(`🌐 Server URL: http://localhost:${PORT}`);
       console.log(`🔌 WebSocket server initialized`);
-      console.log(`⏰ Cron jobs initialized - Grass monitoring at 07:30AM, Irrigation at 05:30AM, After-image update at 06:05AM daily`);
+      console.log(`⏰ Cron jobs initialized:`);
+      console.log(`   📅 Static Jobs:`);
+      console.log(`      - Irrigation After-Image Update: 06:05 AM daily`);
+      console.log(`      - User Sync: Every 30 minutes`);
+      console.log(`   🔄 Dynamic Jobs:`);
+      console.log(`      - Landscaping Section Jobs: ${cronStatus.landscapingSectionTasksCount || 0} scheduled (based on working_time)`);
+      console.log(`      - Irrigation Section Jobs: ${cronStatus.irrigationSectionTasksCount || 0} scheduled (based on working_time)`);
+      console.log(`   📊 Total Active Tasks: ${cronStatus.activeTasks || 0}`);
       console.log(`🔄 QMS Stream Bridge initialized`);
     });
   } catch (error) {
