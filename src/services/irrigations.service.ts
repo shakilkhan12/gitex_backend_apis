@@ -492,7 +492,7 @@ export class IrrigationsService {
 
                console.log(`[IrrigationService] 🤖 Section ${section.id}: Analyzing image with Gemini...`);
                const geminiResponse = await this.analyzeImageWithGemini(imageUrl);
-               
+               console.log(`[IrrigationService] 🖼️ Section ${section.id}: Gemini response: ${geminiResponse}`);
                if (!geminiResponse) {
                   console.log(`[IrrigationService] ❌ Section ${section.id}: Failed to analyze image with Gemini`);
                   results.push({
