@@ -472,7 +472,7 @@ export class IrrigationsService {
                }
                console.log(`[IrrigationService] ✅ Section ${section.id}: Image captured successfully`);
 
-               const eventId = `irrigation_${section.id}_${Date.now()}`;
+               const eventId = `${section.id}_${Date.now()}`;
                console.log(`[IrrigationService] 💾 Section ${section.id}: Saving image locally...`);
                const imageUrl = await this.saveImageLocally(base64Image, eventId);
                
@@ -785,7 +785,10 @@ export class IrrigationsService {
                   : `${apiBaseUrl}/${imageUrl}`;
             }
             
-            console.log(`[IrrigationService] 🖼️ Full image URL for Gemini: ${fullImageUrl}`);
+            // Ensure URL is properly formatted (no spaces, properly encoded)
+            fullImageUrl = fullImageUrl.trim().replace(/\s+/g, '');
+            
+            console.log(`[IrrigationService] 🖼️ Full image URL for Gemini (attempt ${attempt}): ${fullImageUrl}`);
             
             const prompt = `*GRASS STATUS ANALYSIS REQUEST (JSON OUTPUT)*
 
@@ -859,18 +862,30 @@ The response must be a single JSON object structured exactly as follows. The cal
                   }
                   
                   const parsedResponse = JSON.parse(cleanResponse);
+                  console.log(`[IrrigationService] ✅ Gemini API response parsed successfully (attempt ${attempt})`);
                   return parsedResponse;
-               } catch (parseError) {
+               } catch (parseError: any) {
+                  console.log(`[IrrigationService] ⚠️ Failed to parse Gemini response as JSON, returning raw text (attempt ${attempt}):`, parseError.message);
                   return geminiResponse;
                }
             }
 
+            console.log(`[IrrigationService] ⚠️ Gemini API response structure unexpected (attempt ${attempt}):`, JSON.stringify(response.data).substring(0, 200));
             return null;
          } catch (error: any) {
+            console.error(`[IrrigationService] ❌ Gemini API error (attempt ${attempt}/${maxRetries}):`, {
+               message: error.message,
+               status: error.response?.status,
+               statusText: error.response?.statusText,
+               data: error.response?.data ? JSON.stringify(error.response.data).substring(0, 200) : 'No response data'
+            });
+            
             if (attempt === maxRetries) {
+               console.error(`[IrrigationService] ❌ All ${maxRetries} attempts failed for Gemini API`);
                return null;
             }
             
+            console.log(`[IrrigationService] 🔄 Retrying Gemini API call in ${retryDelay}ms...`);
             await new Promise(resolve => setTimeout(resolve, retryDelay));
          }
       }
