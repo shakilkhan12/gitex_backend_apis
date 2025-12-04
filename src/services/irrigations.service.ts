@@ -776,16 +776,19 @@ export class IrrigationsService {
             const MODEL = "gemini-2.5-flash";
             const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
             
+            // Sanitize the imageUrl first (remove any spaces or invalid characters)
+            const sanitizedImageUrl = imageUrl.trim().replace(/\s+/g, '');
+            
             // Construct full publicly accessible URL for Gemini
-            let fullImageUrl = formatImageUrl(imageUrl);
+            let fullImageUrl = formatImageUrl(sanitizedImageUrl);
             if (!fullImageUrl || (!fullImageUrl.startsWith('http://') && !fullImageUrl.startsWith('https://'))) {
                const apiBaseUrl = process.env.API_BASE_URL || 'http://83.111.75.163:5000';
-               fullImageUrl = imageUrl.startsWith('/') 
-                  ? `${apiBaseUrl}${imageUrl}`
-                  : `${apiBaseUrl}/${imageUrl}`;
+               fullImageUrl = sanitizedImageUrl.startsWith('/') 
+                  ? `${apiBaseUrl}${sanitizedImageUrl}`
+                  : `${apiBaseUrl}/${sanitizedImageUrl}`;
             }
             
-            // Ensure URL is properly formatted (no spaces, properly encoded)
+            // Ensure final URL is properly formatted (no spaces, properly encoded)
             fullImageUrl = fullImageUrl.trim().replace(/\s+/g, '');
             
             console.log(`[IrrigationService] 🖼️ Full image URL for Gemini (attempt ${attempt}): ${fullImageUrl}`);

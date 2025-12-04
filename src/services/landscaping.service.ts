@@ -999,21 +999,31 @@ class LandscapingService {
    }
 
    private static async analyzeImageWithGemini(imageUrl: string): Promise<string | null> {
-      try {
-         const GEMINI_API_KEY = 'AIzaSyAc6TkgL2AfKiPqcsVYf2JJC5VhF5vuNjM';
-         const MODEL = "gemini-2.5-flash";
-         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-         
-         // Construct full publicly accessible URL for Gemini
-         let fullImageUrl = formatImageUrl(imageUrl);
-         if (!fullImageUrl || (!fullImageUrl.startsWith('http://') && !fullImageUrl.startsWith('https://'))) {
-            const apiBaseUrl = process.env.API_BASE_URL || 'http://83.111.75.163:5000';
-            fullImageUrl = imageUrl.startsWith('/') 
-               ? `${apiBaseUrl}${imageUrl}`
-               : `${apiBaseUrl}/${imageUrl}`;
-         }
-         
-         console.log(`[LandscapingService] 🖼️ Full image URL for Gemini: ${fullImageUrl}`);
+      const maxRetries = 3;
+      const retryDelay = 2000; 
+      
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+         try {
+            const GEMINI_API_KEY = 'AIzaSyAc6TkgL2AfKiPqcsVYf2JJC5VhF5vuNjM';
+            const MODEL = "gemini-2.5-flash";
+            const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+            
+            // Sanitize the imageUrl first (remove any spaces or invalid characters)
+            const sanitizedImageUrl = imageUrl.trim().replace(/\s+/g, '');
+            
+            // Construct full publicly accessible URL for Gemini
+            let fullImageUrl = formatImageUrl(sanitizedImageUrl);
+            if (!fullImageUrl || (!fullImageUrl.startsWith('http://') && !fullImageUrl.startsWith('https://'))) {
+               const apiBaseUrl = process.env.API_BASE_URL || 'http://83.111.75.163:5000';
+               fullImageUrl = sanitizedImageUrl.startsWith('/') 
+                  ? `${apiBaseUrl}${sanitizedImageUrl}`
+                  : `${apiBaseUrl}/${sanitizedImageUrl}`;
+            }
+            
+            // Ensure final URL is properly formatted (no spaces, properly encoded)
+            fullImageUrl = fullImageUrl.trim().replace(/\s+/g, '');
+            
+            console.log(`[LandscapingService] 🖼️ Full image URL for Gemini (attempt ${attempt}): ${fullImageUrl}`);
          
          const prompt = `Objective:
 Analyze the provided visual and contextual data to determine the current grass height in inches/centimeters and whether the grass needs cutting.
@@ -1064,36 +1074,54 @@ OUTPUT FORMAT:
             }
          };
 
-         const response = await axios.post(geminiApiUrl, requestBody, {
-            headers: {
-               'Content-Type': 'application/json',
-            },
-            timeout: 30000
-         });
+            const response = await axios.post(geminiApiUrl, requestBody, {
+               headers: {
+                  'Content-Type': 'application/json',
+               },
+               timeout: 60000 
+            });
 
-         if (response.data && response.data.candidates && response.data.candidates[0] && response.data.candidates[0].content && response.data.candidates[0].content.parts && response.data.candidates[0].content.parts[0]) {
-            const geminiResponse = response.data.candidates[0].content.parts[0].text;
-            
-            try {
-               let cleanResponse = geminiResponse;
-               if (cleanResponse.includes('```json')) {
-                  cleanResponse = cleanResponse.split('```json')[1].split('```')[0].trim();
-               } else if (cleanResponse.includes('```')) {
-                  cleanResponse = cleanResponse.split('```')[1].split('```')[0].trim();
-               }
+            if (response.data && response.data.candidates && response.data.candidates[0] && response.data.candidates[0].content && response.data.candidates[0].content.parts && response.data.candidates[0].content.parts[0]) {
+               const geminiResponse = response.data.candidates[0].content.parts[0].text;
                
-               const parsedResponse = JSON.parse(cleanResponse);
-               return parsedResponse;
-            } catch (parseError) {
-               return geminiResponse;
+               try {
+                  let cleanResponse = geminiResponse;
+                  if (cleanResponse.includes('```json')) {
+                     cleanResponse = cleanResponse.split('```json')[1].split('```')[0].trim();
+                  } else if (cleanResponse.includes('```')) {
+                     cleanResponse = cleanResponse.split('```')[1].split('```')[0].trim();
+                  }
+                  
+                  const parsedResponse = JSON.parse(cleanResponse);
+                  console.log(`[LandscapingService] ✅ Gemini API response parsed successfully (attempt ${attempt})`);
+                  return parsedResponse;
+               } catch (parseError: any) {
+                  console.log(`[LandscapingService] ⚠️ Failed to parse Gemini response as JSON, returning raw text (attempt ${attempt}):`, parseError.message);
+                  return geminiResponse;
+               }
             }
-         }
 
-         return null;
-      } catch (error: any) {
-        
-         return null;
+            console.log(`[LandscapingService] ⚠️ Gemini API response structure unexpected (attempt ${attempt}):`, JSON.stringify(response.data).substring(0, 200));
+            return null;
+         } catch (error: any) {
+            console.error(`[LandscapingService] ❌ Gemini API error (attempt ${attempt}/${maxRetries}):`, {
+               message: error.message,
+               status: error.response?.status,
+               statusText: error.response?.statusText,
+               data: error.response?.data ? JSON.stringify(error.response.data).substring(0, 200) : 'No response data'
+            });
+            
+            if (attempt === maxRetries) {
+               console.error(`[LandscapingService] ❌ All ${maxRetries} attempts failed for Gemini API`);
+               return null;
+            }
+            
+            console.log(`[LandscapingService] 🔄 Retrying Gemini API call in ${retryDelay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+         }
       }
+      
+      return null;
    }
 
    private static async createGrassMonitoringRecord(data: {
