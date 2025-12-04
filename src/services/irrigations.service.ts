@@ -776,7 +776,20 @@ export class IrrigationsService {
             const MODEL = "gemini-2.5-flash";
             const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
             
-            const fullImageUrl = formatImageUrl(imageUrl) || imageUrl;
+            let fullImageUrl = formatImageUrl(imageUrl);
+            if (!fullImageUrl) {
+               fullImageUrl = imageUrl;
+            }
+            
+            // Ensure it's a full URL (if it's still a relative path, construct full URL)
+            if (fullImageUrl && !fullImageUrl.startsWith('http://') && !fullImageUrl.startsWith('https://')) {
+               const apiBaseUrl = process.env.API_BASE_URL || 'http://83.111.75.163:5000';
+               fullImageUrl = fullImageUrl.startsWith('/') 
+                  ? `${apiBaseUrl}${fullImageUrl}`
+                  : `${apiBaseUrl}/${fullImageUrl}`;
+            }
+            
+            console.log(`[IrrigationService] 🖼️ Full image URL for Gemini: ${fullImageUrl}`);
             
             const prompt = `*GRASS STATUS ANALYSIS REQUEST (JSON OUTPUT)*
 
