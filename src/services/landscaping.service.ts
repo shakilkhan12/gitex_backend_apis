@@ -1004,7 +1004,16 @@ class LandscapingService {
          const MODEL = "gemini-2.5-flash";
          const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
          
-         const fullImageUrl = formatImageUrl(imageUrl) || imageUrl;
+         // Construct full publicly accessible URL for Gemini
+         let fullImageUrl = formatImageUrl(imageUrl);
+         if (!fullImageUrl || (!fullImageUrl.startsWith('http://') && !fullImageUrl.startsWith('https://'))) {
+            const apiBaseUrl = process.env.API_BASE_URL || 'http://83.111.75.163:5000';
+            fullImageUrl = imageUrl.startsWith('/') 
+               ? `${apiBaseUrl}${imageUrl}`
+               : `${apiBaseUrl}/${imageUrl}`;
+         }
+         
+         console.log(`[LandscapingService] 🖼️ Full image URL for Gemini: ${fullImageUrl}`);
          
          const prompt = `Objective:
 Analyze the provided visual and contextual data to determine the current grass height in inches/centimeters and whether the grass needs cutting.
