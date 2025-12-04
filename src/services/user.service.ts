@@ -2159,7 +2159,6 @@ class UserService {
       try {
          console.log('[UserService] 🔄 Starting upload of all users with emp_Id to HikVision...');
 
-         // Get all users where emp_Id is not empty
          const usersWithEmpId = await db.users.findMany({
             where: {
                AND: [
@@ -2282,9 +2281,10 @@ class UserService {
                );
 
                if (hikVisionResponse && hikVisionResponse.code === '0' && hikVisionResponse.data) {
+                  console.log(`[UserService] ✅ Successfully uploaded user ${user.emp_Id} to HikVision`, hikVisionResponse.data);
                   await db.users.update({
                      where: { Id: user.Id },
-                     data: { unique_id: hikVisionResponse.data }
+                     data: { unique_id: hikVisionResponse.data,updatedAt: new Date() }
                   });
 
                   try {
@@ -2293,13 +2293,14 @@ class UserService {
                         faceGroupIndexCode: "5"
                      };
 
-                     await UserService.callHikVisionAPI(
+                     const faceAdditionResponse = await UserService.callHikVisionAPI(
                         UserService.HIK_CONFIG.baseURL,
                         '/artemis/api/frs/v1/face/single/addition',
                         UserService.HIK_CONFIG.appKey,
                         UserService.HIK_CONFIG.appSecret,
                         faceAdditionPayload
                      );
+                     console.log(`[UserService] ✅ Successfully added face to HikVision group for user ${user.emp_Id}`, faceAdditionResponse);
                   } catch (faceAdditionError: any) {
                      console.warn(`[UserService] ⚠️ Failed to add face to HikVision group for user ${user.emp_Id}:`, faceAdditionError.message);
                   }
@@ -2310,7 +2311,6 @@ class UserService {
                } else {
                   const errorMsg = hikVisionResponse?.msg || 'Unknown error';
                   
-                  // If person already exists, try to search and update unique_id
                   if (errorMsg.includes('already exists') || errorMsg.includes('person code already exists')) {
                      try {
                         const searchPayload = {
