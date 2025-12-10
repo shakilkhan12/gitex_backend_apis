@@ -772,7 +772,7 @@ export class IrrigationsService {
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
          try {
             
-            const GEMINI_API_KEY = 'AIzaSyAc6TkgL2AfKiPqcsVYf2JJC5VhF5vuNjM';
+            const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
             const MODEL = "gemini-2.5-flash";
             const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
             
