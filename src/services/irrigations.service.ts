@@ -130,7 +130,6 @@ export class IrrigationsService {
          
          const results = [];
 
-         // Fetch all irrigation sections with active cameras
          const irrigationSections = await db.cameras_irrigation_section.findMany({
             where: {
                park_cameras: {
@@ -354,7 +353,7 @@ export class IrrigationsService {
             where: {
                working_time: workingTime,
                park_cameras: {
-                  status: true // Only active cameras
+                  status: true 
                }
             },
             include: {
@@ -457,7 +456,7 @@ export class IrrigationsService {
 
                console.log(`[IrrigationService] 📷 Section ${section.id}: Capturing image from camera ${camera.camera_Id} (Zone: ${section.park_zones.zone_Id})...`);
                const base64Image = await this.captureCameraImage(camera.camera_Id, appKey, secretKey);
-               
+               console.log('camera response for section', section.id, base64Image)
                if (!base64Image) {
                   console.log(`[IrrigationService] ❌ Section ${section.id}: Failed to capture image from camera ${camera.camera_Id}`);
                   results.push({
