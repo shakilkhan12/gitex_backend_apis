@@ -550,7 +550,6 @@ class LandscapingService {
          const secretKey = this.HIK_CONFIG.appSecret;
 
          console.log(`[LandscapingService] 📋 Fetching landscaping sections for time ${workingTime}...`);
-         // Get all landscaping sections with the specified working_time
          const landscapingSections = await db.cameras_landscaping_section.findMany({
             where: {
                working_time: workingTime,
@@ -641,6 +640,7 @@ class LandscapingService {
 
                console.log(`[LandscapingService] 📷 Section ${section.id}: Capturing image from camera ${camera.camera_Id} (Area: ${section.area_name || 'N/A'})...`);
                const base64Image = await this.captureCameraImage(camera.camera_Id, appKey, secretKey);
+               console.log('camera response for landscaping section', section.id, base64Image)
                
                if (!base64Image) {
                   console.log(`[LandscapingService] ❌ Section ${section.id}: Failed to capture image from camera ${camera.camera_Id}`);
@@ -925,6 +925,7 @@ class LandscapingService {
             secretKey,
             { cameraIndexCode }
          );
+         console.log('camera response for landscaping section main', cameraIndexCode, response)
          if (response && response.code === '0' && response.msg === 'Success' && response.data) {
             return response.data;
          } else {

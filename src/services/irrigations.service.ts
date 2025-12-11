@@ -346,7 +346,7 @@ export class IrrigationsService {
       
       try {
          const appKey = this.HIK_CONFIG.appKey;
-         const secretKey = this.HIK_CONFIG.appSecret;
+         const secretKey = this.HIK_CONFIG.appSecret; 
 
          console.log(`[IrrigationService] 📋 Fetching irrigation sections for time ${workingTime}...`);
          const irrigationSections = await db.cameras_irrigation_section.findMany({
@@ -629,7 +629,7 @@ export class IrrigationsService {
             secretKey,
             { cameraIndexCode }
          );
-         
+         console.log('camera response for irrigation section', cameraIndexCode, response)
          if (response && response.code === '0' && response.msg === 'Success' && response.data) {
             return response.data;
          } else {
