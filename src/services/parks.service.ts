@@ -862,7 +862,7 @@ class ParkService {
         // Use Promise.allSettled to prevent one failure from breaking all
         const results = await Promise.allSettled(
           zoneIds.map(async (zoneId) => {
-            const nextCaptureTime = await this.calculateNextCaptureTimeForZone(zoneId, parkId);
+            const nextCaptureTime = await ParkService.calculateNextCaptureTimeForZone(zoneId, parkId);
             return { zoneId, nextCaptureTime };
           })
         );
@@ -989,7 +989,7 @@ class ParkService {
       // Use Promise.allSettled to prevent one failure from breaking all
       const results = await Promise.allSettled(
         zoneIds.map(async (zoneId) => {
-          const nextCaptureTime = await this.calculateNextCaptureTimeForZone(zoneId, parkId);
+          const nextCaptureTime = await ParkService.calculateNextCaptureTimeForZone(zoneId, parkId);
           return { zoneId, nextCaptureTime };
         })
       );
