@@ -715,12 +715,29 @@ class ParkService {
       
       try {
         // Get the working_time for this zone from cameras_irrigation_section
+        // First, get the camera IDs for this park
+        const parkCameras = await db.park_cameras.findMany({
+          where: {
+            park_Id: parkId,
+            status: true
+          },
+          select: {
+            Id: true
+          }
+        });
+        
+        const cameraIds = parkCameras.map(c => c.Id);
+        
+        if (cameraIds.length === 0) {
+          return null;
+        }
+        
+        // Get the working_time for this zone from cameras_irrigation_section
         const irrigationSection = await db.cameras_irrigation_section.findFirst({
           where: {
             zone_Id: zoneId,
-            park_cameras: {
-              park_Id: parkId,
-              status: true
+            camera_Id: {
+              in: cameraIds
             }
           },
           select: {
@@ -749,6 +766,11 @@ class ParkService {
           return null;
         }
         
+        // Validate hours and minutes
+        if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+          return null;
+        }
+        
         // Calculate next capture time
         const now = new Date();
         const nextCapture = new Date();
@@ -760,7 +782,9 @@ class ParkService {
         }
         
         return nextCapture;
-      } catch (error) {
+      } catch (error: any) {
+        // Silently fail and return null - don't break the entire request
+        console.error(`[ParkService] Error calculating next capture time for zone ${zoneId}:`, error.message);
         return null;
       }
     }
@@ -837,17 +861,25 @@ class ParkService {
           orderBy: orderByClause
         });
 
-        // Fetch next capture times for all zones in parallel
+        // Fetch next capture times for all zones in parallel (with error handling)
         const uniqueZoneIds = new Set(jobHistory.map(job => job.zone_Id).filter((id): id is number => id !== null));
         const zoneIds = Array.from(uniqueZoneIds);
         const nextCaptureTimesMap = new Map<number, Date | null>();
         
-        await Promise.all(
+        // Use Promise.allSettled to prevent one failure from breaking all
+        const results = await Promise.allSettled(
           zoneIds.map(async (zoneId) => {
             const nextCaptureTime = await this.calculateNextCaptureTimeForZone(zoneId, parkId);
-            nextCaptureTimesMap.set(zoneId, nextCaptureTime);
+            return { zoneId, nextCaptureTime };
           })
         );
+        
+        // Process results
+        results.forEach((result) => {
+          if (result.status === 'fulfilled') {
+            nextCaptureTimesMap.set(result.value.zoneId, result.value.nextCaptureTime);
+          }
+        });
 
         const formattedHistory = jobHistory.map(job => {
           const jobInitiated = job.started_at;
@@ -949,17 +981,25 @@ class ParkService {
         return isNaN(number) ? 0 : number;
       };
 
-      // Fetch next capture times for all zones in parallel
+      // Fetch next capture times for all zones in parallel (with error handling)
       const uniqueZoneIds = new Set(jobHistory.map(job => job.zone_Id).filter((id): id is number => id !== null));
       const zoneIds = Array.from(uniqueZoneIds);
       const nextCaptureTimesMap = new Map<number, Date | null>();
       
-      await Promise.all(
+      // Use Promise.allSettled to prevent one failure from breaking all
+      const results = await Promise.allSettled(
         zoneIds.map(async (zoneId) => {
           const nextCaptureTime = await this.calculateNextCaptureTimeForZone(zoneId, parkId);
-          nextCaptureTimesMap.set(zoneId, nextCaptureTime);
+          return { zoneId, nextCaptureTime };
         })
       );
+      
+      // Process results
+      results.forEach((result) => {
+        if (result.status === 'fulfilled') {
+          nextCaptureTimesMap.set(result.value.zoneId, result.value.nextCaptureTime);
+        }
+      });
 
       const formattedHistory = jobHistory.map(job => {
         const jobInitiated = job.started_at;
@@ -1024,7 +1064,8 @@ class ParkService {
         pagination: paginationData
       };
     } catch (error: any) {
-        throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch zones job history');
+        console.error('[ParkService] Error fetching zones job history:', error);
+        throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, `Failed to fetch zones job history: ${error.message || 'Unknown error'}`);
     }
   };
 
