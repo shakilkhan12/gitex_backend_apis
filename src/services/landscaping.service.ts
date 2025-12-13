@@ -7,6 +7,7 @@ import * as nodeCrypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import { formatImageUrl, formatImageUrlsInArray } from "@/utils/imageUrl.utils";
+import { CronLogger } from "@/utils/cronLogger.utils";
 
 class LandscapingService {
    private static readonly HIK_CONFIG = {
@@ -16,6 +17,19 @@ class LandscapingService {
       eventRecordsEndpoint: '/artemis/api/eventService/v1/eventRecords/page',
       imageDataEndpoint: '/artemis/api/eventService/v1/image_data',
    };
+
+   // Helper function to log to both console and file
+   private static log(message: string): void {
+      console.log(message);
+      CronLogger.log(message);
+   }
+
+   // Helper function to log errors to both console and file
+   private static logError(message: string, error?: any): void {
+      const errorMessage = error ? `${message} ${error.message || JSON.stringify(error)}` : message;
+      console.error(errorMessage);
+      CronLogger.log(`[ERROR] ${errorMessage}`);
+   }
 
    protected static generateUniqueCaseId = async (): Promise<string> => {
       let caseId: string;
@@ -543,13 +557,19 @@ class LandscapingService {
    // New method to monitor landscaping sections based on working_time
    public static monitorLandscapingSectionsService = async (workingTime: string) => {
       const startTime = Date.now();
+      
+      // Initialize logger for this service
+      CronLogger.initialize('landscaping');
+      CronLogger.startJobRun(workingTime);
+      
       console.log(`[LandscapingService] 🌳 Starting landscaping monitoring for working time: ${workingTime}`);
+      CronLogger.log(`[LandscapingService] 🌳 Starting landscaping monitoring for working time: ${workingTime}`);
       
       try {
          const appKey = this.HIK_CONFIG.appKey;
          const secretKey = this.HIK_CONFIG.appSecret;
 
-         console.log(`[LandscapingService] 📋 Fetching landscaping sections for time ${workingTime}...`);
+         this.log(`[LandscapingService] 📋 Fetching landscaping sections for time ${workingTime}...`);
          const landscapingSections = await db.cameras_landscaping_section.findMany({
             where: {
                working_time: workingTime,
@@ -577,10 +597,10 @@ class LandscapingService {
             }
          });
 
-         console.log(`[LandscapingService] 📊 Found ${landscapingSections.length} landscaping sections for time ${workingTime}`);
+         this.log(`[LandscapingService] 📊 Found ${landscapingSections.length} landscaping sections for time ${workingTime}`);
 
          if (landscapingSections.length === 0) {
-            console.log(`[LandscapingService] ⚠️ No landscaping sections found for time ${workingTime}`);
+            this.log(`[LandscapingService] ⚠️ No landscaping sections found for time ${workingTime}`);
             return {
                success: true,
                message: `No landscaping sections found for time ${workingTime}`,
@@ -596,11 +616,11 @@ class LandscapingService {
 
          for (const section of landscapingSections) {
             processedCount++;
-            console.log(`[LandscapingService] 🔄 Processing section ${processedCount}/${landscapingSections.length} (Section ID: ${section.id}, Area: ${section.area_name || 'N/A'})`);
+            this.log(`[LandscapingService] 🔄 Processing section ${processedCount}/${landscapingSections.length} (Section ID: ${section.id}, Area: ${section.area_name || 'N/A'})`);
             
             try {
                if (!section.park_cameras || !section.park_cameras.camera_Id) {
-                  console.log(`[LandscapingService] ❌ Section ${section.id}: Camera not found`);
+                  this.log(`[LandscapingService] ❌ Section ${section.id}: Camera not found`);
                   results.push({
                      sectionId: section.id,
                      areaName: section.area_name,
@@ -613,7 +633,7 @@ class LandscapingService {
 
                const camera = section.park_cameras;
                if (!camera.camera_Id) {
-                  console.log(`[LandscapingService] ❌ Section ${section.id}: Camera ID not found`);
+                  this.log(`[LandscapingService] ❌ Section ${section.id}: Camera ID not found`);
                   results.push({
                      sectionId: section.id,
                      areaName: section.area_name,
@@ -626,7 +646,7 @@ class LandscapingService {
 
                // Skip if camera is not active
                if (camera.status === false || camera.status === null) {
-                  console.log(`[LandscapingService] ⚠️ Section ${section.id}: Camera ${camera.camera_Id} is not active, skipping`);
+                  this.log(`[LandscapingService] ⚠️ Section ${section.id}: Camera ${camera.camera_Id} is not active, skipping`);
                   results.push({
                      sectionId: section.id,
                      areaName: section.area_name,
@@ -638,12 +658,12 @@ class LandscapingService {
                   continue;
                }
 
-               console.log(`[LandscapingService] 📷 Section ${section.id}: Capturing image from camera ${camera.camera_Id} (Area: ${section.area_name || 'N/A'})...`);
+               this.log(`[LandscapingService] 📷 Section ${section.id}: Capturing image from camera ${camera.camera_Id} (Area: ${section.area_name || 'N/A'})...`);
                const base64Image = await this.captureCameraImage(camera.camera_Id, appKey, secretKey);
                console.log('camera response for landscaping section', section.id, base64Image)
                
                if (!base64Image) {
-                  console.log(`[LandscapingService] ❌ Section ${section.id}: Failed to capture image from camera ${camera.camera_Id}`);
+                  this.log(`[LandscapingService] ❌ Section ${section.id}: Failed to capture image from camera ${camera.camera_Id}`);
                   results.push({
                      sectionId: section.id,
                      areaName: section.area_name,
@@ -654,14 +674,14 @@ class LandscapingService {
                   failureCount++;
                   continue;
                }
-               console.log(`[LandscapingService] ✅ Section ${section.id}: Image captured successfully`);
+               this.log(`[LandscapingService] ✅ Section ${section.id}: Image captured successfully`);
 
                const eventId = `landscaping_${section.id}_${Date.now()}`;
-               console.log(`[LandscapingService] 💾 Section ${section.id}: Saving image locally...`);
+               this.log(`[LandscapingService] 💾 Section ${section.id}: Saving image locally...`);
                const imageUrl = await this.saveImageLocally(base64Image, eventId);
                
                if (!imageUrl) {
-                  console.log(`[LandscapingService] ❌ Section ${section.id}: Failed to save image locally`);
+                  this.log(`[LandscapingService] ❌ Section ${section.id}: Failed to save image locally`);
                   results.push({
                      sectionId: section.id,
                      areaName: section.area_name,
@@ -672,13 +692,13 @@ class LandscapingService {
                   failureCount++;
                   continue;
                }
-               console.log(`[LandscapingService] ✅ Section ${section.id}: Image saved at ${imageUrl}`);
+               this.log(`[LandscapingService] ✅ Section ${section.id}: Image saved at ${imageUrl}`);
 
-               console.log(`[LandscapingService] 🤖 Section ${section.id}: Analyzing image with Gemini...`);
+               this.log(`[LandscapingService] 🤖 Section ${section.id}: Analyzing image with Gemini...`);
                const geminiResponse = await this.analyzeImageWithGemini(imageUrl);
                
                if (!geminiResponse) {
-                  console.log(`[LandscapingService] ❌ Section ${section.id}: Failed to analyze image with Gemini`);
+                  this.log(`[LandscapingService] ❌ Section ${section.id}: Failed to analyze image with Gemini`);
                   results.push({
                      sectionId: section.id,
                      areaName: section.area_name,
@@ -689,9 +709,9 @@ class LandscapingService {
                   failureCount++;
                   continue;
                }
-               console.log(`[LandscapingService] ✅ Section ${section.id}: Image analyzed successfully`);
+               this.log(`[LandscapingService] ✅ Section ${section.id}: Image analyzed successfully`);
 
-               console.log(`[LandscapingService] 💾 Section ${section.id}: Creating grass monitoring record...`);
+               this.log(`[LandscapingService] 💾 Section ${section.id}: Creating grass monitoring record...`);
                try {
                   const landscapingRecord = await this.createGrassMonitoringRecord({
                      parkId: camera.park_Id || undefined,
@@ -701,7 +721,7 @@ class LandscapingService {
                   });
 
                   if (landscapingRecord.id) {
-                     console.log(`[LandscapingService] ✅ Section ${section.id}: Record stored - grass needs cutting (ID: ${landscapingRecord.id})`);
+                     this.log(`[LandscapingService] ✅ Section ${section.id}: Record stored - grass needs cutting (ID: ${landscapingRecord.id})`);
                      needsCuttingCount++;
                      successCount++;
                      results.push({
@@ -715,7 +735,7 @@ class LandscapingService {
                         needs_cutting: true
                      });
                   } else {
-                     console.log(`[LandscapingService] ℹ️ Section ${section.id}: Record not stored - grass does not need cutting`);
+                     this.log(`[LandscapingService] ℹ️ Section ${section.id}: Record not stored - grass does not need cutting`);
                      successCount++;
                      results.push({
                         sectionId: section.id,
@@ -729,7 +749,7 @@ class LandscapingService {
                      });
                   }
                } catch (dbError: any) {
-                  console.error(`[LandscapingService] ❌ Section ${section.id}: Database record creation failed:`, dbError.message);
+                  this.logError(`[LandscapingService] ❌ Section ${section.id}: Database record creation failed:`, dbError);
                   failureCount++;
                   results.push({
                      sectionId: section.id,
@@ -743,7 +763,7 @@ class LandscapingService {
                }
 
             } catch (error: any) {
-               console.error(`[LandscapingService] ❌ Section ${section.id}: Unexpected error:`, error.message);
+               this.logError(`[LandscapingService] ❌ Section ${section.id}: Unexpected error:`, error);
                failureCount++;
                results.push({
                   sectionId: section.id,
@@ -755,14 +775,27 @@ class LandscapingService {
          }
 
          const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-         console.log(`[LandscapingService] 📊 Summary for ${workingTime}:`);
-         console.log(`[LandscapingService]   - Total sections: ${landscapingSections.length}`);
-         console.log(`[LandscapingService]   - Processed: ${processedCount}`);
-         console.log(`[LandscapingService]   - Successful: ${successCount}`);
-         console.log(`[LandscapingService]   - Failed: ${failureCount}`);
-         console.log(`[LandscapingService]   - Needs cutting: ${needsCuttingCount}`);
-         console.log(`[LandscapingService]   - Duration: ${duration}s`);
-         console.log(`[LandscapingService] ✅ Completed landscaping monitoring for ${workingTime}`);
+         this.log(`[LandscapingService] 📊 Summary for ${workingTime}:`);
+         this.log(`[LandscapingService]   - Total sections: ${landscapingSections.length}`);
+         this.log(`[LandscapingService]   - Processed: ${processedCount}`);
+         this.log(`[LandscapingService]   - Successful: ${successCount}`);
+         this.log(`[LandscapingService]   - Failed: ${failureCount}`);
+         this.log(`[LandscapingService]   - Needs cutting: ${needsCuttingCount}`);
+         this.log(`[LandscapingService]   - Duration: ${duration}s`);
+         this.log(`[LandscapingService] ✅ Completed landscaping monitoring for ${workingTime}`);
+
+         // Log summary to file
+         CronLogger.endJobRun({
+            workingTime: workingTime,
+            totalSections: landscapingSections.length,
+            processed: processedCount,
+            successful: successCount,
+            failed: failureCount,
+            duration: duration,
+            additionalInfo: {
+               needsCutting: needsCuttingCount
+            }
+         });
 
          return {
             success: true,

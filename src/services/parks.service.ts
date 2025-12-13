@@ -709,6 +709,62 @@ class ParkService {
     }
   };
 
+    // Helper function to calculate next capture time based on working_time
+    private static async calculateNextCaptureTimeForZone(zoneId: number | null, parkId: number | null): Promise<Date | null> {
+      if (!zoneId || !parkId) return null;
+      
+      try {
+        // Get the working_time for this zone from cameras_irrigation_section
+        const irrigationSection = await db.cameras_irrigation_section.findFirst({
+          where: {
+            zone_Id: zoneId,
+            park_cameras: {
+              park_Id: parkId,
+              status: true
+            }
+          },
+          select: {
+            working_time: true
+          }
+        });
+        
+        if (!irrigationSection || !irrigationSection.working_time) {
+          return null;
+        }
+        
+        // Parse working_time (format: "HH:MM" or "HHMM")
+        const workingTime = irrigationSection.working_time.trim();
+        let hours = 0;
+        let minutes = 0;
+        
+        if (workingTime.includes(':')) {
+          const [h, m] = workingTime.split(':');
+          hours = parseInt(h, 10) || 0;
+          minutes = parseInt(m, 10) || 0;
+        } else if (workingTime.length === 4) {
+          // Format: "HHMM"
+          hours = parseInt(workingTime.substring(0, 2), 10) || 0;
+          minutes = parseInt(workingTime.substring(2, 4), 10) || 0;
+        } else {
+          return null;
+        }
+        
+        // Calculate next capture time
+        const now = new Date();
+        const nextCapture = new Date();
+        nextCapture.setHours(hours, minutes, 0, 0);
+        
+        // If the time has already passed today, set it for tomorrow
+        if (nextCapture <= now) {
+          nextCapture.setDate(nextCapture.getDate() + 1);
+        }
+        
+        return nextCapture;
+      } catch (error) {
+        return null;
+      }
+    }
+
     protected static getParkZonesJobHistoryService = async (parkId: number, filters?: {
       zoneId?: number;
       status?: string;
@@ -781,6 +837,18 @@ class ParkService {
           orderBy: orderByClause
         });
 
+        // Fetch next capture times for all zones in parallel
+        const uniqueZoneIds = new Set(jobHistory.map(job => job.zone_Id).filter((id): id is number => id !== null));
+        const zoneIds = Array.from(uniqueZoneIds);
+        const nextCaptureTimesMap = new Map<number, Date | null>();
+        
+        await Promise.all(
+          zoneIds.map(async (zoneId) => {
+            const nextCaptureTime = await this.calculateNextCaptureTimeForZone(zoneId, parkId);
+            nextCaptureTimesMap.set(zoneId, nextCaptureTime);
+          })
+        );
+
         const formattedHistory = jobHistory.map(job => {
           const jobInitiated = job.started_at;
           const durationInMinutes = parseDurationToMinutes(job.start_for_time);
@@ -791,6 +859,7 @@ class ParkService {
           const status = jobCompletion && currentTime > jobCompletion ? 'Completed' : 'Pending';
           
           const zoneDetails = job.park_zones;
+          const nextCaptureTime = job.zone_Id ? nextCaptureTimesMap.get(job.zone_Id) || null : null;
           
           return {
             id: job.Id,
@@ -803,6 +872,7 @@ class ParkService {
             jobId: job.job_Id,
             jobInitiated: jobInitiated,
             jobCompletion: jobCompletion,
+            nextCaptureTime: nextCaptureTime, // Add next capture time from DB
             image: job.image,
             afterImage: job.after_image,
             status: status, 
@@ -879,6 +949,18 @@ class ParkService {
         return isNaN(number) ? 0 : number;
       };
 
+      // Fetch next capture times for all zones in parallel
+      const uniqueZoneIds = new Set(jobHistory.map(job => job.zone_Id).filter((id): id is number => id !== null));
+      const zoneIds = Array.from(uniqueZoneIds);
+      const nextCaptureTimesMap = new Map<number, Date | null>();
+      
+      await Promise.all(
+        zoneIds.map(async (zoneId) => {
+          const nextCaptureTime = await this.calculateNextCaptureTimeForZone(zoneId, parkId);
+          nextCaptureTimesMap.set(zoneId, nextCaptureTime);
+        })
+      );
+
       const formattedHistory = jobHistory.map(job => {
         const jobInitiated = job.started_at;
         const durationInMinutes = parseDurationToMinutes(job.start_for_time);
@@ -889,6 +971,7 @@ class ParkService {
         const status = jobCompletion && currentTime > jobCompletion ? 'Completed' : 'Pending';
         
         const zoneDetails = job.park_zones;
+        const nextCaptureTime = job.zone_Id ? nextCaptureTimesMap.get(job.zone_Id) || null : null;
         
         return {
           id: job.Id,
@@ -901,6 +984,7 @@ class ParkService {
           jobId: job.job_Id,
           jobInitiated: jobInitiated,
           jobCompletion: jobCompletion,
+          nextCaptureTime: nextCaptureTime, // Add next capture time from DB
           image: job.image,
           afterImage: job.after_image,
           status: status, 

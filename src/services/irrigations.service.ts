@@ -7,8 +7,22 @@ import * as nodeCrypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import { formatImageUrl } from "@/utils/imageUrl.utils";
+import { CronLogger } from "@/utils/cronLogger.utils";
 
 export class IrrigationsService {
+   // Helper function to log to both console and file
+   private static log(message: string): void {
+      console.log(message);
+      CronLogger.log(message);
+   }
+
+   // Helper function to log errors to both console and file
+   private static logError(message: string, error?: any): void {
+      const errorMessage = error ? `${message} ${error.message || JSON.stringify(error)}` : message;
+      console.error(errorMessage);
+      CronLogger.log(`[ERROR] ${errorMessage}`);
+   }
+
    private static HIK_CONFIG = {
       baseURL: 'https://10.70.90.183:443',
       appKey: '59315117',
@@ -342,13 +356,19 @@ export class IrrigationsService {
    // Monitor irrigation sections for a specific working time
    public static monitorIrrigationSectionsService = async (workingTime: string) => {
       const startTime = Date.now();
+      
+      // Initialize logger for this service
+      CronLogger.initialize('irrigation');
+      CronLogger.startJobRun(workingTime);
+      
       console.log(`[IrrigationService] 💧 Starting irrigation monitoring for working time: ${workingTime}`);
+      CronLogger.log(`[IrrigationService] 💧 Starting irrigation monitoring for working time: ${workingTime}`);
       
       try {
          const appKey = this.HIK_CONFIG.appKey;
          const secretKey = this.HIK_CONFIG.appSecret; 
 
-         console.log(`[IrrigationService] 📋 Fetching irrigation sections for time ${workingTime}...`);
+         this.log(`[IrrigationService] 📋 Fetching irrigation sections for time ${workingTime}...`);
          const irrigationSections = await db.cameras_irrigation_section.findMany({
             where: {
                working_time: workingTime,
@@ -382,10 +402,10 @@ export class IrrigationsService {
             }
          });
 
-         console.log(`[IrrigationService] 📊 Found ${irrigationSections.length} irrigation sections for time ${workingTime}`);
+         this.log(`[IrrigationService] 📊 Found ${irrigationSections.length} irrigation sections for time ${workingTime}`);
 
          if (irrigationSections.length === 0) {
-            console.log(`[IrrigationService] ⚠️ No irrigation sections found for time ${workingTime}`);
+            this.log(`[IrrigationService] ⚠️ No irrigation sections found for time ${workingTime}`);
             return {
                success: true,
                message: `No irrigation sections found for time ${workingTime}`,
@@ -400,11 +420,11 @@ export class IrrigationsService {
 
          for (const section of irrigationSections) {
             processedCount++;
-            console.log(`[IrrigationService] 🔄 Processing section ${processedCount}/${irrigationSections.length} (Section ID: ${section.id})`);
+            this.log(`[IrrigationService] 🔄 Processing section ${processedCount}/${irrigationSections.length} (Section ID: ${section.id})`);
             
             try {
                if (!section.park_cameras || !section.park_cameras.camera_Id) {
-                  console.log(`[IrrigationService] ❌ Section ${section.id}: Camera not found`);
+                  this.log(`[IrrigationService] ❌ Section ${section.id}: Camera not found`);
                   results.push({
                      sectionId: section.id,
                      zoneId: section.zone_Id,
@@ -417,7 +437,7 @@ export class IrrigationsService {
 
                const camera = section.park_cameras;
                if (!camera.camera_Id) {
-                  console.log(`[IrrigationService] ❌ Section ${section.id}: Camera ID not found`);
+                  this.log(`[IrrigationService] ❌ Section ${section.id}: Camera ID not found`);
                   results.push({
                      sectionId: section.id,
                      zoneId: section.zone_Id,
@@ -430,7 +450,7 @@ export class IrrigationsService {
 
                // Skip if camera is not active
                if (camera.status === false || camera.status === null) {
-                  console.log(`[IrrigationService] ⚠️ Section ${section.id}: Camera ${camera.camera_Id} is not active, skipping`);
+                  this.log(`[IrrigationService] ⚠️ Section ${section.id}: Camera ${camera.camera_Id} is not active, skipping`);
                   results.push({
                      sectionId: section.id,
                      zoneId: section.zone_Id,
@@ -443,7 +463,7 @@ export class IrrigationsService {
                }
 
                if (!section.park_zones || !section.park_zones.zone_Id) {
-                  console.log(`[IrrigationService] ❌ Section ${section.id}: Zone not found`);
+                  this.log(`[IrrigationService] ❌ Section ${section.id}: Zone not found`);
                   results.push({
                      sectionId: section.id,
                      cameraId: camera.camera_Id,
@@ -454,11 +474,11 @@ export class IrrigationsService {
                   continue;
                }
 
-               console.log(`[IrrigationService] 📷 Section ${section.id}: Capturing image from camera ${camera.camera_Id} (Zone: ${section.park_zones.zone_Id})...`);
+               this.log(`[IrrigationService] 📷 Section ${section.id}: Capturing image from camera ${camera.camera_Id} (Zone: ${section.park_zones.zone_Id})...`);
                const base64Image = await this.captureCameraImage(camera.camera_Id, appKey, secretKey);
                console.log('camera response for section', section.id, base64Image)
                if (!base64Image) {
-                  console.log(`[IrrigationService] ❌ Section ${section.id}: Failed to capture image from camera ${camera.camera_Id}`);
+                  this.log(`[IrrigationService] ❌ Section ${section.id}: Failed to capture image from camera ${camera.camera_Id}`);
                   results.push({
                      sectionId: section.id,
                      zoneId: section.park_zones.zone_Id,
@@ -469,14 +489,14 @@ export class IrrigationsService {
                   failureCount++;
                   continue;
                }
-               console.log(`[IrrigationService] ✅ Section ${section.id}: Image captured successfully`);
+               this.log(`[IrrigationService] ✅ Section ${section.id}: Image captured successfully`);
 
                const eventId = `${section.id}_${Date.now()}`;
-               console.log(`[IrrigationService] 💾 Section ${section.id}: Saving image locally...`);
+               this.log(`[IrrigationService] 💾 Section ${section.id}: Saving image locally...`);
                const imageUrl = await this.saveImageLocally(base64Image, eventId);
                
                if (!imageUrl) {
-                  console.log(`[IrrigationService] ❌ Section ${section.id}: Failed to save image locally`);
+                  this.log(`[IrrigationService] ❌ Section ${section.id}: Failed to save image locally`);
                   results.push({
                      sectionId: section.id,
                      zoneId: section.park_zones.zone_Id,
@@ -487,13 +507,13 @@ export class IrrigationsService {
                   failureCount++;
                   continue;
                }
-               console.log(`[IrrigationService] ✅ Section ${section.id}: Image saved at ${imageUrl}`);
+               this.log(`[IrrigationService] ✅ Section ${section.id}: Image saved at ${imageUrl}`);
 
-               console.log(`[IrrigationService] 🤖 Section ${section.id}: Analyzing image with Gemini...`);
+               this.log(`[IrrigationService] 🤖 Section ${section.id}: Analyzing image with Gemini...`);
                const geminiResponse = await this.analyzeImageWithGemini(imageUrl);
-               console.log(`[IrrigationService] 🖼️ Section ${section.id}: Gemini response: ${geminiResponse}`);
+               this.log(`[IrrigationService] 🖼️ Section ${section.id}: Gemini response: ${geminiResponse}`);
                if (!geminiResponse) {
-                  console.log(`[IrrigationService] ❌ Section ${section.id}: Failed to analyze image with Gemini`);
+                  this.log(`[IrrigationService] ❌ Section ${section.id}: Failed to analyze image with Gemini`);
                   results.push({
                      sectionId: section.id,
                      zoneId: section.park_zones.zone_Id,
@@ -504,10 +524,10 @@ export class IrrigationsService {
                   failureCount++;
                   continue;
                }
-               console.log(`[IrrigationService] ✅ Section ${section.id}: Image analyzed successfully`);
+               this.log(`[IrrigationService] ✅ Section ${section.id}: Image analyzed successfully`);
 
                const needsWatering = this.shouldWaterGrass(geminiResponse);
-               console.log(`[IrrigationService] 💧 Section ${section.id}: Watering needed: ${needsWatering ? 'YES' : 'NO'}`);
+               this.log(`[IrrigationService] 💧 Section ${section.id}: Watering needed: ${needsWatering ? 'YES' : 'NO'}`);
                
                const zoneId = Number(section.park_zones.zone_Id);
                let wateringTriggered = false;
@@ -515,14 +535,14 @@ export class IrrigationsService {
                let wateringResult = null;
                
                if (needsWatering && zoneId) {
-                  console.log(`[IrrigationService] 🚰 Section ${section.id}: Triggering watering for zone ${zoneId}...`);
+                  this.log(`[IrrigationService] 🚰 Section ${section.id}: Triggering watering for zone ${zoneId}...`);
                   wateringTriggered = true;
                   wateringResult = await this.triggerWatering([zoneId]);
                   wateringSucceeded = wateringResult && wateringResult.succeeded === true;
-                  console.log(`[IrrigationService] ${wateringSucceeded ? '✅' : '❌'} Section ${section.id}: Watering ${wateringSucceeded ? 'succeeded' : 'failed'}`);
+                  this.log(`[IrrigationService] ${wateringSucceeded ? '✅' : '❌'} Section ${section.id}: Watering ${wateringSucceeded ? 'succeeded' : 'failed'}`);
                }
 
-               console.log(`[IrrigationService] 💾 Section ${section.id}: Creating job history record...`);
+               this.log(`[IrrigationService] 💾 Section ${section.id}: Creating job history record...`);
                try {
                   const jobRecord = await this.createJobHistoryRecord({
                      cameraIndex: camera.camera_Id!,
@@ -532,7 +552,7 @@ export class IrrigationsService {
                      wateringTriggered: wateringTriggered
                   });
 
-                  console.log(`[IrrigationService] ✅ Section ${section.id}: Job history record created (ID: ${jobRecord.Id})`);
+                  this.log(`[IrrigationService] ✅ Section ${section.id}: Job history record created (ID: ${jobRecord.Id})`);
                   successCount++;
                   results.push({
                      sectionId: section.id,
@@ -548,7 +568,7 @@ export class IrrigationsService {
                      reason: needsWatering ? (wateringSucceeded ? "Watering triggered and succeeded" : "Watering triggered but failed") : "Grass does not need watering"
                   });
                } catch (dbError: any) {
-                  console.error(`[IrrigationService] ❌ Section ${section.id}: Database record creation failed:`, dbError.message);
+                  this.logError(`[IrrigationService] ❌ Section ${section.id}: Database record creation failed:`, dbError);    
                   failureCount++;
                   results.push({
                      sectionId: section.id,
@@ -562,7 +582,7 @@ export class IrrigationsService {
                }
 
             } catch (error: any) {
-               console.error(`[IrrigationService] ❌ Section ${section.id}: Unexpected error:`, error.message);
+                     this.logError(`[IrrigationService] ❌ Section ${section.id}: Unexpected error:`, error);
                failureCount++;
                results.push({
                   sectionId: section.id,
@@ -572,15 +592,25 @@ export class IrrigationsService {
                });
             }
          }
-
+         
          const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-         console.log(`[IrrigationService] 📊 Summary for ${workingTime}:`);
-         console.log(`[IrrigationService]   - Total sections: ${irrigationSections.length}`);
-         console.log(`[IrrigationService]   - Processed: ${processedCount}`);
-         console.log(`[IrrigationService]   - Successful: ${successCount}`);
-         console.log(`[IrrigationService]   - Failed: ${failureCount}`);
-         console.log(`[IrrigationService]   - Duration: ${duration}s`);
-         console.log(`[IrrigationService] ✅ Completed irrigation monitoring for ${workingTime}`);
+         this.log(`[IrrigationService] 📊 Summary for ${workingTime}:`);
+         this.log(`[IrrigationService]   - Total sections: ${irrigationSections.length}`);
+         this.log(`[IrrigationService]   - Processed: ${processedCount}`);
+         this.log(`[IrrigationService]   - Successful: ${successCount}`);
+         this.log(`[IrrigationService]   - Failed: ${failureCount}`);
+         this.log(`[IrrigationService]   - Duration: ${duration}s`);
+         this.log(`[IrrigationService] ✅ Completed irrigation monitoring for ${workingTime}`);
+
+         // Log summary to file
+         CronLogger.endJobRun({
+            workingTime: workingTime,
+            totalSections: irrigationSections.length,
+            processed: processedCount,
+            successful: successCount,
+            failed: failureCount,
+            duration: duration
+         });
 
          return {
             success: true,
