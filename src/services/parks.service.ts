@@ -711,41 +711,30 @@ class ParkService {
 
     // Helper function to calculate next capture time based on working_time
     private static async calculateNextCaptureTimeForZone(zoneId: number | null, parkId: number | null): Promise<Date | null> {
-      if (!zoneId || !parkId) return null;
+      if (!zoneId) {
+        console.log(`[ParkService] calculateNextCaptureTimeForZone: zoneId is null`);
+        return null;
+      }
       
       try {
         // Get the working_time for this zone from cameras_irrigation_section
-        // First, get the camera IDs for this park
-        const parkCameras = await db.park_cameras.findMany({
-          where: {
-            park_Id: parkId,
-            status: true
-          },
-          select: {
-            Id: true
-          }
-        });
-        
-        const cameraIds = parkCameras.map(c => c.Id);
-        
-        if (cameraIds.length === 0) {
-          return null;
-        }
-        
-        // Get the working_time for this zone from cameras_irrigation_section
+        // zone_Id in cameras_irrigation_section references park_zones.Id (database ID)
         const irrigationSection = await db.cameras_irrigation_section.findFirst({
           where: {
-            zone_Id: zoneId,
-            camera_Id: {
-              in: cameraIds
-            }
+            zone_Id: zoneId
           },
           select: {
             working_time: true
           }
         });
         
-        if (!irrigationSection || !irrigationSection.working_time) {
+        if (!irrigationSection) {
+          console.log(`[ParkService] No irrigation section found for zone ${zoneId}`);
+          return null;
+        }
+        
+        if (!irrigationSection.working_time) {
+          console.log(`[ParkService] No working_time found for zone ${zoneId}`);
           return null;
         }
         
@@ -763,11 +752,13 @@ class ParkService {
           hours = parseInt(workingTime.substring(0, 2), 10) || 0;
           minutes = parseInt(workingTime.substring(2, 4), 10) || 0;
         } else {
+          console.log(`[ParkService] Invalid working_time format: ${workingTime} for zone ${zoneId}`);
           return null;
         }
         
         // Validate hours and minutes
         if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+          console.log(`[ParkService] Invalid hours/minutes: ${hours}:${minutes} for zone ${zoneId}`);
           return null;
         }
         
@@ -781,10 +772,11 @@ class ParkService {
           nextCapture.setDate(nextCapture.getDate() + 1);
         }
         
+        console.log(`[ParkService] Calculated next capture time for zone ${zoneId}: ${nextCapture.toISOString()} (working_time: ${workingTime})`);
         return nextCapture;
       } catch (error: any) {
-        // Silently fail and return null - don't break the entire request
-        console.error(`[ParkService] Error calculating next capture time for zone ${zoneId}:`, error.message);
+        // Log error but don't break the entire request
+        console.error(`[ParkService] Error calculating next capture time for zone ${zoneId}:`, error.message, error.stack);
         return null;
       }
     }
@@ -864,6 +856,7 @@ class ParkService {
         // Fetch next capture times for all zones in parallel (with error handling)
         const uniqueZoneIds = new Set(jobHistory.map(job => job.zone_Id).filter((id): id is number => id !== null));
         const zoneIds = Array.from(uniqueZoneIds);
+        console.log(`[ParkService] Fetching next capture times for ${zoneIds.length} zones:`, zoneIds);
         const nextCaptureTimesMap = new Map<number, Date | null>();
         
         // Use Promise.allSettled to prevent one failure from breaking all
@@ -878,6 +871,9 @@ class ParkService {
         results.forEach((result) => {
           if (result.status === 'fulfilled') {
             nextCaptureTimesMap.set(result.value.zoneId, result.value.nextCaptureTime);
+            console.log(`[ParkService] Zone ${result.value.zoneId}: nextCaptureTime = ${result.value.nextCaptureTime?.toISOString() || 'null'}`);
+          } else {
+            console.error(`[ParkService] Failed to get next capture time for zone:`, result.reason);
           }
         });
 
@@ -893,6 +889,9 @@ class ParkService {
           const zoneDetails = job.park_zones;
           const nextCaptureTime = job.zone_Id ? nextCaptureTimesMap.get(job.zone_Id) || null : null;
           
+          // Convert Date to ISO string for JSON serialization
+          const nextCaptureTimeISO = nextCaptureTime ? nextCaptureTime.toISOString() : null;
+          
           return {
             id: job.Id,
             zoneId: job.zone_Id,
@@ -904,7 +903,7 @@ class ParkService {
             jobId: job.job_Id,
             jobInitiated: jobInitiated,
             jobCompletion: jobCompletion,
-            nextCaptureTime: nextCaptureTime, // Add next capture time from DB
+            nextCaptureTime: nextCaptureTimeISO, // Add next capture time from DB (as ISO string)
             image: job.image,
             afterImage: job.after_image,
             status: status, 
@@ -984,6 +983,7 @@ class ParkService {
       // Fetch next capture times for all zones in parallel (with error handling)
       const uniqueZoneIds = new Set(jobHistory.map(job => job.zone_Id).filter((id): id is number => id !== null));
       const zoneIds = Array.from(uniqueZoneIds);
+      console.log(`[ParkService] Fetching next capture times for ${zoneIds.length} zones:`, zoneIds);
       const nextCaptureTimesMap = new Map<number, Date | null>();
       
       // Use Promise.allSettled to prevent one failure from breaking all
@@ -998,6 +998,9 @@ class ParkService {
       results.forEach((result) => {
         if (result.status === 'fulfilled') {
           nextCaptureTimesMap.set(result.value.zoneId, result.value.nextCaptureTime);
+          console.log(`[ParkService] Zone ${result.value.zoneId}: nextCaptureTime = ${result.value.nextCaptureTime?.toISOString() || 'null'}`);
+        } else {
+          console.error(`[ParkService] Failed to get next capture time for zone:`, result.reason);
         }
       });
 
@@ -1013,6 +1016,9 @@ class ParkService {
         const zoneDetails = job.park_zones;
         const nextCaptureTime = job.zone_Id ? nextCaptureTimesMap.get(job.zone_Id) || null : null;
         
+        // Convert Date to ISO string for JSON serialization
+        const nextCaptureTimeISO = nextCaptureTime ? nextCaptureTime.toISOString() : null;
+        
         return {
           id: job.Id,
           zoneId: job.zone_Id,
@@ -1024,7 +1030,7 @@ class ParkService {
           jobId: job.job_Id,
           jobInitiated: jobInitiated,
           jobCompletion: jobCompletion,
-          nextCaptureTime: nextCaptureTime, // Add next capture time from DB
+          nextCaptureTime: nextCaptureTimeISO, // Add next capture time from DB (as ISO string)
           image: job.image,
           afterImage: job.after_image,
           status: status, 
