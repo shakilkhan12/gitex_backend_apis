@@ -738,12 +738,36 @@ class ParkService {
           return null;
         }
         
-        // Parse working_time (format: "HH:MM" or "HHMM")
-        const workingTime = irrigationSection.working_time.trim();
+        // Parse working_time (format: "HH:MM", "HHMM", "HH:MM AM/PM", or "HH:MMAM/PM")
+        const workingTime = irrigationSection.working_time.trim().toUpperCase();
         let hours = 0;
         let minutes = 0;
         
-        if (workingTime.includes(':')) {
+        // Check for 12-hour format with AM/PM
+        const hasAMPM = workingTime.includes('AM') || workingTime.includes('PM');
+        
+        if (hasAMPM) {
+          // Handle 12-hour format: "10:56 PM", "10:56PM", "10:56 PM", etc.
+          const timePart = workingTime.replace(/\s*(AM|PM)\s*/i, '');
+          const isPM = workingTime.includes('PM');
+          
+          if (timePart.includes(':')) {
+            const [h, m] = timePart.split(':');
+            hours = parseInt(h, 10) || 0;
+            minutes = parseInt(m, 10) || 0;
+            
+            // Convert to 24-hour format
+            if (isPM && hours !== 12) {
+              hours += 12;
+            } else if (!isPM && hours === 12) {
+              hours = 0;
+            }
+          } else {
+            console.log(`[ParkService] Invalid 12-hour format: ${workingTime} for zone ${zoneId}`);
+            return null;
+          }
+        } else if (workingTime.includes(':')) {
+          // 24-hour format: "HH:MM"
           const [h, m] = workingTime.split(':');
           hours = parseInt(h, 10) || 0;
           minutes = parseInt(m, 10) || 0;
