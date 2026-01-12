@@ -1044,7 +1044,7 @@ The response must be a single JSON object structured exactly as follows. The cal
                start_for_time: data.wateringTriggered ? "30 seconds" : "No watering needed",
                suggestion: geminiData.suggestions || null,
                status: geminiData.status || null,
-               confidence_score: geminiData.confidence_score || null,
+               confidence_score: geminiData.confidence_score ? String(geminiData.confidence_score) : null,
                rationale: geminiData.rationale || null,
                gallons_required_estimate: wateringRecommendation.gallons_required_estimate || null,
                calculation_note: wateringRecommendation.calculation_note || null,

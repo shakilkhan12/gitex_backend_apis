@@ -14,24 +14,86 @@ class CronService {
    
    private static readonly TIMEZONE = process.env.TZ || 'Asia/Dubai';
 
-   // Convert time string (HH:MM) to cron expression
+   // Convert time string (HH:MM, HHMM, or HH:MM AM/PM) to cron expression
    private static timeToCronExpression(timeStr: string): string {
-      const [hours, minutes] = timeStr.split(':').map(Number);
-      return `${minutes} ${hours} * * *`;
+      const parsed = this.parseTimeString(timeStr);
+      if (!parsed) {
+         throw new Error(`Invalid time format: ${timeStr}`);
+      }
+      return `${parsed.minutes} ${parsed.hours} * * *`;
    }
 
    // Calculate next execution time from time string
    private static getNextExecutionTime(timeStr: string): Date {
-      const [hours, minutes] = timeStr.split(':').map(Number);
+      const parsed = this.parseTimeString(timeStr);
+      if (!parsed) {
+         throw new Error(`Invalid time format: ${timeStr}`);
+      }
       const now = new Date();
       const nextTime = new Date();
-      nextTime.setHours(hours, minutes, 0, 0);
+      nextTime.setHours(parsed.hours, parsed.minutes, 0, 0);
       
       if (nextTime <= now) {
          nextTime.setDate(nextTime.getDate() + 1);
       }
       
       return nextTime;
+   }
+
+   // Parse time string to hours and minutes (handles both 12-hour and 24-hour formats)
+   private static parseTimeString(timeStr: string): { hours: number; minutes: number } | null {
+      if (!timeStr || typeof timeStr !== 'string') {
+         return null;
+      }
+
+      const workingTime = timeStr.trim().toUpperCase();
+      let hours = 0;
+      let minutes = 0;
+
+      // Check for 12-hour format with AM/PM
+      const hasAMPM = workingTime.includes('AM') || workingTime.includes('PM');
+      
+      if (hasAMPM) {
+         // Handle 12-hour format: "10:56 PM", "10:56PM", "10:56 PM", etc.
+         const timePart = workingTime.replace(/\s*(AM|PM)\s*/i, '').trim();
+         const isPM = workingTime.includes('PM');
+         
+         if (timePart.includes(':')) {
+            const [h, m] = timePart.split(':');
+            hours = parseInt(h, 10) || 0;
+            minutes = parseInt(m, 10) || 0;
+            
+            // Convert to 24-hour format
+            if (isPM && hours !== 12) {
+               hours += 12;
+            } else if (!isPM && hours === 12) {
+               hours = 0;
+            }
+         } else {
+            console.error(`[CronService] Invalid 12-hour format: ${timeStr}`);
+            return null;
+         }
+      } else if (workingTime.includes(':')) {
+         // 24-hour format: "HH:MM"
+         const [h, m] = workingTime.split(':');
+         hours = parseInt(h, 10) || 0;
+         minutes = parseInt(m, 10) || 0;
+      } else if (workingTime.length === 4) {
+         // Format: "HHMM"
+         hours = parseInt(workingTime.substring(0, 2), 10) || 0;
+         minutes = parseInt(workingTime.substring(2, 4), 10) || 0;
+      } else {
+         console.error(`[CronService] Invalid time format: ${timeStr}`);
+         return null;
+      }
+
+      // Validate hours and minutes
+      if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+         console.error(`[CronService] Invalid hours/minutes: ${hours}:${minutes} for time ${timeStr}`);
+         return null;
+      }
+
+      return { hours, minutes };
    }
 
    // Calculate countdown string from next execution time
@@ -71,9 +133,21 @@ class CronService {
          const workingTimes = await LandscapingService.getAllLandscapingWorkingTimes();
          
          console.log(`[CronService] Found ${workingTimes.length} unique landscaping section working times`);
+         if (workingTimes.length > 0) {
+            console.log(`[CronService] Landscaping working times:`, workingTimes);
+         } else {
+            console.warn(`[CronService] ⚠️ No landscaping working times found! Check database for cameras_landscaping_section records.`);
+         }
 
          for (const workingTime of workingTimes) {
             try {
+               // Validate time format before creating cron expression
+               const parsed = this.parseTimeString(workingTime);
+               if (!parsed) {
+                  console.error(`[CronService] ⚠️ Skipping invalid working time format: ${workingTime}`);
+                  continue;
+               }
+
                const cronExpression = this.timeToCronExpression(workingTime);
                const nextExecution = this.getNextExecutionTime(workingTime);
 
@@ -147,7 +221,11 @@ class CronService {
 
                console.log(`[CronService] ✅ Scheduled landscaping section job for ${workingTime} daily (${cronExpression})`);
             } catch (error: any) {
-               console.error(`[CronService] ❌ Failed to schedule landscaping section job for ${workingTime}:`, error.message);
+               console.error(`[CronService] ❌ Failed to schedule landscaping section job for ${workingTime}:`, {
+                  error: error.message,
+                  stack: error.stack,
+                  workingTime: workingTime
+               });
             }
          }
 
@@ -172,9 +250,21 @@ class CronService {
          const workingTimes = await IrrigationsService.getAllIrrigationWorkingTimes();
          
          console.log(`[CronService] Found ${workingTimes.length} unique irrigation section working times`);
+         if (workingTimes.length > 0) {
+            console.log(`[CronService] Irrigation working times:`, workingTimes);
+         } else {
+            console.warn(`[CronService] ⚠️ No irrigation working times found! Check database for cameras_irrigation_section records.`);
+         }
 
          for (const workingTime of workingTimes) {
             try {
+               // Validate time format before creating cron expression
+               const parsed = this.parseTimeString(workingTime);
+               if (!parsed) {
+                  console.error(`[CronService] ⚠️ Skipping invalid working time format: ${workingTime}`);
+                  continue;
+               }
+
                const cronExpression = this.timeToCronExpression(workingTime);
                const nextExecution = this.getNextExecutionTime(workingTime);
 
@@ -250,7 +340,11 @@ class CronService {
 
                console.log(`[CronService] ✅ Scheduled irrigation section job for ${workingTime} daily (${cronExpression})`);
             } catch (error: any) {
-               console.error(`[CronService] ❌ Failed to schedule irrigation section job for ${workingTime}:`, error.message);
+               console.error(`[CronService] ❌ Failed to schedule irrigation section job for ${workingTime}:`, {
+                  error: error.message,
+                  stack: error.stack,
+                  workingTime: workingTime
+               });
             }
          }
 
