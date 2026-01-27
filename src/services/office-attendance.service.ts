@@ -51,10 +51,60 @@ class OfficeAttendanceService {
   protected static viewOfficeAttendancesService = async (filters?: {
     department?: string;
     employeeId?: string;
+    officeId?: number;
+    cameraId?: number;
   }) => {
     try {
       const whereClause: any = {};
 
+      // Handle office and camera filters
+      // Camera filter is more specific, so if camera is selected, use its office
+      // If both are selected, validate that camera belongs to the selected office
+      if (filters?.cameraId) {
+        const cameraId = filters.cameraId;
+        
+        console.log(`[OfficeAttendance Service] Looking up camera with Id: ${cameraId}`);
+
+        const camera = await db.offices_cameras.findUnique({
+          where: { Id: cameraId },
+          select: { office_Id: true, Id: true, camera_Id: true }
+        });
+        
+        if (!camera) {
+          console.error(`[OfficeAttendance Service] Camera not found with Id: ${cameraId}`);
+          return [];
+        }
+        
+        console.log(`[OfficeAttendance Service] Found camera:`, camera);
+        
+        if (!camera.office_Id) {
+          console.error(`[OfficeAttendance Service] Camera ${cameraId} has no office_Id`);
+          // If camera not found or has no office, return empty results
+          return [];
+        }
+        
+        // If office is also selected, validate that camera belongs to that office
+        if (filters?.officeId && camera.office_Id !== filters.officeId) {
+          console.warn(`[OfficeAttendance Service] Camera ${cameraId} belongs to office ${camera.office_Id}, but office filter is ${filters.officeId}`);
+          // Camera doesn't belong to selected office, return empty results
+          return [];
+        }
+        
+        // Use the camera's office for filtering
+        // NOTE: offices_attendance table doesn't have camera_Id field,
+        // so we filter by the office that the camera belongs to
+        // This will return ALL attendance records for that office, not just from that camera
+        whereClause.office_Id = camera.office_Id;
+        console.log(`[OfficeAttendance Service] Filtering by camera ${cameraId} (camera_Id: ${camera.camera_Id}), using office ${camera.office_Id}`);
+      } else if (filters?.officeId) {
+        // Only office filter is selected
+        whereClause.office_Id = filters.officeId;
+        console.log(`[OfficeAttendance Service] Filtering by office: ${filters.officeId}`);
+      }
+
+      console.log(`[OfficeAttendance Service] Final whereClause before user filters:`, JSON.stringify(whereClause, null, 2));
+
+      // Filter by user department and employeeId
       if (filters?.department || filters?.employeeId) {
         const userConditions: any = {};
 
@@ -86,8 +136,25 @@ class OfficeAttendanceService {
         }
       }
 
+      const finalWhereClause = Object.keys(whereClause).length > 0 ? whereClause : undefined;
+      
+      console.log(`[OfficeAttendance Service] Final whereClause:`, JSON.stringify(whereClause, null, 2));
+      console.log(`[OfficeAttendance Service] Query will fetch attendance records with filters:`, {
+        officeId: whereClause.office_Id,
+        hasUserFilter: !!whereClause.user,
+        whereClauseKeys: Object.keys(whereClause)
+      });
+
+      // Debug: Check if there are any attendance records for this office
+      if (whereClause.office_Id) {
+        const countCheck = await db.offices_attendance.count({
+          where: { office_Id: whereClause.office_Id }
+        });
+        console.log(`[OfficeAttendance Service] Total attendance records for office ${whereClause.office_Id}: ${countCheck}`);
+      }
+
       const results = await db.offices_attendance.findMany({
-        where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
+        where: finalWhereClause,
         include: {
           office: {
             select: {
@@ -112,6 +179,11 @@ class OfficeAttendanceService {
         },
         orderBy: { entry_time: "desc" },
       });
+
+      console.log(`[OfficeAttendance Service] Found ${results.length} attendance records after filtering`);
+      if (results.length > 0) {
+        console.log(`[OfficeAttendance Service] Sample record office_Id: ${results[0].office_Id}`);
+      }
 
       const convertTimeToString = (timeValue: any): string => {
         if (!timeValue) return "--";
@@ -436,12 +508,52 @@ class OfficeAttendanceService {
     try {
       const userFiltersResult = await UserService.getUsersFiltersService();
       
+      // Fetch offices for filter
+      const offices = await db.offices.findMany({
+        select: {
+          Id: true,
+          office_english_name: true,
+          office_arabic_name: true,
+          office_Id: true
+        },
+        orderBy: {
+          office_english_name: 'asc'
+        }
+      });
+
+      // Fetch cameras for filter
+      const cameras = await db.offices_cameras.findMany({
+        select: {
+          Id: true,
+          camera_Id: true,
+          camera_english_name: true,
+          camera_arabic_name: true,
+          office_Id: true
+        },
+        orderBy: {
+          camera_english_name: 'asc'
+        }
+      });
+
       return {
         success: true,
         data: {
           departments_en: userFiltersResult.data.departments_en,
           departments_ar: userFiltersResult.data.departments_ar,
-          employees: userFiltersResult.data.employees
+          employees: userFiltersResult.data.employees,
+          offices: offices.map(office => ({
+            id: office.Id,
+            officeId: office.office_Id,
+            name_en: office.office_english_name,
+            name_ar: office.office_arabic_name
+          })),
+          cameras: cameras.map(camera => ({
+            id: camera.Id,
+            cameraId: camera.camera_Id,
+            name_en: camera.camera_english_name,
+            name_ar: camera.camera_arabic_name,
+            office_Id: camera.office_Id
+          }))
         }
       };
     } catch (error) {

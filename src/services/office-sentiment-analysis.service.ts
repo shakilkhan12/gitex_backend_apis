@@ -189,6 +189,7 @@ class OfficeSentimentAnalysisService {
     exitMood?: string;
     employeeId?: string;
     sentimentOf?: string;
+    gender?: string;
   }) => {
     try {
       const whereClause: any = {};
@@ -244,15 +245,26 @@ class OfficeSentimentAnalysisService {
         }
       }
 
+      // Note: Gender filtering is done in post-processing because gender can be in 
+      // offices_sentiment_analysis.gender OR users.gender. We need to check both,
+      // so we fetch all records and filter after joining with users table.
+
       const orderByClause: any = {
         updatedAt: 'desc'
       };
 
       const page = filters?.page || 1;
       const limit = filters?.limit || 10;
-      const skip = (page - 1) * limit;
+      
+      // If gender filter is active, we need to fetch all records and filter in memory
+      // because gender can be in either sentiment table or users table
+      // So we'll fetch a larger set and then apply pagination after filtering
+      const shouldPostFilterGender = filters?.gender && filters.gender !== 'All';
+      const fetchLimit = shouldPostFilterGender ? 10000 : limit; // Fetch more if we need to post-filter
+      const skip = shouldPostFilterGender ? 0 : (page - 1) * limit;
 
-      const totalCount = await db.offices_sentiment_analysis.count({ where: whereClause });
+      // Count will be recalculated after post-filtering if gender filter is active
+      let totalCount = await db.offices_sentiment_analysis.count({ where: whereClause });
 
       const results = await db.offices_sentiment_analysis.findMany({
         where: whereClause,
@@ -284,7 +296,7 @@ class OfficeSentimentAnalysisService {
         },
         orderBy: orderByClause,
         skip: skip,
-        take: limit
+        take: fetchLimit
       });
 
       const personIds = Array.from(
@@ -374,7 +386,75 @@ class OfficeSentimentAnalysisService {
         };
       });
 
-      const formattedResults = sentimentWithUsers.map((sentiment) => ({
+      // Post-filter by gender - check both sentiment.gender and user.gender
+      // This is necessary because gender can be stored in either table
+      let filteredResults = sentimentWithUsers;
+      if (filters?.gender && filters.gender !== 'All') {
+        const genderValue = filters.gender.toLowerCase();
+        // Build comprehensive list of gender value variations
+        const genderFilterValues = genderValue === 'male' || genderValue === 'm'
+          ? ['M', 'Male', 'male', 'm', 'MALE', 'MALE.', 'Male.', 'male.']
+          : genderValue === 'female' || genderValue === 'f'
+          ? ['F', 'Female', 'female', 'f', 'FEMALE', 'FEMALE.', 'Female.', 'female.']
+          : genderValue === 'unknown'
+          ? ['Unknown', 'unknown', 'UNKNOWN', 'Unknown.', 'unknown.']
+          : [filters.gender, filters.gender.toLowerCase(), filters.gender.toUpperCase()];
+
+        // Helper function to check if a gender value matches (case-insensitive)
+        const matchesGender = (gender: string | null | undefined): boolean => {
+          if (!gender) {
+            // For "Unknown" filter, null/empty is considered Unknown
+            return genderValue === 'unknown';
+          }
+          const genderLower = String(gender).toLowerCase().trim();
+          return genderFilterValues.some(val => val.toLowerCase().trim() === genderLower);
+        };
+
+        // Helper function to check if a gender is explicitly Male or Female
+        const isExplicitlyMaleOrFemale = (gender: string | null | undefined): boolean => {
+          if (!gender) return false;
+          const genderLower = String(gender).toLowerCase().trim();
+          const maleValues = ['m', 'male', 'male.'];
+          const femaleValues = ['f', 'female', 'female.'];
+          return maleValues.includes(genderLower) || femaleValues.includes(genderLower);
+        };
+
+        filteredResults = sentimentWithUsers.filter((sentiment) => {
+          const sentimentGender = sentiment.gender;
+          const userGender = sentiment.user?.gender;
+          
+          // For "Unknown" filter, exclude records where either gender is explicitly Male or Female
+          if (genderValue === 'unknown') {
+            // If either gender is explicitly Male or Female, exclude this record
+            if (isExplicitlyMaleOrFemale(sentimentGender) || isExplicitlyMaleOrFemale(userGender)) {
+              return false;
+            }
+            // Include if gender is null/empty or explicitly "Unknown"
+            return matchesGender(sentimentGender) || matchesGender(userGender) || (!sentimentGender && !userGender);
+          } else {
+            // For Male/Female filters, check both sentiment and user gender
+            if (matchesGender(sentimentGender)) {
+              return true;
+            }
+            if (matchesGender(userGender)) {
+              return true;
+            }
+            return false;
+          }
+        });
+        
+        // Recalculate total count and pagination after filtering
+        totalCount = filteredResults.length;
+        
+        // Apply pagination to filtered results
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        filteredResults = filteredResults.slice(startIndex, endIndex);
+      } else {
+        // No gender filter, use normal pagination (already applied in query)
+      }
+
+      const formattedResults = filteredResults.map((sentiment) => ({
         ...sentiment,
         check_in_date: formatDate(sentiment.check_in_date),
         check_in_time: formatTimeFetchFromFullDate(sentiment.check_in_time),

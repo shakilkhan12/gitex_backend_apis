@@ -52,9 +52,58 @@ class ParkAttendanceService {
   protected static viewParkAttendancesService = async (filters?: {
     department?: string;
     employeeId?: string;
+    parkId?: number;
+    cameraId?: number;
   }) => {
     try {
       const whereClause: any = {};
+
+      // Handle park and camera filters
+      // Camera filter is more specific, so if camera is selected, use its park
+      // If both are selected, validate that camera belongs to the selected park
+      if (filters?.cameraId) {
+        const cameraId = filters.cameraId;
+        
+        console.log(`[ParkAttendance Service] Looking up camera with Id: ${cameraId}`);
+
+        const camera = await db.park_cameras.findUnique({
+          where: { Id: cameraId },
+          select: { park_Id: true, Id: true, camera_Id: true }
+        });
+        
+        if (!camera) {
+          console.error(`[ParkAttendance Service] Camera not found with Id: ${cameraId}`);
+          return [];
+        }
+        
+        console.log(`[ParkAttendance Service] Found camera:`, camera);
+        
+        if (!camera.park_Id) {
+          console.error(`[ParkAttendance Service] Camera ${cameraId} has no park_Id`);
+          // If camera not found or has no park, return empty results
+          return [];
+        }
+        
+        // If park is also selected, validate that camera belongs to that park
+        if (filters?.parkId && camera.park_Id !== filters.parkId) {
+          console.warn(`[ParkAttendance Service] Camera ${cameraId} belongs to park ${camera.park_Id}, but park filter is ${filters.parkId}`);
+          // Camera doesn't belong to selected park, return empty results
+          return [];
+        }
+        
+        // Use the camera's park for filtering
+        // NOTE: parks_attendance table doesn't have camera_Id field,
+        // so we filter by the park that the camera belongs to
+        // This will return ALL attendance records for that park, not just from that camera
+        whereClause.park_Id = camera.park_Id;
+        console.log(`[ParkAttendance Service] Filtering by camera ${cameraId} (camera_Id: ${camera.camera_Id}), using park ${camera.park_Id}`);
+      } else if (filters?.parkId) {
+        // Only park filter is selected
+        whereClause.park_Id = filters.parkId;
+        console.log(`[ParkAttendance Service] Filtering by park: ${filters.parkId}`);
+      }
+
+      console.log(`[ParkAttendance Service] Final whereClause before user filters:`, JSON.stringify(whereClause, null, 2));
 
       if (filters?.department || filters?.employeeId) {
         const userConditions: any = {};
@@ -87,8 +136,25 @@ class ParkAttendanceService {
         }
       }
 
+      const finalWhereClause = Object.keys(whereClause).length > 0 ? whereClause : undefined;
+      
+      console.log(`[ParkAttendance Service] Final whereClause:`, JSON.stringify(whereClause, null, 2));
+      console.log(`[ParkAttendance Service] Query will fetch attendance records with filters:`, {
+        parkId: whereClause.park_Id,
+        hasUserFilter: !!whereClause.user,
+        whereClauseKeys: Object.keys(whereClause)
+      });
+
+      // Debug: Check if there are any attendance records for this park
+      if (whereClause.park_Id) {
+        const countCheck = await db.parks_attendance.count({
+          where: { park_Id: whereClause.park_Id }
+        });
+        console.log(`[ParkAttendance Service] Total attendance records for park ${whereClause.park_Id}: ${countCheck}`);
+      }
+
       const results = await db.parks_attendance.findMany({
-        where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
+        where: finalWhereClause,
         include: {
           park: {
             select: {
@@ -113,6 +179,11 @@ class ParkAttendanceService {
         },
         orderBy: { entry_time: "desc" },
       });
+
+      console.log(`[ParkAttendance Service] Found ${results.length} attendance records after filtering`);
+      if (results.length > 0) {
+        console.log(`[ParkAttendance Service] Sample record park_Id: ${results[0].park_Id}`);
+      }
 
       const convertTimeToString = (timeValue: any): string => {
         if (!timeValue) return "--";
@@ -469,12 +540,52 @@ class ParkAttendanceService {
     try {
       const userFiltersResult = await UserService.getUsersFiltersService();
       
+      // Fetch parks for filter
+      const parks = await db.parks.findMany({
+        select: {
+          Id: true,
+          park_english_name: true,
+          park_arabic_name: true,
+          park_Id: true
+        },
+        orderBy: {
+          park_english_name: 'asc'
+        }
+      });
+
+      // Fetch cameras for filter
+      const cameras = await db.park_cameras.findMany({
+        select: {
+          Id: true,
+          camera_Id: true,
+          camera_english_name: true,
+          camera_arabic_name: true,
+          park_Id: true
+        },
+        orderBy: {
+          camera_english_name: 'asc'
+        }
+      });
+
       return {
         success: true,
         data: {
           departments_en: userFiltersResult.data.departments_en,
           departments_ar: userFiltersResult.data.departments_ar,
-          employees: userFiltersResult.data.employees
+          employees: userFiltersResult.data.employees,
+          parks: parks.map(park => ({
+            id: park.Id,
+            parkId: park.park_Id,
+            name_en: park.park_english_name,
+            name_ar: park.park_arabic_name
+          })),
+          cameras: cameras.map(camera => ({
+            id: camera.Id,
+            cameraId: camera.camera_Id,
+            name_en: camera.camera_english_name,
+            name_ar: camera.camera_arabic_name,
+            park_Id: camera.park_Id
+          }))
         }
       };
     } catch (error) {

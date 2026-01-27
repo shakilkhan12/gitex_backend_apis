@@ -20,12 +20,35 @@ class ParkAttendanceController extends ParkAttendanceService {
 
    public static viewParkAttendances = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const { department, employeeId } = req.query;
+         const { department, employeeId, parkId, cameraId } = req.query;
+         
+         // Parse parkId and cameraId, handling both string and number inputs
+         const parsedParkId = parkId ? (typeof parkId === 'string' ? parseInt(parkId, 10) : Number(parkId)) : undefined;
+         const parsedCameraId = cameraId ? (typeof cameraId === 'string' ? parseInt(cameraId, 10) : Number(cameraId)) : undefined;
+         
+         // Validate parsed IDs
+         if (parkId && (isNaN(parsedParkId!) || parsedParkId! <= 0)) {
+            return res.status(STATUS.BAD_REQUEST).json({ 
+               status: STATUS.BAD_REQUEST, 
+               message: 'Invalid parkId parameter' 
+            });
+         }
+         
+         if (cameraId && (isNaN(parsedCameraId!) || parsedCameraId! <= 0)) {
+            return res.status(STATUS.BAD_REQUEST).json({ 
+               status: STATUS.BAD_REQUEST, 
+               message: 'Invalid cameraId parameter' 
+            });
+         }
          
          const filters = {
             department: department as string | undefined,
-            employeeId: employeeId as string | undefined
+            employeeId: employeeId as string | undefined,
+            parkId: parsedParkId,
+            cameraId: parsedCameraId
          };
+         
+         console.log('[ParkAttendance Controller] Filters received:', filters);
          
          const attendances = await ParkAttendanceService.viewParkAttendancesService(filters);
          return res.status(STATUS.SUCCESS).json(attendances);
