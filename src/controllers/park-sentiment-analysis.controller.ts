@@ -35,7 +35,7 @@ class ParkSentimentAnalysisController extends ParkSentimentAnalysisService {
 
    public static viewParkSentimentAnalyses = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMood, exitMood, employeeId, sentimentOf, gender } = req.query;
+         const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, entryMood, exitMood, employeeId, sentimentOf, gender, cameraId, parkId } = req.query;
 
          const filters = {
             page: page ? parseInt(page as string) : undefined,
@@ -49,7 +49,9 @@ class ParkSentimentAnalysisController extends ParkSentimentAnalysisService {
             exitMood: exitMood as string,
             employeeId: employeeId as string,
             sentimentOf: sentimentOf as string,
-            gender: gender as string
+            gender: gender as string,
+            cameraId: cameraId ? parseInt(cameraId as string) : undefined,
+            parkId: parkId as string
          };
 
          const result = await ParkSentimentAnalysisService.viewParkSentimentAnalysesService(filters);

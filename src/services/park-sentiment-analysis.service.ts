@@ -149,6 +149,8 @@ class ParkSentimentAnalysisService {
       employeeId?: string;
       sentimentOf?: string;
       gender?: string;
+      cameraId?: number;
+      parkId?: string;
    }) => {
 
       try {
@@ -205,6 +207,22 @@ class ParkSentimentAnalysisService {
             }
          }
 
+         if (filters?.parkId) {
+            const park = await db.parks.findFirst({
+               where: { park_Id: filters.parkId },
+               select: { Id: true },
+            });
+            if (park) {
+               whereClause.park_Id = park.Id;
+            }
+         }
+
+         // Camera filter: combine with existing where (e.g. search OR) via AND so both apply
+         const cameraOr = filters?.cameraId
+            ? { OR: [{ entry_camera_Id: filters.cameraId }, { exit_camera_Id: filters.cameraId }] }
+            : null;
+         const finalWhere = cameraOr ? { AND: [whereClause, cameraOr] } : whereClause;
+
          // Note: Gender filtering is done in post-processing because gender can be in 
          // parks_sentiment_analysis.gender OR users.gender. We need to check both,
          // so we fetch all records and filter after joining with users table.
@@ -224,10 +242,10 @@ class ParkSentimentAnalysisService {
          const skip = shouldPostFilterGender ? 0 : (page - 1) * limit;
 
          // Count will be recalculated after post-filtering if gender filter is active
-         let totalCount = await db.parks_sentiment_analysis.count({ where: whereClause });
+         let totalCount = await db.parks_sentiment_analysis.count({ where: finalWhere });
 
          const results = await db.parks_sentiment_analysis.findMany({
-            where: whereClause,
+            where: finalWhere,
             include: {
                parks: {
                   select: {
@@ -408,7 +426,7 @@ class ParkSentimentAnalysisService {
          };
 
          const allDataForStats = await db.parks_sentiment_analysis.findMany({
-            where: whereClause,
+            where: finalWhere,
             select: {
                check_in_sentiment: true,
                check_out_sentiment: true
@@ -442,12 +460,50 @@ class ParkSentimentAnalysisService {
    protected static getParkSentimentAnalysisFiltersService = async () => {
       try {
          const userFiltersResult = await UserService.getUsersFiltersService();
-         
+
+         const parks = await db.parks.findMany({
+            select: {
+               Id: true,
+               park_english_name: true,
+               park_arabic_name: true,
+               park_Id: true,
+            },
+            orderBy: {
+               park_english_name: 'asc',
+            },
+         });
+
+         const cameras = await db.park_cameras.findMany({
+            select: {
+               Id: true,
+               camera_Id: true,
+               camera_english_name: true,
+               camera_arabic_name: true,
+               park_Id: true,
+            },
+            orderBy: {
+               camera_english_name: 'asc',
+            },
+         });
+
          return {
             success: true,
             data: {
-               employees: userFiltersResult.data.employees
-            }
+               employees: userFiltersResult.data.employees,
+               parks: parks.map((park) => ({
+                  id: park.Id,
+                  parkId: park.park_Id,
+                  name_en: park.park_english_name,
+                  name_ar: park.park_arabic_name,
+               })),
+               cameras: cameras.map((camera) => ({
+                  id: camera.Id,
+                  cameraId: camera.camera_Id,
+                  name_en: camera.camera_english_name,
+                  name_ar: camera.camera_arabic_name,
+                  park_Id: camera.park_Id,
+               })),
+            },
          };
       } catch (error) {
          throw new HttpException(
