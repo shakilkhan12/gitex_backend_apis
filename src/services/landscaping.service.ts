@@ -1063,6 +1063,9 @@ class LandscapingService {
 Analyze the provided visual and contextual data to determine the current grass height in inches/centimeters and whether the grass needs cutting.
 The final output MUST be a JSON object containing the measured/estimated grass height, confidence score, rationale, and a cutting recommendation.
 
+IMPORTANT - SKIP UNUSABLE IMAGES:
+Before analyzing grass, check image quality and content. If the image is BLUR (out of focus or unclear), BLANK (empty, black, or no meaningful content), or contains NO GRASS (e.g. only pavement, sky, or non-grass areas), you MUST set "skip_record" to true and "skip_reason" to one of: "blur", "blank", "no_grass". In that case do NOT estimate grass height or cutting—skip this record so it will not be saved to the database. Only when the image is clear and shows grass should you set "skip_record" to false and provide the full analysis.
+
 1. VISUAL DESCRIPTION (From Observation):
 Blade Height: [Estimate the average visible grass height: e.g., 1.5 inches, 4 inches, 7 cm, etc.]
 
@@ -1085,9 +1088,11 @@ OUTPUT FORMAT:
 [remove pre and post text]. The response must be a single JSON object only, structured as follows:
 
 {
-  "estimated_height": "[Numeric value with unit, e.g., '4 inches' or '10 cm']",
+  "skip_record": "[true if image is blur, blank, or has no grass; otherwise false]",
+  "skip_reason": "[only when skip_record is true: 'blur' | 'blank' | 'no_grass']",
+  "estimated_height": "[Numeric value with unit, e.g., '4 inches' or '10 cm'; use 'N/A' if skip_record is true]",
   "confidence_score": "[0-100]",
-  "rationale": "[Detailed justification using visual and contextual inputs]",
+  "rationale": "[Detailed justification using visual and contextual inputs; or reason for skip if skip_record is true]",
   "cutting_recommendation": {
     "needs_cutting": "[true or false]",
     "recommendation_note": "[Explain why cutting is or is not needed, e.g., 'Height exceeds 3.5 inches optimal range']"
@@ -1165,6 +1170,20 @@ OUTPUT FORMAT:
       geminiResponse: any;
    }): Promise<any> {
       try {
+         const skipRecord = data.geminiResponse?.skip_record === true || data.geminiResponse?.skip_record === "true";
+         const skipReason = data.geminiResponse?.skip_reason || "unusable_image";
+         if (skipRecord) {
+            return {
+               id: null,
+               case_Id: null,
+               message: `Record skipped - image not suitable for analysis (${skipReason}: blur, blank, or no grass). Not saved to DB.`,
+               needs_cutting: false,
+               skip_record: true,
+               skip_reason: skipReason,
+               cameraId: data.cameraId
+            };
+         }
+
          const estimatedHeight = data.geminiResponse?.estimated_height || "Unknown";
          const confidenceScore = String(data.geminiResponse?.confidence_score || "0");
          const rationale = data.geminiResponse?.rationale || "No analysis available";
@@ -1257,10 +1276,23 @@ OUTPUT FORMAT:
                }
 
                const geminiData = geminiResponse || {};
+               const skipRecord = (geminiData as any).skip_record === true || (geminiData as any).skip_record === "true";
+               const skipReason = (geminiData as any).skip_reason || "unusable_image";
                const cuttingRecommendation = (geminiData as any).cutting_recommendation || {};
                const needsCutting = (cuttingRecommendation as any).needs_cutting || false;
 
-               if (needsCutting) {
+               if (skipRecord) {
+                  results.push({
+                     imageIndex: i + 1,
+                     success: true,
+                     imageUrl: imageUrl,
+                     testingRecordId: null,
+                     geminiResponse: geminiResponse,
+                     skip_record: true,
+                     skip_reason: skipReason,
+                     message: `Record skipped - image not suitable (${skipReason}). Not saved to DB.`
+                  });
+               } else if (needsCutting) {
                   const testingRecord = await this.createTestingModuleRecord({
                      image: imageUrl,
                      name: `Landscaping Testing`,

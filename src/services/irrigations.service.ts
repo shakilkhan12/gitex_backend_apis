@@ -61,31 +61,46 @@ export class IrrigationsService {
                }
 
                const geminiData = geminiResponse || {};
+               const skipRecord = geminiData.skip_record === true || geminiData.skip_record === "true";
+               const skipReason = geminiData.skip_reason || "unusable_image";
                const wateringRecommendation = geminiData.watering_recommendation || {};
 
-               const testingRecord = await this.createTestingModuleRecord({
-                  image: imageUrl,
-                  name: `Irrigation Testing`,
-                  case_type: "Irrigation Testing",
-                  estimated_height: null, 
-                  needs_cutting: null,
-                  recommendation_note: null, 
-                  health: geminiData.status || "Unknown",
-                  suggestion: geminiData.suggestions || null,
-                  status: geminiData.status || null,
-                  confidence_score: String(geminiData.confidence_score || "0"),
-                  rationale: geminiData.rationale || null,
-                  gallons_required_estimate: wateringRecommendation.gallons_required_estimate || null,
-                  calculation_note: wateringRecommendation.calculation_note || null
-               });
+               if (skipRecord) {
+                  results.push({
+                     imageIndex: i + 1,
+                     success: true,
+                     imageUrl: imageUrl,
+                     testingRecordId: null,
+                     geminiResponse: geminiResponse,
+                     skip_record: true,
+                     skip_reason: skipReason,
+                     message: `Record skipped - image not suitable (${skipReason}). Not saved to DB.`
+                  });
+               } else {
+                  const testingRecord = await this.createTestingModuleRecord({
+                     image: imageUrl,
+                     name: `Irrigation Testing`,
+                     case_type: "Irrigation Testing",
+                     estimated_height: null, 
+                     needs_cutting: null,
+                     recommendation_note: null, 
+                     health: geminiData.status || "Unknown",
+                     suggestion: geminiData.suggestions || null,
+                     status: geminiData.status || null,
+                     confidence_score: String(geminiData.confidence_score || "0"),
+                     rationale: geminiData.rationale || null,
+                     gallons_required_estimate: wateringRecommendation.gallons_required_estimate || null,
+                     calculation_note: wateringRecommendation.calculation_note || null
+                  });
 
-               results.push({
-                  imageIndex: i + 1,
-                  success: true,
-                  imageUrl: imageUrl,
-                  testingRecordId: testingRecord.id,
-                  geminiResponse: geminiResponse
-               });
+                  results.push({
+                     imageIndex: i + 1,
+                     success: true,
+                     imageUrl: imageUrl,
+                     testingRecordId: testingRecord.id,
+                     geminiResponse: geminiResponse
+                  });
+               }
 
 
             } catch (error: any) {
@@ -526,6 +541,23 @@ export class IrrigationsService {
                }
                this.log(`[IrrigationService] ✅ Section ${section.id}: Image analyzed successfully`);
 
+               const skipRecord = geminiResponse?.skip_record === true || geminiResponse?.skip_record === "true";
+               const skipReason = geminiResponse?.skip_reason || "unusable_image";
+               if (skipRecord) {
+                  this.log(`[IrrigationService] ⏭️ Section ${section.id}: Skipping record - image not suitable (${skipReason}). Not saved to DB.`);
+                  results.push({
+                     sectionId: section.id,
+                     zoneId: Number(section.park_zones.zone_Id),
+                     cameraId: camera.camera_Id,
+                     parkId: camera.park_Id,
+                     success: true,
+                     skipped: true,
+                     skip_reason: skipReason,
+                     message: `Record skipped - image not suitable (${skipReason}). Not saved to DB.`
+                  });
+                  continue;
+               }
+
                const needsWatering = this.shouldWaterGrass(geminiResponse);
                this.log(`[IrrigationService] 💧 Section ${section.id}: Watering needed: ${needsWatering ? 'YES' : 'NO'}`);
                
@@ -826,6 +858,9 @@ export class IrrigationsService {
 
 *Objective:* Analyze the provided visual and contextual data to determine the current status of the park grass (Green, Dry, or Dead). The final output MUST be a JSON object containing the status, confidence score, rationale, and an estimated water requirement. *DO NOT* attempt to play or analyze a video file directly; rely exclusively on the text description and the still image link provided.
 
+*IMPORTANT - SKIP UNUSABLE IMAGES:*
+Before analyzing grass status, check image quality and content. If the image is BLUR (out of focus or unclear), BLANK (empty, black, or no meaningful content), or contains NO GRASS (e.g. only pavement, sky, or non-grass areas), you MUST set "skip_record" to true and "skip_reason" to one of: "blur", "blank", "no_grass". In that case do NOT analyze grass status or water requirements—skip this record so it will not be saved to the database. Only when the image is clear and shows grass should you set "skip_record" to false and provide the full analysis.
+
 *1. VISUAL DESCRIPTION (From Observation):*
 * *Dominant Color:* [Describe the main color: e.g., vibrant emerald green, dull olive green, straw yellow, tan/brown, gray.]
 * *Texture/Appearance:* [Describe how the blades look: e.g., stand upright, look limp and folded, appear brittle and crunchy, are matted down.]
@@ -846,15 +881,17 @@ export class IrrigationsService {
 * *Still Image Link:* ${fullImageUrl}
 
 *OUTPUT FORMAT:*
-The response must be a single JSON object structured exactly as follows. The calculated gallons_required should be based on the analysis (assuming 1 inch of water for recovery, or 0 if Green/Dead), and the *REQUIRED AREA INPUT* from Section 2.
+The response must be a single JSON object structured exactly as follows. The calculated gallons_required should be based on the analysis (assuming 1 inch of water for recovery, or 0 if Green/Dead), and the *REQUIRED AREA INPUT* from Section 2. When skip_record is true, use "N/A" or 0 for analysis fields.
 
 {
+  "skip_record": "[true if image is blur, blank, or has no grass; otherwise false]",
+  "skip_reason": "[only when skip_record is true: 'blur' | 'blank' | 'no_grass']",
   "name": "Grass Health Analysis",
   "health": "[Percentage 0-100]",
   "suggestions": "[Detailed recommendations based on analysis]",
   "status": "[Green, Dry, or Dead]",
   "confidence_score": "[0-100]",
-  "rationale": "[Detailed justification based on the 4 sections of input data.]",
+  "rationale": "[Detailed justification based on the 4 sections of input data.; or reason for skip if skip_record is true]",
   "watering_recommendation": {
     "gallons_required_estimate": "[Calculated volume in US gallons, or 0 if Green/Dead]",
     "calculation_note": "[State the basis for the calculation, e.g., 'Calculated for 1 inch of water over [AREA] sq ft.']"
@@ -995,6 +1032,17 @@ The response must be a single JSON object structured exactly as follows. The cal
       wateringTriggered: boolean;
    }): Promise<any> {
       try {
+         const skipRecord = data.geminiResponse?.skip_record === true || data.geminiResponse?.skip_record === "true";
+         const skipReason = data.geminiResponse?.skip_reason || "unusable_image";
+         if (skipRecord) {
+            return {
+               Id: null,
+               message: `Record skipped - image not suitable for analysis (${skipReason}: blur, blank, or no grass). Not saved to DB.`,
+               skip_record: true,
+               skip_reason: skipReason
+            };
+         }
+
          let cameraDbId = null;
          let parkDbId = null;
          try {
