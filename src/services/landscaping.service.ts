@@ -322,15 +322,44 @@ class LandscapingService {
          }
 
          const user = await db.users.findUnique({
-            where: { Id: assignmentData.userId }
+            where: { Id: assignmentData.userId },
+            include: {
+               users_roles: {
+                  select: {
+                     users_permissions: {
+                        select: {
+                           park_landscaping_view: true,
+                           park_landscaping_add: true,
+                           park_landscaping_update: true,
+                           park_plant_disease_view: true,
+                           park_plant_disease_add: true,
+                           park_plant_disease_update: true
+                        }
+                     }
+                  }
+               }
+            }
          });
 
          if (!user) {
             throw new HttpException(STATUS.NOT_FOUND, "User not found");
          }
 
-         if (!user.landscaping_access) {
-            throw new HttpException(STATUS.BAD_REQUEST, "User does not have landscaping access");
+         const hasLandscapingFlag = user.landscaping_access === true;
+         const hasPlantDiseaseFlag = user.plant_disease_access === true;
+         const perms = user.users_roles?.users_permissions?.[0];
+         const hasLandscapingRole =
+            perms &&
+            (perms.park_landscaping_view === true ||
+               perms.park_landscaping_add === true ||
+               perms.park_landscaping_update === true);
+         const hasPlantDiseaseRole =
+            perms &&
+            (perms.park_plant_disease_view === true ||
+               perms.park_plant_disease_add === true ||
+               perms.park_plant_disease_update === true);
+         if (!hasLandscapingFlag && !hasLandscapingRole && !hasPlantDiseaseFlag && !hasPlantDiseaseRole) {
+            throw new HttpException(STATUS.BAD_REQUEST, "User does not have landscaping or plant disease access");
          }
 
          await db.landscaping.update({

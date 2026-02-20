@@ -322,7 +322,20 @@ class UserService {
                   litter_detection_access: true,
                   users_roles: {
                      select: {
-                        role_name: true
+                        role_name: true,
+                        users_permissions: {
+                           select: {
+                              park_landscaping_view: true,
+                              park_landscaping_add: true,
+                              park_landscaping_update: true,
+                              park_plant_disease_view: true,
+                              park_plant_disease_add: true,
+                              park_plant_disease_update: true,
+                              park_litter_detection_view: true,
+                              park_litter_detection_add: true,
+                              park_litter_detection_update: true
+                           }
+                        }
                      }
                   },
                   live_stream_favourites: false,
@@ -691,6 +704,114 @@ class UserService {
       }
    }
 
+   /**
+    * Switch visitor to employee: replace all visitor-related references in sentiments, footfalls, behaviour alerts
+    * with the given employee Id, then permanently delete the visitor from users table.
+    */
+   public static switchVisitorToEmployeeService = async (visitorId: number, employeeId: number) => {
+      try {
+         const visitor = await db.users.findUnique({
+            where: { Id: visitorId }
+         });
+         if (!visitor) {
+            throw new HttpException(STATUS.NOT_FOUND, "Visitor not found");
+         }
+         const isVisitor =
+            (visitor.user_Id == null || visitor.user_Id === '') &&
+            (visitor.emp_Id == null || visitor.emp_Id === '');
+         if (!isVisitor) {
+            throw new HttpException(STATUS.BAD_REQUEST, "Given user is not a visitor (has emp_Id or user_Id)");
+         }
+
+         const employee = await db.users.findUnique({
+            where: { Id: employeeId }
+         });
+         if (!employee) {
+            throw new HttpException(STATUS.NOT_FOUND, "Employee not found");
+         }
+         if (employeeId === visitorId) {
+            throw new HttpException(STATUS.BAD_REQUEST, "Visitor and employee must be different users");
+         }
+         const hasEmpId = employee.emp_Id != null && employee.emp_Id !== '';
+         if (!hasEmpId) {
+            throw new HttpException(STATUS.BAD_REQUEST, "Given user is not an employee (no emp_Id)");
+         }
+
+         const visitorIdStr = visitorId.toString();
+         const employeeIdStr = employeeId.toString();
+         const visitorPersonIds = [visitorIdStr, ...(visitor.unique_id ? [visitor.unique_id] : [])];
+
+
+         // Sentiments: replace person_Id and set sentiment_of to employee
+         const officesSentimentResult = await db.offices_sentiment_analysis.updateMany({
+            where: {
+               OR: visitorPersonIds.map(pid => ({ person_Id: pid })),
+               sentiment_of: 'visitor'
+            },
+            data: { person_Id: employeeIdStr, sentiment_of: 'employee' }
+         });
+
+         const parksSentimentResult = await db.parks_sentiment_analysis.updateMany({
+            where: {
+               OR: visitorPersonIds.map(pid => ({ person_Id: pid })),
+               sentiment_of: 'visitor'
+            },
+            data: { person_Id: employeeIdStr, sentiment_of: 'employee' }
+         });
+
+         // Footfalls: replace person_Id (Int)
+         const officesFootfallResult = await db.offices_footfall_analysis.updateMany({
+            where: { person_Id: visitorId },
+            data: { person_Id: employeeId }
+         });
+
+         const parksFootfallResult = await db.parks_footfall_analysis.updateMany({
+            where: { person_Id: visitorId },
+            data: { person_Id: employeeId }
+         });
+
+         // Behaviour alerts (parks): replace person_Id and set is_employee true
+         const behaviourAlertsResult = await db.parks_behaviour_alerts.updateMany({
+            where: {
+               OR: visitorPersonIds.map(pid => ({ person_Id: pid })),
+               is_employee: false
+            },
+            data: { person_Id: employeeIdStr, is_employee: true }
+         });
+
+         // Attendance (office and park): replace person_Id
+         const officesAttendanceResult = await db.offices_attendance.updateMany({
+            where: { person_Id: visitorId },
+            data: { person_Id: employeeId }
+         });
+
+         const parksAttendanceResult = await db.parks_attendance.updateMany({
+            where: { person_Id: visitorId },
+            data: { person_Id: employeeId }
+         });
+
+         // Permanently delete the visitor from users table
+         await db.users.delete({
+            where: { Id: visitorId }
+         });
+
+         return {
+            success: true,
+            message: "Visitor records switched to employee and visitor deleted successfully",
+            visitorId,
+            employeeId,
+            employeeName: employee.emp__eng_name || employee.emp__arabic_name || null,
+         };
+      } catch (error: any) {
+         if (error instanceof HttpException) {
+            throw error;
+         }
+         throw new HttpException(
+            STATUS.INTERNAL_SERVER_ERROR,
+            error?.message || "Failed to switch visitor to employee"
+         );
+      }
+   };
 
    protected static getUserDetailsByUserIdService = async (emp_Id: string) => {
       try {

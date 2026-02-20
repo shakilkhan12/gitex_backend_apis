@@ -8,6 +8,7 @@ userRouter.get('/get',UserController.getUsers)
 userRouter.get('/filters', UserController.getUsersFilters)
 userRouter.get('/visitors', UserController.getVisitors)
 userRouter.post('/visitors/delete', UserController.deleteVisitorUser)
+userRouter.post('/visitors/switch', UserController.switchVisitorToEmployee)
 userRouter.post('/get-details', UserController.getUserDetails)
 userRouter.put('/update/role/:userId',UserController.updateUserRole)
 userRouter.post('/fetch-employees', UserController.fetchAndStoreEmployeeListing);

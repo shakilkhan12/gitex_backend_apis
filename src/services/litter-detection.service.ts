@@ -452,15 +452,36 @@ class LitterDetectionService {
             throw new HttpException(STATUS.NOT_FOUND, "Litter detection record not found");
          }
 
-         const user = await db.users.findFirst({
-            where: { 
-               Id: assignmentData.userId,
-               litter_detection_access: true
+         const user = await db.users.findUnique({
+            where: { Id: assignmentData.userId },
+            include: {
+               users_roles: {
+                  select: {
+                     users_permissions: {
+                        select: {
+                           park_litter_detection_view: true,
+                           park_litter_detection_add: true,
+                           park_litter_detection_update: true
+                        }
+                     }
+                  }
+               }
             }
          });
 
          if (!user) {
-            throw new HttpException(STATUS.BAD_REQUEST, "User not found or doesn't have litter detection access");
+            throw new HttpException(STATUS.BAD_REQUEST, "User not found");
+         }
+
+         const hasUserFlag = user.litter_detection_access === true;
+         const perms = user.users_roles?.users_permissions?.[0];
+         const hasRolePermission =
+            perms &&
+            (perms.park_litter_detection_view === true ||
+               perms.park_litter_detection_add === true ||
+               perms.park_litter_detection_update === true);
+         if (!hasUserFlag && !hasRolePermission) {
+            throw new HttpException(STATUS.BAD_REQUEST, "User does not have litter detection access");
          }
 
          await db.parks_litter_detection.update({

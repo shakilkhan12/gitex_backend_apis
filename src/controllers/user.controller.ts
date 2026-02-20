@@ -183,6 +183,28 @@ class UserController extends UserService {
       }
    }
 
+   public static switchVisitorToEmployee = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const { visitorId, employeeId } = req.body;
+         if (visitorId == null || employeeId == null) {
+            return res.status(STATUS.BAD_REQUEST).json({
+               error: "visitorId and employeeId are required"
+            });
+         }
+         const visitorIdNum = Number(visitorId);
+         const employeeIdNum = Number(employeeId);
+         if (isNaN(visitorIdNum) || isNaN(employeeIdNum)) {
+            return res.status(STATUS.BAD_REQUEST).json({
+               error: "visitorId and employeeId must be valid numbers"
+            });
+         }
+         const result = await UserService.switchVisitorToEmployeeService(visitorIdNum, employeeIdNum);
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
+      }
+   }
+
    public static fetchAndStoreEmployeeListingWithProgress = async (req: Request, res: Response, next: NextFunction) => {
       try {
          res.setHeader('Content-Type', 'text/event-stream');
