@@ -660,7 +660,6 @@ class UserService {
             }
          })
 
-         // Delete from HikVision only if unique_id exists
          if (user.unique_id) {
             try {
                const userToDelete = {
@@ -743,7 +742,7 @@ class UserService {
 
 
          // Sentiments: replace person_Id and set sentiment_of to employee
-         const officesSentimentResult = await db.offices_sentiment_analysis.updateMany({
+         await db.offices_sentiment_analysis.updateMany({
             where: {
                OR: visitorPersonIds.map(pid => ({ person_Id: pid })),
                sentiment_of: 'visitor'
@@ -751,7 +750,7 @@ class UserService {
             data: { person_Id: employeeIdStr, sentiment_of: 'employee' }
          });
 
-         const parksSentimentResult = await db.parks_sentiment_analysis.updateMany({
+         await db.parks_sentiment_analysis.updateMany({
             where: {
                OR: visitorPersonIds.map(pid => ({ person_Id: pid })),
                sentiment_of: 'visitor'
@@ -760,18 +759,18 @@ class UserService {
          });
 
          // Footfalls: replace person_Id (Int)
-         const officesFootfallResult = await db.offices_footfall_analysis.updateMany({
+        await db.offices_footfall_analysis.updateMany({
             where: { person_Id: visitorId },
             data: { person_Id: employeeId }
          });
 
-         const parksFootfallResult = await db.parks_footfall_analysis.updateMany({
+         await db.parks_footfall_analysis.updateMany({
             where: { person_Id: visitorId },
             data: { person_Id: employeeId }
          });
 
          // Behaviour alerts (parks): replace person_Id and set is_employee true
-         const behaviourAlertsResult = await db.parks_behaviour_alerts.updateMany({
+         await db.parks_behaviour_alerts.updateMany({
             where: {
                OR: visitorPersonIds.map(pid => ({ person_Id: pid })),
                is_employee: false
@@ -779,21 +778,34 @@ class UserService {
             data: { person_Id: employeeIdStr, is_employee: true }
          });
 
-         // Attendance (office and park): replace person_Id
-         const officesAttendanceResult = await db.offices_attendance.updateMany({
-            where: { person_Id: visitorId },
-            data: { person_Id: employeeId }
-         });
-
-         const parksAttendanceResult = await db.parks_attendance.updateMany({
-            where: { person_Id: visitorId },
-            data: { person_Id: employeeId }
-         });
-
+         const visitorUniqueId = visitor.unique_id;
          // Permanently delete the visitor from users table
          await db.users.delete({
             where: { Id: visitorId }
          });
+
+         if (visitorUniqueId) {
+            try {
+               const visitorToDelete = {
+                  personId: visitorUniqueId,
+               };
+               const deleteFromHikVisionResponse = await UserService.callHikVisionAPI(
+                  UserService.HIK_CONFIG.baseURL,
+                  '/artemis/api/resource/v1/person/single/delete',
+                  UserService.HIK_CONFIG.appKey,
+                  UserService.HIK_CONFIG.appSecret,
+                  visitorToDelete
+               );
+               console.log('deleteFromHikVisionResponse', deleteFromHikVisionResponse)
+               if (deleteFromHikVisionResponse && deleteFromHikVisionResponse.code === '0') {
+                  console.log('User deleted from HikVision successfully');
+               } else {
+                  console.log('Failed to delete user from HikVision');
+               }  
+            } catch (hikVisionError: any) {
+               console.log('Error deleting user from HikVision', hikVisionError);
+            }
+         }
 
          return {
             success: true,
