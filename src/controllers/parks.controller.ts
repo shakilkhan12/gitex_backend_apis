@@ -3,8 +3,36 @@ import { ParksService } from "@/services";
 import { ParkCamera, ParkType, ParkZone, SettingInputTypes, ParkFootfallAnalysisType } from "@/typescript";
 import { STATUS } from "@/typescript";
 import { HttpException } from "@/utils/HttpException.utils";
+import { formatExportDateTime, sendExcelExport, sendPdfTableExport } from "@/utils/export.utils";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
+
+const buildParkZoneJobHistoryFilters = (req: Request) => {
+  const { zoneId, status, search, page, limit, sortBy, sortOrder, fromDateTime, toDateTime } = req.query;
+
+  return {
+    zoneId: zoneId ? parseInt(zoneId as string) : undefined,
+    status: status as string,
+    search: search as string,
+    page: page ? parseInt(page as string) : undefined,
+    limit: limit ? parseInt(limit as string) : undefined,
+    sortBy: sortBy as string,
+    sortOrder: sortOrder as string,
+    fromDateTime: fromDateTime as string,
+    toDateTime: toDateTime as string
+  };
+};
+
+const mapParkZoneJobHistoryExportRows = (records: any[]) => {
+  return records.map(item => ({
+    "Zone": item.zoneDetails?.zoneEnglishName || item.zoneDetails?.zoneArabicName || "-",
+    "Controller ID": item.zoneDetails?.zoneId || "-",
+    "Captured Time": formatExportDateTime(item.jobInitiated || item.started_at),
+    "Next Capture Time": formatExportDateTime(item.nextCaptureTime || item.jobCompletion),
+    "Output": item.grassStatus || "-",
+    "Result": ["Dry", "Dead"].includes(item.grassStatus) ? "Additional Water Scheduled" : "No Action Required"
+  }));
+};
 
 class ParksController extends ParksService {
   
@@ -331,19 +359,7 @@ const { camera_Id, ...fields } = req.body;
   public static getParkZonesJobHistory = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { parkId } = req.params;
-      const { zoneId, status, search, page, limit, sortBy, sortOrder, fromDateTime, toDateTime } = req.query;
-
-      const filters = {
-        zoneId: zoneId ? parseInt(zoneId as string) : undefined,
-        status: status as string,
-        search: search as string,
-        page: page ? parseInt(page as string) : undefined,
-        limit: limit ? parseInt(limit as string) : undefined,
-        sortBy: sortBy as string,
-        sortOrder: sortOrder as string,
-        fromDateTime: fromDateTime as string,
-        toDateTime: toDateTime as string
-      };
+      const filters = buildParkZoneJobHistoryFilters(req);
 
       const result = await ParksService.getParkZonesJobHistoryService(
         parseInt(parkId),
@@ -363,6 +379,44 @@ const { camera_Id, ...fields } = req.body;
         // Non-paginated response (backward compatibility)
         return res.status(STATUS.SUCCESS).json(result);
       }
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public static exportParkZonesJobHistoryExcel = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { parkId } = req.params;
+      const filters = { ...buildParkZoneJobHistoryFilters(req), page: 1, limit: 50000 };
+      const result = await ParksService.getParkZonesJobHistoryService(parseInt(parkId), filters);
+      const records = Array.isArray(result) ? result : result.data || [];
+      const rows = mapParkZoneJobHistoryExportRows(records);
+
+      return sendExcelExport(res, {
+        rows,
+        sheetName: "Irrigation History",
+        fileName: `park_irrigation_history_${new Date().toISOString().slice(0, 10)}.xlsx`
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public static exportParkZonesJobHistoryPdf = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { parkId } = req.params;
+      const filters = { ...buildParkZoneJobHistoryFilters(req), page: 1, limit: 50000 };
+      const result = await ParksService.getParkZonesJobHistoryService(parseInt(parkId), filters);
+      const records = Array.isArray(result) ? result : result.data || [];
+      const rows = mapParkZoneJobHistoryExportRows(records);
+
+      return sendPdfTableExport(res, {
+        title: "Park Irrigation Job History Export",
+        headers: ["Zone", "Controller ID", "Captured Time", "Next Capture Time", "Output", "Result"],
+        widths: [120, 90, 120, 120, 70, 120],
+        rows,
+        fileName: `park_irrigation_history_${new Date().toISOString().slice(0, 10)}.pdf`
+      });
     } catch (error) {
       next(error);
     }

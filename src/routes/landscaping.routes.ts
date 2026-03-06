@@ -341,6 +341,8 @@ landscapingRouter.post('/add', landscapingValidations, LandscapingController.add
  *                   example: 500
  */
 landscapingRouter.get('/get', LandscapingController.viewLandscapings)
+landscapingRouter.get('/export/excel', LandscapingController.exportLandscapingsExcel)
+landscapingRouter.get('/export/pdf', LandscapingController.exportLandscapingsPdf)
 
 /**
  * @swagger

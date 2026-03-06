@@ -427,6 +427,8 @@ officeSentimentAnalysisRouter.put('/update/:detection_Id', officeSentimentAnalys
  *                   example: 500
  */
 officeSentimentAnalysisRouter.get('/get', OfficeSentimentAnalysisController.viewOfficeSentimentAnalyses)
+officeSentimentAnalysisRouter.get('/export/excel', OfficeSentimentAnalysisController.exportOfficeSentimentAnalysesExcel)
+officeSentimentAnalysisRouter.get('/export/pdf', OfficeSentimentAnalysisController.exportOfficeSentimentAnalysesPdf)
 
 /**
  * @swagger

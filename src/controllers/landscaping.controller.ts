@@ -3,6 +3,35 @@ import { LandscapingType, STATUS } from "@/typescript";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import CronService from "../services/cron.service";
+import { formatExportDateTime, sendExcelExport, sendPdfTableExport } from "@/utils/export.utils";
+
+const buildLandscapingFilters = (req: Request) => {
+   const { page, limit, search, status, sortBy, sortOrder, startDate, endDate } = req.query;
+
+   return {
+      page: page ? parseInt(page as string) : undefined,
+      limit: limit ? parseInt(limit as string) : undefined,
+      search: search as string,
+      status: status as string,
+      sortBy: sortBy as string,
+      sortOrder: sortOrder as string,
+      startDate: startDate as string,
+      endDate: endDate as string
+   };
+};
+
+const mapLandscapingExportRows = (records: any[]) => {
+   return records.map(item => ({
+      "Case ID": item.case_Id || "-",
+      "Park": item.parks?.park_english_name || item.parks?.park_arabic_name || "-",
+      "Occurrence Date": formatExportDateTime(item.createdAt),
+      "Assigned To": item.assignedUser
+         ? `${item.assignedUser.emp__eng_name || item.assignedUser.emp__arabic_name || "-"} (${item.assignedUser.emp_Id || item.assignedUser.Id || item.assignedUser.id || "-"})`
+         : "-",
+      "Result": item.needs_cutting === true ? "Grass Cutting Required" : "No Action Required",
+      "Status": item.current_status || "-"
+   }));
+};
 
 class LandscapingController extends LandscapingService {
    public static addLandscaping = async (req: Request<{}, {}, LandscapingType>, res: Response, next: NextFunction) => {
@@ -73,6 +102,44 @@ class LandscapingController extends LandscapingService {
          }
       } catch (error) {
          console.error("❌ [LandscapingController] Error in viewLandscapings:", error);
+         next(error)
+      }
+   }
+
+   public static exportLandscapingsExcel = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const filters = { ...buildLandscapingFilters(req), page: 1, limit: 50000 };
+         const result = await LandscapingService.viewLandscapingsService(filters);
+         const records = Array.isArray(result) ? result : result.data || [];
+         const rows = mapLandscapingExportRows(records);
+
+         return sendExcelExport(res, {
+            rows,
+            sheetName: "Landscaping",
+            fileName: `landscaping_${new Date().toISOString().slice(0, 10)}.xlsx`
+         });
+      } catch (error) {
+         next(error)
+      }
+   }
+
+   public static exportLandscapingsPdf = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const filters = { ...buildLandscapingFilters(req), page: 1, limit: 50000 };
+         const result = await LandscapingService.viewLandscapingsService(filters);
+         const records = Array.isArray(result) ? result : result.data || [];
+         const rows = mapLandscapingExportRows(records);
+         const headers = ["Case ID", "Park", "Occurrence Date", "Assigned To", "Result", "Status"];
+         const widths = [60, 110, 120, 130, 110, 70];
+
+         return sendPdfTableExport(res, {
+            title: "Landscaping Export",
+            headers,
+            widths,
+            rows,
+            fileName: `landscaping_${new Date().toISOString().slice(0, 10)}.pdf`
+         });
+      } catch (error) {
          next(error)
       }
    }

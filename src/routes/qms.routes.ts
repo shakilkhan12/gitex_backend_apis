@@ -332,5 +332,7 @@ qmsRouter.post('/update-visit', qmsUpdateValidations, QMSController.updateQMSVis
  *         description: Internal server error
  */
 qmsRouter.get('/history', QMSController.viewQMSHistory)
+qmsRouter.get('/history/export/excel', QMSController.exportQMSHistoryExcel)
+qmsRouter.get('/history/export/pdf', QMSController.exportQMSHistoryPdf)
 
 export default qmsRouter;

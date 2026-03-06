@@ -379,6 +379,8 @@ litterDetectionRouter.post('/add', litterDetectionValidations, LitterDetectionCo
  *                   example: 500
  */
 litterDetectionRouter.get('/get', LitterDetectionController.viewLitterDetections)
+litterDetectionRouter.get('/export/excel', LitterDetectionController.exportLitterDetectionsExcel)
+litterDetectionRouter.get('/export/pdf', LitterDetectionController.exportLitterDetectionsPdf)
 
 /**
  * @swagger

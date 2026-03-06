@@ -273,6 +273,8 @@ parkSentimentAnalysisRouter.post('/add', parkSentimentAnalysisValidations, ParkS
  *                   example: 500
  */
 parkSentimentAnalysisRouter.get('/get', ParkSentimentAnalysisController.viewParkSentimentAnalyses)
+parkSentimentAnalysisRouter.get('/export/excel', ParkSentimentAnalysisController.exportParkSentimentAnalysesExcel)
+parkSentimentAnalysisRouter.get('/export/pdf', ParkSentimentAnalysisController.exportParkSentimentAnalysesPdf)
 
 /**
  * @swagger

@@ -445,6 +445,222 @@ class UserService {
       }
    }
 
+   /**
+    * Resolve the first-entry camera for a visitor from office/park sentiments,
+    * footfalls, and behaviour alerts (earliest record by time across all data).
+    */
+   private static getFirstEntryCameraForVisitor = async (
+      visitorId: number,
+      visitorCreatedAt: Date | null
+   ): Promise<{ type: 'office' | 'park'; cameraId: number; cameraNameEn: string | null; cameraNameAr: string | null } | null> => {
+      const visitorDate = visitorCreatedAt ? new Date(visitorCreatedAt) : new Date(0);
+      visitorDate.setHours(0, 0, 0, 0);
+      const visitorIdStr = String(visitorId);
+
+      type Candidate = { at: Date; type: 'office' | 'park'; cameraId: number; nameEn: string | null; nameAr: string | null };
+
+      const candidates: Candidate[] = [];
+
+      const [firstOfficeSentiment, firstParkSentiment, firstOfficeFootfall, firstParkFootfall, firstBehaviour] = await Promise.all([
+         db.offices_sentiment_analysis.findFirst({
+            where: {
+               person_Id: visitorIdStr,
+               sentiment_of: 'visitor'
+            },
+            orderBy: { createdAt: 'asc' },
+            select: { entry_camera_Id: true, createdAt: true }
+         }),
+         db.parks_sentiment_analysis.findFirst({
+            where: {
+               person_Id: visitorIdStr,
+               sentiment_of: 'visitor'
+            },
+            orderBy: { createdAt: 'asc' },
+            select: { entry_camera_Id: true, createdAt: true }
+         }),
+         db.offices_footfall_analysis.findFirst({
+            where: {
+               person_Id: visitorId
+            },
+            orderBy: { time: 'asc' },
+            select: { detected_camera_Id: true, time: true }
+         }),
+         db.parks_footfall_analysis.findFirst({
+            where: {
+               person_Id: visitorId
+            },
+            orderBy: { time: 'asc' },
+            select: { detected_camera_Id: true, time: true }
+         }),
+         db.parks_behaviour_alerts.findFirst({
+            where: {
+               person_Id: visitorIdStr,
+               is_employee: false
+            },
+            orderBy: { detection_date: 'asc' },
+            select: { camera_Id: true, detection_date: true, detection_time: true }
+         })
+      ]);
+
+      // Resolve office sentiment camera
+      if (firstOfficeSentiment?.entry_camera_Id) {
+         const cam = await db.offices_cameras.findUnique({
+            where: { Id: firstOfficeSentiment.entry_camera_Id },
+            select: { Id: true, camera_english_name: true, camera_arabic_name: true }
+         });
+         if (cam)
+            candidates.push({
+               at: firstOfficeSentiment.createdAt || visitorDate,
+               type: 'office',
+               cameraId: cam.Id,
+               nameEn: cam.camera_english_name,
+               nameAr: cam.camera_arabic_name
+            });
+      }
+
+      // Resolve park sentiment camera
+      if (firstParkSentiment?.entry_camera_Id) {
+         const cam = await db.park_cameras.findUnique({
+            where: { Id: firstParkSentiment.entry_camera_Id },
+            select: { Id: true, camera_english_name: true, camera_arabic_name: true }
+         });
+         if (cam)
+            candidates.push({
+               at: firstParkSentiment.createdAt || visitorDate,
+               type: 'park',
+               cameraId: cam.Id,
+               nameEn: cam.camera_english_name,
+               nameAr: cam.camera_arabic_name
+            });
+      }
+
+      // Resolve office footfall camera (detected_camera_Id is string, match offices_cameras.camera_Id)
+      if (firstOfficeFootfall?.detected_camera_Id) {
+         const cam = await db.offices_cameras.findFirst({
+            where: { camera_Id: firstOfficeFootfall.detected_camera_Id },
+            select: { Id: true, camera_english_name: true, camera_arabic_name: true }
+         });
+         if (cam)
+            candidates.push({
+               at: firstOfficeFootfall.time,
+               type: 'office',
+               cameraId: cam.Id,
+               nameEn: cam.camera_english_name,
+               nameAr: cam.camera_arabic_name
+            });
+      }
+
+      // Resolve park footfall camera
+      if (firstParkFootfall?.detected_camera_Id) {
+         const cam = await db.park_cameras.findFirst({
+            where: { camera_Id: firstParkFootfall.detected_camera_Id },
+            select: { Id: true, camera_english_name: true, camera_arabic_name: true }
+         });
+         if (cam)
+            candidates.push({
+               at: firstParkFootfall.time,
+               type: 'park',
+               cameraId: cam.Id,
+               nameEn: cam.camera_english_name,
+               nameAr: cam.camera_arabic_name
+            });
+      }
+
+      // Behaviour camera (park_cameras)
+      if (firstBehaviour?.camera_Id) {
+         const cam = await db.park_cameras.findUnique({
+            where: { Id: firstBehaviour.camera_Id },
+            select: { Id: true, camera_english_name: true, camera_arabic_name: true }
+         });
+         if (cam) {
+            const at = firstBehaviour.detection_date && firstBehaviour.detection_time
+               ? new Date(
+                  new Date(firstBehaviour.detection_date).toDateString() + ' ' + new Date(firstBehaviour.detection_time).toTimeString()
+               )
+               : (firstBehaviour.detection_date as Date) || visitorDate;
+            candidates.push({
+               at: at instanceof Date ? at : visitorDate,
+               type: 'park',
+               cameraId: cam.Id,
+               nameEn: cam.camera_english_name,
+               nameAr: cam.camera_arabic_name
+            });
+         }
+      }
+
+      // If no entry camera found, fallback: any camera from any related record on the same date as visitor
+      if (candidates.length === 0 && visitorCreatedAt) {
+         const visitorDateEnd = new Date(visitorDate);
+         visitorDateEnd.setDate(visitorDateEnd.getDate() + 1);
+         const [fallbackOffice, fallbackPark, fallbackOfficeFootfall, fallbackParkFootfall, fallbackBehaviour] = await Promise.all([
+            db.offices_sentiment_analysis.findFirst({
+               where: {
+                  person_Id: visitorIdStr,
+                  sentiment_of: 'visitor',
+                  createdAt: { gte: visitorDate, lt: visitorDateEnd },
+                  entry_camera_Id: { not: null }
+               },
+               orderBy: { createdAt: 'asc' },
+               select: { entry_camera_Id: true }
+            }),
+            db.parks_sentiment_analysis.findFirst({
+               where: {
+                  person_Id: visitorIdStr,
+                  sentiment_of: 'visitor',
+                  createdAt: { gte: visitorDate, lt: visitorDateEnd },
+                  entry_camera_Id: { not: null }
+               },
+               orderBy: { createdAt: 'asc' },
+               select: { entry_camera_Id: true }
+            }),
+            db.offices_footfall_analysis.findFirst({
+               where: { person_Id: visitorId, time: { gte: visitorDate, lt: visitorDateEnd } },
+               orderBy: { time: 'asc' },
+               select: { detected_camera_Id: true }
+            }),
+            db.parks_footfall_analysis.findFirst({
+               where: { person_Id: visitorId, time: { gte: visitorDate, lt: visitorDateEnd } },
+               orderBy: { time: 'asc' },
+               select: { detected_camera_Id: true }
+            }),
+            db.parks_behaviour_alerts.findFirst({
+               where: { person_Id: visitorIdStr, is_employee: false, camera_Id: { not: null }, detection_date: { gte: visitorDate, lt: visitorDateEnd } },
+               orderBy: { detection_date: 'asc' },
+               select: { camera_Id: true }
+            })
+         ]);
+         if (fallbackOffice?.entry_camera_Id) {
+            const cam = await db.offices_cameras.findUnique({ where: { Id: fallbackOffice.entry_camera_Id }, select: { Id: true, camera_english_name: true, camera_arabic_name: true } });
+            if (cam) return { type: 'office', cameraId: cam.Id, cameraNameEn: cam.camera_english_name, cameraNameAr: cam.camera_arabic_name };
+         }
+         if (fallbackPark?.entry_camera_Id) {
+            const cam = await db.park_cameras.findUnique({ where: { Id: fallbackPark.entry_camera_Id }, select: { Id: true, camera_english_name: true, camera_arabic_name: true } });
+            if (cam) return { type: 'park', cameraId: cam.Id, cameraNameEn: cam.camera_english_name, cameraNameAr: cam.camera_arabic_name };
+         }
+         if (fallbackOfficeFootfall?.detected_camera_Id) {
+            const cam = await db.offices_cameras.findFirst({ where: { camera_Id: fallbackOfficeFootfall.detected_camera_Id }, select: { Id: true, camera_english_name: true, camera_arabic_name: true } });
+            if (cam) return { type: 'office', cameraId: cam.Id, cameraNameEn: cam.camera_english_name, cameraNameAr: cam.camera_arabic_name };
+         }
+         if (fallbackParkFootfall?.detected_camera_Id) {
+            const cam = await db.park_cameras.findFirst({ where: { camera_Id: fallbackParkFootfall.detected_camera_Id }, select: { Id: true, camera_english_name: true, camera_arabic_name: true } });
+            if (cam) return { type: 'park', cameraId: cam.Id, cameraNameEn: cam.camera_english_name, cameraNameAr: cam.camera_arabic_name };
+         }
+         if (fallbackBehaviour?.camera_Id) {
+            const cam = await db.park_cameras.findUnique({ where: { Id: fallbackBehaviour.camera_Id }, select: { Id: true, camera_english_name: true, camera_arabic_name: true } });
+            if (cam) return { type: 'park', cameraId: cam.Id, cameraNameEn: cam.camera_english_name, cameraNameAr: cam.camera_arabic_name };
+         }
+      }
+
+      if (candidates.length === 0) return null;
+      const first = candidates.reduce((min, c) => (c.at < min.at ? c : min));
+      return {
+         type: first.type,
+         cameraId: first.cameraId,
+         cameraNameEn: first.nameEn,
+         cameraNameAr: first.nameAr
+      };
+   };
+
    public static getVisitorsService = async (filters: {
       page?: number;
       limit?: number;
@@ -452,8 +668,16 @@ class UserService {
       sortBy?: string;
       sortOrder?: 'asc' | 'desc';
       gender?: string;
+      cameraFilter?: string;
    } = {}) => {
+      const startTime = Date.now();
+      const log = (msg: string, data?: object) => {
+         const elapsed = Date.now() - startTime;
+         console.log(`[getVisitors] +${elapsed}ms ${msg}`, data ?? '');
+      };
       try {
+         log('request started', { page: filters?.page, limit: filters?.limit, cameraFilter: filters?.cameraFilter || '(none)', search: filters?.search || '(none)' });
+
          const page = filters?.page || 1;
          const limit = filters?.limit || 10;
          const skip = (page - 1) * limit;
@@ -501,82 +725,229 @@ class UserService {
             orderByClause.createdAt = 'desc';
          }
 
-         const [visitors, totalCount] = await Promise.all([
-            db.users.findMany({
-               where: whereClause,
-               select: {
-                  Id: true,
-                  unique_id: true,
-                  gender: true,
-                  image: true,
-                  emp__eng_name: true,
-                  emp__arabic_name: true,
-                  createdAt: true,
-                  updatedAt: true
-               },
-               orderBy: orderByClause,
-               skip,
-               take: limit
+         const useCameraFilter = Boolean(filters?.cameraFilter && String(filters.cameraFilter).trim());
+         log('fetching cameras and visitors', { useCameraFilter });
+
+         const [officeCameras, parkCameras] = await Promise.all([
+            db.offices_cameras.findMany({
+               select: { Id: true, camera_Id: true, camera_english_name: true, camera_arabic_name: true },
+               orderBy: { camera_english_name: 'asc' }
             }),
-            db.users.count({
-               where: whereClause
+            db.park_cameras.findMany({
+               select: { Id: true, camera_Id: true, camera_english_name: true, camera_arabic_name: true },
+               orderBy: { camera_english_name: 'asc' }
             })
          ]);
 
-         const totalPages = Math.ceil(totalCount / limit);
-         const hasNextPage = page < totalPages;
-         const hasPreviousPage = page > 1;
+         const uniqueByCameraId = <T extends { camera_Id: string | null; Id: number }>(items: T[]) => {
+            const seen = new Set<string>();
+            return items.filter(i => {
+               const key = (i.camera_Id || String(i.Id)).trim();
+               if (seen.has(key)) return false;
+               seen.add(key);
+               return true;
+            });
+         };
 
-         const visitorsWithStats = await Promise.all(
+         const cameras = {
+            office: uniqueByCameraId(officeCameras).map(c => ({ id: c.Id, type: 'office' as const, nameEn: c.camera_english_name, nameAr: c.camera_arabic_name })),
+            park: uniqueByCameraId(parkCameras).map(c => ({ id: c.Id, type: 'park' as const, nameEn: c.camera_english_name, nameAr: c.camera_arabic_name }))
+         };
+         log('cameras loaded', { office: cameras.office.length, park: cameras.park.length });
+
+         let visitors: any[];
+         let totalCount: number;
+
+         if (useCameraFilter) {
+            const parts = String(filters.cameraFilter || '').trim().split('_');
+            const filterType = parts[0] ? String(parts[0]).toLowerCase() : '';
+            const filterIdStr = parts[1];
+            const filterId = filterIdStr != null && filterIdStr !== '' ? parseInt(String(filterIdStr), 10) : NaN;
+            if (!filterType || isNaN(filterId)) {
+               visitors = [];
+               totalCount = 0;
+               log('camera filter invalid, returning empty', { filterType, filterId });
+            } else {
+               const visitorIdsSet = new Set<number>();
+               if (filterType === 'office') {
+                  const [officeSentimentPersons, officeCam] = await Promise.all([
+                     db.offices_sentiment_analysis.findMany({
+                        where: { entry_camera_Id: filterId, sentiment_of: 'visitor' },
+                        select: { person_Id: true }
+                     }),
+                     db.offices_cameras.findUnique({ where: { Id: filterId }, select: { camera_Id: true } })
+                  ]);
+                  officeSentimentPersons.forEach(r => {
+                     if (r.person_Id) {
+                        const n = parseInt(String(r.person_Id), 10);
+                        if (!isNaN(n)) visitorIdsSet.add(n);
+                     }
+                  });
+                  if (officeCam?.camera_Id) {
+                     const officeFootfall = await db.offices_footfall_analysis.findMany({
+                        where: { detected_camera_Id: officeCam.camera_Id },
+                        select: { person_Id: true }
+                     });
+                     officeFootfall.forEach(r => { if (r.person_Id != null) visitorIdsSet.add(r.person_Id); });
+                  }
+                  const officeNonNumeric = officeSentimentPersons.filter(r => r.person_Id && isNaN(parseInt(String(r.person_Id), 10))).map(r => String(r.person_Id));
+                  if (officeNonNumeric.length > 0) {
+                     const usersByUniqueId = await db.users.findMany({
+                        where: { ...whereClause, unique_id: { in: officeNonNumeric } },
+                        select: { Id: true }
+                     });
+                     usersByUniqueId.forEach(u => visitorIdsSet.add(u.Id));
+                  }
+               } else if (filterType === 'park') {
+                  const [parkSentimentPersons, parkBehaviourPersons, parkCam] = await Promise.all([
+                     db.parks_sentiment_analysis.findMany({
+                        where: { entry_camera_Id: filterId, sentiment_of: 'visitor' },
+                        select: { person_Id: true }
+                     }),
+                     db.parks_behaviour_alerts.findMany({
+                        where: { camera_Id: filterId, is_employee: false },
+                        select: { person_Id: true }
+                     }),
+                     db.park_cameras.findUnique({ where: { Id: filterId }, select: { camera_Id: true } })
+                  ]);
+                  parkSentimentPersons.forEach(r => {
+                     if (r.person_Id) { const n = parseInt(String(r.person_Id), 10); if (!isNaN(n)) visitorIdsSet.add(n); }
+                  });
+                  parkBehaviourPersons.forEach(r => {
+                     if (r.person_Id) { const n = parseInt(String(r.person_Id), 10); if (!isNaN(n)) visitorIdsSet.add(n); }
+                  });
+                  if (parkCam?.camera_Id) {
+                     const parkFootfall = await db.parks_footfall_analysis.findMany({
+                        where: { detected_camera_Id: parkCam.camera_Id },
+                        select: { person_Id: true }
+                     });
+                     parkFootfall.forEach(r => { if (r.person_Id != null) visitorIdsSet.add(r.person_Id); });
+                  }
+                  const parkNonNumeric = [
+                     ...parkSentimentPersons.filter(r => r.person_Id && isNaN(parseInt(String(r.person_Id), 10))),
+                     ...parkBehaviourPersons.filter(r => r.person_Id && isNaN(parseInt(String(r.person_Id), 10)))
+                  ].map(r => String(r.person_Id));
+                  const parkNonNumericUniq = Array.from(new Set(parkNonNumeric));
+                  if (parkNonNumericUniq.length > 0) {
+                     const usersByUniqueId = await db.users.findMany({
+                        where: { ...whereClause, unique_id: { in: parkNonNumericUniq } },
+                        select: { Id: true }
+                     });
+                     usersByUniqueId.forEach(u => visitorIdsSet.add(u.Id));
+                  }
+               }
+               const visitorIds = Array.from(visitorIdsSet);
+               log('visitor IDs for camera', { filterType, filterId, count: visitorIds.length });
+
+               if (visitorIds.length === 0) {
+                  visitors = [];
+                  totalCount = 0;
+               } else {
+                  const whereWithCamera = { AND: [whereClause, { Id: { in: visitorIds } }] };
+                  totalCount = await db.users.count({ where: whereWithCamera });
+                  visitors = await db.users.findMany({
+                     where: whereWithCamera,
+                     select: {
+                        Id: true,
+                        unique_id: true,
+                        gender: true,
+                        image: true,
+                        emp__eng_name: true,
+                        emp__arabic_name: true,
+                        createdAt: true,
+                        updatedAt: true
+                     },
+                     orderBy: orderByClause,
+                     skip,
+                     take: limit
+                  });
+               }
+               log('visitors fetched from DB (camera filter)', { count: visitors.length, totalCount });
+            }
+         } else {
+            const [visitorsList, count] = await Promise.all([
+               db.users.findMany({
+                  where: whereClause,
+                  select: {
+                     Id: true,
+                     unique_id: true,
+                     gender: true,
+                     image: true,
+                     emp__eng_name: true,
+                     emp__arabic_name: true,
+                     createdAt: true,
+                     updatedAt: true
+                  },
+                  orderBy: orderByClause,
+                  skip,
+                  take: limit
+               }),
+               db.users.count({ where: whereClause })
+            ]);
+            visitors = visitorsList;
+            totalCount = count;
+            log('visitors fetched from DB', { count: visitors.length, totalCount });
+         }
+
+         const statsStart = Date.now();
+         let visitorsWithStats = await Promise.all(
             visitors.map(async (visitor) => {
                const visitorIdStr = visitor.Id.toString();
-               
-               const [officeSentimentCount, parkSentimentCount] = await Promise.all([
+               const [officeSentimentCount, parkSentimentCount, behaviourAlertsCount, officeFootfallCount, parkFootfallCount, entryCamera] = await Promise.all([
                   db.offices_sentiment_analysis.count({
-                     where: {
-                        person_Id: visitorIdStr,
-                        sentiment_of: 'visitor'
-                     }
+                     where: { person_Id: visitorIdStr, sentiment_of: 'visitor' }
                   }),
                   db.parks_sentiment_analysis.count({
+                     where: { person_Id: visitorIdStr, sentiment_of: 'visitor' }
+                  }),
+                  db.parks_behaviour_alerts.count({
                      where: {
-                        person_Id: visitorIdStr,
-                        sentiment_of: 'visitor'
-                     }
-                  })
-               ]);
-
-               const behaviourAlertsCount = await db.parks_behaviour_alerts.count({
-                  where: {
-                     OR: [
-                        { person_Id: visitorIdStr },
-                        { person_Id: visitor.unique_id || '' }
-                     ],
-                     is_employee: false
-                  }
-               });
-
-               const [officeFootfallCount, parkFootfallCount] = await Promise.all([
-                  db.offices_footfall_analysis.count({
-                     where: {
-                        person_Id: visitor.Id
+                        OR: [{ person_Id: visitorIdStr }, { person_Id: visitor.unique_id || '' }],
+                        is_employee: false
                      }
                   }),
-                  db.parks_footfall_analysis.count({
-                     where: {
-                        person_Id: visitor.Id
-                     }
-                  })
+                  db.offices_footfall_analysis.count({ where: { person_Id: visitor.Id } }),
+                  db.parks_footfall_analysis.count({ where: { person_Id: visitor.Id } }),
+                  UserService.getFirstEntryCameraForVisitor(visitor.Id, visitor.createdAt)
                ]);
 
                return {
                   ...visitor,
                   totalSentiment: officeSentimentCount + parkSentimentCount,
                   totalBehaviourAlerts: behaviourAlertsCount,
-                  totalFootfall: officeFootfallCount + parkFootfallCount
+                  totalFootfall: officeFootfallCount + parkFootfallCount,
+                  entryCamera: entryCamera
+                     ? {
+                        type: entryCamera.type,
+                        cameraId: entryCamera.cameraId,
+                        cameraNameEn: entryCamera.cameraNameEn,
+                        cameraNameAr: entryCamera.cameraNameAr
+                     }
+                     : null
                };
             })
          );
+         log('stats and entry cameras resolved', { visitorCount: visitorsWithStats.length, durationMs: Date.now() - statsStart });
+
+         let totalCountFinal = totalCount;
+         if (useCameraFilter && filters?.cameraFilter) {
+            const parts = String(filters.cameraFilter).trim().split('_');
+            const filterType = parts[0] ? String(parts[0]).toLowerCase() : '';
+            const filterId = parts[1] != null && parts[1] !== '' ? parseInt(String(parts[1]), 10) : NaN;
+            if (filterType && !isNaN(filterId)) {
+               const before = visitorsWithStats.length;
+               visitorsWithStats = visitorsWithStats.filter((v: any) => {
+                  const ec = v.entryCamera;
+                  if (!ec) return false;
+                  return (ec.type || '').toLowerCase() === filterType && Number(ec.cameraId) === filterId;
+               });
+               log('filtered by entry camera', { filterType, filterId, before, after: visitorsWithStats.length });
+            }
+         }
+
+         const totalPages = Math.ceil(totalCountFinal / limit);
+         const hasNextPage = page < totalPages;
+         const hasPreviousPage = page > 1;
 
          const imageFields = ['image'];
          const formattedVisitors = formatImageUrlsInArray(visitorsWithStats, imageFields);
@@ -584,7 +955,7 @@ class UserService {
          const paginationData = {
             currentPage: page,
             totalPages,
-            totalCount,
+            totalCount: totalCountFinal,
             limit: limit,
             hasNextPage,
             hasPreviousPage,
@@ -592,13 +963,16 @@ class UserService {
             previousPage: hasPreviousPage ? page - 1 : null
          };
 
+         log('response ready', { dataLength: formattedVisitors.length, totalCount: totalCountFinal, totalMs: Date.now() - startTime });
          return {
             success: true,
             data: formattedVisitors,
-            pagination: paginationData
+            pagination: paginationData,
+            cameras
          };
 
       } catch (error: any) {
+         console.error('[getVisitors] error', { elapsedMs: Date.now() - startTime, message: error?.message });
          throw new HttpException(STATUS.INTERNAL_SERVER_ERROR, "Failed to fetch visitors");
       }
    }
