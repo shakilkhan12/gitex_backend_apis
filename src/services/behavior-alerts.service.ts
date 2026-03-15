@@ -35,6 +35,60 @@ class BehaviorAlertsService {
       }
    }
 
+   protected static getBehaviorAlertsFiltersService = async () => {
+      try {
+         const parks = await db.parks.findMany({
+            where: {
+               parks_behaviour_alerts: {
+                  some: {}
+               }
+            },
+            select: {
+               Id: true,
+               park_Id: true,
+               park_english_name: true,
+               park_arabic_name: true
+            },
+            orderBy: { park_english_name: 'asc' }
+         });
+
+         const cameras = await db.park_cameras.findMany({
+            where: {
+               parks_behaviour_alerts: {
+                  some: {}
+               }
+            },
+            select: {
+               Id: true,
+               camera_Id: true,
+               camera_english_name: true,
+               camera_arabic_name: true
+            },
+            orderBy: { camera_english_name: 'asc' }
+         });
+
+         return {
+            success: true,
+            data: {
+               parks: parks.map(p => ({
+                  id: p.Id,
+                  parkId: p.park_Id,
+                  name_en: p.park_english_name,
+                  name_ar: p.park_arabic_name
+               })),
+               cameras: cameras.map(c => ({
+                  id: c.Id,
+                  cameraId: c.camera_Id,
+                  name_en: c.camera_english_name,
+                  name_ar: c.camera_arabic_name
+               }))
+            }
+         };
+      } catch (error: any) {
+         throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch behavior alerts filters");
+      }
+   };
+
    protected static viewBehaviorAlertsService = async (filters?: {
       page?: number;
       limit?: number;
@@ -46,6 +100,7 @@ class BehaviorAlertsService {
       behaviour?: string;
       camera?: string;
       employee?: string;
+      parkId?: number;
    }) => {
 
       try {
@@ -63,9 +118,14 @@ class BehaviorAlertsService {
             ];
          }
 
-         // Behaviour filter
+         // Behaviour filter (schema field is detected_behaviour)
          if (filters?.behaviour) {
-            whereClause.behaviour = filters.behaviour;
+            whereClause.detected_behaviour = filters.behaviour;
+         }
+
+         // Park filter
+         if (filters?.parkId) {
+            whereClause.park_Id = filters.parkId;
          }
 
          // Camera filter

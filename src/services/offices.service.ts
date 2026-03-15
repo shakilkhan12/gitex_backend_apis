@@ -214,7 +214,12 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
       return result;
    }
 
-   protected static getOfficeFootfallAnalysisService = async (officeIds: number | number[], fromDate?: string, toDate?: string) => {
+   protected static getOfficeFootfallAnalysisService = async (
+      officeIds: number | number[],
+      fromDate?: string,
+      toDate?: string,
+      cameraId?: string
+   ) => {
       if (!officeIds || (Array.isArray(officeIds) && officeIds.length === 0)) {
          throw new HttpException(STATUS.BAD_REQUEST, 'office_Id is required');
       }
@@ -234,6 +239,10 @@ protected static changeOfficeSettingService = async (setting: OfficeSettingInput
                gte: new Date(fromDate),
                lte: new Date(toDate)
             };
+         }
+
+         if (cameraId && cameraId.trim() !== '') {
+            whereClause.detected_camera_Id = cameraId;
          }
 
          const footfallData = await db.offices_footfall_analysis.findMany({

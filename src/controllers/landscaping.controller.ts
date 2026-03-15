@@ -6,7 +6,7 @@ import CronService from "../services/cron.service";
 import { formatExportDateTime, sendExcelExport, sendPdfTableExport } from "@/utils/export.utils";
 
 const buildLandscapingFilters = (req: Request) => {
-   const { page, limit, search, status, sortBy, sortOrder, startDate, endDate } = req.query;
+   const { page, limit, search, status, sortBy, sortOrder, startDate, endDate, parkId, statusFilter } = req.query;
 
    return {
       page: page ? parseInt(page as string) : undefined,
@@ -16,7 +16,9 @@ const buildLandscapingFilters = (req: Request) => {
       sortBy: sortBy as string,
       sortOrder: sortOrder as string,
       startDate: startDate as string,
-      endDate: endDate as string
+      endDate: endDate as string,
+      parkId: parkId ? parseInt(parkId as string) : undefined,
+      statusFilter: statusFilter as 'pending' | 'under_process' | 'completed' | undefined
    };
 };
 
@@ -56,6 +58,17 @@ class LandscapingController extends LandscapingService {
       }
    }
 
+   public static getLandscapingFilters = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const startDate = req.query.startDate as string || undefined;
+         const endDate = req.query.endDate as string || undefined;
+         const result = await LandscapingService.getLandscapingFiltersService(startDate, endDate);
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
+      }
+   };
+
    public static viewLandscapings = async (req: Request, res: Response, next: NextFunction) => {
       console.log("🟡 [LandscapingController] viewLandscapings called");
       try {
@@ -68,6 +81,8 @@ class LandscapingController extends LandscapingService {
          const sortOrder = req.query.sortOrder as string || 'desc';
          const startDate = req.query.startDate as string || '';
          const endDate = req.query.endDate as string || '';
+         const parkId = req.query.parkId ? parseInt(req.query.parkId as string) : undefined;
+         const statusFilter = req.query.statusFilter as 'pending' | 'under_process' | 'completed' | undefined;
 
          const result = await LandscapingService.viewLandscapingsService({
             page,
@@ -77,7 +92,9 @@ class LandscapingController extends LandscapingService {
             sortBy,
             sortOrder,
             startDate,
-            endDate
+            endDate,
+            parkId,
+            statusFilter
          });
 
          console.log("✅ [LandscapingController] Successfully retrieved landscaping records");

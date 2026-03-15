@@ -141,7 +141,7 @@ class UserController extends UserService {
 
    public static getVisitors = async (req: Request, res: Response, next: NextFunction) => {
       try {
-         const { page, limit, search, sortBy, sortOrder, gender, cameraFilter } = req.query;
+         const { page, limit, search, sortBy, sortOrder, gender, cameraFilter, startDate, endDate } = req.query;
          
          const filters = {
             page: page ? parseInt(page as string) : undefined,
@@ -150,7 +150,9 @@ class UserController extends UserService {
             sortBy: sortBy as string,
             sortOrder: sortOrder as 'asc' | 'desc',
             gender: gender as string,
-            cameraFilter: cameraFilter as string
+            cameraFilter: cameraFilter as string,
+            startDate: startDate as string,
+            endDate: endDate as string
          };
 
          const result = await UserService.getVisitorsService(filters);

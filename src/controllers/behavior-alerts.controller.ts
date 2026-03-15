@@ -7,7 +7,7 @@ import PDFDocument from "pdfkit";
 import { formatExportDateAndTime } from "@/utils/export.utils";
 
 const buildBehaviorAlertFilters = (req: Request) => {
-   const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, behaviour, camera, employee } = req.query;
+   const { page, limit, search, sortBy, sortOrder, fromDateTime, toDateTime, behaviour, camera, employee, parkId } = req.query;
 
    return {
       page: page ? parseInt(page as string) : undefined,
@@ -19,7 +19,8 @@ const buildBehaviorAlertFilters = (req: Request) => {
       toDateTime: toDateTime as string,
       behaviour: behaviour as string,
       camera: camera as string,
-      employee: employee as string
+      employee: employee as string,
+      parkId: parkId ? parseInt(parkId as string) : undefined
    };
 };
 
@@ -48,6 +49,15 @@ class BehaviorAlertsController extends BehaviorAlertsService {
          next(error)
       }
    }
+
+   public static getBehaviorAlertsFilters = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const result = await BehaviorAlertsService.getBehaviorAlertsFiltersService();
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
+      }
+   };
 
    public static viewBehaviorAlerts = async (req: Request, res: Response, next: NextFunction) => {
       try {

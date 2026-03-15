@@ -31,6 +31,41 @@ class LandscapingService {
       CronLogger.log(`[ERROR] ${errorMessage}`);
    }
 
+   protected static getLandscapingFiltersService = async (startDate?: string, endDate?: string) => {
+      try {
+         const parks = await db.parks.findMany({
+            where: {
+               landscaping: {
+                  some: {
+                     plant_type: { not: "Plant" }
+                  }
+               }
+            },
+            select: {
+               Id: true,
+               park_Id: true,
+               park_english_name: true,
+               park_arabic_name: true
+            },
+            orderBy: { park_english_name: 'asc' }
+         });
+
+         return {
+            success: true,
+            data: {
+               parks: parks.map(p => ({
+                  id: p.Id,
+                  parkId: p.park_Id,
+                  name_en: p.park_english_name,
+                  name_ar: p.park_arabic_name
+               }))
+            }
+         };
+      } catch (error: any) {
+         throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch landscaping filters");
+      }
+   };
+
    protected static generateUniqueCaseId = async (): Promise<string> => {
       let caseId: string;
       let isUnique = false;
@@ -97,6 +132,8 @@ class LandscapingService {
       sortOrder: string;
       startDate?: string;
       endDate?: string;
+      parkId?: number;
+      statusFilter?: 'pending' | 'under_process' | 'completed';
    }) => {
       try {
          if (!paginationParams) {
@@ -164,20 +201,44 @@ class LandscapingService {
             return formattedResultsWithHistory;
          }
 
-         const whereClause: any = {};
+         const whereClause: any = {
+            plant_type: { not: "Plant" }
+         };
+         const andConditions: any[] = [];
 
          if (paginationParams.search) {
-            whereClause.OR = [
-               { case_Id: { contains: paginationParams.search, mode: 'insensitive' } },
-               { name: { contains: paginationParams.search, mode: 'insensitive' } },
-               { suggestion: { contains: paginationParams.search, mode: 'insensitive' } },
-               { parks: { park_english_name: { contains: paginationParams.search, mode: 'insensitive' } } },
-               { parks: { park_arabic_name: { contains: paginationParams.search, mode: 'insensitive' } } }
-            ];
+            andConditions.push({
+               OR: [
+                  { case_Id: { contains: paginationParams.search, mode: 'insensitive' } },
+                  { name: { contains: paginationParams.search, mode: 'insensitive' } },
+                  { suggestion: { contains: paginationParams.search, mode: 'insensitive' } },
+                  { parks: { park_english_name: { contains: paginationParams.search, mode: 'insensitive' } } },
+                  { parks: { park_arabic_name: { contains: paginationParams.search, mode: 'insensitive' } } }
+               ]
+            });
          }
 
-         if (paginationParams.status) {
+         if (paginationParams.status && !paginationParams.statusFilter) {
             whereClause.current_status = paginationParams.status;
+         }
+
+         if (paginationParams.parkId) {
+            whereClause.park_Id = paginationParams.parkId;
+         }
+
+         if (paginationParams.statusFilter) {
+            const sf = paginationParams.statusFilter;
+            if (sf === 'pending') {
+               whereClause.current_status = { in: ['pending', 'Pending', 'new', 'New'] };
+            } else if (sf === 'under_process') {
+               whereClause.current_status = {
+                  in: ['in progress', 'under process', 'assigned', 'In Progress', 'Under Process', 'Assigned', 'open', 'Open', 'in review', 'In Review']
+               };
+            } else if (sf === 'completed') {
+               whereClause.current_status = {
+                  in: ['completed', 'closed', 'resolved', 'finished', 'done', 'Completed', 'Closed', 'Resolved', 'Finished', 'Done']
+               };
+            }
          }
 
          if (paginationParams.startDate && paginationParams.endDate) {
@@ -187,15 +248,17 @@ class LandscapingService {
             };
          }
 
+         const finalWhere = andConditions.length > 0 ? { AND: [...andConditions, whereClause] } : whereClause;
+
          const orderByClause: any = {};
          orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
 
          const skip = (paginationParams.page - 1) * paginationParams.limit;
 
-         const totalCount = await db.landscaping.count({ where: whereClause });
+         const totalCount = await db.landscaping.count({ where: finalWhere });
 
          const results = await db.landscaping.findMany({
-            where: whereClause,
+            where: finalWhere,
             include: {
                assignedUser: {
                   select: {
@@ -245,7 +308,7 @@ class LandscapingService {
          const hasPreviousPage = paginationParams.page > 1;
 
          const allDataForStats = await db.landscaping.findMany({
-            where: whereClause,
+            where: finalWhere,
             select: {
                current_status: true
             }

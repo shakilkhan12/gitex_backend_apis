@@ -114,6 +114,10 @@ class LitterDetectionService {
       sortOrder: string;
       startDate?: string;
       endDate?: string;
+      parkId?: number;
+      cameraId?: number;
+      location?: string | string[];
+      statusFilter?: 'unassigned' | 'under_process' | 'completed';
    }) => {
 
       try {
@@ -234,19 +238,55 @@ class LitterDetectionService {
          }
 
          const whereClause: any = {};
-         
+         const andConditions: any[] = [];
+
          if (paginationParams.search) {
-            whereClause.OR = [
-               { case_Id: { contains: paginationParams.search, mode: 'insensitive' } },
-               { location: { contains: paginationParams.search, mode: 'insensitive' } },
-               { description: { contains: paginationParams.search, mode: 'insensitive' } },
-               { parks: { park_english_name: { contains: paginationParams.search, mode: 'insensitive' } } },
-               { parks: { park_arabic_name: { contains: paginationParams.search, mode: 'insensitive' } } }
-            ];
+            andConditions.push({
+               OR: [
+                  { case_Id: { contains: paginationParams.search, mode: 'insensitive' } },
+                  { location: { contains: paginationParams.search, mode: 'insensitive' } },
+                  { description: { contains: paginationParams.search, mode: 'insensitive' } },
+                  { parks: { park_english_name: { contains: paginationParams.search, mode: 'insensitive' } } },
+                  { parks: { park_arabic_name: { contains: paginationParams.search, mode: 'insensitive' } } }
+               ]
+            });
          }
 
-         if (paginationParams.status) {
+         if (paginationParams.status && !paginationParams.statusFilter) {
             whereClause.status = paginationParams.status;
+         }
+
+         if (paginationParams.parkId) {
+            whereClause.park_Id = paginationParams.parkId;
+         }
+
+         if (paginationParams.cameraId) {
+            whereClause.camera_Id = paginationParams.cameraId;
+         }
+
+         if (paginationParams.location) {
+            const locations = Array.isArray(paginationParams.location)
+               ? paginationParams.location
+               : paginationParams.location.split(',').map((s: string) => s.trim()).filter(Boolean);
+            if (locations.length > 0) {
+               whereClause.location = { in: locations };
+            }
+         }
+
+         if (paginationParams.statusFilter) {
+            const sf = paginationParams.statusFilter;
+            if (sf === 'unassigned') {
+               whereClause.assinged_to = null;
+            } else if (sf === 'under_process') {
+               whereClause.assinged_to = { not: null };
+               whereClause.status = {
+                  notIn: ['completed', 'cleaned', 'closed', 'resolved', 'complete']
+               };
+            } else if (sf === 'completed') {
+               whereClause.status = {
+                  in: ['completed', 'cleaned', 'closed', 'resolved', 'complete']
+               };
+            }
          }
 
          if (paginationParams.startDate || paginationParams.endDate) {
@@ -263,15 +303,17 @@ class LitterDetectionService {
             }
          }
 
+         const finalWhere = andConditions.length > 0 ? { AND: [...andConditions, whereClause] } : whereClause;
+
          const orderByClause: any = {};
          orderByClause[paginationParams.sortBy] = paginationParams.sortOrder;
 
          const skip = (paginationParams.page - 1) * paginationParams.limit;
 
-         const totalCount = await db.parks_litter_detection.count({ where: whereClause });
+         const totalCount = await db.parks_litter_detection.count({ where: finalWhere });
 
          const results = await db.parks_litter_detection.findMany({
-            where: whereClause,
+            where: finalWhere,
             include: {
                parks: {
                   select: {
@@ -388,7 +430,7 @@ class LitterDetectionService {
          const hasPreviousPage = paginationParams.page > 1;
 
          const allDataForStats = await db.parks_litter_detection.findMany({
-            where: whereClause,
+            where: finalWhere,
             select: {
                assinged_to: true,
                status: true
@@ -436,6 +478,63 @@ class LitterDetectionService {
          throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch litter detections");
       }
    }
+
+   protected static getLitterDetectionFiltersService = async (startDate?: string, endDate?: string) => {
+      try {
+         const parks = await db.parks.findMany({
+            select: {
+               Id: true,
+               park_Id: true,
+               park_english_name: true,
+               park_arabic_name: true
+            },
+            orderBy: { park_english_name: 'asc' }
+         });
+
+         const cameras = await db.park_cameras.findMany({
+            select: {
+               Id: true,
+               camera_Id: true,
+               camera_english_name: true,
+               camera_arabic_name: true,
+               park_Id: true
+            },
+            orderBy: { camera_english_name: 'asc' }
+         });
+
+         const locationWhere: any = {};
+         if (startDate || endDate) {
+            locationWhere.occurrence_date = {};
+            if (startDate) locationWhere.occurrence_date.gte = new Date(startDate);
+            if (endDate) {
+               const end = new Date(endDate);
+               end.setHours(23, 59, 59, 999);
+               locationWhere.occurrence_date.lte = end;
+            }
+         }
+
+         const locationRecords = await db.parks_litter_detection.findMany({
+            where: locationWhere,
+            select: { location: true },
+            distinct: ['location']
+         });
+
+         const locations = locationRecords
+            .map(r => r.location)
+            .filter((l): l is string => l != null && l.trim() !== '');
+
+         return {
+            success: true,
+            data: {
+               parks: parks.map(p => ({ id: p.Id, parkId: p.park_Id, name_en: p.park_english_name, name_ar: p.park_arabic_name })),
+               cameras: cameras.map(c => ({ id: c.Id, cameraId: c.camera_Id, name_en: c.camera_english_name, name_ar: c.camera_arabic_name, park_Id: c.park_Id })),
+               locations
+            }
+         };
+      } catch (error: any) {
+         throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch litter detection filters");
+      }
+   };
 
    public static assignLitterDetectionService = async (assignmentData: {
       litterDetectionId: number;

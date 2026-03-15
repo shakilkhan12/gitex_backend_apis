@@ -28377,11 +28377,13 @@ export namespace Prisma {
 
   export type UsersAvgAggregateOutputType = {
     Id: number | null
+    linked_users: number | null
     role_Id: number | null
   }
 
   export type UsersSumAggregateOutputType = {
     Id: number | null
+    linked_users: number | null
     role_Id: number | null
   }
 
@@ -28420,6 +28422,7 @@ export namespace Prisma {
     landscaping_access: boolean | null
     plant_disease_access: boolean | null
     litter_detection_access: boolean | null
+    linked_users: number | null
     createdAt: Date | null
     updatedAt: Date | null
     role_Id: number | null
@@ -28460,6 +28463,7 @@ export namespace Prisma {
     landscaping_access: boolean | null
     plant_disease_access: boolean | null
     litter_detection_access: boolean | null
+    linked_users: number | null
     createdAt: Date | null
     updatedAt: Date | null
     role_Id: number | null
@@ -28500,6 +28504,7 @@ export namespace Prisma {
     landscaping_access: number
     plant_disease_access: number
     litter_detection_access: number
+    linked_users: number
     createdAt: number
     updatedAt: number
     role_Id: number
@@ -28509,11 +28514,13 @@ export namespace Prisma {
 
   export type UsersAvgAggregateInputType = {
     Id?: true
+    linked_users?: true
     role_Id?: true
   }
 
   export type UsersSumAggregateInputType = {
     Id?: true
+    linked_users?: true
     role_Id?: true
   }
 
@@ -28552,6 +28559,7 @@ export namespace Prisma {
     landscaping_access?: true
     plant_disease_access?: true
     litter_detection_access?: true
+    linked_users?: true
     createdAt?: true
     updatedAt?: true
     role_Id?: true
@@ -28592,6 +28600,7 @@ export namespace Prisma {
     landscaping_access?: true
     plant_disease_access?: true
     litter_detection_access?: true
+    linked_users?: true
     createdAt?: true
     updatedAt?: true
     role_Id?: true
@@ -28632,6 +28641,7 @@ export namespace Prisma {
     landscaping_access?: true
     plant_disease_access?: true
     litter_detection_access?: true
+    linked_users?: true
     createdAt?: true
     updatedAt?: true
     role_Id?: true
@@ -28759,6 +28769,7 @@ export namespace Prisma {
     landscaping_access: boolean | null
     plant_disease_access: boolean | null
     litter_detection_access: boolean | null
+    linked_users: number | null
     createdAt: Date | null
     updatedAt: Date
     role_Id: number | null
@@ -28818,6 +28829,7 @@ export namespace Prisma {
     landscaping_access?: boolean
     plant_disease_access?: boolean
     litter_detection_access?: boolean
+    linked_users?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     role_Id?: boolean
@@ -28871,12 +28883,13 @@ export namespace Prisma {
     landscaping_access?: boolean
     plant_disease_access?: boolean
     litter_detection_access?: boolean
+    linked_users?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     role_Id?: boolean
   }
 
-  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "user_Id" | "emp_Id" | "emp_code" | "image" | "actuall_image" | "gender" | "unique_id" | "emp__eng_name" | "emp__arabic_name" | "location" | "country_code" | "phone" | "telephone" | "email" | "office_extension" | "nationality" | "joining_date" | "date_of_birth" | "dep_eng_name" | "dep_arabic_name" | "desig_eng_name" | "desig_arabic_name" | "unit_eng_name" | "unit_arabic_name" | "committe_eng_name" | "committe_arabic_name" | "is_attendance_user" | "is_ai_login_user" | "ai_engine_access" | "last_login" | "landscaping_access" | "plant_disease_access" | "litter_detection_access" | "createdAt" | "updatedAt" | "role_Id", ExtArgs["result"]["users"]>
+  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"Id" | "user_Id" | "emp_Id" | "emp_code" | "image" | "actuall_image" | "gender" | "unique_id" | "emp__eng_name" | "emp__arabic_name" | "location" | "country_code" | "phone" | "telephone" | "email" | "office_extension" | "nationality" | "joining_date" | "date_of_birth" | "dep_eng_name" | "dep_arabic_name" | "desig_eng_name" | "desig_arabic_name" | "unit_eng_name" | "unit_arabic_name" | "committe_eng_name" | "committe_arabic_name" | "is_attendance_user" | "is_ai_login_user" | "ai_engine_access" | "last_login" | "landscaping_access" | "plant_disease_access" | "litter_detection_access" | "linked_users" | "createdAt" | "updatedAt" | "role_Id", ExtArgs["result"]["users"]>
   export type usersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     live_stream_favourites?: boolean | users$live_stream_favouritesArgs<ExtArgs>
     offices_attendance?: boolean | users$offices_attendanceArgs<ExtArgs>
@@ -28940,6 +28953,7 @@ export namespace Prisma {
       landscaping_access: boolean | null
       plant_disease_access: boolean | null
       litter_detection_access: boolean | null
+      linked_users: number | null
       createdAt: Date | null
       updatedAt: Date
       role_Id: number | null
@@ -29356,6 +29370,7 @@ export namespace Prisma {
     readonly landscaping_access: FieldRef<"users", 'Boolean'>
     readonly plant_disease_access: FieldRef<"users", 'Boolean'>
     readonly litter_detection_access: FieldRef<"users", 'Boolean'>
+    readonly linked_users: FieldRef<"users", 'Int'>
     readonly createdAt: FieldRef<"users", 'DateTime'>
     readonly updatedAt: FieldRef<"users", 'DateTime'>
     readonly role_Id: FieldRef<"users", 'Int'>
@@ -44449,6 +44464,7 @@ export namespace Prisma {
     landscaping_access: 'landscaping_access',
     plant_disease_access: 'plant_disease_access',
     litter_detection_access: 'litter_detection_access',
+    linked_users: 'linked_users',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     role_Id: 'role_Id'
@@ -47434,6 +47450,7 @@ export namespace Prisma {
     landscaping_access?: BoolNullableFilter<"users"> | boolean | null
     plant_disease_access?: BoolNullableFilter<"users"> | boolean | null
     litter_detection_access?: BoolNullableFilter<"users"> | boolean | null
+    linked_users?: IntNullableFilter<"users"> | number | null
     createdAt?: DateTimeNullableFilter<"users"> | Date | string | null
     updatedAt?: DateTimeFilter<"users"> | Date | string
     role_Id?: IntNullableFilter<"users"> | number | null
@@ -47484,6 +47501,7 @@ export namespace Prisma {
     landscaping_access?: SortOrderInput | SortOrder
     plant_disease_access?: SortOrderInput | SortOrder
     litter_detection_access?: SortOrderInput | SortOrder
+    linked_users?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     role_Id?: SortOrderInput | SortOrder
@@ -47538,6 +47556,7 @@ export namespace Prisma {
     landscaping_access?: BoolNullableFilter<"users"> | boolean | null
     plant_disease_access?: BoolNullableFilter<"users"> | boolean | null
     litter_detection_access?: BoolNullableFilter<"users"> | boolean | null
+    linked_users?: IntNullableFilter<"users"> | number | null
     createdAt?: DateTimeNullableFilter<"users"> | Date | string | null
     updatedAt?: DateTimeFilter<"users"> | Date | string
     role_Id?: IntNullableFilter<"users"> | number | null
@@ -47588,6 +47607,7 @@ export namespace Prisma {
     landscaping_access?: SortOrderInput | SortOrder
     plant_disease_access?: SortOrderInput | SortOrder
     litter_detection_access?: SortOrderInput | SortOrder
+    linked_users?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     role_Id?: SortOrderInput | SortOrder
@@ -47636,6 +47656,7 @@ export namespace Prisma {
     landscaping_access?: BoolNullableWithAggregatesFilter<"users"> | boolean | null
     plant_disease_access?: BoolNullableWithAggregatesFilter<"users"> | boolean | null
     litter_detection_access?: BoolNullableWithAggregatesFilter<"users"> | boolean | null
+    linked_users?: IntNullableWithAggregatesFilter<"users"> | number | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"users"> | Date | string
     role_Id?: IntNullableWithAggregatesFilter<"users"> | number | null
@@ -51425,6 +51446,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -51474,6 +51496,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -51522,6 +51545,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -51571,6 +51595,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -51620,6 +51645,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -51659,6 +51685,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -51698,6 +51725,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -55199,6 +55227,7 @@ export namespace Prisma {
     landscaping_access?: SortOrder
     plant_disease_access?: SortOrder
     litter_detection_access?: SortOrder
+    linked_users?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     role_Id?: SortOrder
@@ -55206,6 +55235,7 @@ export namespace Prisma {
 
   export type usersAvgOrderByAggregateInput = {
     Id?: SortOrder
+    linked_users?: SortOrder
     role_Id?: SortOrder
   }
 
@@ -55244,6 +55274,7 @@ export namespace Prisma {
     landscaping_access?: SortOrder
     plant_disease_access?: SortOrder
     litter_detection_access?: SortOrder
+    linked_users?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     role_Id?: SortOrder
@@ -55284,6 +55315,7 @@ export namespace Prisma {
     landscaping_access?: SortOrder
     plant_disease_access?: SortOrder
     litter_detection_access?: SortOrder
+    linked_users?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     role_Id?: SortOrder
@@ -55291,6 +55323,7 @@ export namespace Prisma {
 
   export type usersSumOrderByAggregateInput = {
     Id?: SortOrder
+    linked_users?: SortOrder
     role_Id?: SortOrder
   }
 
@@ -59469,6 +59502,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     offices_attendance?: offices_attendanceCreateNestedManyWithoutUserInput
@@ -59517,6 +59551,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -59680,6 +59715,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     offices_attendance?: offices_attendanceUpdateManyWithoutUserNestedInput
@@ -59728,6 +59764,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -60395,6 +60432,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -60443,6 +60481,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -60552,6 +60591,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -60600,6 +60640,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -63739,6 +63780,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -63787,6 +63829,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -63912,6 +63955,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -63960,6 +64004,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -64910,6 +64955,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -64958,6 +65004,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -65183,6 +65230,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -65231,6 +65279,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -65324,6 +65373,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -65372,6 +65422,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -65487,6 +65538,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -65535,6 +65587,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67016,6 +67069,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -67064,6 +67118,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedCreateNestedManyWithoutUsersInput
@@ -67278,6 +67333,7 @@ export namespace Prisma {
     landscaping_access?: BoolNullableFilter<"users"> | boolean | null
     plant_disease_access?: BoolNullableFilter<"users"> | boolean | null
     litter_detection_access?: BoolNullableFilter<"users"> | boolean | null
+    linked_users?: IntNullableFilter<"users"> | number | null
     createdAt?: DateTimeNullableFilter<"users"> | Date | string | null
     updatedAt?: DateTimeFilter<"users"> | Date | string
     role_Id?: IntNullableFilter<"users"> | number | null
@@ -67457,6 +67513,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -67505,6 +67562,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -67630,6 +67688,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -67678,6 +67737,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67765,6 +67825,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -67813,6 +67874,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -67922,6 +67984,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -67970,6 +68033,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -68046,6 +68110,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -68094,6 +68159,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -68229,6 +68295,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -68277,6 +68344,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -68430,6 +68498,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     live_stream_favourites?: live_stream_favouritesCreateNestedManyWithoutUsersInput
@@ -68478,6 +68547,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
     role_Id?: number | null
@@ -68591,6 +68661,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -68639,6 +68710,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role_Id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -71889,6 +71961,7 @@ export namespace Prisma {
     landscaping_access?: boolean | null
     plant_disease_access?: boolean | null
     litter_detection_access?: boolean | null
+    linked_users?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string
   }
@@ -71991,6 +72064,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUpdateManyWithoutUsersNestedInput
@@ -72039,6 +72113,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     live_stream_favourites?: live_stream_favouritesUncheckedUpdateManyWithoutUsersNestedInput
@@ -72087,6 +72162,7 @@ export namespace Prisma {
     landscaping_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     plant_disease_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
     litter_detection_access?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    linked_users?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

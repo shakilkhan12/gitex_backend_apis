@@ -180,7 +180,7 @@ class OfficesController extends OfficesService {
   public static getOfficeFootfallAnalysis = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { office_Id } = req.params;
-      const { fromDate, toDate, officeIds } = req.query;
+      const { fromDate, toDate, officeIds, cameraId } = req.query;
 
       let officeIdsToUse;
       
@@ -201,7 +201,8 @@ class OfficesController extends OfficesService {
       const footfallData = await OfficesService.getOfficeFootfallAnalysisService(
         officeIdsToUse,
         fromDate as string,
-        toDate as string
+        toDate as string,
+        cameraId as string
       );
 
       return res.status(STATUS.SUCCESS).json(footfallData);

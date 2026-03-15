@@ -5,7 +5,12 @@ import { validationResult } from "express-validator";
 import { formatExportDate, formatExportTime, sendExcelExport, sendPdfTableExport } from "@/utils/export.utils";
 
 const buildIntrusionDetectionFilters = (req: Request) => {
-   const { page, limit, search, status, sortBy, sortOrder, startDate, endDate } = req.query;
+   const { page, limit, search, status, sortBy, sortOrder, startDate, endDate, parkId, cameraId, location, statusFilter } = req.query;
+
+   const locationParam = req.query.location;
+   const locationArr = locationParam
+      ? (Array.isArray(locationParam) ? locationParam as string[] : [locationParam as string])
+      : undefined;
 
    return {
       page: page ? parseInt(page as string) : undefined,
@@ -15,7 +20,11 @@ const buildIntrusionDetectionFilters = (req: Request) => {
       sortBy: sortBy as string,
       sortOrder: sortOrder as string,
       startDate: startDate as string,
-      endDate: endDate as string
+      endDate: endDate as string,
+      parkId: parkId ? parseInt(parkId as string) : undefined,
+      cameraId: cameraId ? parseInt(cameraId as string) : undefined,
+      location: locationArr,
+      statusFilter: statusFilter as 'pending' | 'under_process' | 'completed' | undefined
    };
 };
 
@@ -59,6 +68,13 @@ class IntrusionDetectionController extends IntrusionDetectionService {
          const sortOrder = req.query.sortOrder as string || 'desc';
          const startDate = req.query.startDate as string || '';
          const endDate = req.query.endDate as string || '';
+         const parkId = req.query.parkId ? parseInt(req.query.parkId as string) : undefined;
+         const cameraId = req.query.cameraId ? parseInt(req.query.cameraId as string) : undefined;
+         const locationParam = req.query.location;
+         const location = locationParam
+            ? (Array.isArray(locationParam) ? locationParam as string[] : [locationParam as string])
+            : undefined;
+         const statusFilter = req.query.statusFilter as 'pending' | 'under_process' | 'completed' | undefined;
 
          const result = await IntrusionDetectionService.viewIntrusionDetectionsService({
             page,
@@ -68,7 +84,11 @@ class IntrusionDetectionController extends IntrusionDetectionService {
             sortBy,
             sortOrder,
             startDate,
-            endDate
+            endDate,
+            parkId,
+            cameraId,
+            location,
+            statusFilter
          });
 
          console.log("✅ [IntrusionDetectionController] Successfully retrieved intrusion detections");
@@ -132,6 +152,17 @@ class IntrusionDetectionController extends IntrusionDetectionService {
          next(error)
       }
    }
+
+   public static getIntrusionDetectionFilters = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const startDate = req.query.startDate as string || undefined;
+         const endDate = req.query.endDate as string || undefined;
+         const result = await IntrusionDetectionService.getIntrusionDetectionFiltersService(startDate, endDate);
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
+      }
+   };
 
    public static getIntrusionDetectionById = async (req: Request, res: Response, next: NextFunction) => {
       try {

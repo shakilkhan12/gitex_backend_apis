@@ -340,6 +340,7 @@ landscapingRouter.post('/add', landscapingValidations, LandscapingController.add
  *                   type: integer
  *                   example: 500
  */
+landscapingRouter.get('/filters', LandscapingController.getLandscapingFilters)
 landscapingRouter.get('/get', LandscapingController.viewLandscapings)
 landscapingRouter.get('/export/excel', LandscapingController.exportLandscapingsExcel)
 landscapingRouter.get('/export/pdf', LandscapingController.exportLandscapingsPdf)

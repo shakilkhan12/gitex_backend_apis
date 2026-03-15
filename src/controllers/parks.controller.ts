@@ -283,7 +283,7 @@ const { camera_Id, ...fields } = req.body;
       console.log('📥 [ParkController] Request query:', req.query);
       
       const { park_Id } = req.params;
-      const { fromDate, toDate, parkIds } = req.query;
+      const { fromDate, toDate, parkIds, cameraId } = req.query;
 
       console.log('🔍 [ParkController] Extracted values:');
       console.log('  - park_Id:', park_Id, typeof park_Id);
@@ -319,7 +319,8 @@ const { camera_Id, ...fields } = req.body;
       const footfallData = await ParksService.getParkFootfallAnalysisService(
         parkIdsToUse,
         fromDate as string,
-        toDate as string
+        toDate as string,
+        cameraId as string
       );
 
       console.log('✅ [ParkController] Service returned data:', {

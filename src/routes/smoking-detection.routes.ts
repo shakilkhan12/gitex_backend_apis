@@ -359,6 +359,7 @@ smokingDetectionRouter.post('/add', smokingDetectionValidations, SmokingDetectio
  *                   type: integer
  *                   example: 500
  */
+smokingDetectionRouter.get('/filters', SmokingDetectionController.getSmokingDetectionFilters)
 smokingDetectionRouter.get('/get', SmokingDetectionController.viewSmokingDetections)
 smokingDetectionRouter.get('/export/excel', SmokingDetectionController.exportSmokingDetectionsExcel)
 smokingDetectionRouter.get('/export/pdf', SmokingDetectionController.exportSmokingDetectionsPdf)

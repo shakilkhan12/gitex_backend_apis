@@ -44,6 +44,7 @@ class ParkService {
                 park_cameras: true,
               },
             },
+            park_cameras: true,
           },
           orderBy: {
           Id: "desc",
@@ -396,7 +397,12 @@ class ParkService {
     return result;
   };
 
-  protected static getParkFootfallAnalysisService = async (parkIds: number | number[], fromDate?: string, toDate?: string) => {
+  protected static getParkFootfallAnalysisService = async (
+    parkIds: number | number[],
+    fromDate?: string,
+    toDate?: string,
+    cameraId?: string
+  ) => {
     if (!parkIds || (Array.isArray(parkIds) && parkIds.length === 0)) {
       throw new HttpException(STATUS.BAD_REQUEST, 'park_Id is required');
     }
@@ -416,6 +422,10 @@ class ParkService {
           gte: new Date(fromDate),
           lte: new Date(toDate)
         };
+      }
+
+      if (cameraId && cameraId.trim() !== '') {
+        whereClause.detected_camera_Id = cameraId;
       }
 
       const footfallData = await db.parks_footfall_analysis.findMany({
@@ -824,6 +834,10 @@ class ParkService {
 
       if (filters?.zoneId) {
         whereClause.zone_Id = filters.zoneId;
+      }
+
+      if (filters?.status) {
+        whereClause.status = filters.status;
       }
 
       if (filters?.search) {

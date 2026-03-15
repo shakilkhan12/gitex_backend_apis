@@ -12,26 +12,26 @@ import * as crypto from 'crypto';
 import { formatImageUrlsInArray } from "@/utils/imageUrl.utils";
 
 export async function urlToBase64(url: string): Promise<string | string> {
-  try {
-    const agent = new https.Agent({ rejectUnauthorized: false }); 
-    const options: any = { agent };
+   try {
+      const agent = new https.Agent({ rejectUnauthorized: false });
+      const options: any = { agent };
 
-    const response = await fetch(url, options);
+      const response = await fetch(url, options);
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch URL: ${response.statusText}`);
-    }
+      if (!response.ok) {
+         throw new Error(`Failed to fetch URL: ${response.statusText}`);
+      }
 
-    const arrayBuffer = await response.arrayBuffer();
-    const base64 = Buffer.from(arrayBuffer).toString("base64");
+      const arrayBuffer = await response.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString("base64");
 
 
-    return base64;
+      return base64;
    } catch (error: unknown) {
-    if (error instanceof Error) {
-    }
-    return "";
-  }
+      if (error instanceof Error) {
+      }
+      return "";
+   }
 }
 
 class UserService {
@@ -60,13 +60,13 @@ class UserService {
             if (buffer[0] === 0x42 && buffer[1] === 0x4D) {
                return 'bmp';
             }
-            if (buffer.length >= 12 && 
-                buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
-                buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) {
+            if (buffer.length >= 12 &&
+               buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+               buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) {
                return 'webp';
             }
          }
-         
+
          return 'jpg';
       } catch (error) {
          return 'jpg';
@@ -92,7 +92,7 @@ class UserService {
          }
 
          const base64String = await urlToBase64(imageUrl);
-         
+
          if (!base64String || base64String === '') {
             return null;
          }
@@ -107,7 +107,7 @@ class UserService {
          }
 
          const imageBuffer = Buffer.from(cleanBase64, 'base64');
-         
+
          if (imageBuffer.length === 0) {
             return null;
          }
@@ -115,7 +115,7 @@ class UserService {
          const imageHash = crypto.createHash('md5').update(imageBuffer).digest('hex');
 
          const imageFormat = this.detectImageFormat(imageBuffer);
-         
+
          const uploadDir = path.join(process.cwd(), 'uploads', 'user-images');
          if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
@@ -127,7 +127,7 @@ class UserService {
             try {
                const fileBuffer = fs.readFileSync(filePath);
                const fileHash = crypto.createHash('md5').update(fileBuffer).digest('hex');
-               
+
                if (fileHash === imageHash) {
                   const existingImagePath = `/uploads/user-images/${file}`;
                   return existingImagePath;
@@ -143,17 +143,17 @@ class UserService {
          fs.writeFileSync(filePath, imageBuffer);
 
          const imageLocalPath = `/uploads/user-images/${fileName}`;
-         
+
          return imageLocalPath;
       } catch (error: any) {
          return null;
       }
    }
 
-   
+
 
    protected static loginService = async (EmpCode: string, Password: string) => {
-   
+
       try {
          const secretKey = await this.fetchSecretFromAPI();
          const payload = {
@@ -162,31 +162,31 @@ class UserService {
             SecretKey: `${secretKey}`,
             Lang: "en"
          };
-   let endpoint= EmpCode==='5455'?  "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeLoginService" : "https://192.168.164.7/middleware/?class=general&action=EmployeeLoginService";
+         let endpoint = EmpCode === '5455' ? "https://192.168.164.7/website_demo/middleware/?class=general&action=EmployeeLoginService" : "https://192.168.164.7/middleware/?class=general&action=EmployeeLoginService";
          const response = await axios.post(
             endpoint,
             payload,
             {
                headers: { "Content-Type": "application/json" },
-               timeout: 30000, 
+               timeout: 30000,
                httpsAgent: new https.Agent({ rejectUnauthorized: false }),
             }
          );
-   
-   
+
+
          if (response.data.status !== 'SUCCESS' || response.data.code !== 200) {
             throw new HttpException(STATUS.BAD_REQUEST, response.data.error?.msg || `Login failed: ${response.data.status} - ${response.data.code}`);
          }
-   
+
          const userId = response.data.data.UserID;
-   
+
          try {
             const user = await db.users.findFirst({
                where: {
                   emp_Id: EmpCode
                }
             });
-   
+
             if (user) {
                const updatedUser = await db.users.update({
                   where: {
@@ -196,20 +196,20 @@ class UserService {
                      last_login: new Date()
                   }
                });
-   
+
             }
          } catch (dbError) {
-            
+
          }
-   
+
          return EmpCode;
-   
+
       } catch (error: any) {
-         
+
          if (error instanceof HttpException) {
             throw error;
          }
-         
+
          if (axios.isAxiosError(error)) {
             if (error.code === 'ECONNABORTED') {
                throw new HttpException(STATUS.BAD_REQUEST, "Login request timed out - please try again");
@@ -219,7 +219,7 @@ class UserService {
                throw new HttpException(STATUS.BAD_REQUEST, `Login service error: ${error.response.status} - ${error.response.statusText}`);
             }
          }
-         
+
          throw new HttpException(STATUS.BAD_REQUEST, `Login failed: ${error.message}`);
       }
    }
@@ -251,7 +251,7 @@ class UserService {
          };
 
          if (filters?.search) {
-            
+
             whereClause.OR = [
                { emp__eng_name: { contains: filters.search } },
                { emp__arabic_name: { contains: filters.search } },
@@ -279,13 +279,13 @@ class UserService {
          const orderByClause: any = {};
          if (filters?.sortBy) {
             const sortField = filters.sortBy === 'emp__eng_name' ? 'emp__eng_name' :
-                            filters.sortBy === 'emp__arabic_name' ? 'emp__arabic_name' :
-                            filters.sortBy === 'emp_Id' ? 'emp_Id' :
-                            filters.sortBy === 'email' ? 'email' :
-                            filters.sortBy === 'dep_eng_name' ? 'dep_eng_name' :
-                            filters.sortBy === 'ai_engine_access' ? 'ai_engine_access' :
-                            filters.sortBy === 'last_login' ? 'last_login' :
-                            filters.sortBy === 'createdAt' ? 'createdAt' : 'emp__eng_name';
+               filters.sortBy === 'emp__arabic_name' ? 'emp__arabic_name' :
+                  filters.sortBy === 'emp_Id' ? 'emp_Id' :
+                     filters.sortBy === 'email' ? 'email' :
+                        filters.sortBy === 'dep_eng_name' ? 'dep_eng_name' :
+                           filters.sortBy === 'ai_engine_access' ? 'ai_engine_access' :
+                              filters.sortBy === 'last_login' ? 'last_login' :
+                                 filters.sortBy === 'createdAt' ? 'createdAt' : 'emp__eng_name';
             orderByClause[sortField] = filters.sortOrder === 'desc' ? 'desc' : 'asc';
          } else {
             orderByClause.emp__eng_name = 'asc';
@@ -314,12 +314,13 @@ class UserService {
                   committe_arabic_name: true,
                   ai_engine_access: true,
                   last_login: true,
-                  is_ai_login_user:true,
+                  is_ai_login_user: true,
                   createdAt: true,
                   updatedAt: true,
                   landscaping_access: true,
                   plant_disease_access: true,
                   litter_detection_access: true,
+                  linked_users: true,
                   users_roles: {
                      select: {
                         role_name: true,
@@ -669,6 +670,8 @@ class UserService {
       sortOrder?: 'asc' | 'desc';
       gender?: string;
       cameraFilter?: string;
+      startDate?: string;
+      endDate?: string;
    } = {}) => {
       const startTime = Date.now();
       const log = (msg: string, data?: object) => {
@@ -713,13 +716,26 @@ class UserService {
             whereClause.AND.push({ gender: filters.gender });
          }
 
+         const dateRange: { gte?: Date; lte?: Date } = {};
+         if (filters?.startDate) {
+            const start = new Date(filters.startDate);
+            if (!isNaN(start.getTime())) dateRange.gte = start;
+         }
+         if (filters?.endDate) {
+            const end = new Date(filters.endDate);
+            if (!isNaN(end.getTime())) dateRange.lte = end;
+         }
+         if (Object.keys(dateRange).length > 0) {
+            whereClause.AND.push({ createdAt: dateRange });
+         }
+
          const orderByClause: any = {};
          if (filters?.sortBy) {
             const sortField = filters.sortBy === 'emp__eng_name' ? 'emp__eng_name' :
-                            filters.sortBy === 'emp__arabic_name' ? 'emp__arabic_name' :
-                            filters.sortBy === 'gender' ? 'gender' :
-                            filters.sortBy === 'createdAt' ? 'createdAt' :
-                            filters.sortBy === 'updatedAt' ? 'updatedAt' : 'createdAt';
+               filters.sortBy === 'emp__arabic_name' ? 'emp__arabic_name' :
+                  filters.sortBy === 'gender' ? 'gender' :
+                     filters.sortBy === 'createdAt' ? 'createdAt' :
+                        filters.sortBy === 'updatedAt' ? 'updatedAt' : 'createdAt';
             orderByClause[sortField] = filters.sortOrder === 'desc' ? 'desc' : 'asc';
          } else {
             orderByClause.createdAt = 'desc';
@@ -1051,7 +1067,7 @@ class UserService {
                   console.log('User deleted from HikVision successfully');
                } else {
                   console.log('Failed to delete user from HikVision');
-               }  
+               }
             } catch (hikVisionError: any) {
                console.log('Error deleting user from HikVision', hikVisionError);
             }
@@ -1079,7 +1095,8 @@ class UserService {
 
    /**
     * Switch visitor to employee: replace all visitor-related references in sentiments, footfalls, behaviour alerts
-    * with the given employee Id, then permanently delete the visitor from users table.
+    * with the given employee Id, create attendance in/out records from sentiment check_in/check_out per day for both
+    * offices and parks, then permanently delete the visitor from users table.
     */
    public static switchVisitorToEmployeeService = async (visitorId: number, employeeId: number) => {
       try {
@@ -1114,6 +1131,43 @@ class UserService {
          const employeeIdStr = employeeId.toString();
          const visitorPersonIds = [visitorIdStr, ...(visitor.unique_id ? [visitor.unique_id] : [])];
 
+         // Fetch visitor sentiments BEFORE update (to create attendance from check_in/check_out per day)
+         const [officeSentiments, parkSentiments] = await Promise.all([
+            db.offices_sentiment_analysis.findMany({
+               where: {
+                  OR: visitorPersonIds.map(pid => ({ person_Id: pid })),
+                  sentiment_of: 'visitor'
+               },
+               select: {
+                  office_Id: true,
+                  check_in_date: true,
+                  check_in_time: true,
+                  check_in_image: true,
+                  check_out_date: true,
+                  check_out_time: true,
+                  check_out_capture: true,
+                  age_group: true,
+                  gender: true
+               }
+            }),
+            db.parks_sentiment_analysis.findMany({
+               where: {
+                  OR: visitorPersonIds.map(pid => ({ person_Id: pid })),
+                  sentiment_of: 'visitor'
+               },
+               select: {
+                  park_Id: true,
+                  check_in_date: true,
+                  check_in_time: true,
+                  check_in_image: true,
+                  check_out_date: true,
+                  check_out_time: true,
+                  check_out_capture: true,
+                  age_group: true,
+                  gender: true
+               }
+            })
+         ]);
 
          // Sentiments: replace person_Id and set sentiment_of to employee
          await db.offices_sentiment_analysis.updateMany({
@@ -1132,8 +1186,170 @@ class UserService {
             data: { person_Id: employeeIdStr, sentiment_of: 'employee' }
          });
 
+         // Create attendance records from sentiments: check_in_sentiment -> entry, check_out_sentiment -> exit
+         const combineDateAndTime = (dateVal: Date | string | null, timeVal: Date | string | null): Date | null => {
+            if (!dateVal) return null;
+            const d = new Date(dateVal);
+            if (isNaN(d.getTime())) return null;
+            if (!timeVal) return d;
+            const t = new Date(timeVal);
+            if (isNaN(t.getTime())) return d;
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate(), t.getHours(), t.getMinutes(), t.getSeconds(), t.getMilliseconds());
+         };
+
+         const parseGender = (val: string | number | null): number | null => {
+            if (val == null) return null;
+            if (typeof val === 'number') return val;
+            const s = String(val).toLowerCase();
+            if (s === 'm' || s === 'male' || s === '1') return 1;
+            if (s === 'f' || s === 'female' || s === '0') return 0;
+            const n = parseInt(String(val), 10);
+            return isNaN(n) ? null : n;
+         };
+
+         // Group office sentiments by (office_Id, date) and create one attendance per day
+         const officeAttendanceByDay = new Map<string, { office_Id: number | null; entry_time: Date | null; entry_image: string | null; exit_time: Date | null; exit_image: string | null; age_group: number | null; gender: number | null }>();
+         for (const s of officeSentiments) {
+            if (!s.office_Id) continue;
+            const dateKey = `${s.office_Id}-${s.check_in_date ? new Date(s.check_in_date).toISOString().slice(0, 10) : 'nodate'}`;
+            const entryTime = combineDateAndTime(s.check_in_date, s.check_in_time);
+            const exitTime = combineDateAndTime(s.check_out_date, s.check_out_time);
+            const existing = officeAttendanceByDay.get(dateKey);
+            if (!existing) {
+               officeAttendanceByDay.set(dateKey, {
+                  office_Id: s.office_Id,
+                  entry_time: entryTime,
+                  entry_image: s.check_in_image,
+                  exit_time: exitTime || null,
+                  exit_image: s.check_out_capture || null,
+                  age_group: s.age_group ?? null,
+                  gender: parseGender(s.gender)
+               });
+            } else {
+               if (entryTime && (!existing.entry_time || entryTime < existing.entry_time)) {
+                  existing.entry_time = entryTime;
+                  existing.entry_image = s.check_in_image || existing.entry_image;
+               }
+               if (exitTime && (!existing.exit_time || exitTime > existing.exit_time)) {
+                  existing.exit_time = exitTime;
+                  existing.exit_image = s.check_out_capture || existing.exit_image;
+               }
+            }
+         }
+
+         const officeAttList = Array.from(officeAttendanceByDay.entries()).map(([, v]) => v);
+         const createdOfficeAttendances: Array<{ Id: number; office_Id: number; person_Id: number; entry_time: Date; exit_time?: Date }> = [];
+         for (const att of officeAttList) {
+            if (!att.office_Id || !att.entry_time) continue;
+            try {
+               const created = await db.offices_attendance.create({
+                  data: {
+                     office_Id: att.office_Id,
+                     person_Id: employeeId,
+                     entry_time: att.entry_time,
+                     entry_image: att.entry_image ?? undefined,
+                     exit_time: att.exit_time ?? undefined,
+                     exit_image: att.exit_image ?? undefined,
+                     age_group: att.age_group ?? undefined,
+                     gender: att.gender ?? undefined
+                  }
+               });
+               createdOfficeAttendances.push({
+                  Id: created.Id,
+                  office_Id: created.office_Id!,
+                  person_Id: created.person_Id!,
+                  entry_time: created.entry_time!,
+                  exit_time: created.exit_time ?? undefined
+               });
+               console.log('[switchVisitorToEmployee] Created office attendance:', {
+                  Id: created.Id,
+                  office_Id: created.office_Id,
+                  person_Id: created.person_Id,
+                  entry_time: created.entry_time,
+                  exit_time: created.exit_time
+               });
+            } catch (attErr: any) {
+               console.log('[switchVisitorToEmployee] Error creating office attendance:', attErr?.message);
+            }
+         }
+
+         // Group park sentiments by (park_Id, date) and create one attendance per day
+         const parkAttendanceByDay = new Map<string, { park_Id: number | null; entry_time: Date | null; entry_image: string | null; exit_time: Date | null; exit_image: string | null; age_group: number | null; gender: number | null }>();
+         for (const s of parkSentiments) {
+            if (!s.park_Id) continue;
+            const dateKey = `${s.park_Id}-${s.check_in_date ? new Date(s.check_in_date).toISOString().slice(0, 10) : 'nodate'}`;
+            const entryTime = combineDateAndTime(s.check_in_date, s.check_in_time);
+            const exitTime = combineDateAndTime(s.check_out_date, s.check_out_time);
+            const existing = parkAttendanceByDay.get(dateKey);
+            if (!existing) {
+               parkAttendanceByDay.set(dateKey, {
+                  park_Id: s.park_Id,
+                  entry_time: entryTime,
+                  entry_image: s.check_in_image,
+                  exit_time: exitTime || null,
+                  exit_image: s.check_out_capture || null,
+                  age_group: s.age_group ?? null,
+                  gender: parseGender(s.gender)
+               });
+            } else {
+               if (entryTime && (!existing.entry_time || entryTime < existing.entry_time)) {
+                  existing.entry_time = entryTime;
+                  existing.entry_image = s.check_in_image || existing.entry_image;
+               }
+               if (exitTime && (!existing.exit_time || exitTime > existing.exit_time)) {
+                  existing.exit_time = exitTime;
+                  existing.exit_image = s.check_out_capture || existing.exit_image;
+               }
+            }
+         }
+
+         const parkAttList = Array.from(parkAttendanceByDay.entries()).map(([, v]) => v);
+         const createdParkAttendances: Array<{ Id: number; park_Id: number; person_Id: number; entry_time: Date; exit_time?: Date }> = [];
+         for (const att of parkAttList) {
+            if (!att.park_Id || !att.entry_time) continue;
+            try {
+               const created = await db.parks_attendance.create({
+                  data: {
+                     park_Id: att.park_Id,
+                     person_Id: employeeId,
+                     entry_time: att.entry_time,
+                     entry_image: att.entry_image ?? undefined,
+                     exit_time: att.exit_time ?? undefined,
+                     exit_image: att.exit_image ?? undefined,
+                     age_group: att.age_group ?? undefined,
+                     gender: att.gender ?? undefined
+                  }
+               });
+               createdParkAttendances.push({
+                  Id: created.Id,
+                  park_Id: created.park_Id!,
+                  person_Id: created.person_Id!,
+                  entry_time: created.entry_time!,
+                  exit_time: created.exit_time ?? undefined
+               });
+               console.log('[switchVisitorToEmployee] Created park attendance:', {
+                  Id: created.Id,
+                  park_Id: created.park_Id,
+                  person_Id: created.person_Id,
+                  entry_time: created.entry_time,
+                  exit_time: created.exit_time
+               });
+            } catch (attErr: any) {
+               console.log('[switchVisitorToEmployee] Error creating park attendance:', attErr?.message);
+            }
+         }
+
+         console.log('[switchVisitorToEmployee] Attendance summary:', {
+            visitorId,
+            employeeId,
+            createdOfficeAttendances: createdOfficeAttendances.length,
+            createdParkAttendances: createdParkAttendances.length,
+            officeRecords: createdOfficeAttendances,
+            parkRecords: createdParkAttendances
+         });
+
          // Footfalls: replace person_Id (Int)
-        await db.offices_footfall_analysis.updateMany({
+         await db.offices_footfall_analysis.updateMany({
             where: { person_Id: visitorId },
             data: { person_Id: employeeId }
          });
@@ -1158,6 +1374,11 @@ class UserService {
             where: { Id: visitorId }
          });
 
+         await db.users.update({
+            where: { Id: employeeId },
+            data: { linked_users: { increment: 1 }, updatedAt: new Date() }
+         });
+
          if (visitorUniqueId) {
             try {
                const visitorToDelete = {
@@ -1175,7 +1396,7 @@ class UserService {
                   console.log('User deleted from HikVision successfully');
                } else {
                   console.log('Failed to delete user from HikVision');
-               }  
+               }
             } catch (hikVisionError: any) {
                console.log('Error deleting user from HikVision', hikVisionError);
             }
@@ -1201,7 +1422,7 @@ class UserService {
 
    protected static getUserDetailsByUserIdService = async (emp_Id: string) => {
       try {
-         
+
          const user = await db.users.findFirst({
             where: {
                emp_Id
@@ -1236,83 +1457,84 @@ class UserService {
          });
 
          if (!user) {
+            console.log('User not found', emp_Id);
             throw new HttpException(STATUS.NOT_FOUND, "User not found");
          }
 
          let users_roles = null;
          if (user.role_Id) {
-            
+
             users_roles = await db.users_roles.findUnique({
                where: {
                   Id: user.role_Id
                },
-                  select: {
-                     role_name: true,
-                     users_permissions: {
-                        select: {
-                           dashboard_view: true,
-                           live_stream_view: true,
-                           visitors_view:true,
-                           role_permission_view: true,
-                           role_permission_add: true,
-                           role_permission_update: true,
-                           offices_view: true,
-                           offices_add: true,
-                           offices_update: true,
-                           parks_view: true,
-                           parks_add: true,
-                           parks_update: true,
-                           system_report_view: true,
-                           alerts_view: true,
-                           office_attendance_view: true,
-                           office_attendance_add: true,
-                           office_attendance_update: true,
-                           office_footfall_view: true,
-                           office_footfall_add: true,
-                           office_footfall_update: true,
-                           office_sentimental_view: true,
-                           office_sentimental_add: true,
-                           office_sentimental_update: true,
-                           park_attendance_view: true,
-                           park_attendance_add: true,
-                           park_attendance_update: true,
-                           park_footfall_view: true,
-                           park_footfall_add: true,
-                           park_footfall_update: true,
-                           park_sentimental_view: true,
-                           park_sentimental_add: true,
-                           park_sentimental_update: true,
-                           park_irrigation_view: true,
-                           park_irrigation_add: true,
-                           park_irrigation_update: true,
-                           park_landscaping_view: true,
-                           park_landscaping_add: true,
-                           park_landscaping_update: true,
-                           park_litter_detection_view: true,
-                           park_litter_detection_add: true,
-                           park_litter_detection_update: true,
-                           park_intrusion_detection_view: true,
-                           park_intrusion_detection_add: true,
-                           park_intrusion_detection_update: true,
-                           park_smoking_detection_view: true,
-                           park_smoking_detection_add: true,
-                           park_smoking_detection_update: true,
-                           my_account_view: true,
-                           settings_view: true,
-                           office_queue_management_view: true,
-                           office_queue_management_add: true,
-                           office_queue_management_update: true,
-                           park_plant_inspection_view: true,
-                           park_plant_inspection_add: true,
-                           park_plant_inspection_update: true,
-                           park_plant_disease_view: true,
-                           park_plant_disease_add: true,
-                           park_plant_disease_update: true
-                        }
+               select: {
+                  role_name: true,
+                  users_permissions: {
+                     select: {
+                        dashboard_view: true,
+                        live_stream_view: true,
+                        visitors_view: true,
+                        role_permission_view: true,
+                        role_permission_add: true,
+                        role_permission_update: true,
+                        offices_view: true,
+                        offices_add: true,
+                        offices_update: true,
+                        parks_view: true,
+                        parks_add: true,
+                        parks_update: true,
+                        system_report_view: true,
+                        alerts_view: true,
+                        office_attendance_view: true,
+                        office_attendance_add: true,
+                        office_attendance_update: true,
+                        office_footfall_view: true,
+                        office_footfall_add: true,
+                        office_footfall_update: true,
+                        office_sentimental_view: true,
+                        office_sentimental_add: true,
+                        office_sentimental_update: true,
+                        park_attendance_view: true,
+                        park_attendance_add: true,
+                        park_attendance_update: true,
+                        park_footfall_view: true,
+                        park_footfall_add: true,
+                        park_footfall_update: true,
+                        park_sentimental_view: true,
+                        park_sentimental_add: true,
+                        park_sentimental_update: true,
+                        park_irrigation_view: true,
+                        park_irrigation_add: true,
+                        park_irrigation_update: true,
+                        park_landscaping_view: true,
+                        park_landscaping_add: true,
+                        park_landscaping_update: true,
+                        park_litter_detection_view: true,
+                        park_litter_detection_add: true,
+                        park_litter_detection_update: true,
+                        park_intrusion_detection_view: true,
+                        park_intrusion_detection_add: true,
+                        park_intrusion_detection_update: true,
+                        park_smoking_detection_view: true,
+                        park_smoking_detection_add: true,
+                        park_smoking_detection_update: true,
+                        my_account_view: true,
+                        settings_view: true,
+                        office_queue_management_view: true,
+                        office_queue_management_add: true,
+                        office_queue_management_update: true,
+                        park_plant_inspection_view: true,
+                        park_plant_inspection_add: true,
+                        park_plant_inspection_update: true,
+                        park_plant_disease_view: true,
+                        park_plant_disease_add: true,
+                        park_plant_disease_update: true
                      }
+                  }
                }
             });
-            
+
          }
 
          const { role_Id, ...userWithoutRoleId } = user;
@@ -1327,7 +1549,7 @@ class UserService {
          return formattedUsers[0];
 
       } catch (error: any) {
-         
+
          if (error instanceof HttpException) {
             throw error;
          }
@@ -1359,8 +1581,8 @@ class UserService {
          }
 
          const updateData: any = {
-               role_Id: roleId,
-               updatedAt: new Date()
+            role_Id: roleId,
+            updatedAt: new Date()
          };
 
          if (supervisorAccess) {
@@ -1387,7 +1609,7 @@ class UserService {
             }
          });
 
-         
+
          return {
             status: STATUS.SUCCESS,
             data: updatedUser,
@@ -1395,11 +1617,11 @@ class UserService {
          };
 
       } catch (error: any) {
-         
+
          if (error instanceof HttpException) {
             throw error;
          }
-         
+
          throw new HttpException(
             STATUS.BAD_REQUEST,
             error.message || "Failed to update user role"
@@ -1408,15 +1630,15 @@ class UserService {
    }
 
    private static async fetchSecretFromAPI(): Promise<string> {
-         // Use static secret key for testing if enabled
-         if (this.USE_TEST_SECRET_KEY) {
-            console.log('[UserService] 🧪 Using static test secret key (bypassing API)');
-            return this.TEST_SECRET_KEY;
-         }
-         
-         const maxRetries = 3;
-         const baseTimeout = 20000; 
-      
+      // Use static secret key for testing if enabled
+      if (this.USE_TEST_SECRET_KEY) {
+         console.log('[UserService] 🧪 Using static test secret key (bypassing API)');
+         return this.TEST_SECRET_KEY;
+      }
+
+      const maxRetries = 3;
+      const baseTimeout = 20000;
+
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
          try {
             if (attempt > 1) {
@@ -1424,7 +1646,7 @@ class UserService {
             } else {
                console.log('[UserService] 🔑 Fetching secret key from API...');
             }
-            
+
             const response = await axios.post(
                "https://192.168.164.7/middleware/?action=Secretkey&class=general",
                {
@@ -1433,11 +1655,11 @@ class UserService {
                },
                {
                   headers: { "Content-Type": "application/json" },
-                  timeout: baseTimeout * attempt, 
+                  timeout: baseTimeout * attempt,
                   httpsAgent: new https.Agent({ rejectUnauthorized: false }),
                }
             );
-            
+
             if (response.data?.SecretKey) {
                console.log('[UserService] ✅ Secret key fetched successfully');
                return response.data.SecretKey;
@@ -1449,7 +1671,7 @@ class UserService {
                "Secret key not found in API response"
             );
          } catch (error: any) {
-            
+
             if (axios.isAxiosError(error)) {
                if (error.code === 'ECONNABORTED') {
                   console.warn(`[UserService] ⚠️ Secret key API request timed out (attempt ${attempt}/${maxRetries})`);
@@ -1457,11 +1679,11 @@ class UserService {
                      console.error('[UserService] ❌ Secret key API request timed out after all retries');
                      throw new HttpException(STATUS.BAD_REQUEST, `Secret key API request timed out after ${maxRetries} attempts`);
                   }
-                  continue; 
+                  continue;
                } else if (error.code === 'ECONNREFUSED') {
                   console.error('[UserService] ❌ Unable to connect to secret key API');
                   throw new HttpException(STATUS.BAD_REQUEST, "Unable to connect to secret key API");
-                  } else if (error.response) {
+               } else if (error.response) {
                   console.error('[UserService] ❌ Secret key API error:', {
                      status: error.response.status,
                      statusText: error.response.statusText
@@ -1469,7 +1691,7 @@ class UserService {
                   throw new HttpException(STATUS.BAD_REQUEST, `Secret key API error: ${error.response.status} - ${error.response.statusText}`);
                }
             }
-            
+
             if (attempt === maxRetries) {
                console.error(`[UserService] ❌ Failed to fetch secret from API after ${maxRetries} attempts:`, error.message);
                throw new HttpException(
@@ -1477,13 +1699,13 @@ class UserService {
                   `Failed to fetch secret from API after ${maxRetries} attempts: ${error.message}`
                );
             }
-            
+
             const waitTime = Math.pow(2, attempt) * 1000;
             console.log(`[UserService] ⏳ Waiting ${waitTime}ms before retry...`);
             await new Promise(resolve => setTimeout(resolve, waitTime));
          }
       }
-      
+
       console.error('[UserService] ❌ Failed to fetch secret key after all retry attempts');
       throw new HttpException(STATUS.BAD_REQUEST, "Failed to fetch secret key after all retry attempts");
    }
@@ -1505,15 +1727,15 @@ class UserService {
    ) => {
       const startTime = Date.now();
       const syncStartTime = new Date();
-      
+
       try {
          console.log('[UserService] 🔄 Starting user sync process...');
          console.log('[UserService] Sync started at:', syncStartTime.toLocaleString());
-         
+
          if (onStatus) {
             onStatus({ message: 'Authenticating...' });
          }
-         
+
          console.log('[UserService] 🔐 Authenticating with secret key API...');
          const secretKey = await this.fetchSecretFromAPI();
          console.log('[UserService] ✅ Authentication successful');
@@ -1529,7 +1751,7 @@ class UserService {
          };
 
          const endpoint = "https://192.168.164.7/middleware/?class=general&action=EmployeeListingUpdated";
-         const requestTimeout = 90000; 
+         const requestTimeout = 90000;
 
          console.log('[UserService] 📤 Request details:', {
             endpoint,
@@ -1545,13 +1767,13 @@ class UserService {
                headers: {
                   'Content-Type': 'application/json',
                },
-               timeout: requestTimeout, 
+               timeout: requestTimeout,
                httpsAgent: new https.Agent({
                   rejectUnauthorized: false
                })
             }
          )
-         
+
          const requestDuration = ((Date.now() - requestStartTime) / 1000).toFixed(2);
          console.log(`[UserService] ⏱️ Request completed in ${requestDuration}s`);
 
@@ -1570,8 +1792,8 @@ class UserService {
          });
 
          // Handle response - use empty array if UserListing is missing or not an array
-         const userListing = Array.isArray(response.data?.data?.UserListing) 
-            ? response.data.data.UserListing 
+         const userListing = Array.isArray(response.data?.data?.UserListing)
+            ? response.data.data.UserListing
             : [];
          console.log('[UserService] ✅ Received employee listing:', {
             totalEmployees: userListing.length,
@@ -1594,13 +1816,13 @@ class UserService {
                errors: 0
             });
          }
-         
+
          if (onStatus) {
             onStatus({ message: `Starting sync of ${userListing.length} employees...`, total: userListing.length });
          }
 
          console.log('[UserService] 🔄 Starting to process', userListing.length, 'employees...');
-  
+
          let currentIndex = 0;
          const processStartTime = Date.now();
          for (const userData of userListing) {
@@ -1620,7 +1842,7 @@ class UserService {
                   if (!dateString || dateString.trim() === '') {
                      return undefined;
                   }
-                  
+
                   try {
                      const date = new Date(dateString);
                      if (isNaN(date.getTime())) {
@@ -1633,14 +1855,14 @@ class UserService {
                };
 
                const apiImageUrl = userData.EmployeeImage1 || userData.EmployeeImage2 || null;
-               
+
                let localImagePath: string | null = null;
                if (existingUser) {
                   const currentActualImage = existingUser.actuall_image;
-                  
+
                   if (apiImageUrl && apiImageUrl !== currentActualImage) {
                      localImagePath = await this.saveUserImageLocally(apiImageUrl, userData.EmpCode);
-                     
+
                      if (!localImagePath) {
                         localImagePath = existingUser.image;
                      }
@@ -1657,8 +1879,8 @@ class UserService {
                   user_Id: userData.UserID,
                   emp_Id: userData.EmpCode,
                   emp_code: userData.EmpCode,
-                  image: localImagePath, 
-                  actuall_image: apiImageUrl, 
+                  image: localImagePath,
+                  actuall_image: apiImageUrl,
                   gender: userData.Gender,
                   emp__eng_name: userData.Name,
                   emp__arabic_name: userData.NameAr,
@@ -1692,12 +1914,12 @@ class UserService {
                         const base64Image = await urlToBase64(apiImageUrl);
                         if (base64Image && typeof base64Image === 'string') {
                            const cleanFaceData = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
-                           
+
                            const faceUpdatePayload = {
                               personId: updatedUser.unique_id,
                               faceData: cleanFaceData
                            };
-                           
+
                            await UserService.callHikVisionAPI(
                               UserService.HIK_CONFIG.baseURL,
                               '/artemis/api/resource/v1/person/face/update',
@@ -1726,7 +1948,7 @@ class UserService {
                         const base64Image = await urlToBase64(apiImageUrl);
                         if (base64Image && typeof base64Image === 'string') {
                            const cleanFaceData = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
-                           
+
                            const nameParts = userData.Name ? userData.Name.trim().split(' ') : [];
                            const personGivenName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : '';
                            const personFamilyName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : userData.Name || '';
@@ -1787,7 +2009,7 @@ class UserService {
                   const elapsedTime = ((Date.now() - processStartTime) / 1000).toFixed(2);
                   const avgTimePerUser = (parseFloat(elapsedTime) / currentIndex).toFixed(3);
                   const estimatedRemaining = ((userListing.length - currentIndex) * parseFloat(avgTimePerUser)).toFixed(0);
-                  
+
                   console.log(`[UserService] 📊 Progress: ${currentIndex}/${userListing.length} (${progressPercent}%) | Success: ${successCount} | Errors: ${errorCount} | Updated: ${updatedCount} | Created: ${createdCount} | Elapsed: ${elapsedTime}s | Avg: ${avgTimePerUser}s/user | ETA: ${estimatedRemaining}s`);
                }
 
@@ -1803,7 +2025,7 @@ class UserService {
             } catch (userError: any) {
                errorCount++;
                // Error logging removed - only counting errors
-               
+
                if (onProgress) {
                   onProgress({
                      current: currentIndex,
@@ -1817,7 +2039,7 @@ class UserService {
 
          const totalDuration = ((Date.now() - startTime) / 1000).toFixed(2);
          const processDuration = ((Date.now() - processStartTime) / 1000).toFixed(2);
-         
+
          const summary = {
             total: userListing.length,
             processed: successCount,
@@ -1841,12 +2063,12 @@ class UserService {
             averageTimePerUser: summary.total > 0 ? `${(parseFloat(processDuration) / summary.total).toFixed(3)}s` : 'N/A'
          });
          console.log('[UserService] Sync completed at:', new Date().toLocaleString());
-         
+
          const result = {
             message: "Employee listing fetch and store completed - existing users updated, new users created, obsolete users deleted (excluding EMP001)",
             summary
          };
-         
+
          return result;
 
       } catch (error: any) {
@@ -1865,7 +2087,7 @@ class UserService {
                type: error.constructor.name
             });
          }
-         
+
          // Return success response even on error since we're only logging
          const totalDuration = ((Date.now() - startTime) / 1000).toFixed(2);
          return {
@@ -1952,7 +2174,7 @@ class UserService {
          if (error instanceof HttpException) {
             throw error;
          }
-         
+
          throw new HttpException(
             STATUS.BAD_REQUEST,
             error.message || "Failed to add user"
@@ -1969,13 +2191,13 @@ class UserService {
             }
 
             try {
-               const response1  = await urlToBase64(imageUrl);
+               const response1 = await urlToBase64(imageUrl);
 
                if (response1 && typeof response1 === 'string') {
                   const base64Image = response1.replace(/^data:image\/[a-z]+;base64,/, '');
                   return base64Image;
                }
-               
+
                return null;
             } catch (error: any) {
                return null;
@@ -1984,7 +2206,7 @@ class UserService {
 
 
          const faceData = await getImageAsBase64(user.image);
-         
+
          const nameParts = user.emp__eng_name ? user.emp__eng_name.trim().split(' ') : [];
          const personGivenName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : '';
          const personFamilyName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : user.emp__eng_name || '';
@@ -2161,7 +2383,7 @@ class UserService {
             );
          }
 
-         const usersToUpload = allUsers.slice(1, 3); 
+         const usersToUpload = allUsers.slice(1, 3);
 
          const result = await this.uploadUsersToHikVision(usersToUpload);
 
@@ -2179,11 +2401,11 @@ class UserService {
             }
          };
 
-      } catch (error: any) {  
+      } catch (error: any) {
          if (error instanceof HttpException) {
             throw error;
          }
-         
+
          throw new HttpException(
             STATUS.INTERNAL_SERVER_ERROR,
             `Failed to upload first two users to HIK Vision: ${error.message}`
@@ -2245,11 +2467,11 @@ class UserService {
          for (const user of usersWithoutUniqueId) {
             try {
                let faceData = null;
-               
+
                if (user.image) {
                   try {
                      let imageUrl: string;
-                     
+
                      if (user.image.startsWith('http')) {
                         imageUrl = user.image;
                      } else if (user.image.startsWith('/uploads/')) {
@@ -2291,9 +2513,9 @@ class UserService {
                const sanitizeName = (name: string): string => {
                   if (!name) return '';
                   return name
-                     .replace(/[\/\\]/g, ' ') 
-                     .replace(/[^\w\s\-'.,]/g, ' ') 
-                     .replace(/\s+/g, ' ') 
+                     .replace(/[\/\\]/g, ' ')
+                     .replace(/[^\w\s\-'.,]/g, ' ')
+                     .replace(/\s+/g, ' ')
                      .trim();
                };
 
@@ -2303,7 +2525,7 @@ class UserService {
                if (user.emp__eng_name && user.emp__eng_name.trim()) {
                   const cleanName = sanitizeName(user.emp__eng_name);
                   const nameParts = cleanName.split(' ').filter(part => part.trim().length > 0);
-                  
+
                   if (nameParts.length > 1) {
                      personGivenName = nameParts[nameParts.length - 1].trim();
                      personFamilyName = nameParts.slice(0, -1).join(' ').trim();
@@ -2370,7 +2592,7 @@ class UserService {
                   results.processed++;
                } else {
                   const errorMsg = hikVisionResponse?.msg || 'Unknown error';
-                  
+
                   if (errorMsg.includes('already exists') || errorMsg.includes('person code already exists')) {
                      try {
                         const searchPayload = {
@@ -2378,7 +2600,7 @@ class UserService {
                            pageSize: 1,
                            personCode: trimmedEmpId
                         };
-                        
+
                         const searchResponse = await UserService.callHikVisionAPI(
                            UserService.HIK_CONFIG.baseURL,
                            '/artemis/api/resource/v1/person/advance/personList',
@@ -2392,7 +2614,7 @@ class UserService {
                            if (personList.length > 0) {
                               const existingPerson = personList.find((p: any) => p.personCode === trimmedEmpId) || personList[0];
                               const existingPersonId = existingPerson.personIndexCode || existingPerson.personId;
-                              
+
                               if (existingPersonId) {
                                  await db.users.update({
                                     where: { Id: user.Id },
@@ -2407,7 +2629,7 @@ class UserService {
                      } catch (searchError: any) {
                      }
                   }
-                  
+
                   results.failed++;
                   results.processed++;
                   results.errors.push({
@@ -2437,7 +2659,7 @@ class UserService {
          if (error instanceof HttpException) {
             throw error;
          }
-         
+
          throw new HttpException(
             STATUS.INTERNAL_SERVER_ERROR,
             `Failed to sync users to HIK Vision: ${error.message}`
@@ -2483,7 +2705,7 @@ class UserService {
             if (!user.image.startsWith('http')) {
                const filePath = path.join(process.cwd(), user.image.replace(/^\//, ''));
                console.log(`[UserService] Checking local file path: ${filePath}`);
-               
+
                if (fs.existsSync(filePath)) {
                   console.log(`[UserService] ✅ Local file exists, reading...`);
                   try {
@@ -2507,24 +2729,24 @@ class UserService {
             // If local file didn't work, try as URL
             if (!faceData) {
                let imageUrl: string;
-               
+
                if (user.image.startsWith('http')) {
                   imageUrl = user.image;
                } else {
                   const apiBaseUrl = process.env.API_BASE_URL || 'http://10.160.133.77:5000';
                   imageUrl = `${apiBaseUrl}${user.image}`;
                }
-               
+
                console.log(`[UserService] Trying to fetch image from URL: ${imageUrl}`);
-               
+
                try {
                   console.log(`[UserService] Fetching image from: ${imageUrl}`);
-                  
+
                   // Use axios for more reliable HTTP requests
                   const response = await axios.get(imageUrl, {
                      responseType: 'arraybuffer',
                      timeout: 30000,
-                     httpsAgent: imageUrl.startsWith('https') 
+                     httpsAgent: imageUrl.startsWith('https')
                         ? new https.Agent({ rejectUnauthorized: false })
                         : undefined
                   });
@@ -2547,7 +2769,7 @@ class UserService {
          }
 
          if (!faceData || faceData.length === 0) {
-            const errorMessage = lastError 
+            const errorMessage = lastError
                ? `Failed to convert image to base64 for user ${empId}. ${lastError}. Image path: ${user.image}`
                : `Failed to convert image to base64 for user ${empId}. Image path: ${user.image}`;
             throw new HttpException(STATUS.BAD_REQUEST, errorMessage);
@@ -2555,14 +2777,14 @@ class UserService {
 
          // First, verify the person exists in HikVision and get the correct personId
          let actualPersonId = user.unique_id;
-         
+
          try {
             const searchPayload = {
                pageNo: 1,
                pageSize: 1,
                personCode: user.emp_Id
             };
-            
+
             console.log('[UserService] Searching for person in HikVision...');
             const searchResponse = await UserService.callHikVisionAPI(
                UserService.HIK_CONFIG.baseURL,
@@ -2578,7 +2800,7 @@ class UserService {
                   const foundPerson = personList.find((p: any) => p.personCode === user.emp_Id) || personList[0];
                   actualPersonId = foundPerson.personIndexCode || foundPerson.personId || user.unique_id;
                   console.log(`[UserService] Found person in HikVision with personId: ${actualPersonId}`);
-                  
+
                   // Update unique_id in database if it's different
                   if (actualPersonId !== user.unique_id) {
                      await db.users.update({
@@ -2648,7 +2870,7 @@ class UserService {
          if (error instanceof HttpException) {
             throw error;
          }
-         
+
          throw new HttpException(
             STATUS.INTERNAL_SERVER_ERROR,
             `Failed to update user image on HikVision: ${error.message}`
@@ -2720,7 +2942,7 @@ class UserService {
                if (user.image) {
                   try {
                      let imageUrl: string;
-                     
+
                      if (user.image.startsWith('http')) {
                         imageUrl = user.image;
                      } else if (user.image.startsWith('/uploads/')) {
@@ -2791,7 +3013,7 @@ class UserService {
                   console.log(`[UserService] ✅ Successfully uploaded user ${user.emp_Id} to HikVision`, hikVisionResponse.data);
                   await db.users.update({
                      where: { Id: user.Id },
-                     data: { unique_id: hikVisionResponse.data,updatedAt: new Date() }
+                     data: { unique_id: hikVisionResponse.data, updatedAt: new Date() }
                   });
 
                   try {
@@ -2817,7 +3039,7 @@ class UserService {
                   console.log(`[UserService] ✅ Successfully uploaded user ${user.emp_Id} to HikVision`);
                } else {
                   const errorMsg = hikVisionResponse?.msg || 'Unknown error';
-                  
+
                   if (errorMsg.includes('already exists') || errorMsg.includes('person code already exists')) {
                      try {
                         const searchPayload = {
@@ -2825,7 +3047,7 @@ class UserService {
                            pageSize: 1,
                            personCode: trimmedEmpId
                         };
-                        
+
                         const searchResponse = await UserService.callHikVisionAPI(
                            UserService.HIK_CONFIG.baseURL,
                            '/artemis/api/resource/v1/person/advance/personList',
@@ -2839,7 +3061,7 @@ class UserService {
                            if (personList.length > 0) {
                               const existingPerson = personList.find((p: any) => p.personCode === trimmedEmpId) || personList[0];
                               const existingPersonId = existingPerson.personIndexCode || existingPerson.personId;
-                              
+
                               if (existingPersonId) {
                                  await db.users.update({
                                     where: { Id: user.Id },
@@ -2856,7 +3078,7 @@ class UserService {
                         console.warn(`[UserService] ⚠️ Failed to search for existing person ${user.emp_Id}:`, searchError.message);
                      }
                   }
-                  
+
                   results.failed++;
                   results.processed++;
                   results.errors.push({
@@ -2897,7 +3119,7 @@ class UserService {
          if (error instanceof HttpException) {
             throw error;
          }
-         
+
          throw new HttpException(
             STATUS.INTERNAL_SERVER_ERROR,
             `Failed to upload users to HikVision: ${error.message}`

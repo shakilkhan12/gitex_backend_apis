@@ -93,6 +93,15 @@ class QMSController extends QMSService {
       }
    }
 
+   public static getQMSFilters = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const result = await QMSService.getQMSFiltersService();
+         return res.status(STATUS.SUCCESS).json(result);
+      } catch (error) {
+         next(error);
+      }
+   };
+
    public static viewQMSHistory = async (req: Request, res: Response, next: NextFunction) => {
       try {
          const filters = buildQmsFilters(req);

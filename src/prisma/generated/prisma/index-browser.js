@@ -487,6 +487,7 @@ exports.Prisma.UsersScalarFieldEnum = {
   landscaping_access: 'landscaping_access',
   plant_disease_access: 'plant_disease_access',
   litter_detection_access: 'litter_detection_access',
+  linked_users: 'linked_users',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   role_Id: 'role_Id'

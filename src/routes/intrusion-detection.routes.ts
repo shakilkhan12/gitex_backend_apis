@@ -189,6 +189,7 @@ intrusionDetectionRouter.post('/add', intrusionDetectionValidations, IntrusionDe
  *                   type: integer
  *                   example: 500
  */
+intrusionDetectionRouter.get('/filters', IntrusionDetectionController.getIntrusionDetectionFilters)
 intrusionDetectionRouter.get('/get', IntrusionDetectionController.viewIntrusionDetections)
 intrusionDetectionRouter.get('/export/excel', IntrusionDetectionController.exportIntrusionDetectionsExcel)
 intrusionDetectionRouter.get('/export/pdf', IntrusionDetectionController.exportIntrusionDetectionsPdf)

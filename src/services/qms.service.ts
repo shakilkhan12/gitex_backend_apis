@@ -242,6 +242,75 @@ class QMSService {
     }
   };
 
+  protected static getQMSFiltersService = async () => {
+    try {
+      const [services, agents, entryModes, exitModes] = await Promise.all([
+        db.qms_history.findMany({
+          where: { service_english_name: { not: null } },
+          select: { service_english_name: true, service_arabic_name: true },
+          distinct: ["service_english_name"],
+          orderBy: { service_english_name: "asc" },
+        }),
+        db.qms_history.findMany({
+          where: {
+            OR: [
+              { agent_english_name: { not: null } },
+              { agent_arabic_name: { not: null } },
+            ],
+          },
+          select: { agent_english_name: true, agent_arabic_name: true },
+          distinct: ["agent_english_name"],
+          orderBy: { agent_english_name: "asc" },
+        }),
+        db.qms_history.findMany({
+          where: { entry_mode: { not: null } },
+          select: { entry_mode: true },
+          distinct: ["entry_mode"],
+          orderBy: { entry_mode: "asc" },
+        }),
+        db.qms_history.findMany({
+          where: { exit_mode: { not: null } },
+          select: { exit_mode: true },
+          distinct: ["exit_mode"],
+          orderBy: { exit_mode: "asc" },
+        }),
+      ]);
+
+      return {
+        success: true,
+        data: {
+          services: services
+            .filter((s) => s.service_english_name)
+            .map((s) => ({
+              english: s.service_english_name,
+              arabic: s.service_arabic_name || s.service_english_name,
+            })),
+          agents: agents
+            .filter((a) => a.agent_english_name || a.agent_arabic_name)
+            .map((a) => ({
+              english: a.agent_english_name || a.agent_arabic_name || "",
+              arabic: a.agent_arabic_name || a.agent_english_name || "",
+            })),
+          entryModes: entryModes
+            .filter((e) => e.entry_mode)
+            .map((e) => ({ value: e.entry_mode, label: e.entry_mode })),
+          exitModes: exitModes
+            .filter((e) => e.exit_mode)
+            .map((e) => ({ value: e.exit_mode, label: e.exit_mode })),
+          statuses: [
+            { value: "Active", label: "Active" },
+            { value: "Completed", label: "Completed" },
+          ],
+        },
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        STATUS.BAD_REQUEST,
+        "Failed to fetch QMS filters"
+      );
+    }
+  };
+
   protected static viewQMSHistoryService = async (filters?: {
     page?: number;
     limit?: number;
@@ -298,18 +367,23 @@ class QMSService {
       }
 
       if (filters?.agent && filters.agent !== 'All') {
-        orConditions.push(
-          { agent_english_name: { contains: filters.agent } },
-          { agent_arabic_name: { contains: filters.agent } }
-        );
+        whereClause.OR = [
+          { agent_english_name: filters.agent },
+          { agent_arabic_name: filters.agent }
+        ];
       }
 
       if (filters?.ticketNumber && filters.ticketNumber.trim() !== '') {
         whereClause.ticket_number = { contains: filters.ticketNumber };
       }
 
+      if (filters?.status && filters.status !== 'All') {
+        whereClause.status = filters.status;
+      }
+
       if (orConditions.length > 0) {
-        whereClause.OR = orConditions;
+        whereClause.AND = whereClause.AND || [];
+        whereClause.AND.push({ OR: orConditions });
       }
 
       const orderByClause: any = {};

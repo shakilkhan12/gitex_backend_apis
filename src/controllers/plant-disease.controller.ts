@@ -4,7 +4,7 @@ import { STATUS } from "@/typescript";
 import { formatExportDateTime, sendExcelExport, sendPdfTableExport } from "@/utils/export.utils";
 
 const buildPlantDiseaseFilters = (req: Request) => {
-    const { page, limit, search, status, sortBy, sortOrder, startDate, endDate } = req.query;
+    const { page, limit, search, status, sortBy, sortOrder, startDate, endDate, parkId, statusFilter } = req.query;
 
     return {
         page: page ? parseInt(page as string) : undefined,
@@ -14,7 +14,9 @@ const buildPlantDiseaseFilters = (req: Request) => {
         sortBy: sortBy as string,
         sortOrder: sortOrder as string,
         startDate: startDate as string,
-        endDate: endDate as string
+        endDate: endDate as string,
+        parkId: parkId ? parseInt(parkId as string) : undefined,
+        statusFilter: statusFilter as 'pending' | 'under_process' | 'completed' | undefined
     };
 };
 
@@ -32,6 +34,17 @@ const mapPlantDiseaseExportRows = (records: any[]) => {
 };
 
 class PlantDiseaseController extends PlantDiseaseService {
+    public static getPlantDiseaseFilters = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const startDate = req.query.startDate as string || undefined;
+            const endDate = req.query.endDate as string || undefined;
+            const result = await PlantDiseaseService.getPlantDiseaseFiltersService(startDate, endDate);
+            return res.status(STATUS.SUCCESS).json(result);
+        } catch (error) {
+            next(error);
+        }
+    };
+
     public static getPlantDiseaseData = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const result = await PlantDiseaseService.getPlantDiseaseDataService();
@@ -54,6 +67,8 @@ class PlantDiseaseController extends PlantDiseaseService {
             const sortOrder = req.query.sortOrder as string || 'desc';
             const startDate = req.query.startDate as string || '';
             const endDate = req.query.endDate as string || '';
+            const parkId = req.query.parkId ? parseInt(req.query.parkId as string) : undefined;
+            const statusFilter = req.query.statusFilter as 'pending' | 'under_process' | 'completed' | undefined;
 
             const result = await PlantDiseaseService.viewPlantDiseaseService({
                 page,
@@ -63,7 +78,9 @@ class PlantDiseaseController extends PlantDiseaseService {
                 sortBy,
                 sortOrder,
                 startDate,
-                endDate
+                endDate,
+                parkId,
+                statusFilter
             });
             
             console.log("✅ [PlantDiseaseController] Successfully retrieved plant disease data");
