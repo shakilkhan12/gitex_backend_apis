@@ -291,8 +291,7 @@ class UserService {
             orderByClause.emp__eng_name = 'asc';
          }
 
-         const [users, totalCount] = await Promise.all([
-            db.users.findMany({
+         const usersPromise = db.users.findMany({
                where: whereClause,
                select: {
                   Id: true,
@@ -320,7 +319,6 @@ class UserService {
                   landscaping_access: true,
                   plant_disease_access: true,
                   litter_detection_access: true,
-                  linked_users: true,
                   users_roles: {
                      select: {
                         role_name: true,
@@ -347,20 +345,49 @@ class UserService {
                orderBy: orderByClause,
                // Only apply pagination if not fetching all
                ...(skipPagination ? {} : { skip, take: limit })
-            }),
-            db.users.count({
-               where: whereClause
-            })
-         ]);
+            });
+
+         const totalCountPromise = db.users.count({ where: whereClause });
+
+         const [users, totalCount] = await Promise.all([usersPromise, totalCountPromise]);
 
          const imageFields = ['image'];
          const formattedUsers = formatImageUrlsInArray(users, imageFields);
+
+         // Attach linked users for each returned user
+         const parentIds = formattedUsers.map((u: any) => u.Id).filter((id: any) => id != null);
+         const linkedChildren = parentIds.length
+            ? await db.users.findMany({
+               where: { linked_with_user_Id: { in: parentIds }, isDeleted:true },
+               select: {
+                  Id: true,
+                  linked_with_user_Id: true,
+                  gender: true,
+                  image: true,
+                  emp__eng_name: true,
+                  emp__arabic_name: true,
+               }
+            })
+            : [];
+
+         const formattedLinkedChildren = formatImageUrlsInArray(linkedChildren, imageFields);
+         const linkedByParentId = new Map<number, any[]>();
+         for (const child of formattedLinkedChildren as any[]) {
+            const parentId = Number(child.linked_with_user_Id);
+            if (!linkedByParentId.has(parentId)) linkedByParentId.set(parentId, []);
+            linkedByParentId.get(parentId)!.push(child);
+         }
+
+         const usersWithLinked = (formattedUsers as any[]).map(u => ({
+            ...u,
+            linkedUsers: linkedByParentId.get(Number(u.Id)) || []
+         }));
 
          // If fetching all, return without pagination metadata
          if (skipPagination) {
             return {
                success: true,
-               data: formattedUsers,
+               data: usersWithLinked,
                pagination: {
                   currentPage: 1,
                   totalPages: 1,
@@ -392,7 +419,7 @@ class UserService {
 
          return {
             success: true,
-            data: formattedUsers,
+            data: usersWithLinked,
             pagination: paginationData
          };
 
@@ -679,8 +706,7 @@ class UserService {
          console.log(`[getVisitors] +${elapsed}ms ${msg}`, data ?? '');
       };
       try {
-         log('request started', { page: filters?.page, limit: filters?.limit, cameraFilter: filters?.cameraFilter || '(none)', search: filters?.search || '(none)' });
-
+       
          const page = filters?.page || 1;
          const limit = filters?.limit || 10;
          const skip = (page - 1) * limit;
@@ -698,7 +724,8 @@ class UserService {
                      { emp_Id: null },
                      { emp_Id: '' }
                   ]
-               }
+               },
+               
             ]
          };
 
@@ -742,7 +769,6 @@ class UserService {
          }
 
          const useCameraFilter = Boolean(filters?.cameraFilter && String(filters.cameraFilter).trim());
-         log('fetching cameras and visitors', { useCameraFilter });
 
          const [officeCameras, parkCameras] = await Promise.all([
             db.offices_cameras.findMany({
@@ -769,7 +795,6 @@ class UserService {
             office: uniqueByCameraId(officeCameras).map(c => ({ id: c.Id, type: 'office' as const, nameEn: c.camera_english_name, nameAr: c.camera_arabic_name })),
             park: uniqueByCameraId(parkCameras).map(c => ({ id: c.Id, type: 'park' as const, nameEn: c.camera_english_name, nameAr: c.camera_arabic_name }))
          };
-         log('cameras loaded', { office: cameras.office.length, park: cameras.park.length });
 
          let visitors: any[];
          let totalCount: number;
@@ -782,7 +807,6 @@ class UserService {
             if (!filterType || isNaN(filterId)) {
                visitors = [];
                totalCount = 0;
-               log('camera filter invalid, returning empty', { filterType, filterId });
             } else {
                const visitorIdsSet = new Set<number>();
                if (filterType === 'office') {
@@ -846,14 +870,13 @@ class UserService {
                   const parkNonNumericUniq = Array.from(new Set(parkNonNumeric));
                   if (parkNonNumericUniq.length > 0) {
                      const usersByUniqueId = await db.users.findMany({
-                        where: { ...whereClause, unique_id: { in: parkNonNumericUniq } },
+                        where: { ...whereClause, isDeleted: false, unique_id: { in: parkNonNumericUniq } },
                         select: { Id: true }
                      });
                      usersByUniqueId.forEach(u => visitorIdsSet.add(u.Id));
                   }
                }
                const visitorIds = Array.from(visitorIdsSet);
-               log('visitor IDs for camera', { filterType, filterId, count: visitorIds.length });
 
                if (visitorIds.length === 0) {
                   visitors = [];
@@ -878,7 +901,6 @@ class UserService {
                      take: limit
                   });
                }
-               log('visitors fetched from DB (camera filter)', { count: visitors.length, totalCount });
             }
          } else {
             const [visitorsList, count] = await Promise.all([
@@ -1261,13 +1283,7 @@ class UserService {
                   entry_time: created.entry_time!,
                   exit_time: created.exit_time ?? undefined
                });
-               console.log('[switchVisitorToEmployee] Created office attendance:', {
-                  Id: created.Id,
-                  office_Id: created.office_Id,
-                  person_Id: created.person_Id,
-                  entry_time: created.entry_time,
-                  exit_time: created.exit_time
-               });
+              
             } catch (attErr: any) {
                console.log('[switchVisitorToEmployee] Error creating office attendance:', attErr?.message);
             }
@@ -1327,26 +1343,13 @@ class UserService {
                   entry_time: created.entry_time!,
                   exit_time: created.exit_time ?? undefined
                });
-               console.log('[switchVisitorToEmployee] Created park attendance:', {
-                  Id: created.Id,
-                  park_Id: created.park_Id,
-                  person_Id: created.person_Id,
-                  entry_time: created.entry_time,
-                  exit_time: created.exit_time
-               });
+              
             } catch (attErr: any) {
                console.log('[switchVisitorToEmployee] Error creating park attendance:', attErr?.message);
             }
          }
 
-         console.log('[switchVisitorToEmployee] Attendance summary:', {
-            visitorId,
-            employeeId,
-            createdOfficeAttendances: createdOfficeAttendances.length,
-            createdParkAttendances: createdParkAttendances.length,
-            officeRecords: createdOfficeAttendances,
-            parkRecords: createdParkAttendances
-         });
+        
 
          // Footfalls: replace person_Id (Int)
          await db.offices_footfall_analysis.updateMany({
@@ -1368,43 +1371,40 @@ class UserService {
             data: { person_Id: employeeIdStr, is_employee: true }
          });
 
-         const visitorUniqueId = visitor.unique_id;
-         // Permanently delete the visitor from users table
-         await db.users.delete({
-            where: { Id: visitorId }
-         });
-
+         // const visitorUniqueId = visitor.unique_id;
+         // update the linked_with_user_Id of the visitor from users table
          await db.users.update({
-            where: { Id: employeeId },
-            data: { linked_users: { increment: 1 }, updatedAt: new Date() }
+            where: { Id: visitorId },
+            data: { linked_with_user_Id: employeeId, isDeleted: true }
          });
+         
 
-         if (visitorUniqueId) {
-            try {
-               const visitorToDelete = {
-                  personId: visitorUniqueId,
-               };
-               const deleteFromHikVisionResponse = await UserService.callHikVisionAPI(
-                  UserService.HIK_CONFIG.baseURL,
-                  '/artemis/api/resource/v1/person/single/delete',
-                  UserService.HIK_CONFIG.appKey,
-                  UserService.HIK_CONFIG.appSecret,
-                  visitorToDelete
-               );
-               console.log('deleteFromHikVisionResponse', deleteFromHikVisionResponse)
-               if (deleteFromHikVisionResponse && deleteFromHikVisionResponse.code === '0') {
-                  console.log('User deleted from HikVision successfully');
-               } else {
-                  console.log('Failed to delete user from HikVision');
-               }
-            } catch (hikVisionError: any) {
-               console.log('Error deleting user from HikVision', hikVisionError);
-            }
-         }
+         // if (visitorUniqueId) {
+         //    try {
+         //       const visitorToDelete = {
+         //          personId: visitorUniqueId,
+         //       };
+         //       const deleteFromHikVisionResponse = await UserService.callHikVisionAPI(
+         //          UserService.HIK_CONFIG.baseURL,
+         //          '/artemis/api/resource/v1/person/single/delete',
+         //          UserService.HIK_CONFIG.appKey,
+         //          UserService.HIK_CONFIG.appSecret,
+         //          visitorToDelete
+         //       );
+         //       console.log('deleteFromHikVisionResponse', deleteFromHikVisionResponse)
+         //       if (deleteFromHikVisionResponse && deleteFromHikVisionResponse.code === '0') {
+         //          console.log('User deleted from HikVision successfully');
+         //       } else {
+         //          console.log('Failed to delete user from HikVision');
+         //       }
+         //    } catch (hikVisionError: any) {
+         //       console.log('Error deleting user from HikVision', hikVisionError);
+         //    }
+         // }
 
          return {
             success: true,
-            message: "Visitor records switched to employee and visitor deleted successfully",
+            message: "Visitor records switched to employee successfully",
             visitorId,
             employeeId,
             employeeName: employee.emp__eng_name || employee.emp__arabic_name || null,

@@ -520,7 +520,8 @@ model users {
   landscaping_access        Boolean?                    @default(false)
   plant_disease_access      Boolean?                    @default(false)
   litter_detection_access   Boolean?                    @default(false)
-  linked_users              Int?                        @default(0)
+  linked_with_user_Id       Int?
+  isDeleted                 Boolean                     @default(false)
   createdAt                 DateTime?                   @db.Timestamp(0)
   updatedAt                 DateTime                    @default(now()) @db.Timestamp(0)
   role_Id                   Int?

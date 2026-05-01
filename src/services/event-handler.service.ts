@@ -515,7 +515,12 @@ class EventHandlerService {
                                where: { unique_id: humanId.toString() }
                             });
                             if (user) {
+                              if(user.isDeleted&&user.linked_with_user_Id)
+                               person_Id = user.linked_with_user_Id;
+                              else{
                                person_Id = user.Id;
+
+                              }
                               
                             } else {
                               
@@ -965,13 +970,17 @@ class EventHandlerService {
                             if (humanId && humanId !== "-1") {
                                const user = await db.users.findFirst({
                                   where: { unique_id: humanId.toString() },
-                                  select: { Id: true, user_Id: true, emp_Id: true, image: true }
+                                  select: { Id: true, user_Id: true, emp_Id: true, image: true, isDeleted: true, linked_with_user_Id: true }
                                });
                                
                               
                                
                                if (user) {
-                                  searchPersonId = user.Id;
+                                  if(user.isDeleted&&user.linked_with_user_Id)
+                                   searchPersonId = user.linked_with_user_Id;
+                                  else{
+                                   searchPersonId = user.Id;
+                                  }
                                   
                                   if (exitSentimentImageUrl) {
                                      try {
@@ -1346,10 +1355,15 @@ class EventHandlerService {
                             const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
                             if (humanId && humanId !== "-1") {
                                const user = await db.users.findFirst({
-                                  where: { unique_id: humanId.toString() }
+                                  where: { unique_id: humanId.toString() },
+                                  select: { Id: true, user_Id: true, emp_Id: true, image: true, isDeleted: true, linked_with_user_Id: true }
                                });
                                if (user) {
-                                  searchPersonId = user.Id;
+                                  if(user.isDeleted&&user.linked_with_user_Id)
+                                   searchPersonId = user.linked_with_user_Id;
+                                  else{
+                                   searchPersonId = user.Id;
+                                  }
                                }
                             }
                          }
@@ -1602,10 +1616,15 @@ class EventHandlerService {
                       let person_Id = null; 
                       if (humanId && similarity !== null && similarity !== undefined) {
                          const user = await db.users.findFirst({
-                            where: { unique_id: humanId.toString() }
+                            where: { unique_id: humanId.toString() },
+                            select: { Id: true, user_Id: true, emp_Id: true, image: true, isDeleted: true, linked_with_user_Id: true }
                          });
                          if (user) {
-                            person_Id = user.Id;
+                            if(user.isDeleted&&user.linked_with_user_Id)
+                             person_Id = user.linked_with_user_Id;
+                            else{
+                             person_Id = user.Id;
+                            }
                            
                          } else {
                            
@@ -2047,10 +2066,14 @@ class EventHandlerService {
                             if (humanId && humanId !== "-1") {
                                const user = await db.users.findFirst({
                                   where: { unique_id: humanId.toString() },
-                                  select: { Id: true, user_Id: true, emp_Id: true, image: true }
+                                  select: { Id: true, user_Id: true, emp_Id: true, image: true, isDeleted: true, linked_with_user_Id: true }
                                });
                                if (user) {
-                                  searchPersonId = user.Id;
+                                  if(user.isDeleted&&user.linked_with_user_Id)
+                                   searchPersonId = user.linked_with_user_Id;
+                                  else{
+                                   searchPersonId = user.Id;
+                                  }
                                   
                                   if (exitSentimentImageUrl) {
                                      try {
@@ -2245,10 +2268,15 @@ class EventHandlerService {
                             const humanId = eventInfo.data.alarmResult.faces.identify.candidate.human_id;
                             if (humanId && humanId !== "-1") {
                                const user = await db.users.findFirst({
-                                  where: { unique_id: humanId.toString() }
+                                  where: { unique_id: humanId.toString() },
+                                  select: { Id: true, user_Id: true, emp_Id: true, image: true, isDeleted: true, linked_with_user_Id: true }
                                });
                                if (user) {
-                                  searchPersonId = user.Id;
+                                  if(user.isDeleted&&user.linked_with_user_Id)
+                                   searchPersonId = user.linked_with_user_Id;
+                                  else{
+                                   searchPersonId = user.Id;
+                                  }
                                }
                             }
                          }
@@ -2392,10 +2420,15 @@ class EventHandlerService {
 
                         if (humanId && similarity !== null && similarity !== undefined) {
                            const user = await db.users.findFirst({
-                              where: { unique_id: humanId.toString() }
+                              where: { unique_id: humanId.toString() },
+                              select: { Id: true, user_Id: true, emp_Id: true, image: true, isDeleted: true, linked_with_user_Id: true }
                            });
                            if (user) {
-                              person_Id = user.Id.toString();
+                              if(user.isDeleted&&user.linked_with_user_Id)
+                               person_Id = user.linked_with_user_Id.toString();
+                              else{
+                               person_Id = user.Id.toString();
+                              }
                              
                            } else {
                              
