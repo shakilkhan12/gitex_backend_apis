@@ -7,6 +7,7 @@ esbuild
     outfile: "dist/index.js",
     platform: "node",
     sourcemap: true,
+    external: ['canvas'],
     minify: true,
     loader: {
       ".tsx": "tsx",

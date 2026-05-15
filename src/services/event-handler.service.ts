@@ -63,15 +63,15 @@ class EventHandlerService {
    };
 
    private static readonly CLOUDINARY_CONFIG = {
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'your_cloud_name',
-      api_key: process.env.CLOUDINARY_API_KEY || 'your_api_key',
-      api_secret: process.env.CLOUDINARY_API_SECRET || 'your_api_secret',
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
       folder: 'event-images'
    };
 
    private static readonly API_CONFIG = {
-      baseUrl: process.env.API_BASE_URL || 'http://10.160.133.77:5000',
-      emotionDetectionUrl: process.env.EMOTION_DETECTION_URL || 'http://127.0.0.1:8001/api/emotion-detection',
+      baseUrl: process.env.API_BASE_URL ,
+      emotionDetectionUrl: process.env.EMOTION_DETECTION_URL || 'http://127.0.0.1:8000/detect',
       localHostUrl: process.env.LOCAL_HOST_API 
    };
    
@@ -698,8 +698,8 @@ class EventHandlerService {
                                         headers: { 'Content-Type': 'application/json' }
                                      });
                                      
-                                     if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
-                                        detectedSentiment = emotionResponse.data.faces[0].emotion;
+                                     if (emotionResponse.data?.success && emotionResponse.data?.dominant_face) {
+                                        detectedSentiment = emotionResponse.data.dominant_face.primary_emotion;
                                        
                                      } else {
                                      }
@@ -905,8 +905,8 @@ class EventHandlerService {
                                            headers: { 'Content-Type': 'application/json' }
                                         });
                                         
-                                        if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
-                                           exitDetectedSentiment = emotionResponse.data.faces[0].emotion;
+                                        if (emotionResponse.data?.success && emotionResponse.data?.dominant_face) {
+                                           exitDetectedSentiment = emotionResponse.data.dominant_face.primary_emotion;
                                            
                                         } else {
                                         }
@@ -1789,8 +1789,8 @@ class EventHandlerService {
                                         headers: { 'Content-Type': 'application/json' }
                                      });
                                      
-                                     if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
-                                        detectedSentiment = emotionResponse.data.faces[0].emotion;
+                                     if (emotionResponse.data?.success && emotionResponse.data?.dominant_face) {
+                                        detectedSentiment = emotionResponse.data.dominant_face.primary_emotion;
                                        
                                      } else {
                                        
@@ -2004,8 +2004,8 @@ class EventHandlerService {
                                            headers: { 'Content-Type': 'application/json' }
                                         });
                                         
-                                        if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
-                                           exitDetectedSentiment = emotionResponse.data.faces[0].emotion;
+                                        if (emotionResponse.data?.success && emotionResponse.data?.dominant_face) {
+                                           exitDetectedSentiment = emotionResponse.data.dominant_face.primary_emotion;
 
                                         } else {
                                         }

@@ -767,8 +767,8 @@ class QMSService {
         headers: { 'Content-Type': 'application/json' }
       });
       
-      if (emotionResponse.data?.success && emotionResponse.data?.faces?.length > 0) {
-        const detectedSentiment = emotionResponse.data.faces[0].emotion;
+      if (emotionResponse.data?.success && emotionResponse.data?.dominant_face) {
+        const detectedSentiment = emotionResponse.data.dominant_face.primary_emotion;
         return detectedSentiment;
       } else {
         return 'neutral';
