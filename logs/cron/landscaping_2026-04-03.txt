@@ -1,0 +1,37 @@
+
+================================================================================
+[2026-04-03T18:59:00.014Z] Starting landscaping cron job - Working Time: 22:59
+================================================================================
+[2026-04-03T18:59:00.015Z] [LandscapingService] 🌳 Starting landscaping monitoring for working time: 22:59
+[2026-04-03T18:59:00.016Z] [LandscapingService] 📋 Fetching landscaping sections for time 22:59...
+[2026-04-03T18:59:00.044Z] [LandscapingService] 📊 Found 1 landscaping sections for time 22:59
+[2026-04-03T18:59:00.044Z] [LandscapingService] 🔄 Processing section 1/1 (Section ID: 3, Area: garden area)
+[2026-04-03T18:59:00.045Z] [LandscapingService] 📷 Section 3: Capturing image from camera 287 (Area: garden area)...
+[2026-04-03T18:59:00.407Z] [LandscapingService] ✅ Section 3: Image captured successfully
+[2026-04-03T18:59:00.407Z] [LandscapingService] 💾 Section 3: Saving image locally...
+[2026-04-03T18:59:00.411Z] [LandscapingService] ✅ Section 3: Image saved at /uploads/landscaping/landscaping_3_1775242740407.jpg
+[2026-04-03T18:59:00.412Z] [LandscapingService] 🤖 Section 3: Analyzing image with Gemini...
+[2026-04-03T18:59:05.099Z] [LandscapingService] ❌ Section 3: Failed to analyze image with Gemini
+[2026-04-03T18:59:05.099Z] [LandscapingService] 📊 Summary for 22:59:
+[2026-04-03T18:59:05.100Z] [LandscapingService]   - Total sections: 1
+[2026-04-03T18:59:05.100Z] [LandscapingService]   - Processed: 1
+[2026-04-03T18:59:05.100Z] [LandscapingService]   - Successful: 0
+[2026-04-03T18:59:05.101Z] [LandscapingService]   - Failed: 1
+[2026-04-03T18:59:05.101Z] [LandscapingService]   - Needs cutting: 0
+[2026-04-03T18:59:05.101Z] [LandscapingService]   - Duration: 5.08s
+[2026-04-03T18:59:05.102Z] [LandscapingService] ✅ Completed landscaping monitoring for 22:59
+
+--------------------------------------------------------------------------------
+[2026-04-03T18:59:05.102Z] Completed landscaping cron job - Working Time: 22:59
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 5.08s
+Additional Info:
+{
+  "needsCutting": 0
+}
+================================================================================
+

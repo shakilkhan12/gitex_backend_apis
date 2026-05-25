@@ -1,0 +1,252 @@
+
+================================================================================
+[2026-03-04T18:29:00.013Z] Starting irrigation cron job - Working Time: 22:29
+================================================================================
+[2026-03-04T18:29:00.014Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 22:29
+[2026-03-04T18:29:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 22:29...
+[2026-03-04T18:29:00.053Z] [IrrigationService] 📊 Found 1 irrigation sections for time 22:29
+[2026-03-04T18:29:00.054Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 17)
+[2026-03-04T18:29:00.054Z] [IrrigationService] 📷 Section 17: Capturing image from camera 288 (Zone: 11477965)...
+[2026-03-04T18:29:00.059Z] [ERROR] [IrrigationService] ❌ Section 17: Unexpected error: connect ENOBUFS 10.70.90.183:443 - Local (undefined:undefined)
+[2026-03-04T18:29:00.060Z] [IrrigationService] 📊 Summary for 22:29:
+[2026-03-04T18:29:00.060Z] [IrrigationService]   - Total sections: 1
+[2026-03-04T18:29:00.060Z] [IrrigationService]   - Processed: 1
+[2026-03-04T18:29:00.061Z] [IrrigationService]   - Successful: 0
+[2026-03-04T18:29:00.061Z] [IrrigationService]   - Failed: 1
+[2026-03-04T18:29:00.061Z] [IrrigationService]   - Duration: 0.05s
+[2026-03-04T18:29:00.062Z] [IrrigationService] ✅ Completed irrigation monitoring for 22:29
+
+--------------------------------------------------------------------------------
+[2026-03-04T18:29:00.062Z] Completed irrigation cron job - Working Time: 22:29
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.05s
+================================================================================
+
+
+================================================================================
+[2026-03-04T18:55:00.014Z] Starting irrigation cron job - Working Time: 22:55
+================================================================================
+[2026-03-04T18:55:00.015Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 22:55
+[2026-03-04T18:55:00.016Z] [IrrigationService] 📋 Fetching irrigation sections for time 22:55...
+[2026-03-04T18:55:00.023Z] [IrrigationService] 📊 Found 1 irrigation sections for time 22:55
+[2026-03-04T18:55:00.023Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 54)
+[2026-03-04T18:55:00.024Z] [IrrigationService] 📷 Section 54: Capturing image from camera 283 (Zone: 11477969)...
+[2026-03-04T18:55:00.028Z] [ERROR] [IrrigationService] ❌ Section 54: Unexpected error: connect ENOBUFS 10.70.90.183:443 - Local (undefined:undefined)
+[2026-03-04T18:55:00.028Z] [IrrigationService] 📊 Summary for 22:55:
+[2026-03-04T18:55:00.029Z] [IrrigationService]   - Total sections: 1
+[2026-03-04T18:55:00.029Z] [IrrigationService]   - Processed: 1
+[2026-03-04T18:55:00.030Z] [IrrigationService]   - Successful: 0
+[2026-03-04T18:55:00.030Z] [IrrigationService]   - Failed: 1
+[2026-03-04T18:55:00.030Z] [IrrigationService]   - Duration: 0.01s
+[2026-03-04T18:55:00.030Z] [IrrigationService] ✅ Completed irrigation monitoring for 22:55
+
+--------------------------------------------------------------------------------
+[2026-03-04T18:55:00.031Z] Completed irrigation cron job - Working Time: 22:55
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.01s
+================================================================================
+
+
+================================================================================
+[2026-03-04T19:09:00.014Z] Starting irrigation cron job - Working Time: 23:09
+================================================================================
+[2026-03-04T19:09:00.015Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 23:09
+[2026-03-04T19:09:00.016Z] [IrrigationService] 📋 Fetching irrigation sections for time 23:09...
+[2026-03-04T19:09:00.023Z] [IrrigationService] 📊 Found 1 irrigation sections for time 23:09
+[2026-03-04T19:09:00.023Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 60)
+[2026-03-04T19:09:00.024Z] [IrrigationService] 📷 Section 60: Capturing image from camera 278 (Zone: 11477966)...
+[2026-03-04T19:09:00.028Z] [ERROR] [IrrigationService] ❌ Section 60: Unexpected error: connect ENOBUFS 10.70.90.183:443 - Local (undefined:undefined)
+[2026-03-04T19:09:00.028Z] [IrrigationService] 📊 Summary for 23:09:
+[2026-03-04T19:09:00.029Z] [IrrigationService]   - Total sections: 1
+[2026-03-04T19:09:00.029Z] [IrrigationService]   - Processed: 1
+[2026-03-04T19:09:00.029Z] [IrrigationService]   - Successful: 0
+[2026-03-04T19:09:00.030Z] [IrrigationService]   - Failed: 1
+[2026-03-04T19:09:00.030Z] [IrrigationService]   - Duration: 0.01s
+[2026-03-04T19:09:00.030Z] [IrrigationService] ✅ Completed irrigation monitoring for 23:09
+
+--------------------------------------------------------------------------------
+[2026-03-04T19:09:00.030Z] Completed irrigation cron job - Working Time: 23:09
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.01s
+================================================================================
+
+
+================================================================================
+[2026-03-04T20:50:00.013Z] Starting irrigation cron job - Working Time: 00:50
+================================================================================
+[2026-03-04T20:50:00.014Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 00:50
+[2026-03-04T20:50:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 00:50...
+[2026-03-04T20:50:00.022Z] [IrrigationService] 📊 Found 1 irrigation sections for time 00:50
+[2026-03-04T20:50:00.023Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 6)
+[2026-03-04T20:50:00.023Z] [IrrigationService] 📷 Section 6: Capturing image from camera 289 (Zone: 11477970)...
+[2026-03-04T20:50:00.027Z] [ERROR] [IrrigationService] ❌ Section 6: Unexpected error: connect ENOBUFS 10.70.90.183:443 - Local (undefined:undefined)
+[2026-03-04T20:50:00.028Z] [IrrigationService] 📊 Summary for 00:50:
+[2026-03-04T20:50:00.028Z] [IrrigationService]   - Total sections: 1
+[2026-03-04T20:50:00.029Z] [IrrigationService]   - Processed: 1
+[2026-03-04T20:50:00.029Z] [IrrigationService]   - Successful: 0
+[2026-03-04T20:50:00.029Z] [IrrigationService]   - Failed: 1
+[2026-03-04T20:50:00.030Z] [IrrigationService]   - Duration: 0.01s
+[2026-03-04T20:50:00.030Z] [IrrigationService] ✅ Completed irrigation monitoring for 00:50
+
+--------------------------------------------------------------------------------
+[2026-03-04T20:50:00.030Z] Completed irrigation cron job - Working Time: 00:50
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.01s
+================================================================================
+
+
+================================================================================
+[2026-03-04T20:53:00.012Z] Starting irrigation cron job - Working Time: 00:53
+================================================================================
+[2026-03-04T20:53:00.013Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 00:53
+[2026-03-04T20:53:00.014Z] [IrrigationService] 📋 Fetching irrigation sections for time 00:53...
+[2026-03-04T20:53:00.018Z] [IrrigationService] 📊 Found 1 irrigation sections for time 00:53
+[2026-03-04T20:53:00.019Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 7)
+[2026-03-04T20:53:00.020Z] [IrrigationService] 📷 Section 7: Capturing image from camera 289 (Zone: 11477974)...
+[2026-03-04T20:53:00.023Z] [ERROR] [IrrigationService] ❌ Section 7: Unexpected error: connect ENOBUFS 10.70.90.183:443 - Local (undefined:undefined)
+[2026-03-04T20:53:00.024Z] [IrrigationService] 📊 Summary for 00:53:
+[2026-03-04T20:53:00.024Z] [IrrigationService]   - Total sections: 1
+[2026-03-04T20:53:00.025Z] [IrrigationService]   - Processed: 1
+[2026-03-04T20:53:00.025Z] [IrrigationService]   - Successful: 0
+[2026-03-04T20:53:00.026Z] [IrrigationService]   - Failed: 1
+[2026-03-04T20:53:00.026Z] [IrrigationService]   - Duration: 0.01s
+[2026-03-04T20:53:00.026Z] [IrrigationService] ✅ Completed irrigation monitoring for 00:53
+
+--------------------------------------------------------------------------------
+[2026-03-04T20:53:00.027Z] Completed irrigation cron job - Working Time: 00:53
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.01s
+================================================================================
+
+
+================================================================================
+[2026-03-04T20:58:00.015Z] Starting irrigation cron job - Working Time: 00:58
+================================================================================
+[2026-03-04T20:58:00.016Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 00:58
+[2026-03-04T20:58:00.017Z] [IrrigationService] 📋 Fetching irrigation sections for time 00:58...
+[2026-03-04T20:58:00.024Z] [IrrigationService] 📊 Found 1 irrigation sections for time 00:58
+[2026-03-04T20:58:00.025Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 18)
+[2026-03-04T20:58:00.025Z] [IrrigationService] 📷 Section 18: Capturing image from camera 288 (Zone: 11477968)...
+[2026-03-04T20:58:00.029Z] [ERROR] [IrrigationService] ❌ Section 18: Unexpected error: connect ENOBUFS 10.70.90.183:443 - Local (undefined:undefined)
+[2026-03-04T20:58:00.030Z] [IrrigationService] 📊 Summary for 00:58:
+[2026-03-04T20:58:00.030Z] [IrrigationService]   - Total sections: 1
+[2026-03-04T20:58:00.031Z] [IrrigationService]   - Processed: 1
+[2026-03-04T20:58:00.031Z] [IrrigationService]   - Successful: 0
+[2026-03-04T20:58:00.031Z] [IrrigationService]   - Failed: 1
+[2026-03-04T20:58:00.031Z] [IrrigationService]   - Duration: 0.01s
+[2026-03-04T20:58:00.032Z] [IrrigationService] ✅ Completed irrigation monitoring for 00:58
+
+--------------------------------------------------------------------------------
+[2026-03-04T20:58:00.032Z] Completed irrigation cron job - Working Time: 00:58
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.01s
+================================================================================
+
+
+================================================================================
+[2026-03-04T21:38:00.013Z] Starting irrigation cron job - Working Time: 01:38
+================================================================================
+[2026-03-04T21:38:00.014Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 01:38
+[2026-03-04T21:38:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 01:38...
+[2026-03-04T21:38:00.022Z] [IrrigationService] 📊 Found 1 irrigation sections for time 01:38
+[2026-03-04T21:38:00.023Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 55)
+[2026-03-04T21:38:00.024Z] [IrrigationService] 📷 Section 55: Capturing image from camera 283 (Zone: 11477971)...
+[2026-03-04T21:38:00.027Z] [ERROR] [IrrigationService] ❌ Section 55: Unexpected error: connect ENOBUFS 10.70.90.183:443 - Local (undefined:undefined)
+[2026-03-04T21:38:00.028Z] [IrrigationService] 📊 Summary for 01:38:
+[2026-03-04T21:38:00.029Z] [IrrigationService]   - Total sections: 1
+[2026-03-04T21:38:00.029Z] [IrrigationService]   - Processed: 1
+[2026-03-04T21:38:00.029Z] [IrrigationService]   - Successful: 0
+[2026-03-04T21:38:00.030Z] [IrrigationService]   - Failed: 1
+[2026-03-04T21:38:00.030Z] [IrrigationService]   - Duration: 0.01s
+[2026-03-04T21:38:00.030Z] [IrrigationService] ✅ Completed irrigation monitoring for 01:38
+
+--------------------------------------------------------------------------------
+[2026-03-04T21:38:00.030Z] Completed irrigation cron job - Working Time: 01:38
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.01s
+================================================================================
+
+
+================================================================================
+[2026-03-04T21:41:00.014Z] Starting irrigation cron job - Working Time: 01:41
+================================================================================
+[2026-03-04T21:41:00.015Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 01:41
+[2026-03-04T21:41:00.016Z] [IrrigationService] 📋 Fetching irrigation sections for time 01:41...
+[2026-03-04T21:41:00.020Z] [IrrigationService] 📊 Found 1 irrigation sections for time 01:41
+[2026-03-04T21:41:00.021Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 56)
+[2026-03-04T21:41:00.022Z] [IrrigationService] 📷 Section 56: Capturing image from camera 283 (Zone: 11477972)...
+[2026-03-04T21:41:00.025Z] [ERROR] [IrrigationService] ❌ Section 56: Unexpected error: connect ENOBUFS 10.70.90.183:443 - Local (undefined:undefined)
+[2026-03-04T21:41:00.026Z] [IrrigationService] 📊 Summary for 01:41:
+[2026-03-04T21:41:00.026Z] [IrrigationService]   - Total sections: 1
+[2026-03-04T21:41:00.027Z] [IrrigationService]   - Processed: 1
+[2026-03-04T21:41:00.027Z] [IrrigationService]   - Successful: 0
+[2026-03-04T21:41:00.027Z] [IrrigationService]   - Failed: 1
+[2026-03-04T21:41:00.028Z] [IrrigationService]   - Duration: 0.01s
+[2026-03-04T21:41:00.028Z] [IrrigationService] ✅ Completed irrigation monitoring for 01:41
+
+--------------------------------------------------------------------------------
+[2026-03-04T21:41:00.028Z] Completed irrigation cron job - Working Time: 01:41
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.01s
+================================================================================
+
+
+================================================================================
+[2026-03-04T21:45:00.013Z] Starting irrigation cron job - Working Time: 01:45
+================================================================================
+[2026-03-04T21:45:00.014Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 01:45
+[2026-03-04T21:45:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 01:45...
+[2026-03-04T21:45:00.022Z] [IrrigationService] 📊 Found 1 irrigation sections for time 01:45
+[2026-03-04T21:45:00.023Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 57)
+[2026-03-04T21:45:00.023Z] [IrrigationService] 📷 Section 57: Capturing image from camera 283 (Zone: 11477973)...
+[2026-03-04T21:45:00.027Z] [ERROR] [IrrigationService] ❌ Section 57: Unexpected error: connect ENOBUFS 10.70.90.183:443 - Local (undefined:undefined)
+[2026-03-04T21:45:00.027Z] [IrrigationService] 📊 Summary for 01:45:
+[2026-03-04T21:45:00.028Z] [IrrigationService]   - Total sections: 1
+[2026-03-04T21:45:00.028Z] [IrrigationService]   - Processed: 1
+[2026-03-04T21:45:00.028Z] [IrrigationService]   - Successful: 0
+[2026-03-04T21:45:00.029Z] [IrrigationService]   - Failed: 1
+[2026-03-04T21:45:00.029Z] [IrrigationService]   - Duration: 0.01s
+[2026-03-04T21:45:00.029Z] [IrrigationService] ✅ Completed irrigation monitoring for 01:45
+
+--------------------------------------------------------------------------------
+[2026-03-04T21:45:00.030Z] Completed irrigation cron job - Working Time: 01:45
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.01s
+================================================================================
+

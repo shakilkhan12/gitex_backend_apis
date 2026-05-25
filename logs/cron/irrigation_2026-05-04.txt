@@ -1,0 +1,664 @@
+
+================================================================================
+[2026-05-04T02:30:00.021Z] Starting irrigation cron job - Working Time: 06:30
+================================================================================
+[2026-05-04T02:30:00.023Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 06:30
+[2026-05-04T02:30:00.024Z] [IrrigationService] 📋 Fetching irrigation sections for time 06:30...
+[2026-05-04T02:30:00.070Z] [IrrigationService] 📊 Found 1 irrigation sections for time 06:30
+[2026-05-04T02:30:00.071Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 37)
+[2026-05-04T02:30:00.072Z] [IrrigationService] 📷 Section 37: Capturing image from camera 286 (Zone: 11477965)...
+[2026-05-04T02:30:00.095Z] [IrrigationService] ❌ Section 37: Failed to capture image from camera 286
+[2026-05-04T02:30:00.096Z] [IrrigationService] 📊 Summary for 06:30:
+[2026-05-04T02:30:00.096Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T02:30:00.097Z] [IrrigationService]   - Processed: 1
+[2026-05-04T02:30:00.097Z] [IrrigationService]   - Successful: 0
+[2026-05-04T02:30:00.097Z] [IrrigationService]   - Failed: 1
+[2026-05-04T02:30:00.097Z] [IrrigationService]   - Duration: 0.07s
+[2026-05-04T02:30:00.098Z] [IrrigationService] ✅ Completed irrigation monitoring for 06:30
+
+--------------------------------------------------------------------------------
+[2026-05-04T02:30:00.098Z] Completed irrigation cron job - Working Time: 06:30
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.07s
+================================================================================
+
+
+================================================================================
+[2026-05-04T02:50:00.016Z] Starting irrigation cron job - Working Time: 06:50
+================================================================================
+[2026-05-04T02:50:00.016Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 06:50
+[2026-05-04T02:50:00.017Z] [IrrigationService] 📋 Fetching irrigation sections for time 06:50...
+[2026-05-04T02:50:00.060Z] [IrrigationService] 📊 Found 1 irrigation sections for time 06:50
+[2026-05-04T02:50:00.061Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 39)
+[2026-05-04T02:50:00.061Z] [IrrigationService] 📷 Section 39: Capturing image from camera 286 (Zone: 11477968)...
+[2026-05-04T02:50:00.082Z] [IrrigationService] ❌ Section 39: Failed to capture image from camera 286
+[2026-05-04T02:50:00.083Z] [IrrigationService] 📊 Summary for 06:50:
+[2026-05-04T02:50:00.083Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T02:50:00.083Z] [IrrigationService]   - Processed: 1
+[2026-05-04T02:50:00.084Z] [IrrigationService]   - Successful: 0
+[2026-05-04T02:50:00.084Z] [IrrigationService]   - Failed: 1
+[2026-05-04T02:50:00.084Z] [IrrigationService]   - Duration: 0.07s
+[2026-05-04T02:50:00.085Z] [IrrigationService] ✅ Completed irrigation monitoring for 06:50
+
+--------------------------------------------------------------------------------
+[2026-05-04T02:50:00.085Z] Completed irrigation cron job - Working Time: 06:50
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.07s
+================================================================================
+
+
+================================================================================
+[2026-05-04T03:00:00.028Z] Starting irrigation cron job - Working Time: 07:00
+================================================================================
+[2026-05-04T03:00:00.028Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 07:00
+[2026-05-04T03:00:00.029Z] [IrrigationService] 📋 Fetching irrigation sections for time 07:00...
+[2026-05-04T03:00:00.073Z] [IrrigationService] 📊 Found 1 irrigation sections for time 07:00
+[2026-05-04T03:00:00.073Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 40)
+[2026-05-04T03:00:00.074Z] [IrrigationService] 📷 Section 40: Capturing image from camera 286 (Zone: 11477969)...
+[2026-05-04T03:00:00.098Z] [IrrigationService] ❌ Section 40: Failed to capture image from camera 286
+[2026-05-04T03:00:00.099Z] [IrrigationService] 📊 Summary for 07:00:
+[2026-05-04T03:00:00.099Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T03:00:00.100Z] [IrrigationService]   - Processed: 1
+[2026-05-04T03:00:00.100Z] [IrrigationService]   - Successful: 0
+[2026-05-04T03:00:00.100Z] [IrrigationService]   - Failed: 1
+[2026-05-04T03:00:00.101Z] [IrrigationService]   - Duration: 0.07s
+[2026-05-04T03:00:00.101Z] [IrrigationService] ✅ Completed irrigation monitoring for 07:00
+
+--------------------------------------------------------------------------------
+[2026-05-04T03:00:00.101Z] Completed irrigation cron job - Working Time: 07:00
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.07s
+================================================================================
+
+
+================================================================================
+[2026-05-04T03:10:00.017Z] Starting irrigation cron job - Working Time: 07:10
+================================================================================
+[2026-05-04T03:10:00.018Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 07:10
+[2026-05-04T03:10:00.019Z] [IrrigationService] 📋 Fetching irrigation sections for time 07:10...
+[2026-05-04T03:10:00.040Z] [IrrigationService] 📊 Found 1 irrigation sections for time 07:10
+[2026-05-04T03:10:00.040Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 41)
+[2026-05-04T03:10:00.041Z] [IrrigationService] 📷 Section 41: Capturing image from camera 286 (Zone: 11477970)...
+[2026-05-04T03:10:00.062Z] [IrrigationService] ❌ Section 41: Failed to capture image from camera 286
+[2026-05-04T03:10:00.062Z] [IrrigationService] 📊 Summary for 07:10:
+[2026-05-04T03:10:00.063Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T03:10:00.063Z] [IrrigationService]   - Processed: 1
+[2026-05-04T03:10:00.063Z] [IrrigationService]   - Successful: 0
+[2026-05-04T03:10:00.064Z] [IrrigationService]   - Failed: 1
+[2026-05-04T03:10:00.064Z] [IrrigationService]   - Duration: 0.04s
+[2026-05-04T03:10:00.064Z] [IrrigationService] ✅ Completed irrigation monitoring for 07:10
+
+--------------------------------------------------------------------------------
+[2026-05-04T03:10:00.065Z] Completed irrigation cron job - Working Time: 07:10
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.04s
+================================================================================
+
+
+================================================================================
+[2026-05-04T03:19:00.016Z] Starting irrigation cron job - Working Time: 07:19
+================================================================================
+[2026-05-04T03:19:00.017Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 07:19
+[2026-05-04T03:19:00.018Z] [IrrigationService] 📋 Fetching irrigation sections for time 07:19...
+[2026-05-04T03:19:00.059Z] [IrrigationService] 📊 Found 1 irrigation sections for time 07:19
+[2026-05-04T03:19:00.060Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 42)
+[2026-05-04T03:19:00.061Z] [IrrigationService] 📷 Section 42: Capturing image from camera 286 (Zone: 11477974)...
+[2026-05-04T03:19:00.082Z] [IrrigationService] ❌ Section 42: Failed to capture image from camera 286
+[2026-05-04T03:19:00.082Z] [IrrigationService] 📊 Summary for 07:19:
+[2026-05-04T03:19:00.083Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T03:19:00.083Z] [IrrigationService]   - Processed: 1
+[2026-05-04T03:19:00.084Z] [IrrigationService]   - Successful: 0
+[2026-05-04T03:19:00.084Z] [IrrigationService]   - Failed: 1
+[2026-05-04T03:19:00.084Z] [IrrigationService]   - Duration: 0.07s
+[2026-05-04T03:19:00.084Z] [IrrigationService] ✅ Completed irrigation monitoring for 07:19
+
+--------------------------------------------------------------------------------
+[2026-05-04T03:19:00.085Z] Completed irrigation cron job - Working Time: 07:19
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.07s
+================================================================================
+
+
+================================================================================
+[2026-05-04T06:27:00.016Z] Starting irrigation cron job - Working Time: 10:27
+================================================================================
+[2026-05-04T06:27:00.017Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 10:27
+[2026-05-04T06:27:00.018Z] [IrrigationService] 📋 Fetching irrigation sections for time 10:27...
+[2026-05-04T06:27:00.056Z] [IrrigationService] 📊 Found 1 irrigation sections for time 10:27
+[2026-05-04T06:27:00.056Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 58)
+[2026-05-04T06:27:00.057Z] [IrrigationService] 📷 Section 58: Capturing image from camera 283 (Zone: 11477968)...
+[2026-05-04T06:27:01.305Z] [IrrigationService] ✅ Section 58: Image captured successfully
+[2026-05-04T06:27:01.305Z] [IrrigationService] 💾 Section 58: Saving image locally...
+[2026-05-04T06:27:01.317Z] [IrrigationService] ✅ Section 58: Image saved at /uploads/irrigation/irrigation_58_1777876021305_1777876021313.jpg
+[2026-05-04T06:27:01.318Z] [IrrigationService] 🤖 Section 58: Analyzing image with Gemini...
+[2026-05-04T06:27:11.103Z] [IrrigationService] 🖼️ Section 58: Gemini response: [object Object]
+[2026-05-04T06:27:11.104Z] [IrrigationService] ✅ Section 58: Image analyzed successfully
+[2026-05-04T06:27:11.105Z] [IrrigationService] 💧 Section 58: Watering needed: YES
+[2026-05-04T06:27:11.105Z] [IrrigationService] 🚰 Section 58: Triggering watering for zone 11477968...
+[2026-05-04T06:27:13.004Z] [IrrigationService] ❌ Section 58: Watering failed
+[2026-05-04T06:27:13.004Z] [IrrigationService] 💾 Section 58: Creating job history record...
+[2026-05-04T06:27:13.046Z] [ERROR] [IrrigationService] ❌ Section 58: Database record creation failed: 
+[31mInvalid [1m`db.parks_zones_job_history.create()`[22m invocation in[39m
+[4mG:\CODE\latest code\gitex_backend_apis-1\src\services\irrigations.service.ts:1084:58[24m
+
+  [2m[90m1081[39m [36mconst[39m geminiData = data[34m.[39mgeminiResponse || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1082[39m [36mconst[39m wateringRecommendation = geminiData[34m.[39mwatering_recommendation || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1083[39m [22m
+[1m[31m→[39m[22m [2m[90m1084[39m [36mconst[39m result = [36mawait[39m db[34m.[39mparks_zones_job_history[34m.[39m[36mcreate[39m[34m([39m[22m{
+         data: {
+           camera_Id: 42,
+           park_Id: 39,
+           zone_Id: 17,
+           job_Id: "IRRIGATION_283_11477968_1777876033032",
+           image: "/uploads/irrigation/irrigation_58_1777876021305_1777876021313.jpg",
+           started_at: new Date("2026-05-04T06:27:13.032Z"),
+           start_for_time: "30 seconds",
+           suggestion: "The grass is severely dry and requires immediate deep watering. Apply approximately 1 inch of water to the affected area. Consider watering in the early morning to minimize evaporation. Monitor the grass for signs of recovery over the next few days. If conditions remain dry, establish a regular watering schedule. Check for any underlying irrigation issues or soil compaction that might be preventing water absorption.",
+           status: "Dry",
+           confidence_score: "90",
+           rationale: "The visual analysis reveals a dominant dull yellowish-brown color across the majority of the grass, with only sparse, faint hints of light green/yellow, indicating severe dehydration. The blades appear somewhat matted and limp, not brittle or disintegrated, suggesting the grass is dormant or struggling rather than completely dead. The visible soil appears dry, supporting the conclusion of a lack of recent moisture. While no specific contextual information on recent rainfall or temperature was provided, the visual evidence strongly points to a 'Dry' status, where the grass is stressed but has the potential for recovery with proper watering. No testing results were available to further confirm.",
+           gallons_required_estimate: [31m623[39m,
+                                      [31m~~~[39m
+           calculation_note: "Calculated for 1 inch of water over 1000 sq ft. (Estimated area based on visual assessment of the patch of grass shown in the image.)",
+           createdAt: new Date("2026-05-04T06:27:13.032Z"),
+           updatedAt: new Date("2026-05-04T06:27:13.032Z")
+         }
+       }[2m)[22m
+
+Argument `[1mgallons_required_estimate[22m`: Invalid value provided. Expected [32mString[39m or [32mNull[39m, provided [31mInt[39m.
+[2026-05-04T06:27:13.047Z] [IrrigationService] 📊 Summary for 10:27:
+[2026-05-04T06:27:13.047Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T06:27:13.048Z] [IrrigationService]   - Processed: 1
+[2026-05-04T06:27:13.048Z] [IrrigationService]   - Successful: 0
+[2026-05-04T06:27:13.049Z] [IrrigationService]   - Failed: 1
+[2026-05-04T06:27:13.049Z] [IrrigationService]   - Duration: 13.03s
+[2026-05-04T06:27:13.049Z] [IrrigationService] ✅ Completed irrigation monitoring for 10:27
+
+--------------------------------------------------------------------------------
+[2026-05-04T06:27:13.049Z] Completed irrigation cron job - Working Time: 10:27
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 13.03s
+================================================================================
+
+
+================================================================================
+[2026-05-04T18:29:00.018Z] Starting irrigation cron job - Working Time: 22:29
+================================================================================
+[2026-05-04T18:29:00.019Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 22:29
+[2026-05-04T18:29:00.020Z] [IrrigationService] 📋 Fetching irrigation sections for time 22:29...
+[2026-05-04T18:29:00.060Z] [IrrigationService] 📊 Found 1 irrigation sections for time 22:29
+[2026-05-04T18:29:00.060Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 17)
+[2026-05-04T18:29:00.061Z] [IrrigationService] 📷 Section 17: Capturing image from camera 288 (Zone: 11477965)...
+[2026-05-04T18:29:00.082Z] [IrrigationService] ❌ Section 17: Failed to capture image from camera 288
+[2026-05-04T18:29:00.083Z] [IrrigationService] 📊 Summary for 22:29:
+[2026-05-04T18:29:00.083Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T18:29:00.084Z] [IrrigationService]   - Processed: 1
+[2026-05-04T18:29:00.084Z] [IrrigationService]   - Successful: 0
+[2026-05-04T18:29:00.084Z] [IrrigationService]   - Failed: 1
+[2026-05-04T18:29:00.085Z] [IrrigationService]   - Duration: 0.07s
+[2026-05-04T18:29:00.085Z] [IrrigationService] ✅ Completed irrigation monitoring for 22:29
+
+--------------------------------------------------------------------------------
+[2026-05-04T18:29:00.085Z] Completed irrigation cron job - Working Time: 22:29
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.07s
+================================================================================
+
+
+================================================================================
+[2026-05-04T18:55:00.014Z] Starting irrigation cron job - Working Time: 22:55
+================================================================================
+[2026-05-04T18:55:00.015Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 22:55
+[2026-05-04T18:55:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 22:55...
+[2026-05-04T18:55:00.063Z] [IrrigationService] 📊 Found 1 irrigation sections for time 22:55
+[2026-05-04T18:55:00.064Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 54)
+[2026-05-04T18:55:00.064Z] [IrrigationService] 📷 Section 54: Capturing image from camera 283 (Zone: 11477969)...
+[2026-05-04T18:55:00.808Z] [IrrigationService] ✅ Section 54: Image captured successfully
+[2026-05-04T18:55:00.808Z] [IrrigationService] 💾 Section 54: Saving image locally...
+[2026-05-04T18:55:00.823Z] [IrrigationService] ✅ Section 54: Image saved at /uploads/irrigation/irrigation_54_1777920900808_1777920900814.jpg
+[2026-05-04T18:55:00.824Z] [IrrigationService] 🤖 Section 54: Analyzing image with Gemini...
+[2026-05-04T18:55:24.791Z] [IrrigationService] 🖼️ Section 54: Gemini response: [object Object]
+[2026-05-04T18:55:24.792Z] [IrrigationService] ✅ Section 54: Image analyzed successfully
+[2026-05-04T18:55:24.793Z] [IrrigationService] 💧 Section 54: Watering needed: YES
+[2026-05-04T18:55:24.793Z] [IrrigationService] 🚰 Section 54: Triggering watering for zone 11477969...
+[2026-05-04T18:55:25.522Z] [IrrigationService] ❌ Section 54: Watering failed
+[2026-05-04T18:55:25.523Z] [IrrigationService] 💾 Section 54: Creating job history record...
+[2026-05-04T18:55:25.550Z] [ERROR] [IrrigationService] ❌ Section 54: Database record creation failed: 
+[31mInvalid [1m`db.parks_zones_job_history.create()`[22m invocation in[39m
+[4mG:\CODE\latest code\gitex_backend_apis-1\src\services\irrigations.service.ts:1084:58[24m
+
+  [2m[90m1081[39m [36mconst[39m geminiData = data[34m.[39mgeminiResponse || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1082[39m [36mconst[39m wateringRecommendation = geminiData[34m.[39mwatering_recommendation || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1083[39m [22m
+[1m[31m→[39m[22m [2m[90m1084[39m [36mconst[39m result = [36mawait[39m db[34m.[39mparks_zones_job_history[34m.[39m[36mcreate[39m[34m([39m[22m{
+         data: {
+           camera_Id: 42,
+           park_Id: 39,
+           zone_Id: 8,
+           job_Id: "IRRIGATION_283_11477969_1777920925536",
+           image: "/uploads/irrigation/irrigation_54_1777920900808_1777920900814.jpg",
+           started_at: new Date("2026-05-04T18:55:25.536Z"),
+           start_for_time: "30 seconds",
+           suggestion: "The grass is severely dry and requires immediate and deep watering to prevent further deterioration and potential death. Apply 1 inch of water to the affected area. Monitor the grass closely for signs of recovery (darker green color, blades standing more upright) over the next 24-48 hours. Consider adjusting irrigation schedules to provide consistent moisture, especially during hot and dry periods. Watering in the early morning is recommended to maximize absorption and minimize evaporation.",
+           status: "Dry",
+           confidence_score: "90",
+           rationale: "The visual analysis reveals a dominant color ranging from dull olive green to straw yellow/light brown, indicating significant moisture stress. The grass blades appear limp, folded, and somewhat matted down, rather than standing upright or appearing vibrant. While not completely brown or brittle, there are only an estimated 10-20% dull green areas, primarily at the base of the blades, suggesting the grass is still alive but severely dehydrated. This appearance is characteristic of 'Dry' grass that is under stress but has the potential for recovery with proper watering. Contextual information regarding recent rainfall, temperature, and soil observation was not provided, but the visual evidence strongly points to a lack of water.",
+           gallons_required_estimate: [31m3115[39m,
+                                      [31m~~~~[39m
+           calculation_note: "Calculated for 1 inch of water over 5000 sq ft (assuming 0.623 gallons per sq ft per inch of water). This is an initial estimate for recovery.",
+           createdAt: new Date("2026-05-04T18:55:25.536Z"),
+           updatedAt: new Date("2026-05-04T18:55:25.536Z")
+         }
+       }[2m)[22m
+
+Argument `[1mgallons_required_estimate[22m`: Invalid value provided. Expected [32mString[39m or [32mNull[39m, provided [31mInt[39m.
+[2026-05-04T18:55:25.551Z] [IrrigationService] 📊 Summary for 22:55:
+[2026-05-04T18:55:25.552Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T18:55:25.552Z] [IrrigationService]   - Processed: 1
+[2026-05-04T18:55:25.552Z] [IrrigationService]   - Successful: 0
+[2026-05-04T18:55:25.553Z] [IrrigationService]   - Failed: 1
+[2026-05-04T18:55:25.553Z] [IrrigationService]   - Duration: 25.54s
+[2026-05-04T18:55:25.553Z] [IrrigationService] ✅ Completed irrigation monitoring for 22:55
+
+--------------------------------------------------------------------------------
+[2026-05-04T18:55:25.554Z] Completed irrigation cron job - Working Time: 22:55
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 25.54s
+================================================================================
+
+
+================================================================================
+[2026-05-04T19:09:00.021Z] Starting irrigation cron job - Working Time: 23:09
+================================================================================
+[2026-05-04T19:09:00.022Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 23:09
+[2026-05-04T19:09:00.023Z] [IrrigationService] 📋 Fetching irrigation sections for time 23:09...
+[2026-05-04T19:09:00.057Z] [IrrigationService] 📊 Found 1 irrigation sections for time 23:09
+[2026-05-04T19:09:00.057Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 60)
+[2026-05-04T19:09:00.058Z] [IrrigationService] 📷 Section 60: Capturing image from camera 278 (Zone: 11477966)...
+[2026-05-04T19:09:00.775Z] [IrrigationService] ✅ Section 60: Image captured successfully
+[2026-05-04T19:09:00.776Z] [IrrigationService] 💾 Section 60: Saving image locally...
+[2026-05-04T19:09:00.784Z] [IrrigationService] ✅ Section 60: Image saved at /uploads/irrigation/irrigation_60_1777921740776_1777921740782.jpg
+[2026-05-04T19:09:00.784Z] [IrrigationService] 🤖 Section 60: Analyzing image with Gemini...
+[2026-05-04T19:09:16.011Z] [IrrigationService] 🖼️ Section 60: Gemini response: [object Object]
+[2026-05-04T19:09:16.011Z] [IrrigationService] ✅ Section 60: Image analyzed successfully
+[2026-05-04T19:09:16.012Z] [IrrigationService] 💧 Section 60: Watering needed: YES
+[2026-05-04T19:09:16.012Z] [IrrigationService] 🚰 Section 60: Triggering watering for zone 11477966...
+[2026-05-04T19:09:16.232Z] [IrrigationService] ❌ Section 60: Watering failed
+[2026-05-04T19:09:16.233Z] [IrrigationService] 💾 Section 60: Creating job history record...
+[2026-05-04T19:09:16.255Z] [ERROR] [IrrigationService] ❌ Section 60: Database record creation failed: 
+[31mInvalid [1m`db.parks_zones_job_history.create()`[22m invocation in[39m
+[4mG:\CODE\latest code\gitex_backend_apis-1\src\services\irrigations.service.ts:1084:58[24m
+
+  [2m[90m1081[39m [36mconst[39m geminiData = data[34m.[39mgeminiResponse || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1082[39m [36mconst[39m wateringRecommendation = geminiData[34m.[39mwatering_recommendation || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1083[39m [22m
+[1m[31m→[39m[22m [2m[90m1084[39m [36mconst[39m result = [36mawait[39m db[34m.[39mparks_zones_job_history[34m.[39m[36mcreate[39m[34m([39m[22m{
+         data: {
+           camera_Id: 49,
+           park_Id: 39,
+           zone_Id: 9,
+           job_Id: "IRRIGATION_278_11477966_1777921756245",
+           image: "/uploads/irrigation/irrigation_60_1777921740776_1777921740782.jpg",
+           started_at: new Date("2026-05-04T19:09:16.245Z"),
+           start_for_time: "30 seconds",
+           suggestion: "The grass is severely dry and requires immediate and deep watering. Apply approximately 1 inch of water to the affected area. Monitor for improvement over the next few days. If no significant improvement is observed after consistent watering, further investigation into soil conditions (compaction, nutrient deficiency) or potential disease may be necessary. Consider watering during cooler parts of the day to minimize evaporation.",
+           status: "Dry",
+           confidence_score: "90",
+           rationale: "The visual analysis of the provided image shows grass that is predominantly a dull, yellowish-brown color. The blades appear matted down and likely brittle, indicating severe dehydration. While there are very faint hints of green, primarily at the base of some blades, the overall appearance is far from healthy green. This suggests the grass is not dead, as some life remains, but it is critically dry and stressed. Contextual information regarding recent water/rainfall, weather/temperature, soil observation, and testing results (Tug Test, Water Test) were not provided, so the analysis relies solely on the visual evidence. The visual cues strongly point to a 'Dry' status rather than 'Green' or 'Dead'.",
+           gallons_required_estimate: [31m3115[39m,
+                                      [31m~~~~[39m
+           calculation_note: "Calculated for 1 inch of water over an estimated 5000 sq ft area (based on example input). (5000 sq ft * 1 inch * 0.623 gallons/sq ft/inch)",
+           createdAt: new Date("2026-05-04T19:09:16.245Z"),
+           updatedAt: new Date("2026-05-04T19:09:16.245Z")
+         }
+       }[2m)[22m
+
+Argument `[1mgallons_required_estimate[22m`: Invalid value provided. Expected [32mString[39m or [32mNull[39m, provided [31mInt[39m.
+[2026-05-04T19:09:16.256Z] [IrrigationService] 📊 Summary for 23:09:
+[2026-05-04T19:09:16.256Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T19:09:16.257Z] [IrrigationService]   - Processed: 1
+[2026-05-04T19:09:16.257Z] [IrrigationService]   - Successful: 0
+[2026-05-04T19:09:16.258Z] [IrrigationService]   - Failed: 1
+[2026-05-04T19:09:16.258Z] [IrrigationService]   - Duration: 16.23s
+[2026-05-04T19:09:16.258Z] [IrrigationService] ✅ Completed irrigation monitoring for 23:09
+
+--------------------------------------------------------------------------------
+[2026-05-04T19:09:16.259Z] Completed irrigation cron job - Working Time: 23:09
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 16.23s
+================================================================================
+
+
+================================================================================
+[2026-05-04T20:50:00.012Z] Starting irrigation cron job - Working Time: 00:50
+================================================================================
+[2026-05-04T20:50:00.013Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 00:50
+[2026-05-04T20:50:00.014Z] [IrrigationService] 📋 Fetching irrigation sections for time 00:50...
+[2026-05-04T20:50:00.082Z] [IrrigationService] 📊 Found 1 irrigation sections for time 00:50
+[2026-05-04T20:50:00.083Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 6)
+[2026-05-04T20:50:00.083Z] [IrrigationService] 📷 Section 6: Capturing image from camera 289 (Zone: 11477970)...
+[2026-05-04T20:50:00.280Z] [IrrigationService] ✅ Section 6: Image captured successfully
+[2026-05-04T20:50:00.281Z] [IrrigationService] 💾 Section 6: Saving image locally...
+[2026-05-04T20:50:00.284Z] [IrrigationService] ✅ Section 6: Image saved at /uploads/irrigation/irrigation_6_1777927800281_1777927800282.jpg
+[2026-05-04T20:50:00.284Z] [IrrigationService] 🤖 Section 6: Analyzing image with Gemini...
+[2026-05-04T20:50:16.691Z] [IrrigationService] 🖼️ Section 6: Gemini response: [object Object]
+[2026-05-04T20:50:16.692Z] [IrrigationService] ✅ Section 6: Image analyzed successfully
+[2026-05-04T20:50:16.692Z] [IrrigationService] 💧 Section 6: Watering needed: YES
+[2026-05-04T20:50:16.693Z] [IrrigationService] 🚰 Section 6: Triggering watering for zone 11477970...
+[2026-05-04T20:50:18.525Z] [IrrigationService] ❌ Section 6: Watering failed
+[2026-05-04T20:50:18.525Z] [IrrigationService] 💾 Section 6: Creating job history record...
+[2026-05-04T20:50:18.641Z] [IrrigationService] ✅ Section 6: Job history record created (ID: 603)
+[2026-05-04T20:50:18.642Z] [IrrigationService] 📊 Summary for 00:50:
+[2026-05-04T20:50:18.642Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T20:50:18.642Z] [IrrigationService]   - Processed: 1
+[2026-05-04T20:50:18.643Z] [IrrigationService]   - Successful: 1
+[2026-05-04T20:50:18.643Z] [IrrigationService]   - Failed: 0
+[2026-05-04T20:50:18.643Z] [IrrigationService]   - Duration: 18.63s
+[2026-05-04T20:50:18.644Z] [IrrigationService] ✅ Completed irrigation monitoring for 00:50
+
+--------------------------------------------------------------------------------
+[2026-05-04T20:50:18.644Z] Completed irrigation cron job - Working Time: 00:50
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 1
+   - Failed: 0
+   - Duration: 18.63s
+================================================================================
+
+
+================================================================================
+[2026-05-04T20:53:00.016Z] Starting irrigation cron job - Working Time: 00:53
+================================================================================
+[2026-05-04T20:53:00.017Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 00:53
+[2026-05-04T20:53:00.018Z] [IrrigationService] 📋 Fetching irrigation sections for time 00:53...
+[2026-05-04T20:53:00.035Z] [IrrigationService] 📊 Found 1 irrigation sections for time 00:53
+[2026-05-04T20:53:00.036Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 7)
+[2026-05-04T20:53:00.036Z] [IrrigationService] 📷 Section 7: Capturing image from camera 289 (Zone: 11477974)...
+[2026-05-04T20:53:00.417Z] [IrrigationService] ✅ Section 7: Image captured successfully
+[2026-05-04T20:53:00.417Z] [IrrigationService] 💾 Section 7: Saving image locally...
+[2026-05-04T20:53:00.420Z] [IrrigationService] ✅ Section 7: Image saved at /uploads/irrigation/irrigation_7_1777927980417_1777927980418.jpg
+[2026-05-04T20:53:00.420Z] [IrrigationService] 🤖 Section 7: Analyzing image with Gemini...
+[2026-05-04T20:53:13.827Z] [IrrigationService] 🖼️ Section 7: Gemini response: [object Object]
+[2026-05-04T20:53:13.828Z] [IrrigationService] ✅ Section 7: Image analyzed successfully
+[2026-05-04T20:53:13.828Z] [IrrigationService] 💧 Section 7: Watering needed: YES
+[2026-05-04T20:53:13.829Z] [IrrigationService] 🚰 Section 7: Triggering watering for zone 11477974...
+[2026-05-04T20:53:14.057Z] [IrrigationService] ❌ Section 7: Watering failed
+[2026-05-04T20:53:14.058Z] [IrrigationService] 💾 Section 7: Creating job history record...
+[2026-05-04T20:53:14.083Z] [ERROR] [IrrigationService] ❌ Section 7: Database record creation failed: 
+[31mInvalid [1m`db.parks_zones_job_history.create()`[22m invocation in[39m
+[4mG:\CODE\latest code\gitex_backend_apis-1\src\services\irrigations.service.ts:1084:58[24m
+
+  [2m[90m1081[39m [36mconst[39m geminiData = data[34m.[39mgeminiResponse || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1082[39m [36mconst[39m wateringRecommendation = geminiData[34m.[39mwatering_recommendation || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1083[39m [22m
+[1m[31m→[39m[22m [2m[90m1084[39m [36mconst[39m result = [36mawait[39m db[34m.[39mparks_zones_job_history[34m.[39m[36mcreate[39m[34m([39m[22m{
+         data: {
+           camera_Id: 48,
+           park_Id: 39,
+           zone_Id: 15,
+           job_Id: "IRRIGATION_289_11477974_1777927994071",
+           image: "/uploads/irrigation/irrigation_7_1777927980417_1777927980418.jpg",
+           started_at: new Date("2026-05-04T20:53:14.071Z"),
+           start_for_time: "30 seconds",
+           suggestion: "The grass is severely dry and in a state of dormancy. Immediate and thorough watering is crucial for recovery. Apply approximately 1 inch of water to the affected area. Monitor the grass for signs of recovery (greening up, blades standing more upright) over the next few days. Establish a consistent watering schedule, especially during hot and dry periods, to prevent future dehydration. Consider aerating the lawn if the soil appears compacted to improve water penetration. Avoid heavy foot traffic and mowing until significant recovery is observed.",
+           status: "Dry",
+           confidence_score: "90",
+           rationale: "The visual analysis of the provided image reveals grass that is predominantly a dull yellowish-brown or straw color, with very faint hints of muted olive green (estimated less than 5%) visible deep within the turf. The blades appear limp, folded, and somewhat matted down, indicating severe dehydration rather than healthy growth. They do not stand upright and look dry, but not completely disintegrated, suggesting the grass is in a state of dormancy or severe stress due to lack of water, rather than being entirely dead. The absence of vibrant green and upright blades rules out 'Green' status. The presence of some structural integrity and very minimal muted green tones suggests it is not yet 'Dead,' which would typically involve completely brittle, disintegrated blades and no green whatsoever. Therefore, 'Dry' is the most appropriate status. \n\nLimitations: This analysis is based purely on the provided image. Crucial contextual information such as recent water/rainfall, current weather/temperature trends, soil observation, and testing results (tug test, water test) were not supplied in the prompt. The absence of this data limits the ability to confirm the exact cause of dryness or predict recovery with higher certainty.",
+           gallons_required_estimate: [31m3115[39m,
+                                      [31m~~~~[39m
+           calculation_note: "Calculated for 1 inch of water over an assumed 5000 sq ft area (based on example in prompt, as no specific area was provided). (5000 sq ft * 0.623 gallons/sq ft/inch = 3115 gallons)",
+           createdAt: new Date("2026-05-04T20:53:14.071Z"),
+           updatedAt: new Date("2026-05-04T20:53:14.071Z")
+         }
+       }[2m)[22m
+
+Argument `[1mgallons_required_estimate[22m`: Invalid value provided. Expected [32mString[39m or [32mNull[39m, provided [31mInt[39m.
+[2026-05-04T20:53:14.083Z] [IrrigationService] 📊 Summary for 00:53:
+[2026-05-04T20:53:14.084Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T20:53:14.084Z] [IrrigationService]   - Processed: 1
+[2026-05-04T20:53:14.085Z] [IrrigationService]   - Successful: 0
+[2026-05-04T20:53:14.085Z] [IrrigationService]   - Failed: 1
+[2026-05-04T20:53:14.085Z] [IrrigationService]   - Duration: 14.07s
+[2026-05-04T20:53:14.086Z] [IrrigationService] ✅ Completed irrigation monitoring for 00:53
+
+--------------------------------------------------------------------------------
+[2026-05-04T20:53:14.086Z] Completed irrigation cron job - Working Time: 00:53
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 14.07s
+================================================================================
+
+
+================================================================================
+[2026-05-04T20:58:00.014Z] Starting irrigation cron job - Working Time: 00:58
+================================================================================
+[2026-05-04T20:58:00.014Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 00:58
+[2026-05-04T20:58:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 00:58...
+[2026-05-04T20:58:00.022Z] [IrrigationService] 📊 Found 1 irrigation sections for time 00:58
+[2026-05-04T20:58:00.022Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 18)
+[2026-05-04T20:58:00.023Z] [IrrigationService] 📷 Section 18: Capturing image from camera 288 (Zone: 11477968)...
+[2026-05-04T20:58:00.048Z] [IrrigationService] ❌ Section 18: Failed to capture image from camera 288
+[2026-05-04T20:58:00.049Z] [IrrigationService] 📊 Summary for 00:58:
+[2026-05-04T20:58:00.049Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T20:58:00.050Z] [IrrigationService]   - Processed: 1
+[2026-05-04T20:58:00.050Z] [IrrigationService]   - Successful: 0
+[2026-05-04T20:58:00.050Z] [IrrigationService]   - Failed: 1
+[2026-05-04T20:58:00.051Z] [IrrigationService]   - Duration: 0.04s
+[2026-05-04T20:58:00.051Z] [IrrigationService] ✅ Completed irrigation monitoring for 00:58
+
+--------------------------------------------------------------------------------
+[2026-05-04T20:58:00.051Z] Completed irrigation cron job - Working Time: 00:58
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.04s
+================================================================================
+
+
+================================================================================
+[2026-05-04T21:38:00.014Z] Starting irrigation cron job - Working Time: 01:38
+================================================================================
+[2026-05-04T21:38:00.015Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 01:38
+[2026-05-04T21:38:00.016Z] [IrrigationService] 📋 Fetching irrigation sections for time 01:38...
+[2026-05-04T21:38:00.056Z] [IrrigationService] 📊 Found 1 irrigation sections for time 01:38
+[2026-05-04T21:38:00.056Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 55)
+[2026-05-04T21:38:00.057Z] [IrrigationService] 📷 Section 55: Capturing image from camera 283 (Zone: 11477971)...
+[2026-05-04T21:38:00.927Z] [IrrigationService] ✅ Section 55: Image captured successfully
+[2026-05-04T21:38:00.927Z] [IrrigationService] 💾 Section 55: Saving image locally...
+[2026-05-04T21:38:00.937Z] [IrrigationService] ✅ Section 55: Image saved at /uploads/irrigation/irrigation_55_1777930680927_1777930680933.jpg
+[2026-05-04T21:38:00.937Z] [IrrigationService] 🤖 Section 55: Analyzing image with Gemini...
+[2026-05-04T21:38:13.310Z] [IrrigationService] 🖼️ Section 55: Gemini response: [object Object]
+[2026-05-04T21:38:13.310Z] [IrrigationService] ✅ Section 55: Image analyzed successfully
+[2026-05-04T21:38:13.311Z] [IrrigationService] ⏭️ Section 55: Skipping record - image not suitable (blank). Not saved to DB.
+[2026-05-04T21:38:13.311Z] [IrrigationService] 📊 Summary for 01:38:
+[2026-05-04T21:38:13.311Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T21:38:13.312Z] [IrrigationService]   - Processed: 1
+[2026-05-04T21:38:13.312Z] [IrrigationService]   - Successful: 0
+[2026-05-04T21:38:13.312Z] [IrrigationService]   - Failed: 0
+[2026-05-04T21:38:13.313Z] [IrrigationService]   - Duration: 13.30s
+[2026-05-04T21:38:13.313Z] [IrrigationService] ✅ Completed irrigation monitoring for 01:38
+
+--------------------------------------------------------------------------------
+[2026-05-04T21:38:13.313Z] Completed irrigation cron job - Working Time: 01:38
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 0
+   - Duration: 13.30s
+================================================================================
+
+
+================================================================================
+[2026-05-04T21:41:00.015Z] Starting irrigation cron job - Working Time: 01:41
+================================================================================
+[2026-05-04T21:41:00.016Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 01:41
+[2026-05-04T21:41:00.017Z] [IrrigationService] 📋 Fetching irrigation sections for time 01:41...
+[2026-05-04T21:41:00.021Z] [IrrigationService] 📊 Found 1 irrigation sections for time 01:41
+[2026-05-04T21:41:00.022Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 56)
+[2026-05-04T21:41:00.022Z] [IrrigationService] 📷 Section 56: Capturing image from camera 283 (Zone: 11477972)...
+[2026-05-04T21:41:00.827Z] [IrrigationService] ✅ Section 56: Image captured successfully
+[2026-05-04T21:41:00.828Z] [IrrigationService] 💾 Section 56: Saving image locally...
+[2026-05-04T21:41:00.835Z] [IrrigationService] ✅ Section 56: Image saved at /uploads/irrigation/irrigation_56_1777930860827_1777930860833.jpg
+[2026-05-04T21:41:00.835Z] [IrrigationService] 🤖 Section 56: Analyzing image with Gemini...
+[2026-05-04T21:41:17.861Z] [IrrigationService] 🖼️ Section 56: Gemini response: [object Object]
+[2026-05-04T21:41:17.862Z] [IrrigationService] ✅ Section 56: Image analyzed successfully
+[2026-05-04T21:41:17.862Z] [IrrigationService] 💧 Section 56: Watering needed: YES
+[2026-05-04T21:41:17.862Z] [IrrigationService] 🚰 Section 56: Triggering watering for zone 11477972...
+[2026-05-04T21:41:17.977Z] [IrrigationService] ❌ Section 56: Watering failed
+[2026-05-04T21:41:17.978Z] [IrrigationService] 💾 Section 56: Creating job history record...
+[2026-05-04T21:41:18.016Z] [ERROR] [IrrigationService] ❌ Section 56: Database record creation failed: 
+[31mInvalid [1m`db.parks_zones_job_history.create()`[22m invocation in[39m
+[4mG:\CODE\latest code\gitex_backend_apis-1\src\services\irrigations.service.ts:1084:58[24m
+
+  [2m[90m1081[39m [36mconst[39m geminiData = data[34m.[39mgeminiResponse || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1082[39m [36mconst[39m wateringRecommendation = geminiData[34m.[39mwatering_recommendation || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1083[39m [22m
+[1m[31m→[39m[22m [2m[90m1084[39m [36mconst[39m result = [36mawait[39m db[34m.[39mparks_zones_job_history[34m.[39m[36mcreate[39m[34m([39m[22m{
+         data: {
+           camera_Id: 42,
+           park_Id: 39,
+           zone_Id: 11,
+           job_Id: "IRRIGATION_283_11477972_1777930878004",
+           image: "/uploads/irrigation/irrigation_56_1777930860827_1777930860833.jpg",
+           started_at: new Date("2026-05-04T21:41:18.004Z"),
+           start_for_time: "30 seconds",
+           suggestion: "Immediate and deep watering is critical to attempt recovery. Consider aerating the soil to improve water penetration and reduce compaction, especially if the soil appears hard or compacted. Monitor the grass closely for signs of recovery over the next few days. If no significant improvement after consistent watering, further soil analysis or reseeding may be required.",
+           status: "Dry",
+           confidence_score: "90",
+           rationale: "The grass is predominantly dull, light brown to straw yellow, with blades appearing dry, thin, and somewhat brittle. Less than 5% green is visible, primarily as tiny specks at the very base of the blades, indicating severe dehydration. The visible soil is dry. While the grass is extremely stressed and appears to be on the verge of dying, the minimal presence of green at the crown suggests it might still be technically 'Dry' and potentially recoverable with significant watering, rather than completely 'Dead'. Contextual information regarding recent water/rainfall and weather/temperature was not directly determinable from the image, but the grass condition strongly suggests prolonged dry and possibly hot conditions.",
+           gallons_required_estimate: [31m3117[39m,
+                                      [31m~~~~[39m
+           calculation_note: "Calculated for 1 inch of water over 5000 sq ft.",
+           createdAt: new Date("2026-05-04T21:41:18.004Z"),
+           updatedAt: new Date("2026-05-04T21:41:18.004Z")
+         }
+       }[2m)[22m
+
+Argument `[1mgallons_required_estimate[22m`: Invalid value provided. Expected [32mString[39m or [32mNull[39m, provided [31mInt[39m.
+[2026-05-04T21:41:18.017Z] [IrrigationService] 📊 Summary for 01:41:
+[2026-05-04T21:41:18.017Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T21:41:18.017Z] [IrrigationService]   - Processed: 1
+[2026-05-04T21:41:18.018Z] [IrrigationService]   - Successful: 0
+[2026-05-04T21:41:18.018Z] [IrrigationService]   - Failed: 1
+[2026-05-04T21:41:18.019Z] [IrrigationService]   - Duration: 18.00s
+[2026-05-04T21:41:18.019Z] [IrrigationService] ✅ Completed irrigation monitoring for 01:41
+
+--------------------------------------------------------------------------------
+[2026-05-04T21:41:18.019Z] Completed irrigation cron job - Working Time: 01:41
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 18.00s
+================================================================================
+
+
+================================================================================
+[2026-05-04T21:45:00.014Z] Starting irrigation cron job - Working Time: 01:45
+================================================================================
+[2026-05-04T21:45:00.015Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 01:45
+[2026-05-04T21:45:00.016Z] [IrrigationService] 📋 Fetching irrigation sections for time 01:45...
+[2026-05-04T21:45:00.022Z] [IrrigationService] 📊 Found 1 irrigation sections for time 01:45
+[2026-05-04T21:45:00.023Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 57)
+[2026-05-04T21:45:00.023Z] [IrrigationService] 📷 Section 57: Capturing image from camera 283 (Zone: 11477973)...
+[2026-05-04T21:45:01.489Z] [IrrigationService] ✅ Section 57: Image captured successfully
+[2026-05-04T21:45:01.489Z] [IrrigationService] 💾 Section 57: Saving image locally...
+[2026-05-04T21:45:01.497Z] [IrrigationService] ✅ Section 57: Image saved at /uploads/irrigation/irrigation_57_1777931101489_1777931101494.jpg
+[2026-05-04T21:45:01.497Z] [IrrigationService] 🤖 Section 57: Analyzing image with Gemini...
+[2026-05-04T21:45:13.425Z] [IrrigationService] 🖼️ Section 57: Gemini response: [object Object]
+[2026-05-04T21:45:13.425Z] [IrrigationService] ✅ Section 57: Image analyzed successfully
+[2026-05-04T21:45:13.426Z] [IrrigationService] 💧 Section 57: Watering needed: YES
+[2026-05-04T21:45:13.426Z] [IrrigationService] 🚰 Section 57: Triggering watering for zone 11477973...
+[2026-05-04T21:45:13.647Z] [IrrigationService] ❌ Section 57: Watering failed
+[2026-05-04T21:45:13.648Z] [IrrigationService] 💾 Section 57: Creating job history record...
+[2026-05-04T21:45:13.661Z] [ERROR] [IrrigationService] ❌ Section 57: Database record creation failed: 
+[31mInvalid [1m`db.parks_zones_job_history.create()`[22m invocation in[39m
+[4mG:\CODE\latest code\gitex_backend_apis-1\src\services\irrigations.service.ts:1084:58[24m
+
+  [2m[90m1081[39m [36mconst[39m geminiData = data[34m.[39mgeminiResponse || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1082[39m [36mconst[39m wateringRecommendation = geminiData[34m.[39mwatering_recommendation || [34m{[39m[34m}[39m[34m;[39m[22m
+  [2m[90m1083[39m [22m
+[1m[31m→[39m[22m [2m[90m1084[39m [36mconst[39m result = [36mawait[39m db[34m.[39mparks_zones_job_history[34m.[39m[36mcreate[39m[34m([39m[22m{
+         data: {
+           camera_Id: 42,
+           park_Id: 39,
+           zone_Id: 12,
+           job_Id: "IRRIGATION_283_11477973_1777931113652",
+           image: "/uploads/irrigation/irrigation_57_1777931101489_1777931101494.jpg",
+           started_at: new Date("2026-05-04T21:45:13.652Z"),
+           start_for_time: "30 seconds",
+           suggestion: "The grass is severely dehydrated and requires immediate and deep watering. Apply 1 inch of water to the affected area to encourage recovery. Monitor the grass closely for signs of improvement (greening up, blades standing more upright). Consider soil aeration if the ground appears compacted, as this can improve water penetration. Implement a regular watering schedule, especially during hot and dry periods, to prevent future stress. If no significant improvement is observed after consistent watering, further investigation into soil health or potential disease may be necessary.",
+           status: "Dry",
+           confidence_score: "90",
+           rationale: "The visual analysis of the image shows grass that is predominantly a dull yellowish-brown to straw yellow, with very minimal and muted green visible, primarily at the base or in shaded areas (less than 5%). The blades appear dry, brittle, and mostly matted down rather than standing upright. This appearance is characteristic of severe drought stress. While not completely devoid of all green, suggesting it's not entirely dead, it is clearly suffering from a significant lack of water. The absence of vibrant green and the widespread browning strongly indicate a 'Dry' status, on the verge of becoming 'Dead' if conditions do not improve. Contextual and testing information was not provided in the prompt, so the analysis relies solely on the visual evidence.",
+           gallons_required_estimate: [31m3117[39m,
+                                      [31m~~~~[39m
+           calculation_note: "Calculated for 1 inch of water over an assumed area of 5000 sq ft (as 'REQUIRED AREA INPUT' was not provided in the prompt). (5000 sq ft * 1 inch / 12 inches/ft) * 7.48 gallons/cubic ft = 3116.67 gallons, rounded to 3117 gallons.",
+           createdAt: new Date("2026-05-04T21:45:13.652Z"),
+           updatedAt: new Date("2026-05-04T21:45:13.652Z")
+         }
+       }[2m)[22m
+
+Argument `[1mgallons_required_estimate[22m`: Invalid value provided. Expected [32mString[39m or [32mNull[39m, provided [31mInt[39m.
+[2026-05-04T21:45:13.661Z] [IrrigationService] 📊 Summary for 01:45:
+[2026-05-04T21:45:13.662Z] [IrrigationService]   - Total sections: 1
+[2026-05-04T21:45:13.662Z] [IrrigationService]   - Processed: 1
+[2026-05-04T21:45:13.663Z] [IrrigationService]   - Successful: 0
+[2026-05-04T21:45:13.663Z] [IrrigationService]   - Failed: 1
+[2026-05-04T21:45:13.664Z] [IrrigationService]   - Duration: 13.65s
+[2026-05-04T21:45:13.664Z] [IrrigationService] ✅ Completed irrigation monitoring for 01:45
+
+--------------------------------------------------------------------------------
+[2026-05-04T21:45:13.664Z] Completed irrigation cron job - Working Time: 01:45
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 13.65s
+================================================================================
+

@@ -1,0 +1,1 @@
+{ "apps": [ { "name": "backend_5000", "script": "npm.cmd", "args": "start" } ] }

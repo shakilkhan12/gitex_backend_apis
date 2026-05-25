@@ -1,0 +1,435 @@
+
+================================================================================
+[2026-04-07T02:30:00.022Z] Starting irrigation cron job - Working Time: 06:30
+================================================================================
+[2026-04-07T02:30:00.023Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 06:30
+[2026-04-07T02:30:00.023Z] [IrrigationService] 📋 Fetching irrigation sections for time 06:30...
+[2026-04-07T02:30:00.062Z] [IrrigationService] 📊 Found 1 irrigation sections for time 06:30
+[2026-04-07T02:30:00.062Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 37)
+[2026-04-07T02:30:00.063Z] [IrrigationService] 📷 Section 37: Capturing image from camera 286 (Zone: 11477965)...
+[2026-04-07T02:30:00.084Z] [IrrigationService] ❌ Section 37: Failed to capture image from camera 286
+[2026-04-07T02:30:00.085Z] [IrrigationService] 📊 Summary for 06:30:
+[2026-04-07T02:30:00.085Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T02:30:00.086Z] [IrrigationService]   - Processed: 1
+[2026-04-07T02:30:00.086Z] [IrrigationService]   - Successful: 0
+[2026-04-07T02:30:00.086Z] [IrrigationService]   - Failed: 1
+[2026-04-07T02:30:00.086Z] [IrrigationService]   - Duration: 0.06s
+[2026-04-07T02:30:00.087Z] [IrrigationService] ✅ Completed irrigation monitoring for 06:30
+
+--------------------------------------------------------------------------------
+[2026-04-07T02:30:00.087Z] Completed irrigation cron job - Working Time: 06:30
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.06s
+================================================================================
+
+
+================================================================================
+[2026-04-07T02:50:00.014Z] Starting irrigation cron job - Working Time: 06:50
+================================================================================
+[2026-04-07T02:50:00.015Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 06:50
+[2026-04-07T02:50:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 06:50...
+[2026-04-07T02:50:00.063Z] [IrrigationService] 📊 Found 1 irrigation sections for time 06:50
+[2026-04-07T02:50:00.064Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 39)
+[2026-04-07T02:50:00.064Z] [IrrigationService] 📷 Section 39: Capturing image from camera 286 (Zone: 11477968)...
+[2026-04-07T02:50:00.085Z] [IrrigationService] ❌ Section 39: Failed to capture image from camera 286
+[2026-04-07T02:50:00.086Z] [IrrigationService] 📊 Summary for 06:50:
+[2026-04-07T02:50:00.086Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T02:50:00.086Z] [IrrigationService]   - Processed: 1
+[2026-04-07T02:50:00.086Z] [IrrigationService]   - Successful: 0
+[2026-04-07T02:50:00.087Z] [IrrigationService]   - Failed: 1
+[2026-04-07T02:50:00.087Z] [IrrigationService]   - Duration: 0.07s
+[2026-04-07T02:50:00.087Z] [IrrigationService] ✅ Completed irrigation monitoring for 06:50
+
+--------------------------------------------------------------------------------
+[2026-04-07T02:50:00.088Z] Completed irrigation cron job - Working Time: 06:50
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.07s
+================================================================================
+
+
+================================================================================
+[2026-04-07T03:00:00.031Z] Starting irrigation cron job - Working Time: 07:00
+================================================================================
+[2026-04-07T03:00:00.031Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 07:00
+[2026-04-07T03:00:00.032Z] [IrrigationService] 📋 Fetching irrigation sections for time 07:00...
+[2026-04-07T03:00:00.058Z] [IrrigationService] 📊 Found 1 irrigation sections for time 07:00
+[2026-04-07T03:00:00.059Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 40)
+[2026-04-07T03:00:00.059Z] [IrrigationService] 📷 Section 40: Capturing image from camera 286 (Zone: 11477969)...
+[2026-04-07T03:00:00.081Z] [IrrigationService] ❌ Section 40: Failed to capture image from camera 286
+[2026-04-07T03:00:00.081Z] [IrrigationService] 📊 Summary for 07:00:
+[2026-04-07T03:00:00.082Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T03:00:00.082Z] [IrrigationService]   - Processed: 1
+[2026-04-07T03:00:00.082Z] [IrrigationService]   - Successful: 0
+[2026-04-07T03:00:00.082Z] [IrrigationService]   - Failed: 1
+[2026-04-07T03:00:00.083Z] [IrrigationService]   - Duration: 0.05s
+[2026-04-07T03:00:00.083Z] [IrrigationService] ✅ Completed irrigation monitoring for 07:00
+
+--------------------------------------------------------------------------------
+[2026-04-07T03:00:00.083Z] Completed irrigation cron job - Working Time: 07:00
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.05s
+================================================================================
+
+
+================================================================================
+[2026-04-07T03:10:00.013Z] Starting irrigation cron job - Working Time: 07:10
+================================================================================
+[2026-04-07T03:10:00.013Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 07:10
+[2026-04-07T03:10:00.014Z] [IrrigationService] 📋 Fetching irrigation sections for time 07:10...
+[2026-04-07T03:10:00.048Z] [IrrigationService] 📊 Found 1 irrigation sections for time 07:10
+[2026-04-07T03:10:00.048Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 41)
+[2026-04-07T03:10:00.049Z] [IrrigationService] 📷 Section 41: Capturing image from camera 286 (Zone: 11477970)...
+[2026-04-07T03:10:00.071Z] [IrrigationService] ❌ Section 41: Failed to capture image from camera 286
+[2026-04-07T03:10:00.071Z] [IrrigationService] 📊 Summary for 07:10:
+[2026-04-07T03:10:00.072Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T03:10:00.072Z] [IrrigationService]   - Processed: 1
+[2026-04-07T03:10:00.072Z] [IrrigationService]   - Successful: 0
+[2026-04-07T03:10:00.073Z] [IrrigationService]   - Failed: 1
+[2026-04-07T03:10:00.073Z] [IrrigationService]   - Duration: 0.06s
+[2026-04-07T03:10:00.073Z] [IrrigationService] ✅ Completed irrigation monitoring for 07:10
+
+--------------------------------------------------------------------------------
+[2026-04-07T03:10:00.074Z] Completed irrigation cron job - Working Time: 07:10
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.06s
+================================================================================
+
+
+================================================================================
+[2026-04-07T03:19:00.015Z] Starting irrigation cron job - Working Time: 07:19
+================================================================================
+[2026-04-07T03:19:00.016Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 07:19
+[2026-04-07T03:19:00.016Z] [IrrigationService] 📋 Fetching irrigation sections for time 07:19...
+[2026-04-07T03:19:00.073Z] [IrrigationService] 📊 Found 1 irrigation sections for time 07:19
+[2026-04-07T03:19:00.073Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 42)
+[2026-04-07T03:19:00.074Z] [IrrigationService] 📷 Section 42: Capturing image from camera 286 (Zone: 11477974)...
+[2026-04-07T03:19:00.095Z] [IrrigationService] ❌ Section 42: Failed to capture image from camera 286
+[2026-04-07T03:19:00.096Z] [IrrigationService] 📊 Summary for 07:19:
+[2026-04-07T03:19:00.096Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T03:19:00.096Z] [IrrigationService]   - Processed: 1
+[2026-04-07T03:19:00.097Z] [IrrigationService]   - Successful: 0
+[2026-04-07T03:19:00.097Z] [IrrigationService]   - Failed: 1
+[2026-04-07T03:19:00.097Z] [IrrigationService]   - Duration: 0.08s
+[2026-04-07T03:19:00.098Z] [IrrigationService] ✅ Completed irrigation monitoring for 07:19
+
+--------------------------------------------------------------------------------
+[2026-04-07T03:19:00.098Z] Completed irrigation cron job - Working Time: 07:19
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.08s
+================================================================================
+
+
+================================================================================
+[2026-04-07T06:27:00.017Z] Starting irrigation cron job - Working Time: 10:27
+================================================================================
+[2026-04-07T06:27:00.018Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 10:27
+[2026-04-07T06:27:00.018Z] [IrrigationService] 📋 Fetching irrigation sections for time 10:27...
+[2026-04-07T06:27:00.070Z] [IrrigationService] 📊 Found 1 irrigation sections for time 10:27
+[2026-04-07T06:27:00.070Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 58)
+[2026-04-07T06:27:00.071Z] [IrrigationService] 📷 Section 58: Capturing image from camera 283 (Zone: 11477968)...
+[2026-04-07T06:27:01.039Z] [IrrigationService] ✅ Section 58: Image captured successfully
+[2026-04-07T06:27:01.039Z] [IrrigationService] 💾 Section 58: Saving image locally...
+[2026-04-07T06:27:01.048Z] [IrrigationService] ✅ Section 58: Image saved at /uploads/irrigation/irrigation_58_1775543221039_1775543221046.jpg
+[2026-04-07T06:27:01.049Z] [IrrigationService] 🤖 Section 58: Analyzing image with Gemini...
+[2026-04-07T06:27:05.771Z] [IrrigationService] 🖼️ Section 58: Gemini response: null
+[2026-04-07T06:27:05.772Z] [IrrigationService] ❌ Section 58: Failed to analyze image with Gemini
+[2026-04-07T06:27:05.772Z] [IrrigationService] 📊 Summary for 10:27:
+[2026-04-07T06:27:05.773Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T06:27:05.773Z] [IrrigationService]   - Processed: 1
+[2026-04-07T06:27:05.773Z] [IrrigationService]   - Successful: 0
+[2026-04-07T06:27:05.773Z] [IrrigationService]   - Failed: 1
+[2026-04-07T06:27:05.774Z] [IrrigationService]   - Duration: 5.75s
+[2026-04-07T06:27:05.774Z] [IrrigationService] ✅ Completed irrigation monitoring for 10:27
+
+--------------------------------------------------------------------------------
+[2026-04-07T06:27:05.774Z] Completed irrigation cron job - Working Time: 10:27
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 5.75s
+================================================================================
+
+
+================================================================================
+[2026-04-07T18:29:00.022Z] Starting irrigation cron job - Working Time: 22:29
+================================================================================
+[2026-04-07T18:29:00.022Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 22:29
+[2026-04-07T18:29:00.023Z] [IrrigationService] 📋 Fetching irrigation sections for time 22:29...
+[2026-04-07T18:29:00.057Z] [IrrigationService] 📊 Found 1 irrigation sections for time 22:29
+[2026-04-07T18:29:00.057Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 17)
+[2026-04-07T18:29:00.057Z] [IrrigationService] 📷 Section 17: Capturing image from camera 288 (Zone: 11477965)...
+[2026-04-07T18:29:00.079Z] [IrrigationService] ❌ Section 17: Failed to capture image from camera 288
+[2026-04-07T18:29:00.079Z] [IrrigationService] 📊 Summary for 22:29:
+[2026-04-07T18:29:00.080Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T18:29:00.080Z] [IrrigationService]   - Processed: 1
+[2026-04-07T18:29:00.080Z] [IrrigationService]   - Successful: 0
+[2026-04-07T18:29:00.080Z] [IrrigationService]   - Failed: 1
+[2026-04-07T18:29:00.081Z] [IrrigationService]   - Duration: 0.06s
+[2026-04-07T18:29:00.081Z] [IrrigationService] ✅ Completed irrigation monitoring for 22:29
+
+--------------------------------------------------------------------------------
+[2026-04-07T18:29:00.081Z] Completed irrigation cron job - Working Time: 22:29
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.06s
+================================================================================
+
+
+================================================================================
+[2026-04-07T18:55:00.012Z] Starting irrigation cron job - Working Time: 22:55
+================================================================================
+[2026-04-07T18:55:00.013Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 22:55
+[2026-04-07T18:55:00.013Z] [IrrigationService] 📋 Fetching irrigation sections for time 22:55...
+[2026-04-07T18:55:00.054Z] [IrrigationService] 📊 Found 1 irrigation sections for time 22:55
+[2026-04-07T18:55:00.055Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 54)
+[2026-04-07T18:55:00.055Z] [IrrigationService] 📷 Section 54: Capturing image from camera 283 (Zone: 11477969)...
+[2026-04-07T18:55:00.686Z] [IrrigationService] ✅ Section 54: Image captured successfully
+[2026-04-07T18:55:00.687Z] [IrrigationService] 💾 Section 54: Saving image locally...
+[2026-04-07T18:55:00.693Z] [IrrigationService] ✅ Section 54: Image saved at /uploads/irrigation/irrigation_54_1775588100687_1775588100691.jpg
+[2026-04-07T18:55:00.693Z] [IrrigationService] 🤖 Section 54: Analyzing image with Gemini...
+[2026-04-07T18:55:05.527Z] [IrrigationService] 🖼️ Section 54: Gemini response: null
+[2026-04-07T18:55:05.527Z] [IrrigationService] ❌ Section 54: Failed to analyze image with Gemini
+[2026-04-07T18:55:05.528Z] [IrrigationService] 📊 Summary for 22:55:
+[2026-04-07T18:55:05.528Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T18:55:05.528Z] [IrrigationService]   - Processed: 1
+[2026-04-07T18:55:05.528Z] [IrrigationService]   - Successful: 0
+[2026-04-07T18:55:05.529Z] [IrrigationService]   - Failed: 1
+[2026-04-07T18:55:05.529Z] [IrrigationService]   - Duration: 5.51s
+[2026-04-07T18:55:05.529Z] [IrrigationService] ✅ Completed irrigation monitoring for 22:55
+
+--------------------------------------------------------------------------------
+[2026-04-07T18:55:05.529Z] Completed irrigation cron job - Working Time: 22:55
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 5.51s
+================================================================================
+
+
+================================================================================
+[2026-04-07T19:09:00.014Z] Starting irrigation cron job - Working Time: 23:09
+================================================================================
+[2026-04-07T19:09:00.014Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 23:09
+[2026-04-07T19:09:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 23:09...
+[2026-04-07T19:09:00.037Z] [IrrigationService] 📊 Found 1 irrigation sections for time 23:09
+[2026-04-07T19:09:00.038Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 60)
+[2026-04-07T19:09:00.038Z] [IrrigationService] 📷 Section 60: Capturing image from camera 278 (Zone: 11477966)...
+[2026-04-07T19:09:01.882Z] [IrrigationService] ✅ Section 60: Image captured successfully
+[2026-04-07T19:09:01.882Z] [IrrigationService] 💾 Section 60: Saving image locally...
+[2026-04-07T19:09:01.888Z] [IrrigationService] ✅ Section 60: Image saved at /uploads/irrigation/irrigation_60_1775588941882_1775588941887.jpg
+[2026-04-07T19:09:01.889Z] [IrrigationService] 🤖 Section 60: Analyzing image with Gemini...
+[2026-04-07T19:09:07.796Z] [IrrigationService] 🖼️ Section 60: Gemini response: null
+[2026-04-07T19:09:07.797Z] [IrrigationService] ❌ Section 60: Failed to analyze image with Gemini
+[2026-04-07T19:09:07.797Z] [IrrigationService] 📊 Summary for 23:09:
+[2026-04-07T19:09:07.798Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T19:09:07.798Z] [IrrigationService]   - Processed: 1
+[2026-04-07T19:09:07.798Z] [IrrigationService]   - Successful: 0
+[2026-04-07T19:09:07.798Z] [IrrigationService]   - Failed: 1
+[2026-04-07T19:09:07.799Z] [IrrigationService]   - Duration: 7.78s
+[2026-04-07T19:09:07.799Z] [IrrigationService] ✅ Completed irrigation monitoring for 23:09
+
+--------------------------------------------------------------------------------
+[2026-04-07T19:09:07.799Z] Completed irrigation cron job - Working Time: 23:09
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 7.78s
+================================================================================
+
+
+================================================================================
+[2026-04-07T20:50:00.014Z] Starting irrigation cron job - Working Time: 00:50
+================================================================================
+[2026-04-07T20:50:00.014Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 00:50
+[2026-04-07T20:50:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 00:50...
+[2026-04-07T20:50:00.050Z] [IrrigationService] 📊 Found 1 irrigation sections for time 00:50
+[2026-04-07T20:50:00.050Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 6)
+[2026-04-07T20:50:00.051Z] [IrrigationService] 📷 Section 6: Capturing image from camera 289 (Zone: 11477970)...
+[2026-04-07T20:50:00.077Z] [IrrigationService] ❌ Section 6: Failed to capture image from camera 289
+[2026-04-07T20:50:00.078Z] [IrrigationService] 📊 Summary for 00:50:
+[2026-04-07T20:50:00.078Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T20:50:00.079Z] [IrrigationService]   - Processed: 1
+[2026-04-07T20:50:00.079Z] [IrrigationService]   - Successful: 0
+[2026-04-07T20:50:00.079Z] [IrrigationService]   - Failed: 1
+[2026-04-07T20:50:00.079Z] [IrrigationService]   - Duration: 0.06s
+[2026-04-07T20:50:00.080Z] [IrrigationService] ✅ Completed irrigation monitoring for 00:50
+
+--------------------------------------------------------------------------------
+[2026-04-07T20:50:00.080Z] Completed irrigation cron job - Working Time: 00:50
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.06s
+================================================================================
+
+
+================================================================================
+[2026-04-07T20:53:00.013Z] Starting irrigation cron job - Working Time: 00:53
+================================================================================
+[2026-04-07T20:53:00.013Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 00:53
+[2026-04-07T20:53:00.014Z] [IrrigationService] 📋 Fetching irrigation sections for time 00:53...
+[2026-04-07T20:53:00.018Z] [IrrigationService] 📊 Found 1 irrigation sections for time 00:53
+[2026-04-07T20:53:00.019Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 7)
+[2026-04-07T20:53:00.019Z] [IrrigationService] 📷 Section 7: Capturing image from camera 289 (Zone: 11477974)...
+[2026-04-07T20:53:00.039Z] [IrrigationService] ❌ Section 7: Failed to capture image from camera 289
+[2026-04-07T20:53:00.040Z] [IrrigationService] 📊 Summary for 00:53:
+[2026-04-07T20:53:00.040Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T20:53:00.040Z] [IrrigationService]   - Processed: 1
+[2026-04-07T20:53:00.041Z] [IrrigationService]   - Successful: 0
+[2026-04-07T20:53:00.041Z] [IrrigationService]   - Failed: 1
+[2026-04-07T20:53:00.041Z] [IrrigationService]   - Duration: 0.03s
+[2026-04-07T20:53:00.042Z] [IrrigationService] ✅ Completed irrigation monitoring for 00:53
+
+--------------------------------------------------------------------------------
+[2026-04-07T20:53:00.042Z] Completed irrigation cron job - Working Time: 00:53
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.03s
+================================================================================
+
+
+================================================================================
+[2026-04-07T20:58:00.014Z] Starting irrigation cron job - Working Time: 00:58
+================================================================================
+[2026-04-07T20:58:00.014Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 00:58
+[2026-04-07T20:58:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 00:58...
+[2026-04-07T20:58:00.022Z] [IrrigationService] 📊 Found 1 irrigation sections for time 00:58
+[2026-04-07T20:58:00.022Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 18)
+[2026-04-07T20:58:00.023Z] [IrrigationService] 📷 Section 18: Capturing image from camera 288 (Zone: 11477968)...
+[2026-04-07T20:58:00.042Z] [IrrigationService] ❌ Section 18: Failed to capture image from camera 288
+[2026-04-07T20:58:00.043Z] [IrrigationService] 📊 Summary for 00:58:
+[2026-04-07T20:58:00.043Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T20:58:00.043Z] [IrrigationService]   - Processed: 1
+[2026-04-07T20:58:00.044Z] [IrrigationService]   - Successful: 0
+[2026-04-07T20:58:00.044Z] [IrrigationService]   - Failed: 1
+[2026-04-07T20:58:00.044Z] [IrrigationService]   - Duration: 0.03s
+[2026-04-07T20:58:00.044Z] [IrrigationService] ✅ Completed irrigation monitoring for 00:58
+
+--------------------------------------------------------------------------------
+[2026-04-07T20:58:00.045Z] Completed irrigation cron job - Working Time: 00:58
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.03s
+================================================================================
+
+
+================================================================================
+[2026-04-07T21:38:00.014Z] Starting irrigation cron job - Working Time: 01:38
+================================================================================
+[2026-04-07T21:38:00.014Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 01:38
+[2026-04-07T21:38:00.015Z] [IrrigationService] 📋 Fetching irrigation sections for time 01:38...
+[2026-04-07T21:38:00.022Z] [IrrigationService] 📊 Found 1 irrigation sections for time 01:38
+[2026-04-07T21:38:00.022Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 55)
+[2026-04-07T21:38:00.023Z] [IrrigationService] 📷 Section 55: Capturing image from camera 283 (Zone: 11477971)...
+[2026-04-07T21:38:00.043Z] [IrrigationService] ❌ Section 55: Failed to capture image from camera 283
+[2026-04-07T21:38:00.044Z] [IrrigationService] 📊 Summary for 01:38:
+[2026-04-07T21:38:00.044Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T21:38:00.044Z] [IrrigationService]   - Processed: 1
+[2026-04-07T21:38:00.045Z] [IrrigationService]   - Successful: 0
+[2026-04-07T21:38:00.045Z] [IrrigationService]   - Failed: 1
+[2026-04-07T21:38:00.045Z] [IrrigationService]   - Duration: 0.03s
+[2026-04-07T21:38:00.046Z] [IrrigationService] ✅ Completed irrigation monitoring for 01:38
+
+--------------------------------------------------------------------------------
+[2026-04-07T21:38:00.046Z] Completed irrigation cron job - Working Time: 01:38
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.03s
+================================================================================
+
+
+================================================================================
+[2026-04-07T21:41:00.011Z] Starting irrigation cron job - Working Time: 01:41
+================================================================================
+[2026-04-07T21:41:00.012Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 01:41
+[2026-04-07T21:41:00.012Z] [IrrigationService] 📋 Fetching irrigation sections for time 01:41...
+[2026-04-07T21:41:00.016Z] [IrrigationService] 📊 Found 1 irrigation sections for time 01:41
+[2026-04-07T21:41:00.017Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 56)
+[2026-04-07T21:41:00.017Z] [IrrigationService] 📷 Section 56: Capturing image from camera 283 (Zone: 11477972)...
+[2026-04-07T21:41:00.037Z] [IrrigationService] ❌ Section 56: Failed to capture image from camera 283
+[2026-04-07T21:41:00.037Z] [IrrigationService] 📊 Summary for 01:41:
+[2026-04-07T21:41:00.038Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T21:41:00.038Z] [IrrigationService]   - Processed: 1
+[2026-04-07T21:41:00.038Z] [IrrigationService]   - Successful: 0
+[2026-04-07T21:41:00.039Z] [IrrigationService]   - Failed: 1
+[2026-04-07T21:41:00.039Z] [IrrigationService]   - Duration: 0.03s
+[2026-04-07T21:41:00.039Z] [IrrigationService] ✅ Completed irrigation monitoring for 01:41
+
+--------------------------------------------------------------------------------
+[2026-04-07T21:41:00.039Z] Completed irrigation cron job - Working Time: 01:41
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.03s
+================================================================================
+
+
+================================================================================
+[2026-04-07T21:45:00.013Z] Starting irrigation cron job - Working Time: 01:45
+================================================================================
+[2026-04-07T21:45:00.013Z] [IrrigationService] 💧 Starting irrigation monitoring for working time: 01:45
+[2026-04-07T21:45:00.014Z] [IrrigationService] 📋 Fetching irrigation sections for time 01:45...
+[2026-04-07T21:45:00.021Z] [IrrigationService] 📊 Found 1 irrigation sections for time 01:45
+[2026-04-07T21:45:00.021Z] [IrrigationService] 🔄 Processing section 1/1 (Section ID: 57)
+[2026-04-07T21:45:00.021Z] [IrrigationService] 📷 Section 57: Capturing image from camera 283 (Zone: 11477973)...
+[2026-04-07T21:45:00.046Z] [IrrigationService] ❌ Section 57: Failed to capture image from camera 283
+[2026-04-07T21:45:00.046Z] [IrrigationService] 📊 Summary for 01:45:
+[2026-04-07T21:45:00.047Z] [IrrigationService]   - Total sections: 1
+[2026-04-07T21:45:00.047Z] [IrrigationService]   - Processed: 1
+[2026-04-07T21:45:00.047Z] [IrrigationService]   - Successful: 0
+[2026-04-07T21:45:00.048Z] [IrrigationService]   - Failed: 1
+[2026-04-07T21:45:00.048Z] [IrrigationService]   - Duration: 0.03s
+[2026-04-07T21:45:00.048Z] [IrrigationService] ✅ Completed irrigation monitoring for 01:45
+
+--------------------------------------------------------------------------------
+[2026-04-07T21:45:00.048Z] Completed irrigation cron job - Working Time: 01:45
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 0
+   - Failed: 1
+   - Duration: 0.03s
+================================================================================
+

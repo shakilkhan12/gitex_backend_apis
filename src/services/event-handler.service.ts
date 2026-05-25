@@ -2733,7 +2733,7 @@ class EventHandlerService {
             try {
                const faceAdditionPayload = {
                   personIndexCode: hikVisionResponse.data, 
-                  faceGroupIndexCode: "5" 
+                  faceGroupIndexCode: "11" 
                };
 
 

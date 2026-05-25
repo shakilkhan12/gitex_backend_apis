@@ -1979,7 +1979,7 @@ class UserService {
                               try {
                                  const faceAdditionPayload = {
                                     personIndexCode: hikVisionResponse.data,
-                                    faceGroupIndexCode: "5"
+                                    faceGroupIndexCode: "11"
                                  };
 
                                  await UserService.callHikVisionAPI(
@@ -2575,7 +2575,7 @@ class UserService {
                   try {
                      const faceAdditionPayload = {
                         personIndexCode: hikVisionResponse.data,
-                        faceGroupIndexCode: "5"
+                        faceGroupIndexCode: "11"
                      };
 
                      await UserService.callHikVisionAPI(
@@ -3019,7 +3019,7 @@ class UserService {
                   try {
                      const faceAdditionPayload = {
                         personIndexCode: hikVisionResponse.data,
-                        faceGroupIndexCode: "5"
+                        faceGroupIndexCode: "11"
                      };
 
                      const faceAdditionResponse = await UserService.callHikVisionAPI(

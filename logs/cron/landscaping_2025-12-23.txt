@@ -1,0 +1,39 @@
+
+================================================================================
+[2025-12-23T19:59:00.020Z] Starting landscaping cron job - Working Time: 23:59
+================================================================================
+[2025-12-23T19:59:00.021Z] [LandscapingService] 🌳 Starting landscaping monitoring for working time: 23:59
+[2025-12-23T19:59:00.023Z] [LandscapingService] 📋 Fetching landscaping sections for time 23:59...
+[2025-12-23T19:59:00.043Z] [LandscapingService] 📊 Found 1 landscaping sections for time 23:59
+[2025-12-23T19:59:00.044Z] [LandscapingService] 🔄 Processing section 1/1 (Section ID: 2, Area: garden area)
+[2025-12-23T19:59:00.044Z] [LandscapingService] 📷 Section 2: Capturing image from camera 287 (Area: garden area)...
+[2025-12-23T19:59:06.675Z] [LandscapingService] ✅ Section 2: Image captured successfully
+[2025-12-23T19:59:06.676Z] [LandscapingService] 💾 Section 2: Saving image locally...
+[2025-12-23T19:59:06.679Z] [LandscapingService] ✅ Section 2: Image saved at /uploads/landscaping/landscaping_2_1766519946676.jpg
+[2025-12-23T19:59:06.679Z] [LandscapingService] 🤖 Section 2: Analyzing image with Gemini...
+[2025-12-23T19:59:11.665Z] [LandscapingService] ✅ Section 2: Image analyzed successfully
+[2025-12-23T19:59:11.665Z] [LandscapingService] 💾 Section 2: Creating grass monitoring record...
+[2025-12-23T19:59:11.666Z] [LandscapingService] ℹ️ Section 2: Record not stored - grass does not need cutting
+[2025-12-23T19:59:11.666Z] [LandscapingService] 📊 Summary for 23:59:
+[2025-12-23T19:59:11.667Z] [LandscapingService]   - Total sections: 1
+[2025-12-23T19:59:11.667Z] [LandscapingService]   - Processed: 1
+[2025-12-23T19:59:11.667Z] [LandscapingService]   - Successful: 1
+[2025-12-23T19:59:11.667Z] [LandscapingService]   - Failed: 0
+[2025-12-23T19:59:11.668Z] [LandscapingService]   - Needs cutting: 0
+[2025-12-23T19:59:11.668Z] [LandscapingService]   - Duration: 11.65s
+[2025-12-23T19:59:11.668Z] [LandscapingService] ✅ Completed landscaping monitoring for 23:59
+
+--------------------------------------------------------------------------------
+[2025-12-23T19:59:11.668Z] Completed landscaping cron job - Working Time: 23:59
+Summary:
+   - Total sections: 1
+   - Processed: 1
+   - Successful: 1
+   - Failed: 0
+   - Duration: 11.65s
+Additional Info:
+{
+  "needsCutting": 0
+}
+================================================================================
+

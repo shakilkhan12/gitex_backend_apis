@@ -1067,7 +1067,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\My Files\\data\\khorfakkan latest\\gitex_backend_apis\\src\\prisma\\generated\\prisma",
+      "value": "G:\\CODE\\latest code\\gitex_backend_apis-1\\src\\prisma\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -1089,7 +1089,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\My Files\\data\\khorfakkan latest\\gitex_backend_apis\\src\\prisma\\schema.prisma",
+    "sourceFilePath": "G:\\CODE\\latest code\\gitex_backend_apis-1\\src\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
